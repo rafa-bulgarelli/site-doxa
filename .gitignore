@@ -1,0 +1,36 @@
+# Segredo NUNCA entra no repo — a deny-rule do .claude/settings.json impede o agente de
+# LER .env*, esta linha impede qualquer um de COMMITAR.
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Dependências e build (a stack ainda é "a definir" — cobre os casos comuns de node)
+node_modules/
+dist/
+build/
+.next/
+.output/
+coverage/
+*.tsbuildinfo
+
+# Cache de ferramentas
+.cache/
+.turbo/
+.vite/
+.eslintcache
+
+# SO / editor
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/*
+!.vscode/extensions.json
+
+# Logs
+*.log
+npm-debug.log*
+yarn-error.log*
+pnpm-debug.log*

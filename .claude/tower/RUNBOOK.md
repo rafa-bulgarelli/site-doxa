@@ -25,8 +25,11 @@ tower-close.sh <branch> → fecha a worktree da track entregue
 | `bin/tower-close.sh <track>` | remove worktree + apaga branch. **Recusa** se a track não estiver mergeada. |
 
 Os três detectam a base sozinhos: `origin/main` quando houver remote, `main` local
-enquanto não houver. **Este repo ainda não tem remote** — por isso os executores só
-commitam local; `git push` entra quando o remote existir.
+enquanto não houver. Remote configurado: `github.com/rafa-bulgarelli/site-doxa` (privado),
+então a base é `origin/main` e o executor termina com `git push -u origin <branch>`.
+
+Rode `git fetch` antes do tick quando as tracks já estiverem no remote — o watchdog compara
+contra `origin/main`, e ref desatualizado dá alerta falso.
 
 ## Os pontos onde a torre trava de propósito
 
@@ -53,5 +56,11 @@ commitam local; `git push` entra quando o remote existir.
 - **Stack a definir** (`CLAUDE.md`) — primeira decisão do GESTOR, precisa do dono.
 - **Package manager / test runner** — confirmar no `package.json` antes de escrever
   qualquer bloco VERIFY. Não assumir npm.
-- **Sem remote** — quando existir, os scripts passam a usar `origin/main` sozinhos, mas o
-  `TRACK-TEMPLATE.md` precisa voltar a mandar `git push -u origin <branch>`.
+- **Sem branch protection em `main`** — GitHub Free não oferece o recurso em repo privado
+  (HTTP 403). Ou seja: **o gate de merge serial é disciplina da torre, não é imposto pelo
+  servidor**. Nada impede um push direto na main. Para ter o gate imposto de fato: GitHub
+  Pro, ou tornar o repo público.
+- **Git via HTTPS** — a chave SSH local é idêntica à registrada no GitHub, mas está com
+  passphrase e o `ssh-agent` está vazio. O remote usa HTTPS + credential helper do `gh`.
+  Para voltar ao SSH: `ssh-add ~/.ssh/id_ed25519` e
+  `git remote set-url origin git@github.com:rafa-bulgarelli/site-doxa.git`.

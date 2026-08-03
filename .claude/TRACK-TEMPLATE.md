@@ -41,14 +41,13 @@ por conta própria: na branch errada, outra track pode estar nela).
 - `<comando de typecheck do repo>` = 0 erros
 - `<comando de teste> <arquivos-de-teste-da-track>` verde (novos testes DESTA track inclusos)
 - `<comando de build>` ok
-- `git diff main...HEAD | grep -nE "as any|@ts-ignore|: any"` = vazio
+- `git diff origin/main...HEAD | grep -nE "as any|@ts-ignore|: any"` = vazio
 - <check específico da feature: endpoint+payload+shape esperado, grep no diff, etc.>
 
 <!-- Package manager/test runner ainda "a definir" no CLAUDE.md: o GESTOR confirma no
      package.json ANTES de escrever este bloco. Não assuma npm/pnpm/yarn. -->
 
 ## COMMIT + PUSH
-`<tipo>(<escopo> #<task>): <resumo>`. Sem remote configurado ainda: só commit local
-(`git push -u origin <branch>` quando o remote existir). **NÃO mergeie.**
+`<tipo>(<escopo> #<task>): <resumo>` → `git push -u origin <branch>`. **NÃO mergeie.**
 Ao terminar: sumário do que fez + verdict READY/NOT READY + saída colada do VERIFY.
 Merge/deploy/LIVE são do GESTOR.

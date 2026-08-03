@@ -7,7 +7,7 @@ Despache o agente `collector` (subagent_type: `collector`) para auditar a branch
 `$ARGUMENTS` antes do merge.
 
 Passe a ele:
-- o diff: `git diff main...$ARGUMENTS`
+- o diff: `git diff origin/main...$ARGUMENTS` (rode `git fetch` antes)
 - o pack da track: `.claude/tower/packs/$ARGUMENTS.md`
 - o report do executor (verdict + saída do VERIFY), se você o tem
 
