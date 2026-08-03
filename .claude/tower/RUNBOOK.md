@@ -11,7 +11,7 @@ Papéis e alocação de modelo: `.claude/TOWER-ROLES.md`.
 /track   <a> <b> <c>    → worktree+branch por track, executores spawnados numa rodada
 /watch                  → tick de git-state enquanto rodam
 /review  <branch>       → gate adversarial antes de cada merge
-   merge SERIAL + VALIDAR-LIVE   ← assento do GESTOR (sessão principal), com o OK do dono
+   PR + merge SERIAL + VALIDAR-LIVE  ← assento do GESTOR (sessão principal), com o OK do dono
 tower-close.sh <branch> → fecha a worktree da track entregue
 /handoff                → fim de sessão: funcionou / NÃO funcionou / próximo passo
 ```
@@ -30,6 +30,30 @@ então a base é `origin/main` e o executor termina com `git push -u origin <bra
 
 Rode `git fetch` antes do tick quando as tracks já estiverem no remote — o watchdog compara
 contra `origin/main`, e ref desatualizado dá alerta falso.
+
+## Merge: só por PR
+
+`main` é protegida com `enforce_admins` ligado — **push direto não passa pra ninguém,
+inclusive o dono**. Verificado: `[remote rejected] (protected branch hook declined)`.
+Histórico linear obrigatório, sem force push, sem deleção.
+
+Uma track por vez, na ordem que o GESTOR definiu:
+
+```bash
+gh pr create --base main --head <branch> --title "<tipo>(<escopo>): <resumo>" --body "…"
+# gate: /review <branch>  →  VERDICT do collector  →  OK do dono
+gh pr merge <branch> --squash --delete-branch
+git checkout main && git pull
+# então: VALIDAR-LIVE  →  tower-close.sh <branch>
+```
+
+`--squash` ou `--rebase`: merge commit é recusado pelo histórico linear.
+Merge da próxima track só depois do VALIDAR-LIVE da anterior — é isso que "serial" quer
+dizer, e é o que manteve 25+ PRs sem conflito de integração no DOXA original.
+
+Para relaxar o gate (não recomendado — vira proteção decorativa, que é pior que nenhuma
+porque só falha no dia em que importava):
+`gh api -X DELETE repos/rafa-bulgarelli/site-doxa/branches/main/protection/enforce_admins`
 
 ## Os pontos onde a torre trava de propósito
 
@@ -56,10 +80,8 @@ contra `origin/main`, e ref desatualizado dá alerta falso.
 - **Stack a definir** (`CLAUDE.md`) — primeira decisão do GESTOR, precisa do dono.
 - **Package manager / test runner** — confirmar no `package.json` antes de escrever
   qualquer bloco VERIFY. Não assumir npm.
-- **Sem branch protection em `main`** — GitHub Free não oferece o recurso em repo privado
-  (HTTP 403). Ou seja: **o gate de merge serial é disciplina da torre, não é imposto pelo
-  servidor**. Nada impede um push direto na main. Para ter o gate imposto de fato: GitHub
-  Pro, ou tornar o repo público.
+- **Nome do produto** — repo/diretório é `site-doxa`, o dono chama de "site da Orca".
+  Não resolvido; ver card `001-site-orca.md`.
 - **Git via HTTPS** — a chave SSH local é idêntica à registrada no GitHub, mas está com
   passphrase e o `ssh-agent` está vazio. O remote usa HTTPS + credential helper do `gh`.
   Para voltar ao SSH: `ssh-add ~/.ssh/id_ed25519` e
