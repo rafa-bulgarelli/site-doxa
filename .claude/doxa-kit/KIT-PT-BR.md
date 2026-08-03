@@ -29,7 +29,7 @@
 | MCPs enxutos (<10 ativos, <80 tools) | janela útil de ~70k volta a ~200k | guia ECC (limite empírico) |
 | CLI + skill em vez de MCP (gh, vercel, railway, psql) | zero custo fixo de contexto por sessão | ECC token-optimization |
 | Modelo barato p/ explorar, médio p/ codar, topo p/ decidir | ~3× economia sem perda nas tarefas certas | tabela de seleção ECC |
-| Tracks paralelas c/ arquivos disjuntos + verificação por track | 3 features entregues/mergeadas em 1 dia (ONB2: 3 PRs) | DOXA Control Tower |
+| Tracks paralelas c/ arquivos disjuntos + verificação por track | 3 features entregues/mergeadas em 1 dia (3 PRs) | DOXA Control Tower |
 | Merge serial com gates entre cada branch | zero conflito de integração em 25+ PRs | DOXA Control Tower |
 | Handoff "funcionou/NÃO funcionou/próximo passo" | mata retentativa amnésica entre sessões | ECC save-session + lição DOXA |
 | Baseline de suíte vermelha comparada por DELTA (`comm -13`) | evita bloquear merge bom E evita ignorar gate | lição DOXA (HAS_DB) |
@@ -48,7 +48,7 @@
 | Track sem verificação executável | "executor disse pronto, feature quebrada" — o modo de falha nº 1 | parallelize-plans |
 | "Merge = resolvido" sem validação LIVE | bug chega no usuário com selo de pronto | regra de ouro DOXA |
 | Interromper executor em thinking longo | reseta 8-15min de raciocínio; espere | lição DOXA |
-| Suíte mockada validando mudança de schema | coluna-na-tabela-errada passa verde e explode em prod | lição DOXA (`leads.empresa_nome`) |
+| Suíte mockada validando mudança de schema | coluna-na-tabela-errada passa verde e explode em prod | lição DOXA (coluna em tabela errada) |
 | Afrouxar eslint/tsconfig/gate p/ passar check | esconde o defeito; dívida instantânea | regra ECC config-protection |
 | pass^k ignorado onde consistência importa (k=3 → 34%!) | flakiness institucionalizada | ECC evals |
 | Terminais/agentes por estética (10+ instâncias) | overhead de coordenação > ganho; 3-4 frentes max | Boris/Anthropic via ECC |

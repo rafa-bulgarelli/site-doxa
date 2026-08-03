@@ -30,7 +30,7 @@
 | Lean MCPs (<10 enabled, <80 tools) | usable window back from ~70k to ~200k | ECC guide (empirical limit) |
 | CLI + skill instead of MCP (gh, vercel, railway, psql) | zero fixed context cost per session | ECC token-optimization |
 | Cheap model to explore, mid to code, top to decide | ~3× savings with no loss on the right tasks | ECC model selection |
-| Parallel tracks w/ disjoint files + per-track verification | 3 features shipped/merged in 1 day (ONB2: 3 PRs) | DOXA Control Tower |
+| Parallel tracks w/ disjoint files + per-track verification | 3 features shipped/merged in 1 day (3 PRs) | DOXA Control Tower |
 | Serial merge with gates between each branch | zero integration conflicts across 25+ PRs | DOXA Control Tower |
 | "Worked / did NOT work / exact next step" handoffs | kills amnesic retries across sessions | ECC save-session + DOXA lesson |
 | Red-suite baseline compared by DELTA (`comm -13`) | avoids blocking good merges AND avoids ignoring the gate | DOXA lesson (HAS_DB) |
@@ -49,7 +49,7 @@
 | Track without an executable check | "executor said done, feature broken" — the #1 failure mode | parallelize-plans |
 | "Merged = solved" without LIVE validation | bug reaches users stamped as done | DOXA golden rule |
 | Interrupting an executor in long thinking | resets 8-15 min of reasoning; wait | DOXA lesson |
-| Mocked test suite validating schema changes | wrong-table column passes green, explodes in prod | DOXA lesson (`leads.empresa_nome`) |
+| Mocked test suite validating schema changes | wrong-table column passes green, explodes in prod | DOXA lesson (wrong-table column) |
 | Loosening eslint/tsconfig/gates to pass a check | hides the defect; instant debt | ECC config-protection |
 | Ignoring pass^k where consistency matters (k=3 → 34%!) | institutionalized flakiness | ECC evals |
 | Terminals/agents for aesthetics (10+ instances) | coordination overhead > gains; 3-4 fronts max | Boris/Anthropic via ECC |

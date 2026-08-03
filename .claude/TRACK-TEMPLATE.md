@@ -17,10 +17,10 @@ por conta própria: na branch errada, outra track pode estar nela).
 - <decisões já tomadas pelo GESTOR + porquê>
 - Armadilhas do repo: <copie da seção "Armadilhas" do CLAUDE.md — só as que ESTA track pode
   pisar, com caminho exato. Vazio enquanto o repo não tiver nenhuma registrada.>
-  <Exemplos do repo DOXA original, do tipo de armadilha que merece virar linha aqui:
-  migrations SEM runner → mudança de schema espelha self-heal; authz em 3 eixos
-  (objeto+tenant+papel, cross-tenant fail-closed); coluna `*_nome` → confira a tabela DONA;
-  read-modify-write c/ unicidade → advisory lock + partial unique index.>
+  <Tipos de armadilha que merecem virar linha aqui: mudança de schema que precisa ser
+  espelhada em outro lugar; regra de autorização que a track pode furar sem perceber;
+  coluna cujo nome não deixa óbvio a qual tabela pertence; escrita concorrente que exige
+  lock. Preencha com as DESTE repo, com caminho exato.>
 - **Estilo OBRIGATÓRIO**: leia `.claude/STYLE-GOOGLE-TS.md` e siga.
 
 ## A TASK
