@@ -21,6 +21,16 @@ coverage/
 .vite/
 .eslintcache
 
+# Fonte de licenca restrita — Francisco Serial (c) 1996 SoftMaker declara fsType=2
+# (Restricted License embedding). Este repo e PUBLICO: commitar o .ttf seria
+# redistribuicao. A tipografia do site vem de uma serifada de licenca aberta, num token
+# CSS trocavel. Ver card 002.
+# Bloqueia formato desktop (e' assim que fonte licenciada chega). Webfont .woff2 de
+# licenca aberta (OFL) E' permitida e deve ser commitada em public/fonts/.
+Francisco*
+*.ttf
+*.otf
+
 # SO / editor
 .DS_Store
 Thumbs.db

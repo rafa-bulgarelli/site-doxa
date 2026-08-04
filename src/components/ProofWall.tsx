@@ -1,0 +1,910 @@
+import { useEffect, useRef, useState, type RefObject } from 'react';
+import { BadgeCheck, Eye, Heart, MessageCircle, Repeat2, Volume2, VolumeX } from 'lucide-react';
+import {
+  motion,
+  useInView,
+  useReducedMotion,
+  useScroll,
+  useSpring,
+  useTransform,
+  type MotionValue,
+} from 'framer-motion';
+import { REELS, WALL_REELS, type Reel } from './proof/reels';
+import { DotGridSpotlight } from './hero/DotGridSpotlight';
+import { MotionButton } from './ui/MotionButton';
+import { useIsDesktop } from '../hooks/useIsDesktop';
+
+/**
+ * How far the track steps between one card and the next, along all three axes.
+ *
+ * The vector is the composition: right, up and away in fixed proportion, so the
+ * cards fall on a single receding diagonal rather than a row. Scrolling walks
+ * the track backwards along it, which is what turns a list into a fly-through.
+ */
+const STEP_DESKTOP = { x: 260, y: -26, z: -250 };
+const STEP_MOBILE = { x: 146, y: -15, z: -150 };
+
+/**
+ * Card sizes, in numbers rather than in classes.
+ *
+ * The transform subtracts half of each to sit a card on the track's origin, so
+ * the dimensions cannot live only in a `w-[220px]` — a Tailwind class and a
+ * constant that must agree are two places to change and one to forget.
+ *
+ * The closing card is landscape where every reel is portrait, and the change of
+ * format is the point: it is the one card that is not a video. Given a reel's
+ * proportions it read as a reel that had failed to load, and its line had to be
+ * broken in two to fit a column 330px wide. Turned on its side it holds the ask
+ * on one line, at a size a portrait card could never give it.
+ */
+const CARD_DESKTOP = { width: 220, height: 391 };
+const CARD_MOBILE = { width: 132, height: 235 };
+const CTA_DESKTOP = { width: 470, height: 330 };
+const CTA_MOBILE = { width: 300, height: 240 };
+
+/**
+ * Cards of run-up before the first reel, in card widths.
+ *
+ * There is no matching run-out. The track used to overshoot the last card,
+ * which is what left the screen empty at the bottom of the section — the
+ * visitor rode the wall to the end of the scroll and arrived at nothing. It now
+ * finishes on the closing card, centred.
+ */
+const LEAD_IN = 2;
+
+/**
+ * Extra track between the last reel and the closing card, in card widths.
+ *
+ * Not a breath before the ask — a hit target. The closing card is far wider than
+ * the 260px the track steps, so at one step's distance the reel behind it lands
+ * in front of its left edge, which is where the button is. The pointer went to
+ * the button and the browser handed it to the reel: the CTA lost its focus, was
+ * shoved along the track, and the button appeared broken because it was never
+ * being pointed at.
+ *
+ * A whole step of clearance, up from half, because the card grew 140px wider
+ * when it turned landscape and took its left edge that much closer to the reel
+ * behind it.
+ */
+const CTA_GAP = 1;
+
+/** Scroll height per card, in viewport heights. The wall's whole budget. */
+const VH_PER_CARD = 22;
+
+/**
+ * How much scroll the closing card keeps the screen for after the run has
+ * stopped, in cards.
+ *
+ * The wall used to arrive and let go in the same frame: the card landed centred
+ * on the last pixel of the section, and that pixel is also the one where the
+ * page starts pushing the whole thing off the top. The ask was on screen, fully
+ * upright, for no scroll at all.
+ *
+ * This is the pause. The track is parked on the closing card — centred, upright,
+ * its button in the middle of the screen — while the section is still pinned, so
+ * the visitor keeps scrolling and keeps looking at the ask. A card and a half is
+ * about a tenth of the section's travel, which is the smallest hold that reads
+ * as a stop rather than as a stutter.
+ */
+const CTA_HOLD = 1.5;
+
+/**
+ * The camera's distance from the stage, and the one number the whole
+ * fly-through is measured against. Held here rather than in the `perspective`
+ * style alone because `CULL_Z` has to know it.
+ */
+const PERSPECTIVE = 2000;
+
+/**
+ * How near the camera a card may come before it stops being drawn, in pixels.
+ *
+ * Cards hold a fixed place on the track and the track flies forward through
+ * them, so a card the run has already passed keeps travelling toward the
+ * viewer — and at the end of the wall the earliest cards are three or four
+ * thousand pixels past the lens. That is not merely invisible. A card sitting on
+ * the `PERSPECTIVE` plane divides by nearly zero: measured in the browser, the
+ * ninth card projected to a box of 75023 x 20193 pixels, and one card crossing
+ * the lens takes the hit testing of the entire 3D context down with it. Every
+ * reel stopped answering the pointer and the closing card's button could not be
+ * clicked — `elementsFromPoint` over the button returned the stage, with no card
+ * anywhere in the stack.
+ *
+ * Half the camera's distance is the cut. A card that far past the viewer is at
+ * twice its size and several thousand pixels off the side of the screen, so
+ * nothing that could be seen is ever dropped.
+ */
+const CULL_Z = PERSPECTIVE / 2;
+
+/**
+ * How near the attention a card has to be before it stands up, in cards.
+ *
+ * Under one, so a card's neighbours stay flat while it is the one being read.
+ * Not far under: while the parting travels from one card to the next both are
+ * part-way up, and too narrow a window drops both of them flat in the middle of
+ * that crossing — a blink between every pair of cards.
+ */
+const FOCUS_WIDTH = 0.85;
+
+/**
+ * How far before the end of the run the closing card starts standing up, in
+ * cards.
+ *
+ * It used to share `FOCUS_WIDTH`, which spent the card's whole entrance flat and
+ * snapped it upright as the section stopped moving — the ask arrived after the
+ * scrolling was over, and by then so was the visitor's attention.
+ *
+ * Four and a half cards out is the moment the card has finished arriving on
+ * screen: it starts rising the instant it is fully in view, is half upright with
+ * two cards of run left, and has been standing — and its button reachable — for
+ * the last hundred viewport heights of the section. This is the number to move
+ * if the ask should come up earlier still; at 7.8 it begins while the card is
+ * only a third on screen, which is as early as the geometry allows.
+ */
+const END_WIDTH = 4.5;
+
+/**
+ * Where the wall clears out, in cards before the end of the run.
+ *
+ * The run used to finish with the last reel still standing off to the left,
+ * magnified and rotated, sharing the screen with the ask. Two objects, and the
+ * one that had already been read was the larger of them.
+ *
+ * So the reels leave. Everything the section put on screen to argue — the
+ * fifteen cards and the copy over them — fades out over these two cards of
+ * scroll, and what is left standing for the last card of the run and the whole
+ * of the hold is the ask, alone. The proof clears for the thing it was proving.
+ *
+ * They stop taking the pointer the moment they start leaving rather than when
+ * they finish: a reel at half opacity is on its way out, and it should not be
+ * able to claim the attention off a card that is not.
+ */
+const CLEAR_FROM = 3;
+const CLEAR_TO = 1;
+
+/**
+ * How sharply the row parts around the attention, in cards.
+ *
+ * The parting used to be `Math.sign`: a card a hair to the left of the attention
+ * was thrown a whole step left and the same card a hair to the right a whole
+ * step right, with nothing in between — so every card the attention crossed
+ * jumped the full width of the parting in one frame. `tanh` is that shape with
+ * the cliff taken out. It still commits to a side within a card, and it passes
+ * through zero, which is the part that matters: the card under the pointer is
+ * the one card that must not move.
+ */
+const PUSH_WIDTH = 0.55;
+
+/**
+ * What being focused is worth, geometrically.
+ *
+ * `rotateY` unwinds to zero, and that is the point: a card held at fifty
+ * degrees is a texture on a wall, not something anyone can watch. The rest is
+ * the room it needs — a step toward the viewer, a touch of scale, and its
+ * neighbours moved a fraction of a step along the track in each direction so
+ * the card is not being read through the ones beside it.
+ */
+const FOCUS_Z = 90;
+const FOCUS_SCALE = 0.12;
+const FOCUS_PUSH = 0.42;
+
+/** How the pointer's claim on the attention arrives and lets go. */
+const HOVER_SPRING = { mass: 0.6, stiffness: 200, damping: 26 };
+const HOVER_INSTANT = { stiffness: 1000, damping: 100 };
+
+/**
+ * PENDENTE-DONO: the owner's framing of the scale — "milhares de clientes,
+ * centenas de vídeos novos todos os dias". Rendered as he said it, and marked
+ * because a round adjective is the weakest form of a number he actually has.
+ * Exact beats big: "2.400 clientes" outsells "milhares" every time, and this
+ * page's whole credibility rests on being the kind that quotes figures.
+ */
+const SCALE_CLAIMS = [
+  { value: 'Milhares', label: 'de clientes atendidos' },
+  { value: 'Centenas', label: 'de vídeos novos por dia' },
+];
+
+/**
+ * The figures on the empty post.
+ *
+ * PENDENTE-DONO: numbers on the owner's instruction, and they are the owner's
+ * call to make — but they are invented, and they sit in the exact place where
+ * every other card on this wall carries a measured one. Worth one look before
+ * this ships: the section's whole argument is that its figures are checkable,
+ * and a made-up figure formatted like a checkable one is the single thing that
+ * can cost it that. Anything that reads them as an example rather than as a
+ * result — a caption, a different treatment — protects the fifteen cards behind
+ * this one.
+ *
+ * Broken on purpose, in the wall's own notation: a round number is read as a
+ * placeholder, and the figures beside them are quoted off real posts.
+ */
+const CTA_STATS = {
+  views: '1,2M',
+  likes: '89,4k',
+  comments: '512',
+  reposts: '1.043',
+};
+
+/**
+ * The 0-to-1 ramp, flat at both ends.
+ *
+ * A card coming up on a straight ramp starts and stops with a corner, and the
+ * eye reads the corner rather than the movement. Smoothstep is the same journey
+ * with both ends eased, which is the difference between a card that settles and
+ * a card that was stopped.
+ */
+function ease(amount: number) {
+  const t = Math.min(1, Math.max(0, amount));
+  return t * t * (3 - 2 * t);
+}
+
+/**
+ * Which side of the attention a card is on, and how far it has committed to it.
+ * Odd, smooth, and zero at zero — see `PUSH_WIDTH`.
+ */
+function side(distance: number) {
+  return Math.tanh(distance / PUSH_WIDTH);
+}
+
+interface TrackPlacement {
+  index: number;
+  step: typeof STEP_DESKTOP;
+  card: typeof CARD_DESKTOP;
+  /** Which card the pointer holds, as a number so it can be travelled to. */
+  hoverCentre: MotionValue<number>;
+  /** How much of the attention the pointer is holding, 0 to 1. */
+  hoverAmount: MotionValue<number>;
+  /** How much of it the end of the run is giving the closing card, 0 to 1. */
+  endAmount: MotionValue<number>;
+  /** Where that claim sits: the closing card's own place on the track. */
+  endSlot: number;
+  /** Where the run has got to, in cards — how far the camera has flown. */
+  track: MotionValue<number>;
+}
+
+/**
+ * Where a card stands, and how upright it is.
+ *
+ * Both quantities come off values computed once for the whole section rather
+ * than per card. The scroll does not feed the angle directly: a reel passing the
+ * middle of the screen used to stand up on its own, which meant sixteen cards
+ * re-laying themselves out on every frame of every scroll, and it stuttered.
+ * Attention is something asked for — by the pointer, or by reaching the end of
+ * the run — and while nobody is asking, the row holds its angle and travels.
+ *
+ * The two claims are carried separately rather than averaged into one moving
+ * centre, and that is the whole of the fix for the hover. Averaged, taking the
+ * pointer off a card sent the centre sliding down the track toward the closing
+ * card and dragged every card it passed; putting the pointer *on* a card made
+ * the centre travel to it, so the card shifted one way before settling back the
+ * other. Held apart, a claim fades where it stands and never moves anything on
+ * its way out.
+ */
+function usePlacement({
+  index,
+  step,
+  card,
+  hoverCentre,
+  hoverAmount,
+  endAmount,
+  endSlot,
+  track,
+}: TrackPlacement) {
+  const inputs = [hoverCentre, hoverAmount, endAmount];
+
+  /**
+   * How upright the card is: the stronger of the two claims, and neither one
+   * cancels the other.
+   *
+   * The end's claim used to be scaled by whatever the pointer held, so touching
+   * any reel in the last stretch dropped the closing card flat. That is a card
+   * folding away in the exact seconds someone is crossing the reel beside it to
+   * reach its button. Reaching the end of the run is the closing card's own
+   * standing instruction and nothing the pointer does elsewhere revokes it.
+   *
+   * The end's claim is written by distance like the pointer's, which is what
+   * keeps it to the closing card alone: `endAmount` opens three cards out, but
+   * the nearest reel is a card and a half away and `FOCUS_WIDTH` is under one.
+   */
+  const focus = useTransform(inputs, ([centre, hover, end]: number[]) =>
+    Math.max(
+      hover * ease(1 - Math.abs(index - centre) / FOCUS_WIDTH),
+      end * ease(1 - Math.abs(index - endSlot) / FOCUS_WIDTH),
+    ),
+  );
+
+  /**
+   * Where the card stands on the track, in card widths, after both claims have
+   * pushed. The pushes add rather than replace one another: dropping the end's
+   * parting because the pointer arrived would slide the card the pointer just
+   * landed on, and a card that walks out from under the cursor gets a mouse-out
+   * it did not earn.
+   */
+  const slot = useTransform(
+    inputs,
+    ([centre, hover, end]: number[]) =>
+      index + FOCUS_PUSH * (hover * side(index - centre) + end * side(index - endSlot)),
+  );
+
+  /**
+   * Where the card stands *relative to the camera*, in card widths.
+   *
+   * The run is subtracted here, on each card, rather than once on the element
+   * they all sit in. Flying the container was the cheaper write — one transform
+   * per frame instead of a dozen — and it cost the section every pointer event
+   * in its second half. The container's own `translateZ` runs to 3875px against
+   * a 2000px `perspective`, which puts the cards' *parent* behind the lens; the
+   * cards still draw correctly, because the matrices compose before they are
+   * projected, but Chrome will not hit-test through an ancestor it cannot map.
+   * Measured on the page: the button's box was pixel-identical either way, and
+   * `elementsFromPoint` over it returned the stage with the run on the
+   * container and the button's own label with the run on the cards.
+   */
+  const offset = useTransform([slot, track], ([s, t]: number[]) => s - t);
+
+  const transform = useTransform([offset, focus], ([o, f]: number[]) => {
+    // Half the card is subtracted on both axes: an absolutely positioned child
+    // of the zero-sized track anchors by its own top-left corner, so without it
+    // every card hangs down and right of the point it is meant to occupy.
+    const x = o * step.x - card.width / 2;
+    const y = o * step.y - card.height / 2;
+    const z = o * step.z + f * FOCUS_Z;
+
+    return `translate3d(${x}px, ${y}px, ${z}px) rotateY(${-50 * (1 - f)}deg) scale(${1 + f * FOCUS_SCALE})`;
+  });
+
+  /**
+   * Whether the card is drawn at all — see `CULL_Z`. `display`, not
+   * `visibility` or an `opacity` of zero: the point is to take the box out of
+   * the 3D rendering context entirely, and a hidden box is still a box the
+   * projection has to divide by. Driven off the motion values like everything
+   * else here, so passing the lens costs a style write rather than a render.
+   */
+  const display = useTransform(offset, (o) => (o * step.z > CULL_Z ? 'none' : 'block'));
+
+  return { transform, focus, display };
+}
+
+/**
+ * One published number off the post, icon then figure, the way a feed sets them.
+ *
+ * `big` is the closing card's set. On a reel the figures are a caption over
+ * somebody's video and they are sized like one — the picture is the argument
+ * there. On the card at the end there is no picture, the numbers *are* what the
+ * visitor is being shown, and at a feed's ten pixels they read as a footnote to
+ * a headline instead of as the reason the headline is there.
+ */
+function Stat({
+  icon: Icon,
+  value,
+  label,
+  liked = false,
+  big = false,
+}: {
+  icon: typeof Eye;
+  value: string;
+  label: string;
+  liked?: boolean;
+  big?: boolean;
+}) {
+  return (
+    <span className={`flex items-center ${big ? 'gap-1.5' : 'gap-1'}`}>
+      <Icon
+        className={`shrink-0 ${big ? 'h-3.5 w-3.5 lg:h-[18px] lg:w-[18px]' : 'h-3 w-3'} ${
+          liked ? 'fill-current text-[#ff3040]' : 'text-white/70'
+        }`}
+        strokeWidth={liked ? 0 : 2}
+        aria-hidden
+      />
+      <span
+        className={`font-semibold leading-none tabular-nums text-white ${
+          big ? 'text-[14px] lg:text-[19px]' : 'text-[10px]'
+        }`}
+      >
+        {value}
+      </span>
+      <span className="sr-only">{label}</span>
+    </span>
+  );
+}
+
+/** The blue tick, at the size a feed sets it. */
+function Verified() {
+  return <BadgeCheck className="h-3.5 w-3.5 shrink-0 fill-[#3897f0] text-black" strokeWidth={2} />;
+}
+
+/**
+ * One published reel, standing in the 3D track.
+ *
+ * The poster is the card. The video is mounted only on the reel under the
+ * pointer — nothing plays on the way past, so scrolling the wall costs no
+ * fetches at all, and the poster is the frame the file opens on anyway.
+ */
+function ReelCard({
+  reel,
+  playing,
+  soundOn,
+  fade,
+  onEnter,
+  onToggleSound,
+  ...placement
+}: TrackPlacement & {
+  reel: Reel;
+  /** Hovered *and* on screen. Geometry does not need the viewport; audio does. */
+  playing: boolean;
+  soundOn: boolean;
+  /** How much of the wall is left, 0 to 1 — see `CLEAR_FROM`. */
+  fade: MotionValue<number>;
+  onEnter: () => void;
+  onToggleSound: () => void;
+}) {
+  const { transform, focus, display } = usePlacement(placement);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+
+  /** Off the moment it starts leaving, not when it has finished — see `CLEAR_FROM`. */
+  const catches = useTransform(fade, (f) => (f > 0.99 ? 'auto' : 'none'));
+
+  /**
+   * Playback is driven here rather than by `autoPlay` and a `muted` prop.
+   *
+   * `muted` is the one attribute React is famously loose about, and a browser
+   * refuses to start a video that asks for sound before it has been asked for
+   * one — so the mute is set on the element and `play()` called after it, every
+   * time the reel or the sound choice changes.
+   */
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+    video.muted = !soundOn;
+    void video.play().catch(() => undefined);
+  }, [playing, soundOn]);
+
+  /**
+   * How dark the reel sits while it is not the one being watched.
+   *
+   * A veil whose opacity moves, not a `filter: brightness()` on the image.
+   * Filters are not composited: animating one repaints the whole picture every
+   * frame. Opacity is a compositor property — painted once, then only faded.
+   */
+  const dim = useTransform(focus, [0, 1], [0.45, 0]);
+
+  return (
+    <motion.div
+      onMouseEnter={onEnter}
+      // `rounded-xl` and the hairline border are the hero's media frame — the
+      // same object in a different room: a client's file lying on the canvas.
+      className="group absolute overflow-hidden rounded-xl border border-white/[0.14] bg-doxa-raised shadow-[0_30px_80px_-30px_rgba(0,0,0,0.95)]"
+      style={{
+        width: placement.card.width,
+        height: placement.card.height,
+        transform,
+        display,
+        opacity: fade,
+        pointerEvents: catches,
+        transformStyle: 'preserve-3d',
+      }}
+    >
+      <img
+        src={reel.posterUrl}
+        alt=""
+        aria-hidden
+        loading="lazy"
+        className="h-full w-full object-cover"
+      />
+
+      {/* The veil, and the ring that brightens the edge as the reel comes up.
+          Both are separate elements fading rather than properties of the card
+          being repainted — the same reason, twice. */}
+      <motion.div className="pointer-events-none absolute inset-0 bg-black" style={{ opacity: dim }} />
+      <motion.div
+        className="pointer-events-none absolute inset-0 rounded-xl border border-white/45"
+        style={{ opacity: focus }}
+      />
+
+      {/* Over the poster, not instead of it: the video fades in on the frame it
+          was going to start on anyway, so there is no black gap while it
+          buffers and nothing moves when it arrives. */}
+      {playing && reel.videoUrl && (
+        <motion.video
+          ref={videoRef}
+          src={reel.videoUrl}
+          poster={reel.posterUrl}
+          className="absolute inset-0 h-full w-full object-cover"
+          loop
+          playsInline
+          preload="auto"
+          aria-hidden
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.4 }}
+        />
+      )}
+
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-black/25" />
+
+      {/* Only on the reel that is actually playing — a mute button on a still
+          frame controls nothing. The treatment is the hero's: the visitor has
+          met this button already. */}
+      {playing && reel.videoUrl && (
+        <button
+          type="button"
+          onClick={onToggleSound}
+          aria-pressed={soundOn}
+          aria-label={soundOn ? 'Desligar o som do vídeo' : 'Ativar som do vídeo'}
+          className="absolute right-2 top-2 flex h-8 w-8 items-center justify-center rounded-full border border-white/[0.14] bg-black/50 text-white opacity-80 backdrop-blur-sm transition hover:bg-black/70 hover:opacity-100 focus-visible:opacity-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/60"
+        >
+          {soundOn ? (
+            <Volume2 className="h-4 w-4" strokeWidth={1.75} />
+          ) : (
+            <VolumeX className="h-4 w-4" strokeWidth={1.75} />
+          )}
+        </button>
+      )}
+
+      {/* Set in the native-app stack, and the tick and the red heart are the
+          platform's colours rather than ours. The brand is monochrome
+          everywhere it speaks for itself; this block is a picture of somebody
+          else's interface, which is the one exemption. */}
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 flex flex-col gap-1.5 p-3 font-ui">
+        <span className="flex items-center gap-1 text-[12px] font-semibold text-white">
+          <span className="truncate">{reel.handle}</span>
+          {reel.verified && <Verified />}
+        </span>
+
+        <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1">
+          {reel.views && <Stat icon={Eye} value={reel.views} label="visualizações" />}
+          {reel.likes && <Stat icon={Heart} value={reel.likes} label="curtidas" liked />}
+          {reel.comments && <Stat icon={MessageCircle} value={reel.comments} label="comentários" />}
+          {reel.reposts && <Stat icon={Repeat2} value={reel.reposts} label="reposts" />}
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
+/**
+ * The last card on the track, and the one the run ends standing on.
+ *
+ * The section used to overshoot into empty space — the visitor rode the wall to
+ * the bottom of the scroll and found a blank screen still pinned to the
+ * viewport. It now finishes here, and this is the one card the scroll is still
+ * allowed to raise: arriving at the end of the proof is exactly the moment to
+ * ask, and a wall that spends its whole argument and then asks for nothing has
+ * wasted it.
+ *
+ * Built as an empty post rather than as a panel of copy. Every card before it is
+ * somebody's published reel with their handle and their numbers on it; this one
+ * carries the same two things over a profile that does not exist yet, which says
+ * what it is for without a sentence explaining it.
+ *
+ * Landscape, centred, and lit from underneath — the three things that stop it
+ * being a reel with the video missing. It is the only card on the track that is
+ * not a photograph, and by the time it arrives it is also the only card left on
+ * screen, so it can afford to be composed rather than to blend in.
+ */
+function ClosingCard({ onEnter, ...placement }: TrackPlacement & { onEnter: () => void }) {
+  const { transform, focus, display } = usePlacement(placement);
+
+  return (
+    <motion.div
+      onMouseEnter={onEnter}
+      // Opaque, and the only opaque thing in the run. Everything else is a
+      // photograph; this is a surface, and a surface you can see the dot grid
+      // through reads as a reel that failed to load.
+      //
+      // A raked gradient rather than the flat grey it used to be. One value
+      // across a card this size is a slab: nothing on it catches, and the eye
+      // reads the whole rectangle as a hole in the page. Lit off the top-left
+      // corner and falling to near-black at the bottom-right, with a hairline of
+      // white on the top edge — the light has a direction, and the shape reads
+      // as an object under it.
+      className="absolute overflow-hidden rounded-2xl border border-white/[0.14] bg-[linear-gradient(148deg,#242424_0%,#1a1a1a_38%,#101010_72%,#0b0b0b_100%)] shadow-[inset_0_1px_0_rgba(255,255,255,0.11),0_40px_90px_-30px_rgba(0,0,0,0.95)]"
+      style={{
+        width: placement.card.width,
+        height: placement.card.height,
+        transform,
+        display,
+        transformStyle: 'preserve-3d',
+      }}
+    >
+      {/* Two lights, both white at alpha like every other light on the page:
+          one over the figures, one under the ask. They are what the card is
+          composed around — the eye lands on the numbers, crosses the dark band
+          the headline sits in, and finishes on the button. */}
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-1/2 bg-[radial-gradient(55%_100%_at_50%_-15%,rgba(255,255,255,0.11),transparent_70%)]" />
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-2/3 bg-[radial-gradient(70%_100%_at_50%_118%,rgba(255,255,255,0.17),transparent_70%)]" />
+      <motion.div
+        className="pointer-events-none absolute inset-0 rounded-2xl border border-white/45"
+        style={{ opacity: focus }}
+      />
+
+      {/* Three parts on one axis, and the spare room is spent by the middle one
+          rather than split into three gaps by `justify-between`. That was the
+          card reading as strange: a header, a headline and a button each
+          hanging in space with nothing holding them to anything. */}
+      <div className="relative flex h-full flex-col items-center p-5 text-center lg:p-6">
+        <div className="flex w-full flex-col items-center gap-2 font-ui lg:gap-2.5">
+          <span className="flex items-center gap-1 text-[12px] font-semibold text-white/70">
+            @seuperfil
+            <Verified />
+          </span>
+          {/* The four figures across the top, at nearly twice a reel's size. On
+              a landscape card they fit on one line with room to breathe, which
+              is the other half of why the format changed. */}
+          <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1.5 lg:gap-x-6">
+            <Stat big icon={Eye} value={CTA_STATS.views} label="visualizações" />
+            <Stat big icon={Heart} value={CTA_STATS.likes} label="curtidas" liked />
+            <Stat big icon={MessageCircle} value={CTA_STATS.comments} label="comentários" />
+            <Stat big icon={Repeat2} value={CTA_STATS.reposts} label="reposts" />
+          </div>
+        </div>
+
+        {/* Fades in from nothing at both ends, so it reads as a seam in the
+            surface rather than as a line drawn on it. What it divides is the
+            post's figures from the page's ask — the two halves of what this
+            card is, and without it they were two blocks floating in the same
+            dark rectangle. */}
+        <div className="mt-4 h-px w-full bg-gradient-to-r from-transparent via-white/[0.16] to-transparent lg:mt-5" />
+
+        {/* PENDENTE-DONO: wording mine.
+
+            One line, which is the whole reason the card turned landscape — a
+            hard break through the middle of four words reads as type that did
+            not fit. `my-auto` centres it in whatever is left over, so the two
+            gaps come out equal without either being a number that has to be
+            re-tuned when the card or the type changes. */}
+        <p className="my-auto whitespace-nowrap font-serif text-[34px] leading-none tracking-[-0.03em] text-white lg:text-[58px]">
+          O próximo é o seu.
+        </p>
+
+        <MotionButton label="Quero viralizar" href="/empresas" />
+      </div>
+    </motion.div>
+  );
+}
+
+/**
+ * The proof wall: every published reel, flown through on the scroll.
+ *
+ * Adapted from a full-page showcase, and the adaptation is the substance of it.
+ * The original owns the document — a fifty-thousand-pixel spacer with a fixed
+ * viewport pinned over it, which is a page, not a section. Dropped into a
+ * landing page it would swallow everything below it.
+ *
+ * Here the scroll is the section's own passage instead: a tall block with a
+ * sticky screen inside it, driven by `scrollYProgress` between its own start
+ * and end. The wall pins, plays out, unpins, and the page carries on. Being
+ * bounded also removes the reason for the duplicated buffer the original loops
+ * through — the track is walked once, so there are half as many cards.
+ */
+export function ProofWall() {
+  const sectionRef = useRef<HTMLElement>(null);
+  /**
+   * The pinned screen, not the section. The section is several viewports tall
+   * and scrolls; the glow and the in-view test both belong to the sticky child,
+   * so measuring against the section would offset them by however far the page
+   * had travelled.
+   */
+  const stickyRef = useRef<HTMLDivElement>(null);
+  const isDesktop = useIsDesktop();
+  const still = useReducedMotion() ?? false;
+
+  /** Where the closing card sits: after every reel, plus its own clearance. */
+  const endSlot = WALL_REELS.length + CTA_GAP;
+
+  /** The section's own height: the run-up, the run, the last card, the hold. */
+  const sectionVh = (LEAD_IN + endSlot + 1 + CTA_HOLD) * VH_PER_CARD;
+
+  /**
+   * Where in the section's progress the run finishes and the hold begins.
+   *
+   * Taken against the section's height *minus the viewport it is pinned to*,
+   * because that difference is the only part of it `scrollYProgress` measures:
+   * the sticky child stops travelling once its parent's bottom edge arrives, so
+   * dividing the hold by the raw height would leave it short by a screen.
+   */
+  const scrollableVh = sectionVh - 100;
+  const arrive = (scrollableVh - CTA_HOLD * VH_PER_CARD) / scrollableVh;
+
+  const { scrollYProgress } = useScroll({
+    target: sectionRef as RefObject<HTMLElement>,
+    offset: ['start start', 'end end'],
+  });
+
+  const smooth = useSpring(scrollYProgress, { mass: 0.1, stiffness: 100, damping: 20 });
+
+  /**
+   * Which card is at the centre of the screen, as a continuous number. It
+   * starts before the first reel so the wall arrives rather than cutting in,
+   * and ends exactly on the closing card.
+   *
+   * The run is spent by `arrive` rather than by the end of the section, and
+   * `useTransform` clamps past its input range — so the last stretch of scroll
+   * leaves the track sitting on `endSlot` instead of pushing past it. That
+   * clamp is the hold: nothing else has to know about it, because everything
+   * downstream is written off `track`.
+   */
+  const track = useTransform(smooth, [0, arrive], [-LEAD_IN, endSlot]);
+
+  const step = isDesktop ? STEP_DESKTOP : STEP_MOBILE;
+  const card = isDesktop ? CARD_DESKTOP : CARD_MOBILE;
+  const ctaCard = isDesktop ? CTA_DESKTOP : CTA_MOBILE;
+
+  const hoverCentre = useSpring(endSlot, still ? HOVER_INSTANT : HOVER_SPRING);
+  const hoverAmount = useSpring(0, still ? HOVER_INSTANT : HOVER_SPRING);
+
+  /**
+   * The second claim on the attention: reaching the end of the run, which
+   * raises the closing card and nothing else — the CTA is the only card the
+   * scroll still lifts, because arriving there is the moment the section has
+   * been building toward. A reel crossing the middle no longer counts: that was
+   * every card re-laying itself out on every frame, and it stuttered.
+   *
+   * It opens `END_WIDTH` cards early instead of at the finish line, so the card
+   * comes up over the last stretch of the scroll rather than at the end of it.
+   */
+  const endAmount = useTransform(track, (t) => ease(1 - Math.abs(endSlot - t) / END_WIDTH));
+
+  /**
+   * How much of the wall is left: the reels and the copy over them, on their way
+   * out so the ask finishes alone on the screen. See `CLEAR_FROM`.
+   */
+  const wallFade = useTransform(track, [endSlot - CLEAR_FROM, endSlot - CLEAR_TO], [1, 0]);
+
+  /** Which reel has the pointer, and so the only one with a video mounted. */
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+
+  const claimFocus = (slot: number) => {
+    if (!isDesktop) return;
+    // Arriving from nothing, the attention appears where the cursor is instead
+    // of sweeping across the whole track to get there. Moving between cards
+    // does travel — that is the parting following the pointer. Either way the
+    // centre lands on the card before its strength grows, so the card the
+    // pointer is on rises where it stands rather than being pushed first.
+    if (hoverAmount.get() < 0.01) hoverCentre.jump(slot);
+    else hoverCentre.set(slot);
+    hoverAmount.set(1);
+    setHoveredIndex(slot);
+  };
+
+  const releaseFocus = () => {
+    hoverAmount.set(0);
+    setHoveredIndex(null);
+  };
+
+  /**
+   * One sound switch for the wall, not one per card. Having asked for sound,
+   * nobody wants to ask again on the next reel — and the first click is also
+   * the gesture the browser needs before any later reel may play aloud.
+   */
+  const [soundOn, setSoundOn] = useState(false);
+
+  /**
+   * Nothing plays while the wall is off screen. With sound switched on that
+   * stops being a matter of decode budget: a section this tall spends most of
+   * the page somewhere else, and audio from a place the visitor has already
+   * scrolled past is the worst thing it could do.
+   */
+  const inView = useInView(stickyRef, { amount: 0.4 });
+
+  const placement = { step, hoverCentre, hoverAmount, endAmount, endSlot, track };
+
+  return (
+    <section
+      ref={sectionRef}
+      className="relative bg-doxa-bg"
+      // Sized by the content: every card gets the same share of scroll, plus
+      // the run-up and the hold at the end. Adding files lengthens the section
+      // instead of making it faster.
+      style={{ height: `${sectionVh}vh` }}
+    >
+      <div
+        ref={stickyRef}
+        className="sticky top-0 h-screen w-full overflow-hidden"
+        onMouseLeave={releaseFocus}
+      >
+        <div className="dot-grid pointer-events-none absolute inset-0" />
+        {/* The same grid the hero lights under the cursor, on the same pair of
+            layers — a resting grid with a brighter copy revealed through a mask
+            parked on the pointer. */}
+        <DotGridSpotlight containerRef={stickyRef} />
+
+        {/* The page's column, and everything in the section lives inside it.
+            The hero canvas and the pipeline row are both capped at this width
+            and centred; pinning this section to the viewport edge instead would
+            line it up with the two above only by coincidence, at exactly the
+            one window width where the cap does not bind. */}
+        <div className="absolute inset-0 mx-auto w-full max-w-screen-2xl">
+          <div
+            className="absolute inset-0 flex items-center justify-center"
+            style={{ perspective: `${PERSPECTIVE}px`, perspectiveOrigin: '12% 50%' }}
+          >
+            {/* The origin the cards are placed around, and nothing else: it
+                establishes the 3D context and never moves. Flying it was what
+                broke the pointer in the back half of the section — see the note
+                on `offset` in `usePlacement`. */}
+            <div className="relative h-0 w-0" style={{ transformStyle: 'preserve-3d' }}>
+              {WALL_REELS.map((reel, index) => (
+                <ReelCard
+                  key={`${reel.handle}-${index}`}
+                  {...placement}
+                  card={card}
+                  index={index}
+                  reel={reel}
+                  playing={index === hoveredIndex && inView}
+                  soundOn={soundOn}
+                  fade={wallFade}
+                  onEnter={() => claimFocus(index)}
+                  onToggleSound={() => setSoundOn((current) => !current)}
+                />
+              ))}
+
+              <ClosingCard
+                {...placement}
+                card={ctaCard}
+                index={endSlot}
+                onEnter={() => claimFocus(endSlot)}
+              />
+            </div>
+          </div>
+
+          {/* Absolute black at the top and bottom, clear across the middle sixty
+              per cent, running at a hundred and eighty degrees. The band the
+              cards travel through is the only part left open, so the run fades
+              out of the dark and back into it rather than being cut off by the
+              edge of the screen. The axis also falls where the type is, which
+              is what gives the copy something to sit on. */}
+          <div
+            className="pointer-events-none absolute inset-0 z-10"
+            style={{
+              background:
+                'linear-gradient(180deg, #000 0%, transparent 20%, transparent 80%, #000 100%)',
+            }}
+          />
+
+          {/* The copy lives in the top band, which is the part of the gradient
+              that is opaque. It used to be spread top and bottom, and the reels
+              flew straight over the figures on the way past — the middle and
+              the floor of this section are the road, and type cannot live on
+              the road.
+
+              Baseline-aligned, not top-aligned: the headline is two lines of
+              serif and the figures are one line of it, so aligning their boxes
+              would leave the figures floating level with the first line of a
+              title they are meant to sit under.
+
+              It leaves with the reels. The section's claim and the section's
+              proof are the same argument, and the screen the ask ends on holds
+              the ask and nothing else. */}
+          <motion.div
+            className="pointer-events-none absolute inset-x-0 top-0 z-20 flex flex-wrap items-end justify-between gap-x-10 gap-y-8 px-5 py-16 md:px-10 md:py-24"
+            style={{ opacity: wallFade }}
+          >
+            <h2 className="font-serif text-4xl font-normal leading-[1.05] tracking-[-0.02em] text-white md:text-6xl">
+              A prova já está
+              <br />
+              publicada.
+              {/* Counts `REELS`, never the drawn cards: the wall is padded with
+                  repeats today, and the one thing it must not do is put a
+                  number on them. */}
+              <span className="ml-3 align-super font-sans text-base font-medium tabular-nums text-white md:text-xl">
+                ({REELS.length})
+              </span>
+            </h2>
+
+            <div className="flex flex-wrap gap-x-10 gap-y-4 md:justify-end md:text-right">
+              {SCALE_CLAIMS.map(({ value, label }) => (
+                <div key={label} className="flex flex-col gap-1">
+                  <span className="font-serif text-2xl leading-none text-white md:text-3xl">
+                    {value}
+                  </span>
+                  <span className="text-[12px] leading-none text-white/50">{label}</span>
+                </div>
+              ))}
+            </div>
+          </motion.div>
+        </div>
+      </div>
+    </section>
+  );
+}
