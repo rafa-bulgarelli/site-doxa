@@ -182,6 +182,15 @@ const PUSH_WIDTH = 0.55;
  * the room it needs — a step toward the viewer, a touch of scale, and its
  * neighbours moved a fraction of a step along the track in each direction so
  * the card is not being read through the ones beside it.
+ *
+ * The closing card takes no step at all, and gets `0` for its `lift`. The
+ * vanishing point sits at 12% of the stage rather than in the middle of it, so
+ * anything the projection brings forward also travels *away from that point*:
+ * ninety pixels of lift landed the card twenty-six pixels right of the centre of
+ * the screen. Everywhere else on the track that is invisible — a card among
+ * cards, on a diagonal, is not being measured against anything. The card the
+ * section ends on is, because by then it is alone on the screen and its own
+ * edges are the only reference left. It has nothing to step in front of anyway.
  */
 const FOCUS_Z = 90;
 const FOCUS_SCALE = 0.12;
@@ -250,6 +259,8 @@ interface TrackPlacement {
   index: number;
   step: typeof STEP_DESKTOP;
   card: typeof CARD_DESKTOP;
+  /** How far toward the camera being focused carries the card — see `FOCUS_Z`. */
+  lift: number;
   /** Which card the pointer holds, as a number so it can be travelled to. */
   hoverCentre: MotionValue<number>;
   /** How much of the attention the pointer is holding, 0 to 1. */
@@ -284,6 +295,7 @@ function usePlacement({
   index,
   step,
   card,
+  lift,
   hoverCentre,
   hoverAmount,
   endAmount,
@@ -348,7 +360,7 @@ function usePlacement({
     // every card hangs down and right of the point it is meant to occupy.
     const x = o * step.x - card.width / 2;
     const y = o * step.y - card.height / 2;
-    const z = o * step.z + f * FOCUS_Z;
+    const z = o * step.z + f * lift;
 
     return `translate3d(${x}px, ${y}px, ${z}px) rotateY(${-50 * (1 - f)}deg) scale(${1 + f * FOCUS_SCALE})`;
   });
@@ -829,6 +841,7 @@ export function ProofWall() {
                   key={`${reel.handle}-${index}`}
                   {...placement}
                   card={card}
+                  lift={FOCUS_Z}
                   index={index}
                   reel={reel}
                   playing={index === hoveredIndex && inView}
@@ -842,6 +855,9 @@ export function ProofWall() {
               <ClosingCard
                 {...placement}
                 card={ctaCard}
+                // Dead centre when the run stops, and that costs it the step
+                // toward the camera — see `FOCUS_Z`.
+                lift={0}
                 index={endSlot}
                 onEnter={() => claimFocus(endSlot)}
               />
