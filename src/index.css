@@ -1,0 +1,322 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*
+ * Set the default on `body`, not on `*`. A universal selector re-applies the
+ * sans to every descendant directly, which beats inheritance — so `font-serif`
+ * on a parent silently loses on its children. That bug ate the hero headline.
+ */
+body {
+  font-family:
+    'Almarai',
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    'Roboto',
+    'Oxygen',
+    'Ubuntu',
+    'Cantarell',
+    sans-serif;
+}
+
+/* Form controls don't inherit font by default. */
+input,
+button,
+textarea,
+select {
+  font: inherit;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: #000000;
+}
+
+/* Connector curves draw themselves in. `pathLength` from framer-motion can't be
+   used here: it emits a dasharray in viewBox units, which smears once the
+   viewBox is measured in pixels. A plain dash animation is exact. */
+@keyframes connector-in {
+  from {
+    stroke-dasharray: 0 2000;
+  }
+  to {
+    stroke-dasharray: 2000 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  @keyframes connector-in {
+    from {
+      stroke-dasharray: 2000 0;
+    }
+    to {
+      stroke-dasharray: 2000 0;
+    }
+  }
+}
+
+/*
+ * The signal travelling the wire: short bright dashes swept from the input
+ * cards to the output. Long gaps in the dash pattern mean a pulse crosses and
+ * the line rests before the next — constant traffic would read as decoration
+ * rather than as jobs moving through the pipeline. Timing is linear: a signal
+ * doesn't ease.
+ *
+ * Two dashes per pattern, evenly spaced, so two pulses cross per cycle without
+ * either of them travelling any faster. Speeding one pulse up would have read
+ * as a more anxious line, not as a busier one.
+ *
+ * The sweep covers exactly one pattern period (70 + 1165 + 70 + 1165 = 2470),
+ * which is what makes the loop seamless: any other distance leaves the dashes
+ * somewhere else at the restart than where they began, and the whole train
+ * jumps once per cycle. With a single dash parked off the path at both ends
+ * that jump was invisible; with two, one of them is always mid-wire.
+ */
+@keyframes connector-pulse {
+  from {
+    stroke-dashoffset: 70;
+  }
+  to {
+    stroke-dashoffset: -2400;
+  }
+}
+
+.connector-pulse {
+  stroke-dasharray: 70 1165 70 1165;
+  filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.85));
+  animation: connector-pulse 4.5s linear infinite both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .connector-pulse {
+    display: none;
+  }
+}
+
+/*
+ * Dot-grid geometry lives here so the resting grid and the lit one can never
+ * drift apart: the highlight only lands on the dots if both layers are drawn
+ * from the same radius and pitch.
+ */
+:root {
+  --dot-radius: 1.05px;
+  --dot-pitch: 16.5px;
+  --spot-size: 460px;
+  /*
+   * A lit dot is a *bigger* dot, plus a halo. Repainting the same radius in a
+   * brighter white only reads as a grey fog sliding over the grid; growing the
+   * core past its resting size and blooming around it is what makes the grid
+   * read as switching on under the cursor.
+   */
+  --dot-lit-radius: 1.5px;
+  --dot-bloom-radius: 4.4px;
+  /*
+   * Grey, not white. Pure white makes each lit dot punch through the black and
+   * the grid reads as a lamp sweeping over it; a grey a few steps down keeps
+   * the light inside the surface, which is the effect asked for.
+   */
+  --dot-lit-color: rgba(196, 196, 196, 0.72);
+  --dot-bloom-color: rgba(196, 196, 196, 0.12);
+}
+
+/* Infinite-canvas dot grid behind the hero. This is the resting state: dim, but
+   still legible against the black. */
+.dot-grid {
+  background-image: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.09) var(--dot-radius),
+    transparent var(--dot-radius)
+  );
+  background-size: var(--dot-pitch) var(--dot-pitch);
+}
+
+/*
+ * The dots the cursor lights up.
+ *
+ * This is a second, brighter copy of the same grid, revealed through a soft
+ * circular mask parked on the pointer. Only the *mask* moves — the dots
+ * themselves are painted by a static background — so a lit dot lands exactly on
+ * top of its dim twin instead of sliding across it. Moving the element would
+ * smear the two grids out of register.
+ *
+ * `--spot-x` / `--spot-y` are written to this element by `DotGridSpotlight`
+ * on pointer move. They start far off-canvas so nothing is lit before the mouse
+ * has ever entered.
+ *
+ * `.dot-grid` is reused inside the placeholder frames, which is why this lives
+ * in its own class — on the shared one, every card would grow its own light.
+ */
+.dot-grid-glow {
+  --spot-x: -9999px;
+  --spot-y: -9999px;
+  /* Core over halo, both on the same pitch as the resting grid so every lit dot
+     lands exactly on its dim twin. One `background-size` covers both layers. */
+  background-image: radial-gradient(
+      circle,
+      var(--dot-lit-color) var(--dot-lit-radius),
+      transparent var(--dot-lit-radius)
+    ),
+    radial-gradient(circle, var(--dot-bloom-color), transparent var(--dot-bloom-radius));
+  background-size: var(--dot-pitch) var(--dot-pitch);
+  -webkit-mask-image: radial-gradient(
+    circle closest-side,
+    #000 0%,
+    rgba(0, 0, 0, 0.6) 45%,
+    transparent 100%
+  );
+  mask-image: radial-gradient(
+    circle closest-side,
+    #000 0%,
+    rgba(0, 0, 0, 0.6) 45%,
+    transparent 100%
+  );
+  -webkit-mask-size: var(--spot-size) var(--spot-size);
+  mask-size: var(--spot-size) var(--spot-size);
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  /* Half the spot pulled back on each axis, so the circle is centred on the
+     cursor rather than starting at it. */
+  -webkit-mask-position: calc(var(--spot-x) - var(--spot-size) / 2)
+    calc(var(--spot-y) - var(--spot-size) / 2);
+  mask-position: calc(var(--spot-x) - var(--spot-size) / 2)
+    calc(var(--spot-y) - var(--spot-size) / 2);
+  /* The mask moves every frame the cursor does; keeping the layer on its own
+     surface stops the whole hero from repainting behind it. */
+  will-change: -webkit-mask-position, mask-position;
+  opacity: 0;
+  transition: opacity 220ms ease-out;
+}
+
+/*
+ * Clears the dot grid out from behind the headline and lays a soft light in its
+ * place.
+ *
+ * Two stacked radial gradients: an opaque black core that fades to transparent
+ * — no hard edge, so the grid dissolves instead of being cut out by a box — and
+ * a faint white bloom over it. `closest-side` makes each one an ellipse that
+ * fits the element, so the falloff follows the shape of the copy block rather
+ * than a circle cropped by it.
+ */
+.hero-copy-veil {
+  background: radial-gradient(
+    closest-side,
+    rgb(0, 0, 0) 0%,
+    rgba(0, 0, 0, 0.92) 45%,
+    transparent 100%
+  );
+}
+
+/* The brand allows no chromatic accent, so "highlight" has to be light itself:
+   a soft grey bloom lifting the centre of the hero off the black. */
+.hero-glow {
+  background:
+    radial-gradient(60% 45% at 50% 38%, rgba(255, 255, 255, 0.08), transparent 70%),
+    radial-gradient(90% 60% at 50% 100%, rgba(255, 255, 255, 0.04), transparent 70%);
+}
+
+/* Idle drift on the canvas nodes. Cards share this keyframe and offset their
+   `animation-delay` (negative, so they start mid-cycle) — that desynchronises
+   them without needing a keyframe per card. */
+@keyframes canvas-drift {
+  0%,
+  100% {
+    transform: translateY(-5px);
+  }
+  50% {
+    transform: translateY(5px);
+  }
+}
+
+.canvas-drift {
+  animation: canvas-drift 12s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .canvas-drift {
+    animation: none;
+  }
+}
+
+/*
+ * The looping decorations inside the "Como funciona" panels: the read head that
+ * sweeps a tile while the machine looks at it, and the voice note's bars.
+ *
+ * CSS rather than framer-motion because these are the only animations in the
+ * section that have to *freeze in place*. The section stops itself when it
+ * scrolls out of view or when the visitor pauses it, and `animation-play-state:
+ * paused` holds a keyframe exactly where it stands. A framer loop can only be
+ * stopped by animating it somewhere else, which is a movement of its own — the
+ * bars would visibly settle and the scan line would slide off on every pause.
+ */
+@keyframes step-scan {
+  from {
+    top: -5%;
+  }
+  to {
+    top: 105%;
+  }
+}
+
+.step-scan {
+  animation: step-scan 1.1s linear infinite;
+}
+
+/*
+ * A file going up. `scaleX` rather than `width` so the fill is composited
+ * instead of relaying out the row on every frame, and `forwards` so it holds
+ * full once it arrives instead of snapping back to empty.
+ */
+@keyframes step-fill {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+.step-fill {
+  transform-origin: left;
+  animation: step-fill 1.5s cubic-bezier(0.45, 0, 0, 1) forwards;
+}
+
+@keyframes step-wave {
+  0%,
+  100% {
+    transform: scaleY(0.4);
+  }
+  50% {
+    transform: scaleY(1);
+  }
+}
+
+.step-wave {
+  animation: step-wave 1.4s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .step-scan,
+  .step-wave {
+    animation: none;
+  }
+
+  /* The fill still has to end full — it is a state, not just a flourish. */
+  .step-fill {
+    animation: none;
+    transform: scaleX(1);
+  }
+}
+
+/* Fractal noise laid over the hero video to break up the gradient banding. */
+.noise-overlay {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Coarser grain used as a static backdrop behind the features grid. */
+.bg-noise {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'%3E%3Cfilter id='n2'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n2)'/%3E%3C/svg%3E");
+}

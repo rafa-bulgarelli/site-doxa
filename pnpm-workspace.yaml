@@ -1,0 +1,4 @@
+# esbuild ships a platform-specific binary and needs its postinstall to run,
+# otherwise Vite cannot start. pnpm 11 reads this from here, not package.json.
+allowBuilds:
+  esbuild: true

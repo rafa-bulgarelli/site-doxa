@@ -1,0 +1,120 @@
+import { useRef, useState } from 'react';
+import { ImageOff, Volume2, VolumeX } from 'lucide-react';
+
+interface FrameProps {
+  /** Ratio utility, e.g. `aspect-square` or `aspect-[9/16]`. */
+  ratio: string;
+  /** Null while the owner has not supplied this case's file. */
+  src: string | null;
+}
+
+/**
+ * Media inside a canvas card is decorative, and the card around it is
+ * draggable. Browsers give images and videos their own native drag, which wins
+ * the gesture and leaves the card stuck — so pointer events are taken away from
+ * the media entirely and the native drag is switched off on top of that.
+ */
+const MEDIA_CLASS = 'pointer-events-none h-full w-full select-none object-cover';
+
+function PendingFrame({ ratio, raised = false }: { ratio: string; raised?: boolean }) {
+  return (
+    <div
+      className={`relative flex ${ratio} w-full items-center justify-center ${
+        raised ? 'bg-doxa-raised' : 'bg-doxa-surface'
+      }`}
+    >
+      <div className="dot-grid absolute inset-0 opacity-40" />
+      <div className="relative flex flex-col items-center gap-2">
+        <ImageOff className="h-6 w-6 text-white/25" strokeWidth={1.5} />
+        <span className="text-[9px] uppercase tracking-[0.18em] text-white/25">PENDENTE-DONO</span>
+      </div>
+    </div>
+  );
+}
+
+/** The client's photo — the raw material handed over at the start. */
+export function ClientPhoto({ ratio, src }: FrameProps) {
+  if (!src) return <PendingFrame ratio={ratio} />;
+
+  return (
+    <div className={`relative ${ratio} w-full overflow-hidden bg-doxa-surface`}>
+      <img
+        key={src}
+        src={src}
+        alt="Foto base enviada pelo cliente"
+        className={MEDIA_CLASS}
+        draggable={false}
+        width={880}
+        height={1100}
+      />
+    </div>
+  );
+}
+
+/**
+ * The finished vertical video, with sound left to the viewer.
+ *
+ * It starts muted because browsers block sound-on autoplay outright, and
+ * `playsInline` stops iOS hijacking it into fullscreen. The toggle flips
+ * `muted` on the element from inside the click, which is the gesture that
+ * authorises audio — going through React state alone would land the change a
+ * frame later, outside the gesture, and the browser would refuse it.
+ */
+function VideoFrame({ ratio, src, poster }: { ratio: string; src: string; poster: string | null }) {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [muted, setMuted] = useState(true);
+
+  const toggleMuted = () => {
+    const video = videoRef.current;
+    if (!video) return;
+    video.muted = !video.muted;
+    setMuted(video.muted);
+  };
+
+  return (
+    <div className={`relative ${ratio} w-full overflow-hidden bg-doxa-raised`}>
+      <video
+        ref={videoRef}
+        src={src}
+        poster={poster ?? undefined}
+        className={MEDIA_CLASS}
+        autoPlay
+        muted={muted}
+        loop
+        playsInline
+        preload="metadata"
+        aria-label="Vídeo vertical produzido para o cliente"
+      />
+      <button
+        type="button"
+        onClick={toggleMuted}
+        /* The card around this is draggable. Without stopping the press here,
+           framer-motion starts a drag on the same pointerdown and the button
+           slides out from under the cursor before the click resolves. */
+        onPointerDown={(event) => event.stopPropagation()}
+        className="absolute bottom-2 right-2 flex h-8 w-8 items-center justify-center rounded-full border border-white/[0.14] bg-black/50 text-white opacity-80 backdrop-blur-sm transition hover:bg-black/70 hover:opacity-100 focus-visible:opacity-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/60"
+        aria-label={muted ? 'Ativar som do vídeo' : 'Silenciar vídeo'}
+      >
+        {muted ? (
+          <VolumeX className="h-4 w-4" strokeWidth={1.75} />
+        ) : (
+          <Volume2 className="h-4 w-4" strokeWidth={1.75} />
+        )}
+      </button>
+    </div>
+  );
+}
+
+/**
+ * The output node's media — the other end of the pipeline.
+ *
+ * The `key` forces a fresh element when the case changes: swapping `src` on a
+ * live `<video>` leaves the old frame on screen until `load()` is called by
+ * hand. Remounting also drops the viewer's sound choice back to muted, which
+ * is the only state a new element is allowed to autoplay in anyway.
+ */
+export function ViralVideo({ ratio, src, poster }: FrameProps & { poster: string | null }) {
+  if (!src) return <PendingFrame ratio={ratio} raised />;
+
+  return <VideoFrame key={src} ratio={ratio} src={src} poster={poster} />;
+}
