@@ -6,8 +6,15 @@ interface MotionButtonProps {
   href?: string;
   /** Acts in place. Given this, the element renders as a real `<button>`. */
   onClick?: () => void;
-  /** `primary` fills with white on hover and flips the label to black. */
-  variant?: 'primary' | 'secondary';
+  /**
+   * `primary` fills with white on hover and flips the label to black.
+   *
+   * `inverse` is the same button on a light surface: the disc and the label are
+   * ink, and the hover floods ink and turns the label back to paper. It exists
+   * because the comparison section's winning card is cream, and a white disc on
+   * cream is an invisible button.
+   */
+  variant?: 'primary' | 'secondary' | 'inverse';
 }
 
 /**
@@ -25,28 +32,34 @@ interface MotionButtonProps {
  */
 export function MotionButton({ label, href, onClick, variant = 'primary' }: MotionButtonProps) {
   const isPrimary = variant === 'primary';
-  const className =
-    'group relative inline-flex h-14 items-center overflow-hidden rounded-full pl-[4.25rem] pr-8 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black';
+  const isInverse = variant === 'inverse';
+  const className = `group relative inline-flex h-14 items-center overflow-hidden rounded-full pl-[4.25rem] pr-8 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 ${
+    isInverse
+      ? 'focus-visible:ring-black focus-visible:ring-offset-[#F4F1E8]'
+      : 'focus-visible:ring-white focus-visible:ring-offset-black'
+  }`;
 
   const body = (
     <>
       <span
         aria-hidden
         className={`absolute left-1 top-1 h-12 w-12 rounded-full transition-[width] duration-500 ease-out group-hover:w-[calc(100%-0.5rem)] motion-reduce:transition-none ${
-          isPrimary ? 'bg-white' : 'bg-white/[0.14]'
+          isInverse ? 'bg-[#0B0B0B]' : isPrimary ? 'bg-white' : 'bg-white/[0.14]'
         }`}
       />
       <span
         aria-hidden
         className={`absolute left-7 top-1/2 -translate-x-1/2 -translate-y-1/2 transition-transform duration-500 group-hover:translate-x-0 motion-reduce:transition-none ${
-          isPrimary ? 'text-black' : 'text-white'
+          isInverse ? 'text-[#F4F1E8]' : isPrimary ? 'text-black' : 'text-white'
         }`}
       >
         <ArrowRight className="h-5 w-5" strokeWidth={2} />
       </span>
       <span
-        className={`relative whitespace-nowrap text-sm font-medium tracking-tight text-white transition-colors duration-500 motion-reduce:transition-none md:text-base ${
-          isPrimary ? 'group-hover:text-black' : ''
+        className={`relative whitespace-nowrap text-sm font-medium tracking-tight transition-colors duration-500 motion-reduce:transition-none md:text-base ${
+          isInverse
+            ? 'text-[#0B0B0B] group-hover:text-[#F4F1E8]'
+            : `text-white ${isPrimary ? 'group-hover:text-black' : ''}`
         }`}
       >
         {label}

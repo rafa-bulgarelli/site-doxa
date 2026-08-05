@@ -1,233 +1,184 @@
-import { useState } from 'react';
-import { motion, useReducedMotion } from 'framer-motion';
-import { RotateCcw } from 'lucide-react';
+import { useRef } from 'react';
+import { motion, useInView } from 'framer-motion';
+import wordmarkUrl from '../../brand/doxa-wordmark-white.png';
 import { MotionButton } from './ui/MotionButton';
+import { Blocos } from './comparacao/Blocos';
+import { Cases } from './comparacao/Cases';
 import {
   APOIO,
   CUSTO,
   CUSTO_NOTA,
+  CUSTO_UNIDADE,
   ENVIO,
   GARANTIA,
-  GESTO,
-  PECAS,
+  RECORRENCIA,
   TITULO,
 } from './comparacao/config';
 
 const EASE = [0.16, 1, 0.3, 1] as const;
-/** A queda tem aceleração: sai devagar e chega rápido, ao contrário de tudo o mais aqui. */
-const EASE_QUEDA = [0.5, 0, 0.75, 0] as const;
+
+/** A cor do papel do card vencedor — a mesma da marca d'água clara do site. */
+const PAPEL = '#F4F1E8';
 
 /**
- * Inclinação de repouso de cada peça, em graus.
+ * A entrada da seção, em degraus.
  *
- * Fixa por índice, e não sorteada: sorteio muda a cada render e a página passa
- * a ter uma aparência diferente a cada visita, o que é o oposto de uma marca.
- * Sete ângulos escolhidos a dedo parecem espalhados e são sempre os mesmos.
+ * O dono pediu que a seção "carregasse" em vez de simplesmente estar lá. A
+ * ordem é a ordem da leitura: título, card da conta, card da Doxa, e só então
+ * as peças caem dentro do primeiro — a queda é o último degrau porque é ela que
+ * chama a atenção, e chamar a atenção antes de haver o que ler é desperdiçar o
+ * gesto.
  */
-const INCLINACAO = [-3.5, 2.2, -1.4, 3.1, -2.6, 1.7, -4.2];
+const SOBE = {
+  oculto: { opacity: 0, y: 26 },
+  visivel: (i: number) => ({
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.75, ease: EASE, delay: 0.08 + i * 0.14 },
+  }),
+};
+
+/** O logo no lugar da palavra, como o dono pediu: "Sem [DOXA]" e "Com [DOXA]". */
+function Selo({ prefixo, escuro = false }: { prefixo: string; escuro?: boolean }) {
+  return (
+    <span className="flex items-baseline gap-2">
+      <span
+        className={`text-[11px] uppercase tracking-[0.18em] ${escuro ? 'text-black/45' : 'text-white/40'}`}
+      >
+        {prefixo}
+      </span>
+      {/* A arte é branca sobre transparente — no card creme ela vira tinta com
+          um `invert`, que é exato para um PNG de um só tom. Card 002 quer isto
+          vetorizado; enquanto for bitmap, é assim que se consegue as duas cores
+          a partir de um arquivo. */}
+      <img
+        src={wordmarkUrl}
+        alt="Doxa"
+        className={`h-[13px] w-auto ${escuro ? 'opacity-90 invert' : 'opacity-70'}`}
+      />
+    </span>
+  );
+}
 
 /**
  * Sem Doxa / Com Doxa — a comparação, e o CTA da página.
  *
- * Substituiu uma linha do tempo de 640vh presa ao scroll. O diagnóstico do dono
- * foi que o site tinha animação demais, e o argumento que sustenta a troca é
- * mais forte do que gosto: esta é a seção onde se decide, e decidir exige poder
- * parar, reler as duas colunas e voltar o olho para cima. Scroll-jacking impede
- * exatamente isso. Aqui nada acontece porque a página rolou — o que se mexe se
- * mexe porque alguém apertou.
+ * Sete objetos contra um objeto: uma comparação que se lê em um segundo sem ler
+ * nada. Nada aqui acontece porque a página rolou — a seção entra quando entra na
+ * tela e depois disso só se mexe o que a mão do visitante mexer.
  *
- * Sete objetos contra um objeto: é uma comparação que se lê em um segundo sem
- * ler nada. E ela já está inteira em pé antes de qualquer clique, porque uma
- * seção de conversão não pode depender de um gesto para fazer sentido.
+ * O peso é assimétrico de propósito. A conta antiga é uma superfície escura com
+ * sete pastilhas coloridas de gente de fora; a Doxa é papel creme, a única coisa
+ * clara da página inteira, com o pedido dentro. Comparação simétrica sugere que
+ * as duas opções são comparáveis, e a tese da página é que uma substitui a
+ * outra.
  */
 export function Comparacao() {
-  const [substituido, setSubstituido] = useState(false);
-  const parado = useReducedMotion() === true;
-
-  /** Quanto tempo cada peça espera para cair. Zero para quem pediu menos movimento. */
-  const atraso = (i: number) => (parado ? 0 : substituido ? i * 0.07 : (PECAS.length - 1 - i) * 0.04);
+  const secaoRef = useRef<HTMLElement>(null);
+  const naTela = useInView(secaoRef, { amount: 0.15, once: true });
 
   return (
-    <section className="relative bg-doxa-bg px-5 py-16 md:px-10 md:py-24">
+    <section ref={secaoRef} className="relative bg-doxa-bg px-5 py-16 md:px-10 md:py-24">
       <div className="mx-auto w-full max-w-screen-2xl">
-        <div className="flex flex-wrap items-end justify-between gap-x-6 gap-y-4">
+        <motion.div
+          custom={0}
+          variants={SOBE}
+          initial="oculto"
+          animate={naTela ? 'visivel' : 'oculto'}
+          className="flex flex-wrap items-end justify-between gap-x-6 gap-y-4"
+        >
           <h2 className="font-serif text-4xl font-normal leading-[1.1] tracking-[-0.02em] text-white md:text-5xl">
             {TITULO[0]}
             <br />
             {TITULO[1]}
           </h2>
           <p className="max-w-md text-sm text-white/60 md:text-base">{APOIO}</p>
-        </div>
+        </motion.div>
 
-        <div className="mt-12 grid items-stretch gap-4 md:mt-16 lg:grid-cols-[1.25fr_1fr]">
+        <div className="mt-12 grid items-stretch gap-4 md:mt-16 lg:grid-cols-[1.15fr_1fr]">
           {/* ── A conta antiga. */}
-          <div className="relative overflow-hidden rounded-3xl border border-white/[0.09] bg-doxa-surface p-6 md:p-8">
+          <motion.div
+            custom={1}
+            variants={SOBE}
+            initial="oculto"
+            animate={naTela ? 'visivel' : 'oculto'}
+            className="relative overflow-hidden rounded-3xl border border-white/[0.09] bg-doxa-surface p-6 md:p-8"
+          >
             <div className="dot-grid pointer-events-none absolute inset-0 opacity-40" />
 
             <div className="relative flex h-full flex-col">
-              <div className="flex items-baseline justify-between gap-4">
-                <span className="text-[11px] uppercase tracking-[0.18em] text-white/40">
-                  Sem Doxa
-                </span>
-                <button
-                  type="button"
-                  onClick={() => setSubstituido(false)}
-                  aria-hidden={!substituido}
-                  tabIndex={substituido ? 0 : -1}
-                  className={`flex items-center gap-1.5 text-[12px] text-white/45 transition-opacity duration-500 hover:text-white focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white/40 ${
-                    substituido ? 'opacity-100' : 'pointer-events-none opacity-0'
-                  }`}
-                >
-                  <RotateCcw className="h-3 w-3" strokeWidth={2} />
-                  de novo
-                </button>
+              <Selo prefixo="Sem" />
+
+              {/* O palco cresce com o card: a coluna da direita é mais alta por
+                  causa dos cases, o grid estica esta aqui para acompanhar, e um
+                  palco de altura fixa deixaria as peças descansando no meio do
+                  nada com um vão embaixo delas. */}
+              <div className="my-8 flex min-h-0 flex-1">
+                <Blocos />
               </div>
 
-              {/*
-                O palco, e o único lugar do card que muda.
-
-                As peças e a conta ocupam o MESMO slot, uma sobre a outra. É o
-                que resolve o buraco que a queda deixava: derrubados os sete
-                chips, o card não vira uma caixa vazia com um preço solto lá
-                embaixo — a conta sobe para o lugar deles, em corpo de display e
-                riscada. Sete contratos saem, um número cancelado entra, e o
-                card diz a mesma coisa nos dois estados sem nunca ficar oco.
-
-                `min-h` em vez de altura fixa: as peças embrulham em três linhas
-                no telefone e em duas no desktop, e o palco tem de caber a maior
-                das duas sem que ninguém tenha de decorar um número.
-              */}
-              <div className="relative my-8 flex min-h-[10.5rem] flex-1 items-center md:min-h-[9rem]">
-                <div className="flex flex-wrap content-center items-center gap-2.5">
-                  {PECAS.map(({ nome }, i) => (
-                    <motion.span
-                      key={nome}
-                      initial={false}
-                      animate={
-                        substituido
-                          ? { y: parado ? 0 : 90, rotate: parado ? 0 : INCLINACAO[i] * 4, opacity: 0 }
-                          : { y: 0, rotate: INCLINACAO[i], opacity: 1 }
-                      }
-                      transition={{
-                        duration: parado ? 0.2 : substituido ? 0.7 : 0.5,
-                        ease: substituido ? EASE_QUEDA : EASE,
-                        delay: atraso(i),
-                      }}
-                      className="rounded-full border border-white/[0.14] bg-white/[0.05] px-4 py-2 text-[14px] text-white/80"
-                    >
-                      {nome}
-                    </motion.span>
-                  ))}
-                </div>
-
-              </div>
-
-              {/* A conta em repouso: some quando ela sobe para o palco, para não
-                  existirem dois preços na mesma coluna. */}
-              <motion.div
-                className="border-t border-white/[0.09] pt-6"
-                initial={false}
-                animate={{ opacity: substituido ? 0 : 1 }}
-                transition={{ duration: 0.4, ease: EASE }}
-              >
-                <span className="block font-serif text-3xl leading-none text-white/70 md:text-4xl">
-                  {CUSTO}
-                </span>
-                <span className="mt-2 block text-[13px] text-white/35">{CUSTO_NOTA}</span>
-              </motion.div>
-
-              {/*
-                A conta cancelada, e ela é medida contra o CARD inteiro, não
-                contra o palco.
-
-                Foi a primeira tentativa e estava errada: centrada no palco, ela
-                sobe para onde as peças estavam e deixa embaixo o buraco do
-                bloco que acabou de se apagar — invisível, mas ainda ocupando
-                lugar. Sobre o card inteiro, ela cai no meio óptico do que se vê,
-                e não sobra canto oco. `pointer-events-none` para não roubar o
-                clique do "de novo", que fica logo acima dela.
-              */}
-              <motion.div
-                aria-hidden={!substituido}
-                className="pointer-events-none absolute inset-0 flex items-center"
-                initial={false}
-                animate={{ opacity: substituido ? 1 : 0, y: substituido ? 0 : 14 }}
-                transition={{ duration: 0.6, ease: EASE, delay: substituido && !parado ? 0.45 : 0 }}
-              >
-                <div>
-                  <span className="relative inline-block font-serif text-4xl leading-none text-white/55 md:text-5xl">
+              <div className="border-t border-white/[0.09] pt-6">
+                <div className="flex flex-wrap items-end justify-between gap-x-6 gap-y-3">
+                  <span className="font-serif text-4xl leading-none text-white md:text-5xl">
                     {CUSTO}
-                    <motion.span
-                      aria-hidden
-                      className="absolute left-0 top-1/2 h-[2px] w-full origin-left bg-white/55"
-                      initial={false}
-                      animate={{ scaleX: substituido ? 1 : 0 }}
-                      transition={{
-                        duration: 0.5,
-                        ease: EASE,
-                        delay: substituido && !parado ? 0.7 : 0,
-                      }}
-                    />
+                    <span className="ml-1 align-baseline text-2xl text-white/45 md:text-3xl">
+                      {CUSTO_UNIDADE}
+                    </span>
                   </span>
-                  <span className="mt-3 block text-[13px] text-white/30">{CUSTO_NOTA}</span>
+                  {/* A recorrência dita de novo, e em caixa alta: é a diferença
+                      entre a conta parecer cara e parecer uma sangria. */}
+                  <span className="rounded-full border border-white/[0.14] bg-white/[0.04] px-3 py-1.5 text-[11px] uppercase tracking-[0.14em] text-white/60">
+                    {RECORRENCIA}
+                  </span>
                 </div>
-              </motion.div>
+                <span className="mt-3 block text-[13px] text-white/35">{CUSTO_NOTA}</span>
+              </div>
             </div>
-          </div>
+          </motion.div>
 
-          {/* ── A peça única. Não muda de tamanho, muda de luz: layout que se
-                mexe empurra o botão de lugar, e o botão é o que a seção existe
-                para entregar. */}
+          {/* ── A Doxa. A única superfície clara do site: se a seção inteira é o
+                pedido, o pedido tem de ser a coisa mais acesa da tela. */}
           <motion.div
-            initial={false}
-            animate={{
-              borderColor: substituido ? 'rgba(255,255,255,0.32)' : 'rgba(255,255,255,0.12)',
-            }}
-            transition={{ duration: 0.7, ease: EASE }}
-            className="relative overflow-hidden rounded-3xl border bg-doxa-raised p-6 md:p-8"
+            custom={2}
+            variants={SOBE}
+            initial="oculto"
+            animate={naTela ? 'visivel' : 'oculto'}
+            style={{ background: PAPEL }}
+            className="relative overflow-hidden rounded-3xl p-6 shadow-[0_50px_120px_-50px_rgba(244,241,232,0.45)] md:p-8"
           >
-            <div className="dot-grid pointer-events-none absolute inset-0 opacity-60" />
-            <motion.div
-              className="pointer-events-none absolute inset-0 bg-[radial-gradient(90%_70%_at_50%_0%,rgba(255,255,255,0.14),transparent_70%)]"
-              initial={false}
-              animate={{ opacity: substituido ? 1 : 0.25 }}
-              transition={{ duration: 0.8, ease: EASE, delay: substituido && !parado ? 0.35 : 0 }}
-            />
+            <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(90%_70%_at_50%_0%,rgba(255,255,255,0.9),transparent_65%)]" />
 
             <div className="relative flex h-full flex-col">
-              <span className="text-[11px] uppercase tracking-[0.18em] text-white/70">Com Doxa</span>
+              <Selo prefixo="Com" escuro />
 
-              <div className="my-8 flex flex-1 items-center">
-                <p className="font-serif text-4xl leading-[1.05] tracking-[-0.02em] text-white md:text-5xl">
-                  {ENVIO[0]}
-                  <br />
-                  {ENVIO[1]}
-                </p>
+              <p className="mt-7 font-serif text-[2.6rem] leading-[0.98] tracking-[-0.03em] text-[#0B0B0B] md:text-6xl">
+                {ENVIO[0]}
+                <br />
+                {ENVIO[1]}
+              </p>
+
+              {/* O que sai disso, para a pergunta não ficar no ar. São os
+                  mesmos arquivos da parede de prova — nada aqui é caso novo. */}
+              <div className="mt-7">
+                <Cases />
               </div>
 
-              <div className="border-t border-white/[0.14] pt-6">
-                <span className="block text-[13px] leading-relaxed text-white/70">{GARANTIA}</span>
-                {/* PENDENTE-DONO: sem destino. O `CONTATO_URL` da seção antiga
-                    também está vazio — enquanto o dono não define (Calendly,
-                    WhatsApp ou formulário) o botão não navega, o que é melhor do
-                    que um `href="#"`, que parece pronto e não é. */}
+              <div className="mt-auto border-t border-black/10 pt-6">
+                <p className="font-serif text-2xl leading-[1.1] tracking-[-0.02em] text-[#0B0B0B] md:text-[1.75rem]">
+                  {GARANTIA[0]}
+                  <br />
+                  <span className="text-black/55">{GARANTIA[1]}</span>
+                </p>
+
+                {/* PENDENTE-DONO: sem destino. Enquanto o dono não define
+                    (Calendly, WhatsApp ou formulário) o botão não navega, o que
+                    é melhor do que um `href="#"`, que parece pronto e não é. */}
                 <div className="mt-6">
-                  <MotionButton label="Quero viralizar" />
+                  <MotionButton label="Quero viralizar" variant="inverse" />
                 </div>
               </div>
             </div>
           </motion.div>
-        </div>
-
-        <div className="mt-6 flex justify-center">
-          <button
-            type="button"
-            onClick={() => setSubstituido(true)}
-            disabled={substituido}
-            className="rounded-full border border-white/[0.14] bg-white/[0.04] px-5 py-2.5 text-[13px] text-white/70 transition-colors hover:border-white/30 hover:text-white focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white/40 disabled:pointer-events-none disabled:opacity-30"
-          >
-            {GESTO}
-          </button>
         </div>
       </div>
     </section>
