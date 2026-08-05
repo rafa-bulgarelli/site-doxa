@@ -13,6 +13,7 @@ import {
   GARANTIA,
   PERGUNTA,
   RECORRENCIA,
+  SEM_GARANTIA,
 } from './comparacao/config';
 
 /** A cor do papel — a única superfície clara da página. */
@@ -118,12 +119,28 @@ export function Comparacao() {
             </div>
           </div>
 
-          {/* A ladainha ocupa a metade de cima e o resto da tela fica vazio de
-              propósito: o painel claro entra girado por baixo e come o terço
-              inferior. Conteúdo ali seria conteúdo que ninguém lê. */}
-          <div className="mt-10 border-t border-white/[0.09] pt-10">
+          {/* A ladainha desceu de corpo e a frase abaixo dela subiu, e essa
+              troca é a hierarquia inteira. Antes, pergunta, conta e lista tinham
+              o mesmo peso e o olho não sabia onde pousar — foi o que o dono leu
+              como "sem destaque". A lista é PROVA, não manchete: em corpo médio
+              e apagada, ela sustenta o argumento sem disputar com ele.
+
+              O resto da tela fica vazio de propósito: o painel claro entra
+              girado por baixo e come o terço inferior. */}
+          <div className="mt-8 border-t border-white/[0.09] pt-8">
             <Ladainha />
           </div>
+
+          {/* O soco. É a frase mais importante desta coluna e por isso é a
+              maior coisa abaixo do título: vinte e cinco contratações e um custo
+              recorrente ainda deixam a pessoa sem o que ela queria. É também a
+              dobradiça — a garantia do painel claro responde exatamente a esta
+              falta, e sem ela seria só mais uma vantagem numa lista. */}
+          <p className="mt-9 font-serif text-3xl leading-[1.08] tracking-[-0.02em] text-white md:mt-10 md:text-[3.2rem]">
+            <span className="text-white/40">{SEM_GARANTIA[0]}</span>
+            <br />
+            {SEM_GARANTIA[1]}
+          </p>
         </div>
       </div>
 
@@ -157,11 +174,12 @@ export function Comparacao() {
                 disputa com o convite, e o painel fica com duas vozes. Numa caixa,
                 com o escudo do lado, ela vira o que é — a letra que tira o risco
                 de quem vai clicar. */}
-            <div className="flex max-w-sm items-start gap-3 rounded-2xl border border-black/10 bg-black/[0.035] p-4">
-              <ShieldCheck className="mt-0.5 h-5 w-5 shrink-0 text-[#0B0B0B]" strokeWidth={1.75} />
-              <p className="text-[15px] leading-snug text-[#0B0B0B]">
-                <span className="font-semibold">{GARANTIA[0]}</span>{' '}
-                <span className="text-black/55">{GARANTIA[1]}</span>
+            <div className="flex max-w-xl items-start gap-4 rounded-2xl border border-black/10 bg-black/[0.04] p-5 md:p-6">
+              <ShieldCheck className="mt-1 h-7 w-7 shrink-0 text-[#0B0B0B]" strokeWidth={1.5} />
+              <p className="font-serif text-2xl leading-[1.12] tracking-[-0.02em] text-[#0B0B0B] md:text-[2rem]">
+                {GARANTIA[0]}
+                <br />
+                <span className="text-black/50">{GARANTIA[1]}</span>
               </p>
             </div>
 

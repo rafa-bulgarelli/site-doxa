@@ -35,39 +35,52 @@ export interface Item {
  * uma afirmação sobre o custo de outra empresa, e uma que não se sustenta
  * contamina as outras vinte e quatro.
  *
- * As cores são a mesma família da seção: mesma faixa de luminosidade, croma
- * baixo. Cor no talo, vinte e cinco vezes, não teria hierarquia nenhuma.
+ * As cores são vivas, e agora podem ser: só UMA lâmina existe na tela por vez,
+ * então não há arco-íris a evitar. A paleta apagada foi feita para quando as
+ * vinte e cinco apareciam juntas — a regra da harmonia é sobre o que se vê ao
+ * mesmo tempo, não sobre o que existe no arquivo.
  */
 export const ITENS: readonly Item[] = [
-  { nome: 'Um video maker.', icone: 'Video', cor: '#C25A3C' },
-  { nome: 'Um roteirista.', icone: 'PenLine', cor: '#D8A13F' },
-  { nome: 'Um editor de vídeo.', icone: 'Scissors', cor: '#5A8C63' },
-  { nome: 'Um social media.', icone: 'AtSign', cor: '#43708F' },
-  { nome: 'Um diretor de criação.', icone: 'Megaphone', cor: '#8E5F86' },
-  { nome: 'Uma câmera.', icone: 'Camera', cor: '#B04B45' },
-  { nome: 'Lentes.', icone: 'Aperture', cor: '#C7A98B' },
-  { nome: 'Um tripé.', icone: 'Wrench', cor: '#5A8C63' },
-  { nome: 'Um microfone de lapela.', icone: 'Mic', cor: '#43708F' },
-  { nome: 'Um estabilizador.', icone: 'Move', cor: '#C25A3C' },
-  { nome: 'Cartões de memória.', icone: 'HardDrive', cor: '#8E5F86' },
-  { nome: 'Um estúdio.', icone: 'Building2', cor: '#D8A13F' },
-  { nome: 'Iluminação.', icone: 'Lightbulb', cor: '#C7A98B' },
-  { nome: 'Um cenário.', icone: 'Frame', cor: '#B04B45' },
-  { nome: 'Horas de gravação.', icone: 'Timer', cor: '#43708F' },
-  { nome: 'Uma ilha de edição.', icone: 'MonitorPlay', cor: '#5A8C63' },
-  { nome: 'Licença de edição.', icone: 'KeyRound', cor: '#D8A13F' },
-  { nome: 'Banco de trilhas.', icone: 'Music', cor: '#8E5F86' },
-  { nome: 'Banco de imagens.', icone: 'ImageIcon', cor: '#C25A3C' },
-  { nome: 'Legendagem.', icone: 'Subtitles', cor: '#C7A98B' },
-  { nome: 'Uma agência.', icone: 'Users', cor: '#B04B45' },
-  { nome: 'Um gestor de tráfego.', icone: 'Target', cor: '#43708F' },
-  { nome: 'Verba de tráfego pago.', icone: 'Wallet', cor: '#5A8C63' },
-  { nome: 'Um calendário editorial.', icone: 'CalendarDays', cor: '#D8A13F' },
-  { nome: 'Relatórios.', icone: 'BarChart3', cor: '#8E5F86' },
+  { nome: 'Um video maker.', icone: 'Video', cor: '#E2542C' },
+  { nome: 'Um roteirista.', icone: 'PenLine', cor: '#F0B429' },
+  { nome: 'Um editor de vídeo.', icone: 'Scissors', cor: '#3FA06A' },
+  { nome: 'Um social media.', icone: 'AtSign', cor: '#2E86C1' },
+  { nome: 'Um diretor de criação.', icone: 'Megaphone', cor: '#B8449C' },
+  { nome: 'Uma câmera.', icone: 'Camera', cor: '#E0453F' },
+  { nome: 'Lentes.', icone: 'Aperture', cor: '#D98E4A' },
+  { nome: 'Um tripé.', icone: 'Wrench', cor: '#3FA06A' },
+  { nome: 'Um microfone de lapela.', icone: 'Mic', cor: '#2E86C1' },
+  { nome: 'Um estabilizador.', icone: 'Move', cor: '#E2542C' },
+  { nome: 'Cartões de memória.', icone: 'HardDrive', cor: '#B8449C' },
+  { nome: 'Um estúdio.', icone: 'Building2', cor: '#F0B429' },
+  { nome: 'Iluminação.', icone: 'Lightbulb', cor: '#D98E4A' },
+  { nome: 'Um cenário.', icone: 'Frame', cor: '#E0453F' },
+  { nome: 'Horas de gravação.', icone: 'Timer', cor: '#2E86C1' },
+  { nome: 'Uma ilha de edição.', icone: 'MonitorPlay', cor: '#3FA06A' },
+  { nome: 'Licença de edição.', icone: 'KeyRound', cor: '#F0B429' },
+  { nome: 'Banco de trilhas.', icone: 'Music', cor: '#B8449C' },
+  { nome: 'Banco de imagens.', icone: 'ImageIcon', cor: '#E2542C' },
+  { nome: 'Legendagem.', icone: 'Subtitles', cor: '#D98E4A' },
+  { nome: 'Uma agência.', icone: 'Users', cor: '#E0453F' },
+  { nome: 'Um gestor de tráfego.', icone: 'Target', cor: '#2E86C1' },
+  { nome: 'Verba de tráfego pago.', icone: 'Wallet', cor: '#3FA06A' },
+  { nome: 'Um calendário editorial.', icone: 'CalendarDays', cor: '#F0B429' },
+  { nome: 'Relatórios.', icone: 'BarChart3', cor: '#B8449C' },
 ];
 
 /**
- * A última linha, e a única que não se compra.
+ * O soco do painel escuro, e a dobradiça para o painel claro.
+ *
+ * PENDENTE-DONO: texto meu, a partir do argumento do dono. É a frase mais
+ * importante desta coluna e por isso é a maior: vinte e cinco contratações e um
+ * custo recorrente ainda deixam a pessoa sem o que ela queria. Sem esta linha, a
+ * garantia do outro lado é uma vantagem; com ela, é a resposta a uma falta que
+ * acabou de ser nomeada.
+ */
+export const SEM_GARANTIA = ['E ainda assim,', 'nenhuma garantia de viralizar.'];
+
+/**
+ * A última linha da ladainha, e a única que não se compra.
  *
  * Fica fora da lista e em creme: as outras são fornecedores e contas, esta é a
  * pessoa que está lendo. É o item que nenhum dos vinte e cinco resolve.

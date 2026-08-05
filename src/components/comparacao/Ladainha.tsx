@@ -46,7 +46,21 @@ const EASE = [0.16, 1, 0.3, 1] as const;
 const CASCATA = 0.035;
 
 /** Tamanho da lâmina que segue o ponteiro, em pixels. */
-const LAMINA = { w: 230, h: 280 };
+const LAMINA = { w: 236, h: 290 };
+
+/**
+ * Quanto a lâmina se afasta do ponteiro, em pixels.
+ *
+ * Ela voltou a ficar POR CIMA do texto, opaca, a pedido do dono — atrás, os
+ * dizeres da ladainha cruzavam por cima dela e o cartão parecia translúcido. Por
+ * cima e centrada no cursor, porém, ela tapa a palavra que acabou de acender.
+ * Deslocada de lado, as duas coisas convivem: o cartão sólido e a palavra
+ * legível ao lado dele.
+ *
+ * O lado é escolhido pela metade da tela em que a mão está, senão a lâmina sai
+ * pela borda direita justamente nos itens do fim da lista.
+ */
+const AFASTA = 28;
 
 /**
  * Como a lâmina persegue o ponteiro.
@@ -114,8 +128,14 @@ function Icone({ nome }: { nome: string }) {
 function Lamina({ item }: { item: Item }) {
   return (
     <div
-      className="flex h-full w-full items-center justify-center overflow-hidden rounded-2xl"
-      style={{ background: item.cor }}
+      className="flex h-full w-full items-center justify-center overflow-hidden rounded-2xl border border-white/25"
+      style={{
+        background: item.cor,
+        // O brilho é da cor da própria lâmina: uma sombra preta debaixo de um
+        // cartão colorido só o afunda no fundo preto. Assim ele acende o que
+        // está em volta, que é o que o dono pediu.
+        boxShadow: `0 30px 90px -25px ${item.cor}, 0 0 60px -10px ${item.cor}66`,
+      }}
     >
       {item.imagem == null ? (
         <span className="text-[#0B0B0B]/80">
@@ -148,6 +168,7 @@ export function Ladainha() {
   const podeSeguir = isDesktop && !parado;
 
   const [apontado, setApontado] = useState<Item | null>(null);
+  const [aEsquerda, setAEsquerda] = useState(false);
   const x = useSpring(0, PERSEGUE);
   const y = useSpring(0, PERSEGUE);
 
@@ -158,6 +179,7 @@ export function Ladainha() {
     // ela ande pela tela inteira.
     x.set(evento.clientX);
     y.set(evento.clientY);
+    setAEsquerda(evento.clientX > window.innerWidth * 0.6);
   };
 
   const apontar = (item: Item) => (evento: React.MouseEvent) => {
@@ -168,6 +190,7 @@ export function Ladainha() {
       x.jump(evento.clientX);
       y.jump(evento.clientY);
     }
+    setAEsquerda(evento.clientX > window.innerWidth * 0.6);
     setApontado(item);
   };
 
@@ -180,7 +203,7 @@ export function Ladainha() {
         ref={ref}
         onMouseMove={seguir}
         onMouseLeave={() => setApontado(null)}
-        className="relative z-10 font-serif text-[22px] leading-[1.45] tracking-[-0.01em] md:text-[2.6rem] md:leading-[1.35]"
+        className="relative z-10 max-w-6xl font-serif text-[19px] leading-[1.5] tracking-[-0.01em] md:text-[1.7rem] md:leading-[1.5]"
       >
         {todos.map((item) => {
           const atraso = indice * CASCATA + (item === TEMPO ? 0.2 : 0);
@@ -212,18 +235,12 @@ export function Ladainha() {
       </p>
 
       {/* Fora do parágrafo e `fixed`: presa ao fluxo, a lâmina seria recortada
-          pelo painel e não poderia acompanhar a mão até a borda da tela.
-
-          ATRÁS do texto, e isto é o que faz o efeito funcionar. Por cima, ela
-          tapa justamente a palavra que acabou de acender — o ponteiro está em
-          cima da palavra, e a lâmina nasce no ponteiro. Por trás, a palavra fica
-          legível sobre ela e as duas coisas acontecem juntas: a linha acende e o
-          objeto aparece atrás dela. */}
+          pelo painel e não poderia acompanhar a mão até a borda da tela. */}
       <AnimatePresence>
         {apontado != null && podeSeguir && (
           <motion.div
             aria-hidden
-            className="pointer-events-none fixed left-0 top-0 z-0"
+            className="pointer-events-none fixed left-0 top-0 z-40"
             style={{ x, y, width: LAMINA.w, height: LAMINA.h }}
             initial={{ opacity: 0, scale: 0.72 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -231,11 +248,15 @@ export function Ladainha() {
             transition={{ duration: 0.4, ease: EASE }}
           >
             {/* O deslocamento vive aqui dentro para não brigar com o `x`/`y` da
-                mola: a lâmina fica centrada na mão sem que a centralização
-                precise ser recalculada a cada frame. */}
+                mola: a lâmina fica ao lado da mão sem que a posição precise ser
+                recalculada a cada frame. */}
             <div
-              className="h-full w-full shadow-[0_40px_90px_-30px_rgba(0,0,0,0.9)]"
-              style={{ transform: `translate(-50%, -50%)` }}
+              className="h-full w-full transition-transform duration-300"
+              style={{
+                transform: aEsquerda
+                  ? `translate(calc(-100% - ${AFASTA}px), -50%)`
+                  : `translate(${AFASTA}px, -50%)`,
+              }}
             >
               <Lamina item={apontado} />
             </div>
