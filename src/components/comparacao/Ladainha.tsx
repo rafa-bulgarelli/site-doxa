@@ -194,8 +194,6 @@ export function Ladainha() {
     setApontado(item);
   };
 
-  const todos = [...ITENS, TEMPO];
-  let indice = 0;
 
   return (
     <>
@@ -226,9 +224,8 @@ export function Ladainha() {
         // continuam serifados, e a conta vira letra de fatura.
         className="relative z-10 text-justify text-[17px] leading-[1.75] text-white/45 [word-spacing:0.55em] md:text-[1.4rem] md:[word-spacing:0.7em] lg:text-[1.55rem] lg:leading-[1.75] lg:[word-spacing:0.75em]"
       >
-        {todos.map((item, i) => {
-          const atraso = indice * CASCATA + (item === TEMPO ? 0.2 : 0);
-          indice += 1;
+        {ITENS.map((item, i) => {
+          const atraso = i * CASCATA;
           const aceso = apontado === item;
           return (
             // O espaço é um nó de texto de verdade, e não uma margem: a
@@ -244,28 +241,37 @@ export function Ladainha() {
               className={`inline-block whitespace-nowrap [word-spacing:normal] transition-colors duration-300 ${
                 podeSeguir ? 'cursor-default' : ''
               } ${
-                item === TEMPO
-                  ? 'font-serif text-[1.25em] text-[#F4F1E8]'
-                  : aceso
-                    ? 'text-white'
-                    : apontado == null
-                      ? 'text-white/45'
-                      : 'text-white/20'
+                aceso ? 'text-white' : apontado == null ? 'text-white/45' : 'text-white/20'
               }`}
             >
-              {/* O tempo não é numerado: ele não está na fatura. Os vinte e
-                  cinco se contam; o vigésimo sexto é o que não tem preço. */}
-              {item !== TEMPO && (
-                <span className="mr-[0.45em] text-[0.6em] tabular-nums text-white/25">
-                  {String(i + 1).padStart(2, '0')}
-                </span>
-              )}
+              <span className="mr-[0.45em] text-[0.6em] tabular-nums text-white/25">
+                {String(i + 1).padStart(2, '0')}
+              </span>
               {item.nome}
             </motion.span>{' '}
             </Fragment>
           );
         })}
       </p>
+
+      {/* O tempo, fora do parágrafo.
+          
+          Ele saiu de dentro da conta para poder ter margem: dentro, era um item
+          em linha, e margem vertical em elemento em linha não empurra nada — a
+          caixa da linha ignora. Fora, é um bloco, e ganha o mesmo respiro que
+          separa os outros blocos do painel. Continua apontável e continua sem
+          número: as vinte e cinco se contam, esta é a que não tem preço. */}
+      <motion.p
+        initial={{ opacity: 0 }}
+        animate={naTela ? { opacity: 1 } : undefined}
+        transition={{ duration: 0.6, ease: EASE, delay: ITENS.length * CASCATA + 0.2 }}
+        onMouseEnter={apontar(TEMPO)}
+        className={`mt-7 font-serif text-[1.7rem] leading-none text-[#F4F1E8] md:mt-10 md:text-[2.4rem] ${
+          podeSeguir ? 'cursor-default' : ''
+        }`}
+      >
+        <span className="inline-block">{TEMPO.nome}</span>
+      </motion.p>
 
       {/* Fora do parágrafo e `fixed`: presa ao fluxo, a lâmina seria recortada
           pelo painel e não poderia acompanhar a mão até a borda da tela. */}

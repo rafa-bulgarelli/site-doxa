@@ -30,6 +30,17 @@ import {
 const PAPEL = '#F4F1E8';
 
 /**
+ * O respiro entre os blocos do painel escuro, e ele é UM só.
+ *
+ * O dono pediu que o vão embaixo do cabeçalho fosse exatamente igual ao do
+ * rótulo da fatura. Em vez de acertar dois números na mão e vê-los divergirem
+ * na próxima mexida, o valor mora aqui e é usado nos três lugares: entre o
+ * cabeçalho e o fio, entre o fio e o rótulo, e entre o rótulo e a conta. Um
+ * ritmo, não três coincidências.
+ */
+const RESPIRO = 'mt-7 md:mt-10';
+
+/**
  * O ângulo com que o painel claro entra, em graus.
  *
  * Trinta, pivotando no canto inferior esquerdo: é a carta sendo virada sobre a
@@ -174,14 +185,16 @@ export function Comparacao() {
           {/* O cabeçalho da fatura. Devolve a contagem sem precisar de um bloco
               só para ela, e é o que faz o bloco abaixo ler como documento em vez
               de como um texto grande. */}
-          <div className="mt-6 flex items-baseline justify-between gap-6 border-t border-white/[0.09] pt-5 md:mt-7">
+          <div
+            className={`${RESPIRO} flex items-baseline justify-between gap-6 border-t border-white/[0.09] pt-7 md:pt-10`}
+          >
             <span className="text-[11px] uppercase tracking-[0.18em] text-white/35">{FATURA}</span>
             <span className="text-[11px] tabular-nums tracking-[0.14em] text-white/35">
               {TOTAL_ITENS} itens
             </span>
           </div>
 
-          <div className="mt-5">
+          <div className={RESPIRO}>
             <Ladainha />
           </div>
 
@@ -192,7 +205,7 @@ export function Comparacao() {
               sistema, e o escudo cortado como ícone de erro. A frase não precisa
               de moldura — ela é a única coisa em branco cheio depois do título,
               e isso já a torna a segunda voz mais alta da tela. */}
-          <p className="mt-8 font-serif text-3xl leading-[1.1] tracking-[-0.02em] text-white md:mt-10 md:text-[3.6rem]">
+          <p className={`${RESPIRO} font-serif text-3xl leading-[1.1] tracking-[-0.02em] text-white md:text-[3.6rem]`}>
             <span className="text-white/40">{SEM_GARANTIA[0]}</span>{' '}
             {SEM_GARANTIA[1]}
           </p>
