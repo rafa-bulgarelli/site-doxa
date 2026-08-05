@@ -213,9 +213,9 @@ export function Comparacao() {
           claro gira em torno do canto inferior esquerdo, e trinta graus baixam a
           aresta de cima dele em cerca de doze centésimos da altura da tela — um
           deslocamento que se soma a este vão e adianta a primeira aparição.
-          43vh menos esse desconto dão os quinhentos pixels que o dono pediu numa
+          37,5vh menos esse desconto dão os 450 pixels que o dono pediu numa
           tela de 940, e ficam proporcionais em qualquer outra altura. */}
-      <div className="h-[43vh]" aria-hidden />
+      <div className="h-[37.5vh]" aria-hidden />
 
       {/* ── Painel claro: o convite. Sobe girado, assenta, e para. */}
       <motion.div
