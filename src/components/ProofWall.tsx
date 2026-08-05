@@ -82,11 +82,16 @@ const VH_PER_CARD = 22;
  *
  * This is the pause. The track is parked on the closing card — centred, upright,
  * its button in the middle of the screen — while the section is still pinned, so
- * the visitor keeps scrolling and keeps looking at the ask. A card and a half is
- * about a tenth of the section's travel, which is the smallest hold that reads
- * as a stop rather than as a stutter.
+ * the visitor keeps scrolling and keeps looking at the ask.
+ *
+ * Barely off a card and a half, and that is deliberate. The owner asked for a
+ * third off the stretch where the card has the screen to itself, and almost all
+ * of that third came out of `CLEAR_TO` instead of out of here — the part of the
+ * stretch that was spent watching the card travel, rather than the part spent
+ * looking at it. The hold now *is* the whole of that stretch, and it is trimmed
+ * only by the few pixels needed to land the total on two thirds.
  */
-const CTA_HOLD = 1.5;
+const CTA_HOLD = 1.45;
 
 /**
  * The camera's distance from the stage, and the one number the whole
@@ -149,17 +154,25 @@ const END_WIDTH = 4.5;
  * magnified and rotated, sharing the screen with the ask. Two objects, and the
  * one that had already been read was the larger of them.
  *
- * So the reels leave. Everything the section put on screen to argue — the
- * fifteen cards and the copy over them — fades out over these two cards of
- * scroll, and what is left standing for the last card of the run and the whole
- * of the hold is the ask, alone. The proof clears for the thing it was proving.
+ * So the reels leave — the reels alone. The section's title stays: it is the
+ * frame around the card, not a rival to it, and what had to clear off was
+ * sixteen photographs competing with the one card that asks for something.
+ *
+ * `CLEAR_TO` is zero — the end of the run exactly — and that is the whole of it.
+ * The wall used to finish clearing a card early, which bought a stretch of
+ * scroll where the ask was alone on the screen *and still travelling to the
+ * middle of it*. Alone and off-centre is the worst frame this section can hold,
+ * and it held it on every scroll that stopped in that stretch; a screenshot
+ * taken there is what this number was changed for. The last reel now goes as the
+ * card lands, so every frame in which the ask has the screen to itself is a
+ * frame in which it is dead centre and parked.
  *
  * They stop taking the pointer the moment they start leaving rather than when
  * they finish: a reel at half opacity is on its way out, and it should not be
  * able to claim the attention off a card that is not.
  */
 const CLEAR_FROM = 3;
-const CLEAR_TO = 1;
+const CLEAR_TO = 0;
 
 /**
  * How sharply the row parts around the attention, in cards.
@@ -889,13 +902,11 @@ export function ProofWall() {
               would leave the figures floating level with the first line of a
               title they are meant to sit under.
 
-              It leaves with the reels. The section's claim and the section's
-              proof are the same argument, and the screen the ask ends on holds
-              the ask and nothing else. */}
-          <motion.div
-            className="pointer-events-none absolute inset-x-0 top-0 z-20 flex flex-wrap items-end justify-between gap-x-10 gap-y-8 px-5 py-16 md:px-10 md:py-24"
-            style={{ opacity: wallFade }}
-          >
+              It stays when the reels leave. What had to clear off the screen
+              was the wall — sixteen photographs competing with the one card
+              that asks for something. The section's own title is the frame
+              around that card, not a rival to it. */}
+          <div className="pointer-events-none absolute inset-x-0 top-0 z-20 flex flex-wrap items-end justify-between gap-x-10 gap-y-8 px-5 py-16 md:px-10 md:py-24">
             <h2 className="font-serif text-4xl font-normal leading-[1.05] tracking-[-0.02em] text-white md:text-6xl">
               A prova já está
               <br />
@@ -918,7 +929,7 @@ export function ProofWall() {
                 </div>
               ))}
             </div>
-          </motion.div>
+          </div>
         </div>
       </div>
     </section>
