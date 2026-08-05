@@ -3,60 +3,73 @@
  * negócio mora aqui — o resto dos arquivos só sabe desenhar.
  */
 
-export type Forma =
-  | 'circulo'
-  | 'quadrado'
-  | 'pentagono'
-  | 'estrela'
-  | 'hexagono'
-  | 'losango'
-  | 'asterisco';
-
-export interface Peca {
-  /** O papel que hoje se contrata. `\n` quebra a linha dentro da forma. */
+export interface Grupo {
   nome: string;
-  forma: Forma;
-  cor: string;
-  /** Lado do corpo, em pixels. É o que enche o palco — ver `Blocos.tsx`. */
-  lado: number;
-  /** A peça que a seção quer que doa mais. Uma só, senão nenhuma. */
-  destaque?: boolean;
+  itens: readonly string[];
 }
 
 /**
- * As sete contratações que a Doxa substitui, mais o tempo do dono da empresa.
+ * O inventário do jeito antigo: tudo que uma empresa precisa juntar para
+ * publicar vídeo com constância.
  *
- * A QUANTIDADE das contratações é parte do argumento — "sete contratações" está
- * no título. O tempo é a oitava peça e não conta para esse sete: ele não se
- * contrata, e é por isso que ele é o destaque. Era uma linha de rodapé
- * ("mais o seu tempo") e virou objeto a pedido do dono, o que é a leitura certa:
- * numa pilha de coisas que se pagam, a que não se compra tem de ser a maior.
+ * PENDENTE-DONO: a lista é minha, montada a partir do que ele ditou (video
+ * maker, roteirista, editor, estúdio, gravação, agência, tráfego) e estendida
+ * para o resto do que a conta realmente inclui. Vale a revisão dele item a item
+ * — cada linha aqui é uma afirmação sobre o custo de outra empresa, e uma linha
+ * que não se sustenta contamina as outras vinte e quatro.
  *
- * Cada peça tem forma e cor próprias, ditadas pelo dono. É exceção à regra
- * monocromática do `tailwind.config.js`, e defensável: cada uma é um FORNECEDOR,
- * gente de fora, e a página já abre essa exceção para o azul e o vermelho do
- * Instagram na parede de prova. Cor aqui diz "isto não é a Doxa" sem escrever.
- *
- * A paleta é uma FAMÍLIA, não sete cores soltas: todas na mesma faixa de
- * luminosidade e com o croma puxado para baixo, o que faz sete matizes diferentes
- * lerem como um conjunto em vez de um arco-íris. A primeira versão usava as
- * cores no talo e o dono chamou de desarmônica — com razão: cor saturada em
- * quantidade não tem hierarquia, e sem hierarquia não há harmonia.
- *
- * Os lados também vieram para uma escala curta (114 a 146). Sete tamanhos
- * arbitrários é ruído; a variação que sobrou existe só para compensar o que cada
- * recorte come — uma estrela de 146 tem a mesma mancha que um círculo de 118.
+ * A QUANTIDADE é o argumento. A seção não pede que ninguém leia os vinte e
+ * cinco: pede que a pessoa veja que são vinte e cinco. Por isso o número é
+ * contado do array e nunca escrito à mão — acrescentar uma linha muda o título
+ * junto.
  */
-export const PECAS: readonly Peca[] = [
-  { nome: 'Video\nmaker', forma: 'circulo', cor: '#C25A3C', lado: 118 },
-  { nome: 'Roteirista', forma: 'quadrado', cor: '#D8A13F', lado: 114 },
-  { nome: 'Editor de\nvídeo', forma: 'pentagono', cor: '#5A8C63', lado: 126 },
-  { nome: 'Horas de\nestúdio', forma: 'estrela', cor: '#43708F', lado: 146 },
-  { nome: 'Gravar\nconteúdo', forma: 'hexagono', cor: '#8E5F86', lado: 124 },
-  { nome: 'Agência de\nmarketing', forma: 'asterisco', cor: '#B04B45', lado: 140 },
-  { nome: 'Tráfego\npago', forma: 'losango', cor: '#C7A98B', lado: 134 },
-  { nome: 'O seu\ntempo', forma: 'circulo', cor: '#F4F1E8', lado: 150, destaque: true },
+export const INVENTARIO: readonly Grupo[] = [
+  {
+    nome: 'Equipe',
+    itens: ['Video maker', 'Roteirista', 'Editor de vídeo', 'Social media', 'Diretor de criação'],
+  },
+  {
+    nome: 'Equipamento',
+    itens: [
+      'Câmera',
+      'Lentes',
+      'Tripé',
+      'Microfone de lapela',
+      'Estabilizador',
+      'Cartões de memória',
+    ],
+  },
+  {
+    nome: 'Estrutura',
+    itens: ['Estúdio', 'Iluminação', 'Cenário', 'Horas de gravação', 'Ilha de edição'],
+  },
+  {
+    nome: 'Software',
+    itens: ['Licença de edição', 'Banco de trilhas', 'Banco de imagens', 'Legendagem'],
+  },
+  {
+    nome: 'Marketing',
+    itens: [
+      'Agência',
+      'Gestor de tráfego',
+      'Verba de tráfego pago',
+      'Calendário editorial',
+      'Relatórios',
+    ],
+  },
 ];
+
+/** Quantos itens o inventário tem, contados e nunca escritos à mão. */
+export const TOTAL_ITENS = INVENTARIO.reduce((soma, grupo) => soma + grupo.itens.length, 0);
+
+/**
+ * A vigésima sexta linha, e a única que não se compra.
+ *
+ * Fica fora do `INVENTARIO` de propósito: as outras são fornecedores e contas, e
+ * esta é a pessoa que está lendo. Ela fecha a lista porque é o item que nenhum
+ * dos outros vinte e cinco resolve.
+ */
+export const TEMPO = 'E o seu tempo.';
 
 /**
  * O custo do jeito antigo, resolvido pelo dono nesta rodada.

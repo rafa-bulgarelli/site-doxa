@@ -3,7 +3,7 @@ import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion
 import { ShieldCheck } from 'lucide-react';
 import wordmarkUrl from '../../brand/doxa-wordmark-white.png';
 import { MotionButton } from './ui/MotionButton';
-import { Blocos } from './comparacao/Blocos';
+import { Inventario } from './comparacao/Inventario';
 import {
   CONVITE,
   CUSTO,
@@ -13,6 +13,7 @@ import {
   GARANTIA,
   PERGUNTA,
   RECORRENCIA,
+  TOTAL_ITENS,
 } from './comparacao/config';
 
 /** A cor do papel — a única superfície clara da página. */
@@ -92,17 +93,27 @@ export function Comparacao() {
         <div className="relative mx-auto flex h-full w-full max-w-screen-2xl flex-col">
           <Selo prefixo="Sem" />
 
-          <h2 className="mt-6 font-serif text-4xl font-normal leading-[1.05] tracking-[-0.02em] text-white md:text-6xl">
-            {PERGUNTA[0]}
-            <br />
-            {PERGUNTA[1]}
-          </h2>
+          {/* A pergunta à esquerda, a quantidade à direita. O número é o
+              argumento inteiro da coluna: ninguém vai ler os vinte e cinco
+              itens, mas todo mundo lê o vinte e cinco. */}
+          <div className="mt-6 flex flex-wrap items-end justify-between gap-x-10 gap-y-6">
+            <h2 className="font-serif text-4xl font-normal leading-[1.05] tracking-[-0.02em] text-white md:text-6xl">
+              {PERGUNTA[0]}
+              <br />
+              {PERGUNTA[1]}
+            </h2>
+            <p className="flex items-baseline gap-3 text-white/45">
+              <span className="font-serif text-5xl leading-none tabular-nums text-white md:text-6xl">
+                {TOTAL_ITENS}
+              </span>
+              <span className="max-w-[15ch] text-[13px] leading-snug md:text-sm">
+                itens para publicar um vídeo por dia
+              </span>
+            </p>
+          </div>
 
-          {/* O palco toma a altura que sobra: numa tela inteira as peças têm
-              espaço para cair de verdade, que é o que a caixa apertada da versão
-              anterior não dava. */}
-          <div className="my-6 flex min-h-0 flex-1 md:my-8">
-            <Blocos />
+          <div className="my-8 flex min-h-0 flex-1 items-center border-t border-white/[0.09] pt-8 md:my-10">
+            <Inventario />
           </div>
 
           <div className="flex flex-wrap items-end justify-between gap-x-6 gap-y-3 border-t border-white/[0.09] pt-6">
