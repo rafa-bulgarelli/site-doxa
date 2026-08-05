@@ -1,43 +1,33 @@
 import { useRef } from 'react';
-import { motion, useInView } from 'framer-motion';
+import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion';
 import { ShieldCheck } from 'lucide-react';
 import wordmarkUrl from '../../brand/doxa-wordmark-white.png';
 import { MotionButton } from './ui/MotionButton';
 import { Blocos } from './comparacao/Blocos';
 import {
-  APOIO,
+  CONVITE,
   CUSTO,
+  CUSTO_DO_CLIQUE,
   CUSTO_UNIDADE,
   ENVIO,
   GARANTIA,
+  PERGUNTA,
   RECORRENCIA,
-  TITULO,
 } from './comparacao/config';
 
-const EASE = [0.16, 1, 0.3, 1] as const;
-
-/** A cor do papel do card vencedor — a mesma da marca d'água clara do site. */
+/** A cor do papel — a única superfície clara da página. */
 const PAPEL = '#F4F1E8';
 
 /**
- * A entrada da seção, em degraus.
+ * O ângulo com que o painel claro entra, em graus.
  *
- * O dono pediu que a seção "carregasse" em vez de simplesmente estar lá. A
- * ordem é a ordem da leitura: título, card da conta, card da Doxa, e só então
- * as peças caem dentro do primeiro — a queda é o último degrau porque é ela que
- * chama a atenção, e chamar a atenção antes de haver o que ler é desperdiçar o
- * gesto.
+ * Trinta, pivotando no canto inferior esquerdo: é a carta sendo virada sobre a
+ * mesa. Menos que isso não se lê como gesto; mais que isso deixa o texto do
+ * painel ilegível por tempo demais no meio do caminho.
  */
-const SOBE = {
-  oculto: { opacity: 0, y: 26 },
-  visivel: (i: number) => ({
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.75, ease: EASE, delay: 0.08 + i * 0.14 },
-  }),
-};
+const GIRO = 30;
 
-/** O logo no lugar da palavra, como o dono pediu: "Sem [DOXA]" e "Com [DOXA]". */
+/** O logo no lugar da palavra: "Sem [DOXA]" e "Com [DOXA]". */
 function Selo({ prefixo, escuro = false }: { prefixo: string; escuro?: boolean }) {
   return (
     <span className="flex items-baseline gap-2">
@@ -46,7 +36,7 @@ function Selo({ prefixo, escuro = false }: { prefixo: string; escuro?: boolean }
       >
         {prefixo}
       </span>
-      {/* A arte é branca sobre transparente — no card creme ela vira tinta com
+      {/* A arte é branca sobre transparente — no painel creme ela vira tinta com
           um `invert`, que é exato para um PNG de um só tom. Card 002 quer isto
           vetorizado; enquanto for bitmap, é assim que se consegue as duas cores
           a partir de um arquivo. */}
@@ -60,138 +50,118 @@ function Selo({ prefixo, escuro = false }: { prefixo: string; escuro?: boolean }
 }
 
 /**
- * Sem Doxa / Com Doxa — a comparação, e o CTA da página.
+ * Sem Doxa / Com Doxa — dois painéis, e o CTA da página.
  *
- * Sete objetos contra um objeto: uma comparação que se lê em um segundo sem ler
- * nada. Nada aqui acontece porque a página rolou — a seção entra quando entra na
- * tela e depois disso só se mexe o que a mão do visitante mexer.
+ * O painel preto pergunta e fica parado enquanto o creme sobe girado e cobre
+ * ele. A virada É a resposta: a pergunta é feita no escuro e respondida quando a
+ * página fica clara. Preto e creme já são o vocabulário do site — o creme é a
+ * única superfície clara da página inteira, e é onde mora o pedido.
  *
- * O peso é assimétrico de propósito. A conta antiga é uma superfície escura com
- * sete pastilhas coloridas de gente de fora; a Doxa é papel creme, a única coisa
- * clara da página inteira, com o pedido dentro. Comparação simétrica sugere que
- * as duas opções são comparáveis, e a tese da página é que uma substitui a
- * outra.
+ * O scroll só é usado no giro, e o giro dura uma tela. Assim que o painel claro
+ * assenta, ele para e o scroll volta a ser do visitante: esta é a seção onde se
+ * decide, e decidir exige poder parar, reler e voltar o olho. Prender o scroll no
+ * instante da decisão é o único lugar da página onde isso custa dinheiro — foi
+ * por isso que a versão de cinco painéis presos ao scroll ficou de fora.
+ *
+ * Feito com `useScroll` e `useTransform`, que já estão no bundle. A referência
+ * que o dono trouxe usava GSAP com ScrollTrigger: quarenta quilobytes
+ * comprimidos e um segundo runtime de animação no projeto para sempre, para um
+ * efeito que a ProofWall já produz com as mesmas duas linhas.
  */
 export function Comparacao() {
-  const secaoRef = useRef<HTMLElement>(null);
-  const naTela = useInView(secaoRef, { amount: 0.15, once: true });
+  const claroRef = useRef<HTMLDivElement>(null);
+  const parado = useReducedMotion() === true;
+
+  // Os mesmos limites da referência: começa a girar quando o topo do painel
+  // encosta no fim da tela e termina quando esse topo chega a um quarto dela.
+  const { scrollYProgress } = useScroll({
+    target: claroRef,
+    offset: ['start end', 'start 25%'],
+  });
+  const giro = useTransform(scrollYProgress, [0, 1], [GIRO, 0]);
 
   return (
-    <section ref={secaoRef} className="relative bg-doxa-bg px-5 py-16 md:px-10 md:py-24">
-      <div className="mx-auto w-full max-w-screen-2xl">
-        <motion.div
-          custom={0}
-          variants={SOBE}
-          initial="oculto"
-          animate={naTela ? 'visivel' : 'oculto'}
-          className="flex flex-wrap items-end justify-between gap-x-6 gap-y-4"
-        >
-          <h2 className="font-serif text-4xl font-normal leading-[1.1] tracking-[-0.02em] text-white md:text-5xl">
-            {TITULO[0]}
+    // `overflow-x-clip` e não `overflow-hidden`: `hidden` cria um contexto de
+    // rolagem e o `sticky` do painel escuro para de grudar. `clip` corta o canto
+    // que o painel girado joga para fora sem criar contexto nenhum.
+    <section className="relative overflow-x-clip bg-doxa-bg">
+      {/* ── Painel escuro: a pergunta e a conta. */}
+      <div className="sticky top-0 flex h-screen flex-col px-5 py-10 md:px-10 md:py-14">
+        <div className="dot-grid pointer-events-none absolute inset-0 opacity-40" />
+
+        <div className="relative mx-auto flex h-full w-full max-w-screen-2xl flex-col">
+          <Selo prefixo="Sem" />
+
+          <h2 className="mt-6 font-serif text-4xl font-normal leading-[1.05] tracking-[-0.02em] text-white md:text-6xl">
+            {PERGUNTA[0]}
             <br />
-            {TITULO[1]}
+            {PERGUNTA[1]}
           </h2>
-          <p className="max-w-md text-sm text-white/60 md:text-base">{APOIO}</p>
-        </motion.div>
 
-        {/* `items-start`, e não `items-stretch`: o card da Doxa ficou curto de
-            propósito e esticá-lo até a altura do outro devolveria o vão vazio
-            que a gente acabou de tirar dele. Alturas diferentes são o argumento
-            — de um lado uma pilha, do outro uma frase. */}
-        <div className="mt-12 grid items-start gap-4 md:mt-16 lg:grid-cols-[1.15fr_1fr]">
-          {/* ── A conta antiga. */}
-          <motion.div
-            custom={1}
-            variants={SOBE}
-            initial="oculto"
-            animate={naTela ? 'visivel' : 'oculto'}
-            className="relative overflow-hidden rounded-3xl border border-white/[0.09] bg-doxa-surface p-6 md:p-8"
-          >
-            <div className="dot-grid pointer-events-none absolute inset-0 opacity-40" />
+          {/* O palco toma a altura que sobra: numa tela inteira as peças têm
+              espaço para cair de verdade, que é o que a caixa apertada da versão
+              anterior não dava. */}
+          <div className="my-6 flex min-h-0 flex-1 md:my-8">
+            <Blocos />
+          </div>
 
-            <div className="relative flex h-full flex-col">
-              <Selo prefixo="Sem" />
-
-              {/* O palco cresce com o card: a coluna da direita é mais alta por
-                  causa dos cases, o grid estica esta aqui para acompanhar, e um
-                  palco de altura fixa deixaria as peças descansando no meio do
-                  nada com um vão embaixo delas. */}
-              <div className="my-8 flex min-h-0 flex-1">
-                <Blocos />
-              </div>
-
-              <div className="border-t border-white/[0.09] pt-6">
-                <div className="flex flex-wrap items-end justify-between gap-x-6 gap-y-3">
-                  <span className="font-serif text-4xl leading-none text-white md:text-5xl">
-                    {CUSTO}
-                    <span className="ml-1 align-baseline text-2xl text-white/45 md:text-3xl">
-                      {CUSTO_UNIDADE}
-                    </span>
-                  </span>
-                  {/* A recorrência dita de novo, e em caixa alta: é a diferença
-                      entre a conta parecer cara e parecer uma sangria. */}
-                  <span className="rounded-full border border-white/[0.14] bg-white/[0.04] px-3 py-1.5 text-[11px] uppercase tracking-[0.14em] text-white/60">
-                    {RECORRENCIA}
-                  </span>
-                </div>
-              </div>
-            </div>
-          </motion.div>
-
-          {/* ── A Doxa. A única superfície clara do site: se a seção inteira é o
-                pedido, o pedido tem de ser a coisa mais acesa da tela. */}
-          <motion.div
-            custom={2}
-            variants={SOBE}
-            initial="oculto"
-            animate={naTela ? 'visivel' : 'oculto'}
-            style={{ background: PAPEL }}
-            className="relative overflow-hidden rounded-3xl p-6 shadow-[0_50px_120px_-50px_rgba(244,241,232,0.45)] md:p-8"
-          >
-            <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(90%_70%_at_50%_0%,rgba(255,255,255,0.9),transparent_65%)]" />
-
-            {/* Um ritmo só, do rótulo ao botão. A versão anterior tinha a
-                chamada em cima, um vão morto no meio e o pedido espremido no
-                rodapé — três pesos sem relação entre si, que é o que o dono leu
-                como desarmônico. Um `gap` único faz os quatro blocos
-                respirarem igual, e a leitura desce sem tropeço até o botão. */}
-            <div className="relative flex h-full flex-col gap-6 md:gap-7">
-              <Selo prefixo="Com" escuro />
-
-              <p className="font-serif text-[2.6rem] leading-[0.95] tracking-[-0.03em] text-[#0B0B0B] md:text-[3.4rem]">
-                {ENVIO[0]}
-                <br />
-                {ENVIO[1]}
-              </p>
-
-              {/* A garantia como selo, e não como segunda manchete: em corpo de
-                  título ela disputava com a chamada e o card ficava com duas
-                  vozes. Numa caixa, com o escudo do lado, ela vira o que é —
-                  a letra que tira o risco de quem vai clicar. */}
-              <div className="flex items-start gap-3 rounded-2xl border border-black/10 bg-black/[0.035] p-4">
-                <ShieldCheck className="mt-0.5 h-5 w-5 shrink-0 text-[#0B0B0B]" strokeWidth={1.75} />
-                <p className="text-[15px] leading-snug text-[#0B0B0B]">
-                  <span className="font-semibold">{GARANTIA[0]}</span>{' '}
-                  <span className="text-black/55">{GARANTIA[1]}</span>
-                </p>
-              </div>
-
-              {/* PENDENTE-DONO: sem destino. Enquanto o dono não define
-                  (Calendly, WhatsApp ou formulário) o botão não navega, o que é
-                  melhor do que um `href="#"`, que parece pronto e não é.
-
-                  Ocupa a largura inteira do card: numa seção que É o pedido, o
-                  botão não pode ser do tamanho do rótulo dele. */}
-              <div className="mt-auto">
-                <MotionButton label="Quero viralizar" variant="inverse" fullWidth />
-                <p className="mt-3 text-center text-[12px] text-black/40">
-                  Leva menos de um minuto.
-                </p>
-              </div>
-            </div>
-          </motion.div>
+          <div className="flex flex-wrap items-end justify-between gap-x-6 gap-y-3 border-t border-white/[0.09] pt-6">
+            <span className="font-serif text-4xl leading-none text-white md:text-6xl">
+              {CUSTO}
+              <span className="ml-1 align-baseline text-2xl text-white/45 md:text-3xl">
+                {CUSTO_UNIDADE}
+              </span>
+            </span>
+            {/* A recorrência dita de novo, e em caixa alta: é a diferença entre a
+                conta parecer cara e parecer uma sangria. */}
+            <span className="rounded-full border border-white/[0.14] bg-white/[0.04] px-3 py-1.5 text-[11px] uppercase tracking-[0.14em] text-white/60">
+              {RECORRENCIA}
+            </span>
+          </div>
         </div>
       </div>
+
+      {/* ── Painel claro: o convite. Sobe girado, assenta, e para. */}
+      <motion.div
+        ref={claroRef}
+        style={{ rotate: parado ? 0 : giro, background: PAPEL }}
+        className="relative z-10 min-h-screen origin-bottom-left px-5 py-10 md:px-10 md:py-14"
+      >
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(70%_50%_at_50%_0%,rgba(255,255,255,0.85),transparent_70%)]" />
+
+        <div className="relative mx-auto flex min-h-[calc(100vh-5rem)] w-full max-w-screen-2xl flex-col md:min-h-[calc(100vh-7rem)]">
+          <Selo prefixo="Com" escuro />
+
+          <div className="my-auto max-w-4xl py-10">
+            <h2 className="font-serif text-5xl leading-[0.95] tracking-[-0.03em] text-[#0B0B0B] md:text-[5.5rem]">
+              {CONVITE}
+            </h2>
+            <p className="mt-6 max-w-xl text-lg leading-snug text-black/60 md:text-2xl">{ENVIO}</p>
+          </div>
+
+          <div className="flex flex-wrap items-end justify-between gap-x-10 gap-y-8 border-t border-black/10 pt-8">
+            {/* A garantia como selo, e não como manchete: em corpo de título ela
+                disputa com o convite, e o painel fica com duas vozes. Numa caixa,
+                com o escudo do lado, ela vira o que é — a letra que tira o risco
+                de quem vai clicar. */}
+            <div className="flex max-w-sm items-start gap-3 rounded-2xl border border-black/10 bg-black/[0.035] p-4">
+              <ShieldCheck className="mt-0.5 h-5 w-5 shrink-0 text-[#0B0B0B]" strokeWidth={1.75} />
+              <p className="text-[15px] leading-snug text-[#0B0B0B]">
+                <span className="font-semibold">{GARANTIA[0]}</span>{' '}
+                <span className="text-black/55">{GARANTIA[1]}</span>
+              </p>
+            </div>
+
+            {/* PENDENTE-DONO: sem destino. Enquanto o dono não define (Calendly,
+                WhatsApp ou formulário) o botão não navega, o que é melhor do que
+                um `href="#"`, que parece pronto e não é. */}
+            <div className="w-full max-w-sm">
+              <MotionButton label="Quero viralizar" variant="inverse" fullWidth />
+              <p className="mt-3 text-center text-[12px] text-black/40">{CUSTO_DO_CLIQUE}</p>
+            </div>
+          </div>
+        </div>
+      </motion.div>
     </section>
   );
 }

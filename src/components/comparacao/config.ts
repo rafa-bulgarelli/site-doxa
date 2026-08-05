@@ -59,28 +59,38 @@ export const PECAS: readonly Peca[] = [
 ];
 
 /**
- * PENDENTE-DONO — este número não está resolvido, e ele sustenta a seção
- * inteira.
+ * O custo do jeito antigo, resolvido pelo dono nesta rodada.
  *
- * Aqui está "R$ 5.000 a 8.000", que foi o que o dono falou por último. O
- * `src/components/semcom/config.ts` diz `R$ 10.500`. Os dois não podem estar
- * certos ao mesmo tempo, e num comparativo o número é a coisa toda: se o
- * visitante achar que está inflado, ele perde a seção e leva a página junto.
+ * Era a divergência mais cara do repositório — `semcom/config.ts` dizia
+ * R$ 10.500 e esta seção dizia R$ 5.000 a 8.000. Os dois foram para a faixa
+ * abaixo no mesmo commit. Se este número mudar de novo, os dois arquivos mudam
+ * juntos: num comparativo o número é a coisa toda, e a página não pode dizer
+ * dois valores para o mesmo custo.
  */
-export const CUSTO = 'R$ 5.000 a 8.000';
+export const CUSTO = 'R$ 8.000 a 10.500';
 export const CUSTO_UNIDADE = '/mês';
 
 /**
  * A recorrência, dita duas vezes de propósito — no sufixo do número e aqui.
  *
- * O dono pediu destaque para ela, e o motivo é comercial: um custo mensal lido
- * como se fosse único é a diferença entre a conta parecer cara e parecer
- * enorme. "Todo mês" é o que transforma um preço em uma sangria.
+ * Um custo mensal lido como se fosse único é a diferença entre a conta parecer
+ * cara e parecer enorme. "Todo mês" é o que transforma um preço em uma sangria.
  */
 export const RECORRENCIA = 'Todo mês. E de novo no mês seguinte.';
 
+/**
+ * As duas falas dos dois painéis.
+ *
+ * PENDENTE-DONO: reescrita minha da opção C do dono. "Quanto custa não ter
+ * Doxa?" fazia a marca aparecer pelo negativo; assim a pergunta é sobre ELE. E
+ * nenhuma das duas frases fala do produto: uma fala do custo dele, a outra do
+ * desejo dele. A virada de preto para creme é que responde.
+ */
+export const PERGUNTA = ['Quanto custa', 'continuar assim?'];
+export const CONVITE = 'Pronto para viralizar?';
+
 /** O que se envia. É a única coisa que o cliente faz. */
-export const ENVIO = ['Uma foto', 'e um áudio.'];
+export const ENVIO = 'Uma foto e um áudio. O resto é com a Doxa.';
 
 /**
  * A garantia, copiada palavra por palavra do hero.
@@ -91,6 +101,5 @@ export const ENVIO = ['Uma foto', 'e um áudio.'];
  */
 export const GARANTIA = ['Um milhão de views.', 'Ou seu dinheiro de volta.'];
 
-/** PENDENTE-DONO: título meu, na estrutura paralela do resto do site. */
-export const TITULO = ['Sete contratações.', 'Ou uma foto e um áudio.'];
-export const APOIO = 'A Doxa entra no lugar da equipe inteira de conteúdo.';
+/** O que se ganha ao clicar, para o botão não ser um salto no escuro. */
+export const CUSTO_DO_CLIQUE = 'Leva menos de um minuto.';

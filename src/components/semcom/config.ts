@@ -20,7 +20,7 @@ export const STEPS = [
 ] as const;
 
 /** Custo mensal do jeito antigo — produção, agência e tráfego somados. */
-export const CUSTO_SEM = 'R$ 10.500';
+export const CUSTO_SEM = 'R$ 8.000 a 10.500';
 
 /** Tempo até o primeiro vídeo pelo jeito antigo. */
 export const PRAZO_SEM = '18 dias';

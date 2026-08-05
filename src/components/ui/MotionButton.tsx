@@ -49,7 +49,9 @@ export function MotionButton({
   const isPrimary = variant === 'primary';
   const isInverse = variant === 'inverse';
   const className = `group relative inline-flex h-14 items-center overflow-hidden rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 ${
-    fullWidth ? 'w-full justify-center px-8' : 'pl-[4.25rem] pr-8'
+    fullWidth
+      ? `w-full justify-center px-8 ring-1 ring-inset ${isInverse ? 'ring-black/15' : 'ring-white/15'}`
+      : 'pl-[4.25rem] pr-8'
   } ${
     isInverse
       ? 'focus-visible:ring-black focus-visible:ring-offset-[#F4F1E8]'
