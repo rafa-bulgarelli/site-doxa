@@ -209,12 +209,13 @@ export function Comparacao() {
           escuro já se lê de uma vez, e o que sobrava de rolagem parada antes da
           virada era espera, não leitura.
 
-          Quarenta e seis, e não quarenta e oito, porque o número que importa não
-          é este. O painel claro gira em torno do canto inferior esquerdo, e um
-          giro de trinta graus baixa a aresta de cima dele em pouco mais de cem
-          pixels — um deslocamento constante, que não encolhe junto com o vão.
-          Cortar o vão em vinte por cento cortava só dezessete do que se vê. */}
-      <div className="h-[46vh]" aria-hidden />
+          O valor é calibrado pelo que se VÊ, não pelo que ele mede. O painel
+          claro gira em torno do canto inferior esquerdo, e trinta graus baixam a
+          aresta de cima dele em cerca de doze centésimos da altura da tela — um
+          deslocamento que se soma a este vão e adianta a primeira aparição.
+          43vh menos esse desconto dão os quinhentos pixels que o dono pediu numa
+          tela de 940, e ficam proporcionais em qualquer outra altura. */}
+      <div className="h-[43vh]" aria-hidden />
 
       {/* ── Painel claro: o convite. Sobe girado, assenta, e para. */}
       <motion.div
