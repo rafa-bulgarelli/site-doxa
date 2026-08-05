@@ -77,7 +77,17 @@ export const REELS: readonly Reel[] = [
 const WALL_TARGET = 15;
 
 /**
- * The cards the wall actually renders.
+ * Half as many on a phone, on the owner's instruction.
+ *
+ * The number is not a performance budget — it is how long the section lasts. A
+ * card costs the same slice of scroll on both layouts, so fifteen of them on a
+ * screen that shows one at a time is three times the thumb travel it is on a
+ * screen that shows four. Seven is the same passage at the pace it reads at.
+ */
+const WALL_TARGET_MOBILE = 7;
+
+/**
+ * The cards the wall actually renders, for a layout that wants `target` of them.
  *
  * PENDENTE-DONO: repeats the real reels until the track is dense enough to fly
  * through, on the owner's instruction, standing in for the twelve files this
@@ -85,11 +95,13 @@ const WALL_TARGET = 15;
  *
  * The repetition lives here and never touches `REELS`, and that separation is
  * the point. `REELS` is the claim — everything the page states a number about
- * counts it, so the page never says "fifteen" about three. This list is only
+ * counts it, so the page never says "fifteen" about three. These lists are only
  * how many rectangles are drawn. When the real files land in `REELS`, the
  * repetition stops on its own with nothing to undo.
  */
-export const WALL_REELS: readonly Reel[] = Array.from(
-  { length: Math.max(WALL_TARGET, REELS.length) },
-  (_, index) => REELS[index % REELS.length],
-);
+function padWall(target: number): readonly Reel[] {
+  return Array.from({ length: Math.max(target, REELS.length) }, (_, index) => REELS[index % REELS.length]);
+}
+
+export const WALL_REELS = padWall(WALL_TARGET);
+export const WALL_REELS_MOBILE = padWall(WALL_TARGET_MOBILE);
