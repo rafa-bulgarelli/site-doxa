@@ -45,6 +45,22 @@ const ENTRADA = 0.15;
 const INTERVALO = 0.12;
 
 /**
+ * A ordem de queda, do corpo mais pesado para o mais leve.
+ *
+ * É o que faz o monte parecer arrumado sem ninguém ter arrumado nada. Soltas na
+ * ordem da lista, as peças grandes chegam por último e ficam empoleiradas em
+ * cima das pequenas, com buracos embaixo — foi o que o dono viu e chamou de
+ * desarmônico. Grandes primeiro é como qualquer monte se forma no mundo: o que
+ * é pesado vai para o fundo e o resto se acomoda em volta.
+ *
+ * O lugar de largada alterna do meio para fora, para o monte crescer a partir
+ * do centro em vez de encostar numa parede e subir por ela.
+ */
+const QUEDA = PECAS.map((peca, i) => ({ i, lado: peca.lado }))
+  .sort((a, b) => b.lado - a.lado)
+  .map(({ i }, ordem) => ({ i, ordem, faixa: ordem % 2 === 0 ? 0.5 - ordem * 0.07 : 0.5 + ordem * 0.07 }));
+
+/**
  * O recorte de cada forma, e quanto da caixa da física ela ocupa.
  *
  * A colisão é caixa contra caixa — exata para o quadrado, aproximada para o
@@ -87,6 +103,8 @@ interface Corpo {
   h: number;
   /** Metade da diferença entre o lado desenhado e a caixa, para centrar. */
   folgaDesenho: number;
+  /** Posição na fila de queda — ver `QUEDA`. */
+  ordem: number;
 }
 
 /**
@@ -129,16 +147,16 @@ export function Blocos() {
         const folgaDesenho = (lado - w) / 2;
         const borda = FOLGA + folgaDesenho;
         const vao = Math.max(0, caixa.current.w - w - borda * 2);
+        const queda = QUEDA.find((q) => q.i === i);
         return {
-          // Espalhadas na largura: peças caindo do mesmo x viram uma torre, e
-          // torre não é pilha.
-          x: borda + vao * ((i + 0.5) / PECAS.length),
+          x: borda + vao * Math.min(0.98, Math.max(0.02, queda?.faixa ?? 0.5)),
           y: -w - 24,
           vx: 0,
           vy: 0,
           w,
           h: w,
           folgaDesenho,
+          ordem: queda?.ordem ?? i,
         };
       });
       relogio.current = 0;
@@ -170,7 +188,7 @@ export function Blocos() {
       // Uma de cada vez: oito peças soltas no mesmo frame caem como um bloco só
       // e assentam numa torre. Escalonadas, elas se acomodam umas sobre as
       // outras à medida que chegam, que é como um monte se forma de verdade.
-      if (relogio.current < ENTRADA + i * INTERVALO) {
+      if (relogio.current < ENTRADA + c.ordem * INTERVALO) {
         if (no != null) no.style.opacity = '0';
         continue;
       }

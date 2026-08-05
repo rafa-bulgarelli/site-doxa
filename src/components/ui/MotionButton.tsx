@@ -15,6 +15,15 @@ interface MotionButtonProps {
    * cream is an invisible button.
    */
   variant?: 'primary' | 'secondary' | 'inverse';
+  /**
+   * Stretches the pill to its container instead of to its label.
+   *
+   * For the button that IS the section — a call to action the width of its own
+   * caption reads as a footnote, not as the thing the page was built to get
+   * clicked. The disc still grows from the left, so the hover fills exactly the
+   * shape the visitor was already looking at.
+   */
+  fullWidth?: boolean;
 }
 
 /**
@@ -30,10 +39,18 @@ interface MotionButtonProps {
  * Only white at varying alpha, per the brand's monochrome rule: the disc is the
  * light source, the label inverts against it.
  */
-export function MotionButton({ label, href, onClick, variant = 'primary' }: MotionButtonProps) {
+export function MotionButton({
+  label,
+  href,
+  onClick,
+  variant = 'primary',
+  fullWidth = false,
+}: MotionButtonProps) {
   const isPrimary = variant === 'primary';
   const isInverse = variant === 'inverse';
-  const className = `group relative inline-flex h-14 items-center overflow-hidden rounded-full pl-[4.25rem] pr-8 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 ${
+  const className = `group relative inline-flex h-14 items-center overflow-hidden rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 ${
+    fullWidth ? 'w-full justify-center px-8' : 'pl-[4.25rem] pr-8'
+  } ${
     isInverse
       ? 'focus-visible:ring-black focus-visible:ring-offset-[#F4F1E8]'
       : 'focus-visible:ring-white focus-visible:ring-offset-black'

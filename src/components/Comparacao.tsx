@@ -1,5 +1,6 @@
 import { useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
+import { ShieldCheck } from 'lucide-react';
 import wordmarkUrl from '../../brand/doxa-wordmark-white.png';
 import { MotionButton } from './ui/MotionButton';
 import { Blocos } from './comparacao/Blocos';
@@ -149,28 +150,43 @@ export function Comparacao() {
           >
             <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(90%_70%_at_50%_0%,rgba(255,255,255,0.9),transparent_65%)]" />
 
-            <div className="relative flex h-full flex-col">
+            {/* Um ritmo só, do rótulo ao botão. A versão anterior tinha a
+                chamada em cima, um vão morto no meio e o pedido espremido no
+                rodapé — três pesos sem relação entre si, que é o que o dono leu
+                como desarmônico. Um `gap` único faz os quatro blocos
+                respirarem igual, e a leitura desce sem tropeço até o botão. */}
+            <div className="relative flex h-full flex-col gap-6 md:gap-7">
               <Selo prefixo="Com" escuro />
 
-              <p className="mt-7 font-serif text-[2.6rem] leading-[0.98] tracking-[-0.03em] text-[#0B0B0B] md:text-6xl">
+              <p className="font-serif text-[2.6rem] leading-[0.95] tracking-[-0.03em] text-[#0B0B0B] md:text-[3.4rem]">
                 {ENVIO[0]}
                 <br />
                 {ENVIO[1]}
               </p>
 
-              <div className="mt-auto border-t border-black/10 pt-6">
-                <p className="font-serif text-2xl leading-[1.1] tracking-[-0.02em] text-[#0B0B0B] md:text-[1.75rem]">
-                  {GARANTIA[0]}
-                  <br />
+              {/* A garantia como selo, e não como segunda manchete: em corpo de
+                  título ela disputava com a chamada e o card ficava com duas
+                  vozes. Numa caixa, com o escudo do lado, ela vira o que é —
+                  a letra que tira o risco de quem vai clicar. */}
+              <div className="flex items-start gap-3 rounded-2xl border border-black/10 bg-black/[0.035] p-4">
+                <ShieldCheck className="mt-0.5 h-5 w-5 shrink-0 text-[#0B0B0B]" strokeWidth={1.75} />
+                <p className="text-[15px] leading-snug text-[#0B0B0B]">
+                  <span className="font-semibold">{GARANTIA[0]}</span>{' '}
                   <span className="text-black/55">{GARANTIA[1]}</span>
                 </p>
+              </div>
 
-                {/* PENDENTE-DONO: sem destino. Enquanto o dono não define
-                    (Calendly, WhatsApp ou formulário) o botão não navega, o que
-                    é melhor do que um `href="#"`, que parece pronto e não é. */}
-                <div className="mt-6">
-                  <MotionButton label="Quero viralizar" variant="inverse" />
-                </div>
+              {/* PENDENTE-DONO: sem destino. Enquanto o dono não define
+                  (Calendly, WhatsApp ou formulário) o botão não navega, o que é
+                  melhor do que um `href="#"`, que parece pronto e não é.
+
+                  Ocupa a largura inteira do card: numa seção que É o pedido, o
+                  botão não pode ser do tamanho do rótulo dele. */}
+              <div className="mt-auto">
+                <MotionButton label="Quero viralizar" variant="inverse" fullWidth />
+                <p className="mt-3 text-center text-[12px] text-black/40">
+                  Leva menos de um minuto.
+                </p>
               </div>
             </div>
           </motion.div>

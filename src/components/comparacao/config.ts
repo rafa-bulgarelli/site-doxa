@@ -36,16 +36,26 @@ export interface Peca {
  * monocromática do `tailwind.config.js`, e defensável: cada uma é um FORNECEDOR,
  * gente de fora, e a página já abre essa exceção para o azul e o vermelho do
  * Instagram na parede de prova. Cor aqui diz "isto não é a Doxa" sem escrever.
+ *
+ * A paleta é uma FAMÍLIA, não sete cores soltas: todas na mesma faixa de
+ * luminosidade e com o croma puxado para baixo, o que faz sete matizes diferentes
+ * lerem como um conjunto em vez de um arco-íris. A primeira versão usava as
+ * cores no talo e o dono chamou de desarmônica — com razão: cor saturada em
+ * quantidade não tem hierarquia, e sem hierarquia não há harmonia.
+ *
+ * Os lados também vieram para uma escala curta (114 a 146). Sete tamanhos
+ * arbitrários é ruído; a variação que sobrou existe só para compensar o que cada
+ * recorte come — uma estrela de 146 tem a mesma mancha que um círculo de 118.
  */
 export const PECAS: readonly Peca[] = [
-  { nome: 'Video\nmaker', forma: 'circulo', cor: '#E2542C', lado: 118 },
-  { nome: 'Roteirista', forma: 'quadrado', cor: '#EFC04A', lado: 106 },
-  { nome: 'Editor de\nvídeo', forma: 'pentagono', cor: '#4E9E6A', lado: 126 },
-  { nome: 'Horas de\nestúdio', forma: 'estrela', cor: '#3C7FA8', lado: 150 },
-  { nome: 'Gravar\nconteúdo', forma: 'hexagono', cor: '#EDE9DC', lado: 122 },
-  { nome: 'Agência de\nmarketing', forma: 'asterisco', cor: '#A9569F', lado: 142 },
-  { nome: 'Tráfego\npago', forma: 'losango', cor: '#CF4747', lado: 128 },
-  { nome: 'O seu\ntempo', forma: 'circulo', cor: '#F4F1E8', lado: 156, destaque: true },
+  { nome: 'Video\nmaker', forma: 'circulo', cor: '#C25A3C', lado: 118 },
+  { nome: 'Roteirista', forma: 'quadrado', cor: '#D8A13F', lado: 114 },
+  { nome: 'Editor de\nvídeo', forma: 'pentagono', cor: '#5A8C63', lado: 126 },
+  { nome: 'Horas de\nestúdio', forma: 'estrela', cor: '#43708F', lado: 146 },
+  { nome: 'Gravar\nconteúdo', forma: 'hexagono', cor: '#8E5F86', lado: 124 },
+  { nome: 'Agência de\nmarketing', forma: 'asterisco', cor: '#B04B45', lado: 140 },
+  { nome: 'Tráfego\npago', forma: 'losango', cor: '#C7A98B', lado: 134 },
+  { nome: 'O seu\ntempo', forma: 'circulo', cor: '#F4F1E8', lado: 150, destaque: true },
 ];
 
 /**
