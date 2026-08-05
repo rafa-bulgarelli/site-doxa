@@ -3,52 +3,67 @@
  * negócio mora aqui — o resto dos arquivos só sabe desenhar.
  */
 
+export interface Item {
+  /** Como o item aparece na ladainha, com o artigo. */
+  nome: string;
+  /** O nome do ícone no `lucide-react`, resolvido em `Ladainha.tsx`. */
+  icone: string;
+  /** O fundo da lâmina que segue o ponteiro. */
+  cor: string;
+  /**
+   * PENDENTE-DONO: a foto da lâmina, quando existir.
+   *
+   * O dono pediu imagem seguindo o mouse. Não temos vinte e cinco fotos — as
+   * únicas em `public/media/` são os reels dos clientes, que não têm nada a ver
+   * com "uma câmera" ou "um roteirista". Enquanto elas não chegam, a lâmina é
+   * ícone sobre cor, que é uma escolha e não um remendo: some o campo, entra a
+   * `<img>` no mesmo lugar e nada mais muda.
+   */
+  imagem?: string;
+}
+
 /**
  * O inventário do jeito antigo, escrito como a conta de quem paga.
  *
  * Cada linha começa com o artigo — "um video maker", "uma câmera" — e é o dono
- * quem pediu assim. A diferença não é estilística: "Video maker" é uma
- * categoria de equipamento, "Um video maker" é uma contratação. A lista tem de
- * doer no bolso de quem lê, e o que dói é a unidade, não o inventário.
+ * quem pediu assim. A diferença não é estilística: "Video maker" é uma categoria
+ * de equipamento, "Um video maker" é uma contratação. A lista tem de doer no
+ * bolso de quem lê, e o que dói é a unidade, não o inventário.
  *
- * PENDENTE-DONO: a lista é minha, montada a partir do que ele ditou (video
- * maker, roteirista, editor, estúdio, gravação, agência, tráfego) e estendida
+ * PENDENTE-DONO: a lista é minha, montada a partir do que ele ditou e estendida
  * para o resto do que a conta inclui. Vale revisão item a item — cada linha é
  * uma afirmação sobre o custo de outra empresa, e uma que não se sustenta
  * contamina as outras vinte e quatro.
  *
- * A QUANTIDADE é o argumento, e é ela que a página mostra. O dono pediu para
- * vincular os itens aos valores; enquanto ele não passar a quebra por item ou
- * por grupo, o vínculo é feito pelo total, que fica no alto, ao lado da
- * pergunta. Preço por item aqui seria inventado, e o próprio repositório já tem
- * a regra escrita: número inventado num comparativo destrói a seção inteira.
+ * As cores são a mesma família da seção: mesma faixa de luminosidade, croma
+ * baixo. Cor no talo, vinte e cinco vezes, não teria hierarquia nenhuma.
  */
-export const ITENS: readonly string[] = [
-  'Um video maker.',
-  'Um roteirista.',
-  'Um editor de vídeo.',
-  'Um social media.',
-  'Um diretor de criação.',
-  'Uma câmera.',
-  'Lentes.',
-  'Um tripé.',
-  'Um microfone de lapela.',
-  'Um estabilizador.',
-  'Cartões de memória.',
-  'Um estúdio.',
-  'Iluminação.',
-  'Um cenário.',
-  'Horas de gravação.',
-  'Uma ilha de edição.',
-  'Licença de edição.',
-  'Banco de trilhas.',
-  'Banco de imagens.',
-  'Legendagem.',
-  'Uma agência.',
-  'Um gestor de tráfego.',
-  'Verba de tráfego pago.',
-  'Um calendário editorial.',
-  'Relatórios.',
+export const ITENS: readonly Item[] = [
+  { nome: 'Um video maker.', icone: 'Video', cor: '#C25A3C' },
+  { nome: 'Um roteirista.', icone: 'PenLine', cor: '#D8A13F' },
+  { nome: 'Um editor de vídeo.', icone: 'Scissors', cor: '#5A8C63' },
+  { nome: 'Um social media.', icone: 'AtSign', cor: '#43708F' },
+  { nome: 'Um diretor de criação.', icone: 'Megaphone', cor: '#8E5F86' },
+  { nome: 'Uma câmera.', icone: 'Camera', cor: '#B04B45' },
+  { nome: 'Lentes.', icone: 'Aperture', cor: '#C7A98B' },
+  { nome: 'Um tripé.', icone: 'Wrench', cor: '#5A8C63' },
+  { nome: 'Um microfone de lapela.', icone: 'Mic', cor: '#43708F' },
+  { nome: 'Um estabilizador.', icone: 'Move', cor: '#C25A3C' },
+  { nome: 'Cartões de memória.', icone: 'HardDrive', cor: '#8E5F86' },
+  { nome: 'Um estúdio.', icone: 'Building2', cor: '#D8A13F' },
+  { nome: 'Iluminação.', icone: 'Lightbulb', cor: '#C7A98B' },
+  { nome: 'Um cenário.', icone: 'Frame', cor: '#B04B45' },
+  { nome: 'Horas de gravação.', icone: 'Timer', cor: '#43708F' },
+  { nome: 'Uma ilha de edição.', icone: 'MonitorPlay', cor: '#5A8C63' },
+  { nome: 'Licença de edição.', icone: 'KeyRound', cor: '#D8A13F' },
+  { nome: 'Banco de trilhas.', icone: 'Music', cor: '#8E5F86' },
+  { nome: 'Banco de imagens.', icone: 'ImageIcon', cor: '#C25A3C' },
+  { nome: 'Legendagem.', icone: 'Subtitles', cor: '#C7A98B' },
+  { nome: 'Uma agência.', icone: 'Users', cor: '#B04B45' },
+  { nome: 'Um gestor de tráfego.', icone: 'Target', cor: '#43708F' },
+  { nome: 'Verba de tráfego pago.', icone: 'Wallet', cor: '#5A8C63' },
+  { nome: 'Um calendário editorial.', icone: 'CalendarDays', cor: '#D8A13F' },
+  { nome: 'Relatórios.', icone: 'BarChart3', cor: '#8E5F86' },
 ];
 
 /**
@@ -57,7 +72,7 @@ export const ITENS: readonly string[] = [
  * Fica fora da lista e em creme: as outras são fornecedores e contas, esta é a
  * pessoa que está lendo. É o item que nenhum dos vinte e cinco resolve.
  */
-export const TEMPO = 'E o seu tempo.';
+export const TEMPO: Item = { nome: 'E o seu tempo.', icone: 'Hourglass', cor: '#F4F1E8' };
 
 /**
  * O custo do jeito antigo, resolvido pelo dono nesta rodada.
