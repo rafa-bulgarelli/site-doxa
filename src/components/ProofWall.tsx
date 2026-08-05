@@ -1,5 +1,14 @@
 import { useEffect, useRef, useState, type RefObject } from 'react';
-import { BadgeCheck, Eye, Heart, MessageCircle, Repeat2, Volume2, VolumeX } from 'lucide-react';
+import {
+  BadgeCheck,
+  Eye,
+  Heart,
+  MessageCircle,
+  Repeat2,
+  UserPlus,
+  Volume2,
+  VolumeX,
+} from 'lucide-react';
 import {
   motion,
   useInView,
@@ -9,7 +18,7 @@ import {
   useTransform,
   type MotionValue,
 } from 'framer-motion';
-import { REELS, WALL_REELS, type Reel } from './proof/reels';
+import { REELS, WALL_REELS, WALL_REELS_MOBILE, type Reel } from './proof/reels';
 import { DotGridSpotlight } from './hero/DotGridSpotlight';
 import { MotionButton } from './ui/MotionButton';
 import { useIsDesktop } from '../hooks/useIsDesktop';
@@ -40,7 +49,17 @@ const STEP_MOBILE = { x: 146, y: -15, z: -150 };
 const CARD_DESKTOP = { width: 220, height: 391 };
 const CARD_MOBILE = { width: 132, height: 235 };
 const CTA_DESKTOP = { width: 470, height: 330 };
-const CTA_MOBILE = { width: 300, height: 240 };
+/**
+ * The narrow card is sized against the *narrowest* phone, not against a
+ * comfortable one. `FOCUS_SCALE` grows it another twelve per cent at the moment
+ * it lands, and at 300px that put a 336px card on a 320px screen with its two
+ * ends hanging off the sides. 264 lands at 296 and keeps a margin.
+ *
+ * Taller than the width would suggest because the figures take two lines here.
+ * The narrow card is the one place the landscape format gives way: five numbers
+ * worth reading cost a second row, and a second row costs the height.
+ */
+const CTA_MOBILE = { width: 264, height: 252 };
 
 /**
  * Cards of run-up before the first reel, in card widths.
@@ -245,6 +264,7 @@ const CTA_STATS = {
   likes: '89,4k',
   comments: '512',
   reposts: '1.043',
+  followers: '+8,7k',
 };
 
 /**
@@ -413,7 +433,7 @@ function Stat({
   big?: boolean;
 }) {
   return (
-    <span className={`flex items-center ${big ? 'gap-1.5' : 'gap-1'}`}>
+    <span className={`flex items-center ${big ? 'gap-1 lg:gap-1.5' : 'gap-1'}`}>
       <Icon
         className={`shrink-0 ${big ? 'h-3.5 w-3.5 lg:h-[18px] lg:w-[18px]' : 'h-3 w-3'} ${
           liked ? 'fill-current text-[#ff3040]' : 'text-white/70'
@@ -423,13 +443,35 @@ function Stat({
       />
       <span
         className={`font-semibold leading-none tabular-nums text-white ${
-          big ? 'text-[14px] lg:text-[19px]' : 'text-[10px]'
+          big ? 'text-[15px] lg:text-[19px]' : 'text-[10px]'
         }`}
       >
         {value}
       </span>
       <span className="sr-only">{label}</span>
     </span>
+  );
+}
+
+/**
+ * The two scale figures, as a fragment rather than as a row.
+ *
+ * They are set twice — top right on the wide layout, along the floor on the
+ * narrow one — and the only thing that differs is the box they are in. A
+ * fragment leaves that box to whichever of the two is on screen; a component
+ * that carried its own would need the same two sets of flex classes passed into
+ * it, which is the wrapper it was trying not to be.
+ */
+function ScaleClaims() {
+  return (
+    <>
+      {SCALE_CLAIMS.map(({ value, label }) => (
+        <div key={label} className="flex flex-col gap-1">
+          <span className="font-serif text-xl leading-none text-white lg:text-3xl">{value}</span>
+          <span className="text-[11px] leading-none text-white/50 lg:text-[12px]">{label}</span>
+        </div>
+      ))}
+    </>
   );
 }
 
@@ -647,20 +689,30 @@ function ClosingCard({ onEnter, ...placement }: TrackPlacement & { onEnter: () =
           rather than split into three gaps by `justify-between`. That was the
           card reading as strange: a header, a headline and a button each
           hanging in space with nothing holding them to anything. */}
-      <div className="relative flex h-full flex-col items-center p-5 text-center lg:p-6">
+      <div className="relative flex h-full flex-col items-center p-4 text-center lg:p-6">
         <div className="flex w-full flex-col items-center gap-2 font-ui lg:gap-2.5">
           <span className="flex items-center gap-1 text-[12px] font-semibold text-white/70">
             @seuperfil
             <Verified />
           </span>
-          {/* The four figures across the top, at nearly twice a reel's size. On
-              a landscape card they fit on one line with room to breathe, which
-              is the other half of why the format changed. */}
-          <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1.5 lg:gap-x-6">
+          {/* The five figures, at nearly twice a reel's size. The followers come
+              last: the four before them are what one post did, and that is what
+              it left behind.
+
+              One line on the wide card, two on the narrow one — and the break
+              is placed rather than left to `flex-wrap`, which would have filled
+              the first line and dropped whatever was left onto the second. On a
+              320px screen that is four and an orphan. Two and three is a shape;
+              it is also what lets the figures be fifteen pixels there instead
+              of the twelve it takes to crush all five into one line, and being
+              read is the entire job of this row. */}
+          <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 lg:gap-x-5">
             <Stat big icon={Eye} value={CTA_STATS.views} label="visualizações" />
             <Stat big icon={Heart} value={CTA_STATS.likes} label="curtidas" liked />
+            <span aria-hidden className="w-full lg:hidden" />
             <Stat big icon={MessageCircle} value={CTA_STATS.comments} label="comentários" />
             <Stat big icon={Repeat2} value={CTA_STATS.reposts} label="reposts" />
+            <Stat big icon={UserPlus} value={CTA_STATS.followers} label="seguidores" />
           </div>
         </div>
 
@@ -714,8 +766,17 @@ export function ProofWall() {
   const isDesktop = useIsDesktop();
   const still = useReducedMotion() ?? false;
 
+  /**
+   * The cards this layout flies through. Half as many on a phone, and it is the
+   * length of the section that is being halved — see `WALL_TARGET_MOBILE`.
+   *
+   * Everything downstream is measured off `wall.length`, so the shorter list
+   * shortens the track, the section and the scroll on its own.
+   */
+  const wall = isDesktop ? WALL_REELS : WALL_REELS_MOBILE;
+
   /** Where the closing card sits: after every reel, plus its own clearance. */
-  const endSlot = WALL_REELS.length + CTA_GAP;
+  const endSlot = wall.length + CTA_GAP;
 
   /** The section's own height: the run-up, the run, the last card, the hold. */
   const sectionVh = (LEAD_IN + endSlot + 1 + CTA_HOLD) * VH_PER_CARD;
@@ -849,7 +910,7 @@ export function ProofWall() {
                 broke the pointer in the back half of the section — see the note
                 on `offset` in `usePlacement`. */}
             <div className="relative h-0 w-0" style={{ transformStyle: 'preserve-3d' }}>
-              {WALL_REELS.map((reel, index) => (
+              {wall.map((reel, index) => (
                 <ReelCard
                   key={`${reel.handle}-${index}`}
                   {...placement}
@@ -905,8 +966,15 @@ export function ProofWall() {
               It stays when the reels leave. What had to clear off the screen
               was the wall — sixteen photographs competing with the one card
               that asks for something. The section's own title is the frame
-              around that card, not a rival to it. */}
-          <div className="pointer-events-none absolute inset-x-0 top-0 z-20 flex flex-wrap items-end justify-between gap-x-10 gap-y-8 px-5 py-16 md:px-10 md:py-24">
+              around that card, not a rival to it.
+
+              On the narrow layout the figures are not in here at all. Two
+              blocks of type side by side need a row to be side by side in, and
+              at 320px there is none: they stacked under the title, the pile ran
+              four hundred pixels down a five-hundred-and-sixty pixel screen,
+              and the reels flew through the middle of it. They go to the floor
+              instead — see the block below. */}
+          <div className="pointer-events-none absolute inset-x-0 top-0 z-20 flex flex-wrap items-end justify-between gap-x-10 gap-y-8 px-5 py-12 md:px-10 md:py-24">
             <h2 className="font-serif text-4xl font-normal leading-[1.05] tracking-[-0.02em] text-white md:text-6xl">
               A prova já está
               <br />
@@ -919,16 +987,24 @@ export function ProofWall() {
               </span>
             </h2>
 
-            <div className="flex flex-wrap gap-x-10 gap-y-4 md:justify-end md:text-right">
-              {SCALE_CLAIMS.map(({ value, label }) => (
-                <div key={label} className="flex flex-col gap-1">
-                  <span className="font-serif text-2xl leading-none text-white md:text-3xl">
-                    {value}
-                  </span>
-                  <span className="text-[12px] leading-none text-white/50">{label}</span>
-                </div>
-              ))}
+            <div className="hidden flex-wrap justify-end gap-x-10 gap-y-4 text-right lg:flex">
+              <ScaleClaims />
             </div>
+          </div>
+
+          {/* The floor of the narrow layout, and the other half of the same
+              decision. The two bands of opaque black in the gradient are the
+              only places type can live in this section; the top one holds the
+              title and this is the bottom one, which was going spare. With the
+              figures down here the whole middle of the screen is the road
+              again, which is where the fly-through belongs.
+
+              Split at `lg` rather than at `md` because this is a question about
+              which layout the cards are in, and that is what `useIsDesktop`
+              answers — two breakpoints deciding one thing is one of them being
+              wrong at some width. */}
+          <div className="pointer-events-none absolute inset-x-0 bottom-0 z-20 flex justify-between gap-x-3 px-5 pb-12 lg:hidden">
+            <ScaleClaims />
           </div>
         </div>
       </div>
