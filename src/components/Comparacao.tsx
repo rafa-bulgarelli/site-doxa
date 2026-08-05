@@ -3,11 +3,9 @@ import { motion, useInView } from 'framer-motion';
 import wordmarkUrl from '../../brand/doxa-wordmark-white.png';
 import { MotionButton } from './ui/MotionButton';
 import { Blocos } from './comparacao/Blocos';
-import { Cases } from './comparacao/Cases';
 import {
   APOIO,
   CUSTO,
-  CUSTO_NOTA,
   CUSTO_UNIDADE,
   ENVIO,
   GARANTIA,
@@ -95,7 +93,11 @@ export function Comparacao() {
           <p className="max-w-md text-sm text-white/60 md:text-base">{APOIO}</p>
         </motion.div>
 
-        <div className="mt-12 grid items-stretch gap-4 md:mt-16 lg:grid-cols-[1.15fr_1fr]">
+        {/* `items-start`, e não `items-stretch`: o card da Doxa ficou curto de
+            propósito e esticá-lo até a altura do outro devolveria o vão vazio
+            que a gente acabou de tirar dele. Alturas diferentes são o argumento
+            — de um lado uma pilha, do outro uma frase. */}
+        <div className="mt-12 grid items-start gap-4 md:mt-16 lg:grid-cols-[1.15fr_1fr]">
           {/* ── A conta antiga. */}
           <motion.div
             custom={1}
@@ -131,7 +133,6 @@ export function Comparacao() {
                     {RECORRENCIA}
                   </span>
                 </div>
-                <span className="mt-3 block text-[13px] text-white/35">{CUSTO_NOTA}</span>
               </div>
             </div>
           </motion.div>
@@ -156,12 +157,6 @@ export function Comparacao() {
                 <br />
                 {ENVIO[1]}
               </p>
-
-              {/* O que sai disso, para a pergunta não ficar no ar. São os
-                  mesmos arquivos da parede de prova — nada aqui é caso novo. */}
-              <div className="mt-7">
-                <Cases />
-              </div>
 
               <div className="mt-auto border-t border-black/10 pt-6">
                 <p className="font-serif text-2xl leading-[1.1] tracking-[-0.02em] text-[#0B0B0B] md:text-[1.75rem]">
