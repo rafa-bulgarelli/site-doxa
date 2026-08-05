@@ -435,7 +435,7 @@ function Stat({
   return (
     <span className={`flex items-center ${big ? 'gap-1 lg:gap-1.5' : 'gap-1'}`}>
       <Icon
-        className={`shrink-0 ${big ? 'h-3.5 w-3.5 lg:h-[18px] lg:w-[18px]' : 'h-3 w-3'} ${
+        className={`shrink-0 ${big ? 'h-3.5 w-3.5 lg:h-4 lg:w-4' : 'h-3 w-3'} ${
           liked ? 'fill-current text-[#ff3040]' : 'text-white/70'
         }`}
         strokeWidth={liked ? 0 : 2}
@@ -443,7 +443,7 @@ function Stat({
       />
       <span
         className={`font-semibold leading-none tabular-nums text-white ${
-          big ? 'text-[15px] lg:text-[19px]' : 'text-[10px]'
+          big ? 'text-[15px] lg:text-[16px]' : 'text-[10px]'
         }`}
       >
         {value}
@@ -705,8 +705,12 @@ function ClosingCard({ onEnter, ...placement }: TrackPlacement & { onEnter: () =
               320px screen that is four and an orphan. Two and three is a shape;
               it is also what lets the figures be fifteen pixels there instead
               of the twelve it takes to crush all five into one line, and being
-              read is the entire job of this row. */}
-          <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 lg:gap-x-5">
+              read is the entire job of this row.
+
+              Fifteen pixels between them on the wide card, set as a number
+              rather than as a step on the scale: the owner asked for that gap,
+              and `gap-x-4` would be sixteen. */}
+          <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 lg:gap-x-[15px]">
             <Stat big icon={Eye} value={CTA_STATS.views} label="visualizações" />
             <Stat big icon={Heart} value={CTA_STATS.likes} label="curtidas" liked />
             <span aria-hidden className="w-full lg:hidden" />
