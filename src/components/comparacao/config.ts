@@ -96,16 +96,22 @@ export const TEMPO: Item = { nome: 'E o seu tempo.', icone: 'Hourglass', cor: '#
  * juntos: num comparativo o número é a coisa toda, e a página não pode dizer
  * dois valores para o mesmo custo.
  */
-export const CUSTO = 'R$ 8.000 a 10.500';
+export const CUSTO_DE = 8000;
+export const CUSTO_ATE = 10500;
 export const CUSTO_UNIDADE = '/mês';
 
 /**
- * A recorrência, dita duas vezes de propósito — no sufixo do número e aqui.
+ * O rótulo do bloco da lista, e o que ele faz pela seção.
  *
- * Um custo mensal lido como se fosse único é a diferença entre a conta parecer
- * cara e parecer enorme. "Todo mês" é o que transforma um preço em uma sangria.
+ * A seção JÁ é uma conta; dar a ela a forma de uma é o que tira o painel do
+ * genérico. Com este rótulo e com os itens numerados, o bloco deixa de ser "um
+ * texto grande" e passa a ser um documento — e um documento é sério de um jeito
+ * que uma frase solta não é.
  */
-export const RECORRENCIA = 'Todo mês. E de novo no mês seguinte.';
+export const FATURA = 'Fatura mensal · recorrente';
+
+/** Quantos itens a conta tem, contados e nunca escritos à mão. */
+export const TOTAL_ITENS = ITENS.length;
 
 /**
  * As duas falas dos dois painéis.

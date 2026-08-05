@@ -1,18 +1,29 @@
-import { useRef } from 'react';
-import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion';
+import { useEffect, useRef } from 'react';
+import {
+  animate,
+  motion,
+  useInView,
+  useMotionValue,
+  useReducedMotion,
+  useScroll,
+  useTransform,
+} from 'framer-motion';
 import { ShieldCheck, ShieldOff } from 'lucide-react';
 import wordmarkUrl from '../../brand/doxa-wordmark-white.png';
 import { MotionButton } from './ui/MotionButton';
 import { Ladainha } from './comparacao/Ladainha';
 import {
   CONVITE,
-  CUSTO,
+  CUSTO_ATE,
+  CUSTO_DE,
   CUSTO_DO_CLIQUE,
   CUSTO_UNIDADE,
+  FATURA,
   ENVIO,
   GARANTIA,
   PERGUNTA,
   SEM_GARANTIA,
+  TOTAL_ITENS,
 } from './comparacao/config';
 
 /** A cor do papel — a única superfície clara da página. */
@@ -68,9 +79,38 @@ function Selo({ prefixo, escuro = false }: { prefixo: string; escuro?: boolean }
  * comprimidos e um segundo runtime de animação no projeto para sempre, para um
  * efeito que a ProofWall já produz com as mesmas duas linhas.
  */
+/**
+ * O valor subindo de zero ao total quando a seção chega.
+ *
+ * Não é enfeite: num painel cujo clímax é um número, ver o número SUBIR é o
+ * argumento chegando. E não compete com nada, porque acontece uma vez só e para.
+ *
+ * Formatado em pt-BR a cada quadro em vez de guardado como string: o separador
+ * de milhar tem de existir durante a contagem, senão o valor pisca de quatro
+ * para cinco caracteres no meio do caminho e a linha inteira dança.
+ */
+function Contador({ ate, naTela }: { ate: number; naTela: boolean }) {
+  const parado = useReducedMotion() === true;
+  // Zero, sempre — exceto para quem pediu menos movimento. A versão anterior
+  // testava `!naTela` aqui, e `naTela` é falso no primeiro render por
+  // construção: o valor nascia já no total e a contagem nunca acontecia.
+  const bruto = useMotionValue(parado ? ate : 0);
+  const texto = useTransform(bruto, (v) => Math.round(v).toLocaleString('pt-BR'));
+
+  useEffect(() => {
+    if (!naTela || parado) return;
+    const controle = animate(bruto, ate, { duration: 1.4, ease: [0.16, 1, 0.3, 1] });
+    return () => controle.stop();
+  }, [naTela, parado, ate, bruto]);
+
+  return <motion.span className="tabular-nums">{texto}</motion.span>;
+}
+
 export function Comparacao() {
+  const escuroRef = useRef<HTMLDivElement>(null);
   const claroRef = useRef<HTMLDivElement>(null);
   const parado = useReducedMotion() === true;
+  const contaNaTela = useInView(escuroRef, { amount: 0.4, once: true });
 
   // Os mesmos limites da referência: começa a girar quando o topo do painel
   // encosta no fim da tela e termina quando esse topo chega a um quarto dela.
@@ -86,7 +126,10 @@ export function Comparacao() {
     // que o painel girado joga para fora sem criar contexto nenhum.
     <section className="relative overflow-x-clip bg-doxa-bg">
       {/* ── Painel escuro: a pergunta e a conta. */}
-      <div className="sticky top-0 flex h-screen flex-col px-5 py-10 md:px-10 md:py-14">
+      <div
+        ref={escuroRef}
+        className="sticky top-0 flex h-screen flex-col px-5 py-10 md:px-10 md:py-14"
+      >
         <div className="dot-grid pointer-events-none absolute inset-0 opacity-40" />
 
         <div className="relative mx-auto flex h-full w-full max-w-screen-2xl flex-col">
@@ -108,7 +151,8 @@ export function Comparacao() {
                 é recorrente, e um número desacompanhado bate mais forte do que
                 um número com uma legenda ao lado pedindo atenção. */}
             <span className="font-serif text-[2.6rem] leading-none text-white md:text-[4.6rem]">
-              {CUSTO}
+              R$ <Contador ate={CUSTO_DE} naTela={contaNaTela} /> a{' '}
+              <Contador ate={CUSTO_ATE} naTela={contaNaTela} />
               <span className="ml-1 align-baseline text-2xl text-white/40 md:text-4xl">
                 {CUSTO_UNIDADE}
               </span>
@@ -123,7 +167,17 @@ export function Comparacao() {
 
               O resto da tela fica vazio de propósito: o painel claro entra
               girado por baixo e come o terço inferior. */}
-          <div className="mt-6 border-t border-white/[0.09] pt-6 md:mt-7 md:pt-7">
+          {/* O cabeçalho da fatura. Devolve a contagem sem precisar de um bloco
+              só para ela, e é o que faz o bloco abaixo ler como documento em vez
+              de como um texto grande. */}
+          <div className="mt-6 flex items-baseline justify-between gap-6 border-t border-white/[0.09] pt-5 md:mt-7">
+            <span className="text-[11px] uppercase tracking-[0.18em] text-white/35">{FATURA}</span>
+            <span className="text-[11px] tabular-nums tracking-[0.14em] text-white/35">
+              {TOTAL_ITENS} itens
+            </span>
+          </div>
+
+          <div className="mt-5">
             <Ladainha />
           </div>
 

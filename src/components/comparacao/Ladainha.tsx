@@ -203,12 +203,16 @@ export function Ladainha() {
         ref={ref}
         onMouseMove={seguir}
         onMouseLeave={() => setApontado(null)}
-        // Justificado, a pedido do dono: os itens ocupam de ponta a ponta e as
-        // linhas ficam com a mesma medida, o que dá à conta a cara de coluna de
-        // jornal — que é exatamente o tom de "isto é o que você paga".
-        className="relative z-10 text-justify font-serif text-[19px] leading-[1.55] tracking-[-0.01em] md:text-[2.15rem] md:leading-[1.5] lg:text-[2.45rem]"
+        // Justificado, e na SANS — não na serifada do resto da seção.
+        //
+        // É a mudança que mais transformou o painel. Com tudo em Instrument
+        // Serif, o olho lia "grande, médio, pequeno": um só tom em três
+        // tamanhos, que é o que fazia a seção parecer simples demais. Com duas
+        // famílias ele passa a ler "manchete" e "documento" — o título e o valor
+        // continuam serifados, e a conta vira letra de fatura.
+        className="relative z-10 text-justify text-[17px] leading-[1.6] text-white/45 md:text-[1.4rem] lg:text-[1.6rem] lg:leading-[1.65]"
       >
-        {todos.map((item) => {
+        {todos.map((item, i) => {
           const atraso = indice * CASCATA + (item === TEMPO ? 0.2 : 0);
           indice += 1;
           const aceso = apontado === item;
@@ -227,7 +231,7 @@ export function Ladainha() {
                 podeSeguir ? 'cursor-default' : ''
               } ${
                 item === TEMPO
-                  ? 'text-[#F4F1E8]'
+                  ? 'font-serif text-[1.25em] text-[#F4F1E8]'
                   : aceso
                     ? 'text-white'
                     : apontado == null
@@ -235,6 +239,13 @@ export function Ladainha() {
                       : 'text-white/20'
               }`}
             >
+              {/* O tempo não é numerado: ele não está na fatura. Os vinte e
+                  cinco se contam; o vigésimo sexto é o que não tem preço. */}
+              {item !== TEMPO && (
+                <span className="mr-1.5 text-[0.62em] tabular-nums text-white/25">
+                  {String(i + 1).padStart(2, '0')}
+                </span>
+              )}
               {item.nome}
             </motion.span>{' '}
             </Fragment>
