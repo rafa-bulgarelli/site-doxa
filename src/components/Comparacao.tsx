@@ -3,6 +3,7 @@ import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion
 import { ShieldCheck } from 'lucide-react';
 import wordmarkUrl from '../../brand/doxa-wordmark-white.png';
 import { MotionButton } from './ui/MotionButton';
+import { DotGridSpotlight } from './hero/DotGridSpotlight';
 import { Ladainha } from './comparacao/Ladainha';
 import {
   CONVITE,
@@ -12,7 +13,6 @@ import {
   ENVIO,
   GARANTIA,
   PERGUNTA,
-  RECORRENCIA,
   SEM_GARANTIA,
 } from './comparacao/config';
 
@@ -32,9 +32,9 @@ const GIRO = 30;
 function Selo({ prefixo, escuro = false }: { prefixo: string; escuro?: boolean }) {
   return (
     <span className="flex items-baseline gap-2">
-      <span
-        className={`text-[11px] uppercase tracking-[0.18em] ${escuro ? 'text-black/45' : 'text-white/40'}`}
-      >
+      {/* Caixa normal, a pedido do dono: em versalete o prefixo competia com o
+          logo ao lado, e os dois juntos liam como duas marcas. */}
+      <span className={`text-[13px] tracking-tight ${escuro ? 'text-black/50' : 'text-white/50'}`}>
         {prefixo}
       </span>
       {/* A arte é branca sobre transparente — no painel creme ela vira tinta com
@@ -44,7 +44,7 @@ function Selo({ prefixo, escuro = false }: { prefixo: string; escuro?: boolean }
       <img
         src={wordmarkUrl}
         alt="Doxa"
-        className={`h-[13px] w-auto ${escuro ? 'opacity-90 invert' : 'opacity-70'}`}
+        className={`h-[15px] w-auto ${escuro ? 'invert' : ''}`}
       />
     </span>
   );
@@ -70,6 +70,7 @@ function Selo({ prefixo, escuro = false }: { prefixo: string; escuro?: boolean }
  * efeito que a ProofWall já produz com as mesmas duas linhas.
  */
 export function Comparacao() {
+  const escuroRef = useRef<HTMLDivElement>(null);
   const claroRef = useRef<HTMLDivElement>(null);
   const parado = useReducedMotion() === true;
 
@@ -87,8 +88,18 @@ export function Comparacao() {
     // que o painel girado joga para fora sem criar contexto nenhum.
     <section className="relative overflow-x-clip bg-doxa-bg">
       {/* ── Painel escuro: a pergunta e a conta. */}
-      <div className="sticky top-0 flex h-screen flex-col px-5 py-10 md:px-10 md:py-14">
+      <div
+        ref={escuroRef}
+        className="sticky top-0 flex h-screen flex-col px-5 py-10 md:px-10 md:py-14"
+      >
         <div className="dot-grid pointer-events-none absolute inset-0 opacity-40" />
+        {/* O mesmo holofote do hero e da parede de prova. Escolhido no lugar de
+            um efeito novo de fundo: a interação desta seção JÁ é o ponteiro, e
+            uma chuva de meteoros disputaria com a lâmina em vez de ajudá-la.
+            Este acende a grade sob a mesma mão que carrega o cartão — reforça o
+            gesto em vez de competir com ele, e é vocabulário que a página já
+            usa duas vezes. */}
+        <DotGridSpotlight containerRef={escuroRef} />
 
         <div className="relative mx-auto flex h-full w-full max-w-screen-2xl flex-col">
           <Selo prefixo="Sem" />
@@ -104,19 +115,16 @@ export function Comparacao() {
               {PERGUNTA[1]}
             </h2>
 
-            <div className="flex flex-col items-start gap-3 md:items-end">
-              <span className="font-serif text-4xl leading-none text-white md:text-[3.4rem]">
-                {CUSTO}
-                <span className="ml-1 align-baseline text-2xl text-white/45 md:text-3xl">
-                  {CUSTO_UNIDADE}
-                </span>
+            {/* A pílula da recorrência saiu a pedido do dono, e o valor cresceu
+                para ocupar o peso que ela dividia. O `/mês` sozinho já diz que
+                é recorrente, e um número desacompanhado bate mais forte do que
+                um número com uma legenda ao lado pedindo atenção. */}
+            <span className="font-serif text-[2.6rem] leading-none text-white md:text-[4.6rem]">
+              {CUSTO}
+              <span className="ml-1 align-baseline text-2xl text-white/40 md:text-4xl">
+                {CUSTO_UNIDADE}
               </span>
-              {/* A recorrência dita de novo, e em caixa alta: é a diferença
-                  entre a conta parecer cara e parecer uma sangria. */}
-              <span className="rounded-full border border-white/[0.14] bg-white/[0.04] px-3 py-1.5 text-[11px] uppercase tracking-[0.14em] text-white/60">
-                {RECORRENCIA}
-              </span>
-            </div>
+            </span>
           </div>
 
           {/* A ladainha desceu de corpo e a frase abaixo dela subiu, e essa

@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { Fragment, useRef, useState } from 'react';
 import { AnimatePresence, motion, useInView, useReducedMotion, useSpring } from 'framer-motion';
 import {
   Aperture,
@@ -203,20 +203,27 @@ export function Ladainha() {
         ref={ref}
         onMouseMove={seguir}
         onMouseLeave={() => setApontado(null)}
-        className="relative z-10 max-w-6xl font-serif text-[19px] leading-[1.5] tracking-[-0.01em] md:text-[1.7rem] md:leading-[1.5]"
+        // Justificado, a pedido do dono: os itens ocupam de ponta a ponta e as
+        // linhas ficam com a mesma medida, o que dá à conta a cara de coluna de
+        // jornal — que é exatamente o tom de "isto é o que você paga".
+        className="relative z-10 text-justify font-serif text-[19px] leading-[1.55] tracking-[-0.01em] md:text-[1.85rem] md:leading-[1.55]"
       >
         {todos.map((item) => {
           const atraso = indice * CASCATA + (item === TEMPO ? 0.2 : 0);
           indice += 1;
           const aceso = apontado === item;
           return (
+            // O espaço é um nó de texto de verdade, e não uma margem: a
+            // justificação estica os ESPAÇOS entre as caixas, e uma margem fixa
+            // não é espaço nenhum. Com `mr-[0.35em]` as linhas continuavam
+            // terminando onde queriam.
+            <Fragment key={item.nome}>
             <motion.span
-              key={item.nome}
               initial={{ opacity: 0 }}
               animate={naTela ? { opacity: 1 } : undefined}
               transition={{ duration: 0.5, ease: EASE, delay: atraso }}
               onMouseEnter={apontar(item)}
-              className={`mr-[0.35em] inline-block transition-colors duration-300 ${
+              className={`inline-block transition-colors duration-300 ${
                 podeSeguir ? 'cursor-default' : ''
               } ${
                 item === TEMPO
@@ -229,7 +236,8 @@ export function Ladainha() {
               }`}
             >
               {item.nome}
-            </motion.span>
+            </motion.span>{' '}
+            </Fragment>
           );
         })}
       </p>
