@@ -197,10 +197,14 @@ export function Ladainha() {
 
   return (
     <>
+      {/* Os handlers vivem no envelope, e não no parágrafo da conta.
+          
+          Presos ao parágrafo, sair pelo bloco do tempo — que é um irmão, fora
+          dele — nunca disparava o `mouseleave`, e a lâmina ficava travada na
+          tela depois que o ponteiro já tinha ido embora. */}
+      <div onMouseMove={seguir} onMouseLeave={() => setApontado(null)}>
       <p
         ref={ref}
-        onMouseMove={seguir}
-        onMouseLeave={() => setApontado(null)}
         // Justificado, na SANS, e com o vão horizontal igual ao vertical.
         //
         // `word-spacing` de 0,75em com `line-height` 1,75 é a conta que o dono
@@ -265,13 +269,20 @@ export function Ladainha() {
         initial={{ opacity: 0 }}
         animate={naTela ? { opacity: 1 } : undefined}
         transition={{ duration: 0.6, ease: EASE, delay: ITENS.length * CASCATA + 0.2 }}
-        onMouseEnter={apontar(TEMPO)}
-        className={`mt-7 font-serif text-[1.7rem] leading-none text-[#F4F1E8] md:mt-10 md:text-[2.4rem] ${
-          podeSeguir ? 'cursor-default' : ''
-        }`}
+        className="mt-7 font-serif text-[1.7rem] leading-none text-[#F4F1E8] md:mt-10 md:text-[2.4rem]"
       >
-        <span className="inline-block">{TEMPO.nome}</span>
+        {/* O gatilho é o TEXTO, não o parágrafo. O parágrafo é um bloco de
+            largura inteira: com o `mouseenter` nele, a lâmina do tempo aparecia
+            com o ponteiro a mil pixels da palavra, em qualquer ponto vazio da
+            linha. */}
+        <span
+          onMouseEnter={apontar(TEMPO)}
+          className={`inline-block ${podeSeguir ? 'cursor-default' : ''}`}
+        >
+          {TEMPO.nome}
+        </span>
       </motion.p>
+      </div>
 
       {/* Fora do parágrafo e `fixed`: presa ao fluxo, a lâmina seria recortada
           pelo painel e não poderia acompanhar a mão até a borda da tela. */}
