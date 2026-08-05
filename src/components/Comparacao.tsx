@@ -202,9 +202,19 @@ export function Comparacao() {
       {/* Fôlego para o painel escuro. Sem isto, o claro começa a subir no
           primeiro pixel de rolagem — o topo dele já está encostado no fim da
           tela quando a seção chega — e a ladainha some antes de alguém ler. São
-          seis décimos de tela em que o preto fica parado e legível, e só depois
-          a carta começa a virar. */}
-      <div className="h-[60vh]" aria-hidden />
+          quase meia tela em que o preto fica parado e legível, e só depois a
+          carta começa a virar.
+
+          Era sessenta centésimos e o dono cortou vinte por cento: o painel
+          escuro já se lê de uma vez, e o que sobrava de rolagem parada antes da
+          virada era espera, não leitura.
+
+          Quarenta e seis, e não quarenta e oito, porque o número que importa não
+          é este. O painel claro gira em torno do canto inferior esquerdo, e um
+          giro de trinta graus baixa a aresta de cima dele em pouco mais de cem
+          pixels — um deslocamento constante, que não encolhe junto com o vão.
+          Cortar o vão em vinte por cento cortava só dezessete do que se vê. */}
+      <div className="h-[46vh]" aria-hidden />
 
       {/* ── Painel claro: o convite. Sobe girado, assenta, e para. */}
       <motion.div
