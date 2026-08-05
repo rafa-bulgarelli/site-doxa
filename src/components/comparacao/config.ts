@@ -3,71 +3,59 @@
  * negócio mora aqui — o resto dos arquivos só sabe desenhar.
  */
 
-export interface Grupo {
-  nome: string;
-  itens: readonly string[];
-}
-
 /**
- * O inventário do jeito antigo: tudo que uma empresa precisa juntar para
- * publicar vídeo com constância.
+ * O inventário do jeito antigo, escrito como a conta de quem paga.
+ *
+ * Cada linha começa com o artigo — "um video maker", "uma câmera" — e é o dono
+ * quem pediu assim. A diferença não é estilística: "Video maker" é uma
+ * categoria de equipamento, "Um video maker" é uma contratação. A lista tem de
+ * doer no bolso de quem lê, e o que dói é a unidade, não o inventário.
  *
  * PENDENTE-DONO: a lista é minha, montada a partir do que ele ditou (video
  * maker, roteirista, editor, estúdio, gravação, agência, tráfego) e estendida
- * para o resto do que a conta realmente inclui. Vale a revisão dele item a item
- * — cada linha aqui é uma afirmação sobre o custo de outra empresa, e uma linha
- * que não se sustenta contamina as outras vinte e quatro.
+ * para o resto do que a conta inclui. Vale revisão item a item — cada linha é
+ * uma afirmação sobre o custo de outra empresa, e uma que não se sustenta
+ * contamina as outras vinte e quatro.
  *
- * A QUANTIDADE é o argumento. A seção não pede que ninguém leia os vinte e
- * cinco: pede que a pessoa veja que são vinte e cinco. Por isso o número é
- * contado do array e nunca escrito à mão — acrescentar uma linha muda o título
- * junto.
+ * A QUANTIDADE é o argumento, e é ela que a página mostra. O dono pediu para
+ * vincular os itens aos valores; enquanto ele não passar a quebra por item ou
+ * por grupo, o vínculo é feito pelo total, que fica no alto, ao lado da
+ * pergunta. Preço por item aqui seria inventado, e o próprio repositório já tem
+ * a regra escrita: número inventado num comparativo destrói a seção inteira.
  */
-export const INVENTARIO: readonly Grupo[] = [
-  {
-    nome: 'Equipe',
-    itens: ['Video maker', 'Roteirista', 'Editor de vídeo', 'Social media', 'Diretor de criação'],
-  },
-  {
-    nome: 'Equipamento',
-    itens: [
-      'Câmera',
-      'Lentes',
-      'Tripé',
-      'Microfone de lapela',
-      'Estabilizador',
-      'Cartões de memória',
-    ],
-  },
-  {
-    nome: 'Estrutura',
-    itens: ['Estúdio', 'Iluminação', 'Cenário', 'Horas de gravação', 'Ilha de edição'],
-  },
-  {
-    nome: 'Software',
-    itens: ['Licença de edição', 'Banco de trilhas', 'Banco de imagens', 'Legendagem'],
-  },
-  {
-    nome: 'Marketing',
-    itens: [
-      'Agência',
-      'Gestor de tráfego',
-      'Verba de tráfego pago',
-      'Calendário editorial',
-      'Relatórios',
-    ],
-  },
+export const ITENS: readonly string[] = [
+  'Um video maker.',
+  'Um roteirista.',
+  'Um editor de vídeo.',
+  'Um social media.',
+  'Um diretor de criação.',
+  'Uma câmera.',
+  'Lentes.',
+  'Um tripé.',
+  'Um microfone de lapela.',
+  'Um estabilizador.',
+  'Cartões de memória.',
+  'Um estúdio.',
+  'Iluminação.',
+  'Um cenário.',
+  'Horas de gravação.',
+  'Uma ilha de edição.',
+  'Licença de edição.',
+  'Banco de trilhas.',
+  'Banco de imagens.',
+  'Legendagem.',
+  'Uma agência.',
+  'Um gestor de tráfego.',
+  'Verba de tráfego pago.',
+  'Um calendário editorial.',
+  'Relatórios.',
 ];
 
-/** Quantos itens o inventário tem, contados e nunca escritos à mão. */
-export const TOTAL_ITENS = INVENTARIO.reduce((soma, grupo) => soma + grupo.itens.length, 0);
-
 /**
- * A vigésima sexta linha, e a única que não se compra.
+ * A última linha, e a única que não se compra.
  *
- * Fica fora do `INVENTARIO` de propósito: as outras são fornecedores e contas, e
- * esta é a pessoa que está lendo. Ela fecha a lista porque é o item que nenhum
- * dos outros vinte e cinco resolve.
+ * Fica fora da lista e em creme: as outras são fornecedores e contas, esta é a
+ * pessoa que está lendo. É o item que nenhum dos vinte e cinco resolve.
  */
 export const TEMPO = 'E o seu tempo.';
 

@@ -3,7 +3,7 @@ import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion
 import { ShieldCheck } from 'lucide-react';
 import wordmarkUrl from '../../brand/doxa-wordmark-white.png';
 import { MotionButton } from './ui/MotionButton';
-import { Inventario } from './comparacao/Inventario';
+import { Ladainha } from './comparacao/Ladainha';
 import {
   CONVITE,
   CUSTO,
@@ -13,7 +13,6 @@ import {
   GARANTIA,
   PERGUNTA,
   RECORRENCIA,
-  TOTAL_ITENS,
 } from './comparacao/config';
 
 /** A cor do papel — a única superfície clara da página. */
@@ -93,44 +92,47 @@ export function Comparacao() {
         <div className="relative mx-auto flex h-full w-full max-w-screen-2xl flex-col">
           <Selo prefixo="Sem" />
 
-          {/* A pergunta à esquerda, a quantidade à direita. O número é o
-              argumento inteiro da coluna: ninguém vai ler os vinte e cinco
-              itens, mas todo mundo lê o vinte e cinco. */}
+          {/* A pergunta à esquerda, a CONTA à direita — foi para cá que o número
+              subiu, e não é arrumação: no rodapé ele ficava embaixo do painel
+              claro, que entra girado e cobre o terço de baixo da tela. O valor é
+              o clímax da coluna e não podia estar na parte que some. */}
           <div className="mt-6 flex flex-wrap items-end justify-between gap-x-10 gap-y-6">
             <h2 className="font-serif text-4xl font-normal leading-[1.05] tracking-[-0.02em] text-white md:text-6xl">
               {PERGUNTA[0]}
               <br />
               {PERGUNTA[1]}
             </h2>
-            <p className="flex items-baseline gap-3 text-white/45">
-              <span className="font-serif text-5xl leading-none tabular-nums text-white md:text-6xl">
-                {TOTAL_ITENS}
+
+            <div className="flex flex-col items-start gap-3 md:items-end">
+              <span className="font-serif text-4xl leading-none text-white md:text-[3.4rem]">
+                {CUSTO}
+                <span className="ml-1 align-baseline text-2xl text-white/45 md:text-3xl">
+                  {CUSTO_UNIDADE}
+                </span>
               </span>
-              <span className="max-w-[15ch] text-[13px] leading-snug md:text-sm">
-                itens para publicar um vídeo por dia
+              {/* A recorrência dita de novo, e em caixa alta: é a diferença
+                  entre a conta parecer cara e parecer uma sangria. */}
+              <span className="rounded-full border border-white/[0.14] bg-white/[0.04] px-3 py-1.5 text-[11px] uppercase tracking-[0.14em] text-white/60">
+                {RECORRENCIA}
               </span>
-            </p>
+            </div>
           </div>
 
-          <div className="my-8 flex min-h-0 flex-1 items-center border-t border-white/[0.09] pt-8 md:my-10">
-            <Inventario />
-          </div>
-
-          <div className="flex flex-wrap items-end justify-between gap-x-6 gap-y-3 border-t border-white/[0.09] pt-6">
-            <span className="font-serif text-4xl leading-none text-white md:text-6xl">
-              {CUSTO}
-              <span className="ml-1 align-baseline text-2xl text-white/45 md:text-3xl">
-                {CUSTO_UNIDADE}
-              </span>
-            </span>
-            {/* A recorrência dita de novo, e em caixa alta: é a diferença entre a
-                conta parecer cara e parecer uma sangria. */}
-            <span className="rounded-full border border-white/[0.14] bg-white/[0.04] px-3 py-1.5 text-[11px] uppercase tracking-[0.14em] text-white/60">
-              {RECORRENCIA}
-            </span>
+          {/* A ladainha ocupa a metade de cima e o resto da tela fica vazio de
+              propósito: o painel claro entra girado por baixo e come o terço
+              inferior. Conteúdo ali seria conteúdo que ninguém lê. */}
+          <div className="mt-10 border-t border-white/[0.09] pt-10">
+            <Ladainha />
           </div>
         </div>
       </div>
+
+      {/* Fôlego para o painel escuro. Sem isto, o claro começa a subir no
+          primeiro pixel de rolagem — o topo dele já está encostado no fim da
+          tela quando a seção chega — e a ladainha some antes de alguém ler. São
+          seis décimos de tela em que o preto fica parado e legível, e só depois
+          a carta começa a virar. */}
+      <div className="h-[60vh]" aria-hidden />
 
       {/* ── Painel claro: o convite. Sobe girado, assenta, e para. */}
       <motion.div
