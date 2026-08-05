@@ -203,14 +203,28 @@ export function Ladainha() {
         ref={ref}
         onMouseMove={seguir}
         onMouseLeave={() => setApontado(null)}
-        // Justificado, e na SANS — não na serifada do resto da seção.
+        // Justificado, na SANS, e com o vão horizontal igual ao vertical.
+        //
+        // `word-spacing` de 0,75em com `line-height` 1,75 é a conta que o dono
+        // pediu: entrelinha de 1,75 deixa 0,75em de respiro entre as linhas, e
+        // é exatamente o espaço que separa um item do seguinte na mesma linha.
+        // A justificação ainda estica esses vãos, mas partindo de um vão largo a
+        // variação vira uma fração pequena dele — o bloco fica uniforme sem
+        // deixar de encostar nas duas margens.
+        //
+        // O vão vale só ENTRE os itens. `word-spacing` é herdado e cai sobre
+        // todo espaço, inclusive os de dentro de cada frase: na primeira
+        // tentativa "Um video maker." virou três palavras soltas com o mesmo vão
+        // que separa um item do outro, e a lista deixou de ter itens. Cada item
+        // devolve o vão ao normal e é `nowrap`, o que também tira de dentro dele
+        // os pontos onde a justificação poderia esticar.
         //
         // É a mudança que mais transformou o painel. Com tudo em Instrument
         // Serif, o olho lia "grande, médio, pequeno": um só tom em três
         // tamanhos, que é o que fazia a seção parecer simples demais. Com duas
         // famílias ele passa a ler "manchete" e "documento" — o título e o valor
         // continuam serifados, e a conta vira letra de fatura.
-        className="relative z-10 text-justify text-[17px] leading-[1.6] text-white/45 md:text-[1.4rem] lg:text-[1.6rem] lg:leading-[1.65]"
+        className="relative z-10 text-justify text-[17px] leading-[1.75] text-white/45 [word-spacing:0.55em] md:text-[1.4rem] md:[word-spacing:0.7em] lg:text-[1.55rem] lg:leading-[1.75] lg:[word-spacing:0.75em]"
       >
         {todos.map((item, i) => {
           const atraso = indice * CASCATA + (item === TEMPO ? 0.2 : 0);
@@ -227,7 +241,7 @@ export function Ladainha() {
               animate={naTela ? { opacity: 1 } : undefined}
               transition={{ duration: 0.5, ease: EASE, delay: atraso }}
               onMouseEnter={apontar(item)}
-              className={`inline-block transition-colors duration-300 ${
+              className={`inline-block whitespace-nowrap [word-spacing:normal] transition-colors duration-300 ${
                 podeSeguir ? 'cursor-default' : ''
               } ${
                 item === TEMPO
@@ -242,7 +256,7 @@ export function Ladainha() {
               {/* O tempo não é numerado: ele não está na fatura. Os vinte e
                   cinco se contam; o vigésimo sexto é o que não tem preço. */}
               {item !== TEMPO && (
-                <span className="mr-1.5 text-[0.62em] tabular-nums text-white/25">
+                <span className="mr-[0.45em] text-[0.6em] tabular-nums text-white/25">
                   {String(i + 1).padStart(2, '0')}
                 </span>
               )}

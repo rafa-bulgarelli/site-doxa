@@ -8,7 +8,7 @@ import {
   useScroll,
   useTransform,
 } from 'framer-motion';
-import { ShieldCheck, ShieldOff } from 'lucide-react';
+import { ShieldCheck } from 'lucide-react';
 import wordmarkUrl from '../../brand/doxa-wordmark-white.png';
 import { MotionButton } from './ui/MotionButton';
 import { Ladainha } from './comparacao/Ladainha';
@@ -128,7 +128,7 @@ export function Comparacao() {
       {/* ── Painel escuro: a pergunta e a conta. */}
       <div
         ref={escuroRef}
-        className="sticky top-0 flex h-screen flex-col px-5 py-10 md:px-10 md:py-14"
+        className="sticky top-0 flex h-screen flex-col px-5 pb-10 pt-16 md:px-10 md:pb-14 md:pt-24"
       >
         <div className="dot-grid pointer-events-none absolute inset-0 opacity-40" />
 
@@ -153,7 +153,11 @@ export function Comparacao() {
             <span className="font-serif text-[2.6rem] leading-none text-white md:text-[4.6rem]">
               R$ <Contador ate={CUSTO_DE} naTela={contaNaTela} /> a{' '}
               <Contador ate={CUSTO_ATE} naTela={contaNaTela} />
-              <span className="ml-1 align-baseline text-2xl text-white/40 md:text-4xl">
+              {/* O `/mês` em destaque, a pedido do dono, e o argumento é dele:
+                  no fim do dia o que dói não é o valor, é a recorrência dele.
+                  Um custo alto se engole uma vez; um custo alto TODO MÊS, sem
+                  resultado garantido, é o que faz a pergunta do título doer. */}
+              <span className="ml-1 align-baseline text-3xl text-white/75 md:text-[3.2rem]">
                 {CUSTO_UNIDADE}
               </span>
             </span>
@@ -181,20 +185,17 @@ export function Comparacao() {
             <Ladainha />
           </div>
 
-          {/* O soco, agora dentro de um selo — e o selo é o argumento.
-              É o MESMO objeto que carrega a garantia no painel claro: mesma
-              caixa, mesma medida, o mesmo escudo. Lá ele está marcado, aqui
-              está cortado. O visitante encontra a mesma peça duas vezes com
-              sentidos opostos, e é isso que transforma a frase de observação em
-              contraponto — sem ela, a garantia do outro lado seria só mais uma
-              vantagem numa lista. */}
-          <div className="mt-6 flex max-w-3xl items-start gap-4 rounded-2xl border border-white/[0.14] bg-white/[0.04] p-5 md:mt-8 md:p-6">
-            <ShieldOff className="mt-1 h-7 w-7 shrink-0 text-white/70" strokeWidth={1.5} />
-            <p className="font-serif text-2xl leading-[1.12] tracking-[-0.02em] text-white md:text-[2.4rem]">
-              <span className="text-white/40">{SEM_GARANTIA[0]}</span>{' '}
-              {SEM_GARANTIA[1]}
-            </p>
-          </div>
+          {/* O soco, em texto puro.
+
+              Foi selo por uma rodada, espelhando o da garantia no painel claro,
+              e o dono recusou: a caixa cinza no meio do preto lia como aviso de
+              sistema, e o escudo cortado como ícone de erro. A frase não precisa
+              de moldura — ela é a única coisa em branco cheio depois do título,
+              e isso já a torna a segunda voz mais alta da tela. */}
+          <p className="mt-8 font-serif text-3xl leading-[1.1] tracking-[-0.02em] text-white md:mt-10 md:text-[3.6rem]">
+            <span className="text-white/40">{SEM_GARANTIA[0]}</span>{' '}
+            {SEM_GARANTIA[1]}
+          </p>
         </div>
       </div>
 
