@@ -1,9 +1,8 @@
 import { useRef } from 'react';
 import { motion, useReducedMotion, useScroll, useTransform } from 'framer-motion';
-import { ShieldCheck } from 'lucide-react';
+import { ShieldCheck, ShieldOff } from 'lucide-react';
 import wordmarkUrl from '../../brand/doxa-wordmark-white.png';
 import { MotionButton } from './ui/MotionButton';
-import { DotGridSpotlight } from './hero/DotGridSpotlight';
 import { Ladainha } from './comparacao/Ladainha';
 import {
   CONVITE,
@@ -70,7 +69,6 @@ function Selo({ prefixo, escuro = false }: { prefixo: string; escuro?: boolean }
  * efeito que a ProofWall já produz com as mesmas duas linhas.
  */
 export function Comparacao() {
-  const escuroRef = useRef<HTMLDivElement>(null);
   const claroRef = useRef<HTMLDivElement>(null);
   const parado = useReducedMotion() === true;
 
@@ -88,18 +86,8 @@ export function Comparacao() {
     // que o painel girado joga para fora sem criar contexto nenhum.
     <section className="relative overflow-x-clip bg-doxa-bg">
       {/* ── Painel escuro: a pergunta e a conta. */}
-      <div
-        ref={escuroRef}
-        className="sticky top-0 flex h-screen flex-col px-5 py-10 md:px-10 md:py-14"
-      >
+      <div className="sticky top-0 flex h-screen flex-col px-5 py-10 md:px-10 md:py-14">
         <div className="dot-grid pointer-events-none absolute inset-0 opacity-40" />
-        {/* O mesmo holofote do hero e da parede de prova. Escolhido no lugar de
-            um efeito novo de fundo: a interação desta seção JÁ é o ponteiro, e
-            uma chuva de meteoros disputaria com a lâmina em vez de ajudá-la.
-            Este acende a grade sob a mesma mão que carrega o cartão — reforça o
-            gesto em vez de competir com ele, e é vocabulário que a página já
-            usa duas vezes. */}
-        <DotGridSpotlight containerRef={escuroRef} />
 
         <div className="relative mx-auto flex h-full w-full max-w-screen-2xl flex-col">
           <Selo prefixo="Sem" />
@@ -135,20 +123,24 @@ export function Comparacao() {
 
               O resto da tela fica vazio de propósito: o painel claro entra
               girado por baixo e come o terço inferior. */}
-          <div className="mt-8 border-t border-white/[0.09] pt-8">
+          <div className="mt-6 border-t border-white/[0.09] pt-6 md:mt-7 md:pt-7">
             <Ladainha />
           </div>
 
-          {/* O soco. É a frase mais importante desta coluna e por isso é a
-              maior coisa abaixo do título: vinte e cinco contratações e um custo
-              recorrente ainda deixam a pessoa sem o que ela queria. É também a
-              dobradiça — a garantia do painel claro responde exatamente a esta
-              falta, e sem ela seria só mais uma vantagem numa lista. */}
-          <p className="mt-9 font-serif text-3xl leading-[1.08] tracking-[-0.02em] text-white md:mt-10 md:text-[3.2rem]">
-            <span className="text-white/40">{SEM_GARANTIA[0]}</span>
-            <br />
-            {SEM_GARANTIA[1]}
-          </p>
+          {/* O soco, agora dentro de um selo — e o selo é o argumento.
+              É o MESMO objeto que carrega a garantia no painel claro: mesma
+              caixa, mesma medida, o mesmo escudo. Lá ele está marcado, aqui
+              está cortado. O visitante encontra a mesma peça duas vezes com
+              sentidos opostos, e é isso que transforma a frase de observação em
+              contraponto — sem ela, a garantia do outro lado seria só mais uma
+              vantagem numa lista. */}
+          <div className="mt-6 flex max-w-3xl items-start gap-4 rounded-2xl border border-white/[0.14] bg-white/[0.04] p-5 md:mt-8 md:p-6">
+            <ShieldOff className="mt-1 h-7 w-7 shrink-0 text-white/70" strokeWidth={1.5} />
+            <p className="font-serif text-2xl leading-[1.12] tracking-[-0.02em] text-white md:text-[2.4rem]">
+              <span className="text-white/40">{SEM_GARANTIA[0]}</span>{' '}
+              {SEM_GARANTIA[1]}
+            </p>
+          </div>
         </div>
       </div>
 

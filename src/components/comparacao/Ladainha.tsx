@@ -206,7 +206,7 @@ export function Ladainha() {
         // Justificado, a pedido do dono: os itens ocupam de ponta a ponta e as
         // linhas ficam com a mesma medida, o que dá à conta a cara de coluna de
         // jornal — que é exatamente o tom de "isto é o que você paga".
-        className="relative z-10 text-justify font-serif text-[19px] leading-[1.55] tracking-[-0.01em] md:text-[1.85rem] md:leading-[1.55]"
+        className="relative z-10 text-justify font-serif text-[19px] leading-[1.55] tracking-[-0.01em] md:text-[2.15rem] md:leading-[1.5] lg:text-[2.45rem]"
       >
         {todos.map((item) => {
           const atraso = indice * CASCATA + (item === TEMPO ? 0.2 : 0);
