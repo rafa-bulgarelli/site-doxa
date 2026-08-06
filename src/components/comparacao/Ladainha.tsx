@@ -46,7 +46,7 @@ const EASE = [0.16, 1, 0.3, 1] as const;
 const CASCATA = 0.035;
 
 /** Tamanho da lâmina que segue o ponteiro, em pixels. */
-const LAMINA = { w: 236, h: 290 };
+const LAMINA = { w: 236, h: 322 };
 
 /**
  * Quanto a lâmina se afasta do ponteiro, em pixels.
@@ -127,23 +127,39 @@ function Icone({ nome }: { nome: string }) {
  */
 function Lamina({ item }: { item: Item }) {
   return (
-    <div
-      className="flex h-full w-full items-center justify-center overflow-hidden rounded-2xl border border-white/25"
-      style={{
-        background: item.cor,
-        // O brilho é da cor da própria lâmina: uma sombra preta debaixo de um
-        // cartão colorido só o afunda no fundo preto. Assim ele acende o que
-        // está em volta, que é o que o dono pediu.
-        boxShadow: `0 30px 90px -25px ${item.cor}, 0 0 60px -10px ${item.cor}66`,
-      }}
-    >
-      {item.imagem == null ? (
-        <span className="text-[#0B0B0B]/80">
-          <Icone nome={item.icone} />
-        </span>
-      ) : (
-        <img src={item.imagem} alt="" aria-hidden className="h-full w-full object-cover" />
-      )}
+    <div className="flex h-full w-full flex-col gap-2.5">
+      {/* O nome em cima do cartão, a pedido do dono.
+
+          Sem ele, a lâmina depende de a pessoa manter o olho na palavra que
+          acendeu enquanto olha para um cartão que apareceu em outro lugar da
+          tela — duas coisas ao mesmo tempo, e é justamente por isso que o
+          cartão anda deslocado do ponteiro. Com a legenda em cima, o objeto se
+          apresenta e a ligação com a lista deixa de exigir trabalho.
+
+          Cápsula escura e não texto solto: a lâmina passeia por cima da
+          ladainha, e um rótulo sem fundo ficaria por cima de outras palavras. */}
+      <span className="w-fit shrink-0 rounded-full border border-white/20 bg-black/80 px-3 py-1.5 text-[13px] leading-none text-white backdrop-blur-sm">
+        {item.nome}
+      </span>
+
+      <div
+        className="flex flex-1 items-center justify-center overflow-hidden rounded-2xl border border-white/25"
+        style={{
+          background: item.cor,
+          // O brilho é da cor da própria lâmina: uma sombra preta debaixo de um
+          // cartão colorido só o afunda no fundo preto. Assim ele acende o que
+          // está em volta, que é o que o dono pediu.
+          boxShadow: `0 30px 90px -25px ${item.cor}, 0 0 60px -10px ${item.cor}66`,
+        }}
+      >
+        {item.imagem == null ? (
+          <span className="text-[#0B0B0B]/80">
+            <Icone nome={item.icone} />
+          </span>
+        ) : (
+          <img src={item.imagem} alt="" aria-hidden className="h-full w-full object-cover" />
+        )}
+      </div>
     </div>
   );
 }

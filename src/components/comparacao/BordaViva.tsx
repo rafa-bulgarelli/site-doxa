@@ -3,6 +3,8 @@ import { useLayoutEffect, useState, type RefObject } from 'react';
 interface BordaVivaProps {
   /** O cartão cuja borda o sinal percorre. */
   alvoRef: RefObject<HTMLElement>;
+  /** O visitante parou o sinal. Congela onde está, em vez de sumir. */
+  pausado: boolean;
 }
 
 /** O mesmo raio do `rounded-3xl` do cartão, em pixels. */
@@ -63,7 +65,7 @@ function meiaVolta(largura: number, altura: number, topo: boolean) {
  * contorno em `%` acompanharia a caixa esticando os cantos — o raio deixaria de
  * ser um raio e viraria uma elipse.
  */
-export function BordaViva({ alvoRef }: BordaVivaProps) {
+export function BordaViva({ alvoRef, pausado }: BordaVivaProps) {
   const [caixa, setCaixa] = useState({ largura: 0, altura: 0 });
 
   useLayoutEffect(() => {
@@ -101,38 +103,20 @@ export function BordaViva({ alvoRef }: BordaVivaProps) {
             <path d={d} stroke="rgba(255,255,255,0.13)" strokeWidth={1} />
 
             {/*
-             * As quatro camadas do rastro, da mais fraca para a cabeça — e a
-             * ordem de pintura é o que mantém a cabeça nítida: desenhada por
-             * último, ela fica por cima das caudas.
-             *
-             * A espessura cai junto com a opacidade. Era o que faltava para
-             * isto ler como rastro: uma estrela cadente não tem só a cauda mais
-             * apagada, tem a cauda mais estreita. Com quatro traços de mesma
-             * espessura o que se via eram quatro riscos sobrepostos.
-             *
-             * `pathLength` normaliza o caminho para 1, e é o que torna o
-             * desenho independente do tamanho: o traço passa a ser uma FRAÇÃO
-             * do contorno, então os mesmos números servem para o cartão de uma
-             * pergunta e para o do pagamento, que é bem mais alto.
+             * O sinal, em um traço só com auréola larga — o vocabulário do
+             * hero. As quatro camadas de rastro foram tentadas e cortadas pelo
+             * dono: empilhadas, liam como riscos sobrepostos em vez de uma
+             * coisa em movimento.
              */}
-            {(
-              [
-                ['borda-c4', 1, 'rgba(255,255,255,0.85)'],
-                ['borda-c3', 1.3, 'rgba(255,255,255,0.9)'],
-                ['borda-c2', 1.7, 'rgba(255,255,255,0.95)'],
-                ['borda-c1', 2.2, '#FFFFFF'],
-              ] as const
-            ).map(([classe, largura, cor]) => (
-              <path
-                key={classe}
-                d={d}
-                pathLength={1}
-                className={`cadente ${classe}`}
-                stroke={cor}
-                strokeWidth={largura}
-                strokeLinecap="round"
-              />
-            ))}
+            <path
+              d={d}
+              pathLength={1}
+              className="pulso pulso-borda"
+              stroke="#FFFFFF"
+              strokeWidth={2}
+              strokeLinecap="round"
+              style={{ animationPlayState: pausado ? 'paused' : 'running' }}
+            />
           </g>
         );
       })}

@@ -136,7 +136,14 @@ const PRONTO = PASSOS.length + 1;
  *    enquanto não for, este formulário NÃO PODE IR AO AR — alguém preencheria,
  *    veria a confirmação e ninguém receberia nada.
  */
-export function Formulario({ cartaoRef }: { cartaoRef: RefObject<HTMLDivElement> }) {
+export function Formulario({
+  cartaoRef,
+  sinalPausado,
+}: {
+  cartaoRef: RefObject<HTMLDivElement>;
+  /** Repassado à borda: quem manda no sinal é o painel, não o formulário. */
+  sinalPausado: boolean;
+}) {
   const [passo, setPasso] = useState(0);
   const [dados, setDados] = useState({ nome: '', whatsapp: '', arroba: '' });
   const [erro, setErro] = useState<string | null>(null);
@@ -239,7 +246,7 @@ export function Formulario({ cartaoRef }: { cartaoRef: RefObject<HTMLDivElement>
           permite. */}
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(85%_55%_at_50%_0%,rgba(255,255,255,0.07),transparent_70%)]" />
       {/* O sinal que chegou pelo fio continua aqui, contornando o cartão. */}
-      <BordaViva alvoRef={cartaoRef} />
+      <BordaViva alvoRef={cartaoRef} pausado={sinalPausado} />
 
       <div className="relative p-8 md:p-12">
         {/* O andamento. Três de três é curto o bastante para ser dito por extenso,

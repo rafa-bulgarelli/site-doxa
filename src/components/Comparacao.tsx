@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   animate,
   motion,
@@ -8,6 +8,7 @@ import {
   useScroll,
   useTransform,
 } from 'framer-motion';
+import { Pause, Play } from 'lucide-react';
 import wordmarkUrl from '../../brand/doxa-wordmark-white.png';
 import { DotGridSpotlight } from './hero/DotGridSpotlight';
 import { FioConvite } from './comparacao/FioConvite';
@@ -200,6 +201,16 @@ export function Comparacao() {
   const cartaoRef = useRef<HTMLDivElement>(null);
   const parado = useReducedMotion() === true;
   const isDesktop = useIsDesktop();
+  /**
+   * O visitante parou o sinal.
+   *
+   * Mora aqui porque as duas linhas são uma só: o fio que atravessa o papel e os
+   * ramos que contornam o cartão dividem um ciclo, e pausar um sem o outro
+   * deixaria metade do percurso andando. `animationPlayState` congela cada um
+   * onde está, em vez de apagá-los — retomar continua de onde parou, que é o que
+   * um botão de pausa promete.
+   */
+  const [sinalPausado, setSinalPausado] = useState(false);
   const contaNaTela = useInView(escuroRef, { amount: 0.4, once: true });
   /**
    * Quando o painel claro chega — o que dispara o risco sobre o custo antigo.
@@ -376,7 +387,12 @@ export function Comparacao() {
               Desktop apenas: empilhado, as duas pontas ficam uma embaixo da
               outra e o fio seria um laço em volta do próprio argumento. */}
           {isDesktop && (
-            <FioConvite containerRef={gradeRef} deRef={faltaRef} paraRef={cartaoRef} />
+            <FioConvite
+              containerRef={gradeRef}
+              deRef={faltaRef}
+              paraRef={cartaoRef}
+              pausado={sinalPausado}
+            />
           )}
 
           <div className="relative flex flex-col">
@@ -465,8 +481,31 @@ export function Comparacao() {
             </div>
           </div>
 
-          <div className="relative flex lg:justify-end">
-            <Formulario cartaoRef={cartaoRef} />
+          <div className="relative flex flex-col lg:items-end">
+            {/* Só o ícone, a pedido do dono. O rótulo vive no `aria-label`: um
+                botão de dois estados com desenho universal não precisa de
+                palavra ao lado, mas quem navega por leitor de tela precisa
+                saber o que ele faz — e precisa saber em qual estado está, que é
+                o trabalho do `aria-pressed`.
+
+                Fora do cartão, e não dentro: o que ele controla é o sinal dos
+                DOIS lados, inclusive o fio que corre pelo papel. Dentro da
+                caixa preta, prometeria mandar só nela. */}
+            <button
+              type="button"
+              onClick={() => setSinalPausado((atual) => !atual)}
+              aria-pressed={sinalPausado}
+              aria-label={sinalPausado ? 'Retomar a animação das linhas' : 'Pausar a animação das linhas'}
+              className="mb-3 flex h-9 w-9 items-center justify-center self-end rounded-full border border-black/15 bg-black/[0.04] text-black/45 transition-colors hover:border-black/40 hover:text-[#0B0B0B] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/50"
+            >
+              {sinalPausado ? (
+                <Play className="h-3.5 w-3.5" strokeWidth={2} />
+              ) : (
+                <Pause className="h-3.5 w-3.5" strokeWidth={2} />
+              )}
+            </button>
+
+            <Formulario cartaoRef={cartaoRef} sinalPausado={sinalPausado} />
           </div>
         </div>
       </motion.div>

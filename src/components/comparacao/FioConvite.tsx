@@ -1,4 +1,4 @@
-import { useLayoutEffect, useState, type CSSProperties, type RefObject } from 'react';
+import { useLayoutEffect, useState, type RefObject } from 'react';
 
 interface FioConviteProps {
   /** A caixa em que o fio é desenhado; as duas pontas são medidas dentro dela. */
@@ -7,6 +7,8 @@ interface FioConviteProps {
   deRef: RefObject<HTMLElement>;
   /** Onde ele chega: a borda esquerda do cartão do pedido. */
   paraRef: RefObject<HTMLElement>;
+  /** O visitante parou o sinal. Congela onde está, em vez de sumir. */
+  pausado: boolean;
 }
 
 /** Puxão mínimo nas alças da curva, para um salto curto ainda curvar. */
@@ -60,7 +62,7 @@ function posicao(elemento: HTMLElement, container: HTMLElement) {
  * nas duas pontas cobre tudo que pode mover as âncoras — o passo do formulário
  * trocando de altura, a fonte carregando, a janela mudando de tamanho.
  */
-export function FioConvite({ containerRef, deRef, paraRef }: FioConviteProps) {
+export function FioConvite({ containerRef, deRef, paraRef, pausado }: FioConviteProps) {
   const [caixa, setCaixa] = useState({ largura: 0, altura: 0 });
   const [traco, setTraco] = useState('');
 
@@ -126,25 +128,21 @@ export function FioConvite({ containerRef, deRef, paraRef }: FioConviteProps) {
       />
 
       {/*
-       * O sinal, em uma camada só.
+       * O sinal: um traço com auréola, e é o mesmo do hero em tinta.
        *
-       * O rastro de estrela cadente ficou para a borda do cartão, a pedido do
-       * dono: sobre papel, uma cauda esmaecida em tinta vira uma sujeira cinza
-       * ao lado da linha, porque no claro o que desvanece não some — fica. No
-       * escuro, uma cauda fraca some de verdade, e é lá que o efeito funciona.
-       *
-       * Continua dividindo o ciclo de sete segundos com a borda: este trecho
+       * Divide o ciclo de sete segundos com a borda do cartão — este trecho
        * ocupa o primeiro quarto, e a borda só começa depois que ele termina. É
-       * o que garante um par de linhas por vez.
+       * o que garante um par de linhas por vez, sem um temporizador vigiando o
+       * outro.
        */}
       <path
         d={traco}
         pathLength={1}
-        className="cadente cadente-cabeca cadente-fio-cabeca"
-        stroke="rgba(11,11,11,0.9)"
+        className="pulso pulso-fio"
+        stroke="rgba(11,11,11,0.92)"
         strokeWidth={2.8}
         strokeLinecap="round"
-        style={{ '--pulse-glow': 'rgba(0,0,0,0.45)' } as CSSProperties}
+        style={{ animationPlayState: pausado ? 'paused' : 'running' }}
       />
     </svg>
   );

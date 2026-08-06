@@ -424,22 +424,18 @@ body {
  * reencontram e apagam, nada dispara de novo, nem no papel nem na borda.
  *
  * Isso é feito com UM ciclo de sete segundos partilhado pelas duas animações,
- * em vez de um controlador em JavaScript. Cada camada roda os mesmos 7s e só se
+ * em vez de um controlador em JavaScript. Cada uma roda os mesmos 7s e só se
  * mostra na sua janela: o fio de 0 a 26%, a borda de 30 a 72%, e o resto é o
  * silêncio antes do próximo disparo. Duas animações CSS de mesma duração,
  * iniciadas no mesmo carregamento, não se desencontram — e nada precisa de um
  * temporizador vigiando o outro.
  *
- * O RASTRO é o que faz a estrela cadente. Um traço uniforme é um risco andando;
- * uma cabeça curta e opaca seguida de dois traços cada vez mais longos e mais
- * fracos é uma coisa em movimento deixando marca no caminho. As três camadas
- * correm na mesma velocidade e terminam no mesmo ponto — os `stroke-dashoffset`
- * diferem exatamente pelo tanto que cada uma é mais comprida que a cabeça, e é
- * isso que empilha a cauda ATRÁS dela em vez de à frente.
+ * Um traço por linha, e o brilho é o efeito. O rastro de estrela cadente foi
+ * tentado e o dono cortou: quatro camadas empilhadas liam como riscos
+ * sobrepostos, não como uma coisa em movimento. O que sobrou é o vocabulário do
+ * hero — um pulso limpo com auréola —, e é ele que a página inteira já fala.
  */
-
-/* O sinal do fio, na primeira janela do ciclo — uma camada só. */
-@keyframes cadente-fio-cabeca {
+@keyframes pulso-fio {
   0% {
     stroke-dashoffset: 0.04;
     opacity: 1;
@@ -454,83 +450,18 @@ body {
   }
 }
 
-/*
- * ── AS QUATRO CAMADAS DA BORDA, na segunda janela do ciclo.
- *
- * Cada uma é mais comprida, mais fraca e mais FINA que a anterior, e a
- * espessura é o que faltava: uma estrela cadente não tem só a cauda mais
- * apagada, tem a cauda mais estreita. Com três traços de mesma espessura o que
- * se via eram três riscos sobrepostos; afinando, eles viram um só que se dissolve.
- */
-@keyframes borda-b1 {
+@keyframes pulso-borda {
   0%,
   29.99% {
     opacity: 0;
   }
   30% {
-    stroke-dashoffset: 0.035;
-    opacity: 1.0;
+    stroke-dashoffset: 0.04;
+    opacity: 1;
   }
   72% {
-    stroke-dashoffset: -1.015;
-    opacity: 1.0;
-  }
-  72.01%,
-  100% {
-    opacity: 0;
-  }
-}
-
-@keyframes borda-b2 {
-  0%,
-  29.99% {
-    opacity: 0;
-  }
-  30% {
-    stroke-dashoffset: 0.100;
-    opacity: 0.5;
-  }
-  72% {
-    stroke-dashoffset: -0.950;
-    opacity: 0.5;
-  }
-  72.01%,
-  100% {
-    opacity: 0;
-  }
-}
-
-@keyframes borda-b3 {
-  0%,
-  29.99% {
-    opacity: 0;
-  }
-  30% {
-    stroke-dashoffset: 0.180;
-    opacity: 0.22;
-  }
-  72% {
-    stroke-dashoffset: -0.870;
-    opacity: 0.22;
-  }
-  72.01%,
-  100% {
-    opacity: 0;
-  }
-}
-
-@keyframes borda-b4 {
-  0%,
-  29.99% {
-    opacity: 0;
-  }
-  30% {
-    stroke-dashoffset: 0.260;
-    opacity: 0.1;
-  }
-  72% {
-    stroke-dashoffset: -0.790;
-    opacity: 0.1;
+    stroke-dashoffset: -1.01;
+    opacity: 1;
   }
   72.01%,
   100% {
@@ -539,52 +470,37 @@ body {
 }
 
 /*
- * O comprimento de cada camada, em fração do caminho. `pathLength="1"` no
- * elemento é o que torna estes números independentes do tamanho: servem para o
- * fio de duzentos pixels e para o contorno de um cartão que muda de altura a
- * cada passo do formulário.
+ * `pathLength="1"` no elemento é o que torna estes números independentes do
+ * tamanho: o traço é uma FRAÇÃO do caminho, e serve tanto para o fio de duzentos
+ * pixels quanto para o contorno de um cartão que muda de altura a cada passo.
  */
-.cadente {
+.pulso {
+  stroke-dasharray: 0.05 0.95;
   animation-duration: 7s;
   animation-timing-function: linear;
   animation-iteration-count: infinite;
   animation-fill-mode: both;
 }
 
-.cadente-cabeca {
-  stroke-dasharray: 0.04 0.96;
+/*
+ * A auréola, e ela é generosa a pedido do dono — a mesma presença que o sinal
+ * tem no hero. Duas camadas: um núcleo curto que engorda o traço sem borrá-lo, e
+ * uma larga e fraca que é o brilho de fato. Uma só, aberta o bastante para
+ * espalhar, apaga o fio dentro dela.
+ */
+.pulso-fio {
+  animation-name: pulso-fio;
+  filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.85)) drop-shadow(0 0 16px rgba(0, 0, 0, 0.5));
 }
 
-/* Brilho só na cabeça: uma auréola em cada camada empilharia três halos e o
-   rastro inteiro viraria um borrão aceso. A cauda é rastro, não é luz. */
-.cadente-fio-cabeca {
-  animation-name: cadente-fio-cabeca;
-  filter: drop-shadow(0 0 5px var(--pulse-glow, rgba(255, 255, 255, 0.85)));
-}
-
-/* Brilho só na cabeça: uma auréola por camada empilharia quatro halos e o
-   rastro inteiro viraria um borrão aceso. A cauda é rastro, não é luz. */
-.borda-c1 {
-  stroke-dasharray: 0.035 0.965;
-  animation-name: borda-b1;
-  filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.95))
-    drop-shadow(0 0 16px rgba(255, 255, 255, 0.55));
-}
-.borda-c2 {
-  stroke-dasharray: 0.1 0.9;
-  animation-name: borda-b2;
-}
-.borda-c3 {
-  stroke-dasharray: 0.18 0.82;
-  animation-name: borda-b3;
-}
-.borda-c4 {
-  stroke-dasharray: 0.26 0.74;
-  animation-name: borda-b4;
+.pulso-borda {
+  animation-name: pulso-borda;
+  filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.95))
+    drop-shadow(0 0 22px rgba(255, 255, 255, 0.6));
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .cadente {
+  .pulso {
     animation: none;
     opacity: 0;
   }
