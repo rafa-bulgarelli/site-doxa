@@ -1,8 +1,8 @@
 import { useRef, useState } from 'react';
 import { AnimatePresence, motion, useInView, useReducedMotion } from 'framer-motion';
 import { X } from 'lucide-react';
-import { CampoPergunta } from './faq/CampoPergunta';
-import { Descida, VAO, VIAGEM } from './faq/Descida';
+import { CampoPergunta, MINIMA } from './faq/CampoPergunta';
+import { Descida, VIAGEM } from './faq/Descida';
 import { Revela } from './faq/Revela';
 import { encontra } from './faq/busca';
 import { ABERTURA, DUVIDAS, SEM_RESPOSTA, type Duvida } from './faq/config';
@@ -23,18 +23,14 @@ const EASE = [0.16, 1, 0.3, 1] as const;
  * o tempo de um gesto, não de uma espera. É o que torna a causa visível — a
  * mesma razão de uma porta mostrar que foi a maçaneta que a abriu.
  *
- * O MESMO número comanda a abertura da seção em duas colunas, logo abaixo. Na
- * primeira pergunta não há sinal nenhum no desktop: o gesto é a página se
- * partindo em duas, e a resposta nasce quando ela termina de partir. Um só valor
- * para as duas coisas é o que garante que nunca haja espera sem causa na tela.
+ * O MESMO número comanda a abertura da coluna de respostas, logo abaixo. Na
+ * primeira pergunta não há sinal nenhum no desktop: o gesto é o painel se
+ * abrindo, e a resposta nasce quando ele termina de abrir. Um só valor para as
+ * duas coisas é o que garante que nunca haja espera sem causa na tela.
  */
 const DESCIDA = VIAGEM * 1000;
 
-/** A largura da seção antes e depois de ela se dividir. */
-const FECHADA = '48rem';
-const ABERTA = '72rem';
-
-/** A cadência da divisão — a mesma do resto do site. */
+/** A cadência da abertura — a mesma do resto do site. */
 const TRANSICAO = {
   transitionDuration: `${DESCIDA}ms`,
   transitionTimingFunction: `cubic-bezier(${EASE.join(',')})`,
@@ -87,12 +83,25 @@ interface Troca {
  * busca seria mentir sobre a única coisa que esta seção existe para fazer:
  * responder direito.
  *
- * ─── O DESENHO: A SEÇÃO SE PARTE EM DUAS ─────────────────────────────────────
+ * ─── O DESENHO: CABEÇALHO EM CIMA, DUAS COLUNAS EMBAIXO ──────────────────────
  *
- * Fechada, ela é uma coluna centrada de 48rem — pergunta e nada mais, porque
- * ainda não há resposta nenhuma para mostrar. Na PRIMEIRA pergunta ela abre para
- * 72rem e se divide: a pergunta encosta à esquerda e as respostas passam a
- * nascer à direita, num painel que não existia até alguém precisar dele.
+ * A seção usa `max-w-screen-2xl`, que é a mesma faixa da comparação e do "como
+ * funciona" — o rótulo, o título e o campo começam na MESMA linha vertical dos
+ * títulos das outras seções, e a página passa a ter uma margem só. A largura não
+ * se mexe mais: o que abre é a divisão interna, não o quadro.
+ *
+ * O cabeçalho fica FORA do grid, em largura total, e isso não é arranjo visual —
+ * é o que faz o sinal ter para onde ir. Com o título dentro da coluna esquerda,
+ * o topo da coluna de respostas caía na altura do rótulo e o campo ficava
+ * duzentos pixels abaixo dele: o risco saía do campo, atravessava na altura
+ * errada e lia como um traço boiando. Com o cabeçalho em cima, o topo das duas
+ * colunas é o mesmo, o campo é a primeira coisa da esquerda e a resposta é a
+ * primeira coisa da direita — o sinal corre reto entre os dois.
+ *
+ * Fechada, a coluna de respostas tem largura zero e o campo ocupa a faixa
+ * inteira. Na PRIMEIRA pergunta ela abre para `minmax(32rem, 44%)` — a mesma
+ * proporção que a comparação usa para o cartão do pedido — e a divisória se
+ * desenha de cima para baixo entre as duas.
  *
  * Isto resolve o defeito que o empilhamento tinha e que nenhuma dose de espaço
  * consertava: a resposta empurrava os atalhos para longe e cada nova pergunta
@@ -121,9 +130,9 @@ export function Faq() {
   // sempre, e um índice se repete assim que a lista muda de forma.
   const proximoId = useRef(0);
 
-  /** Se a seção já se partiu em duas colunas. */
+  /** Se a coluna de respostas já está aberta. */
   const [aberto, setAberto] = useState(false);
-  /** Se ela está se partindo AGORA — dura o tempo de uma travessia. */
+  /** Se ela está abrindo AGORA — dura o tempo de uma travessia. */
   const [abrindo, setAbrindo] = useState(false);
   /** O relógio que devolve a seção à coluna única depois de limpar. */
   const fechamento = useRef<number | undefined>(undefined);
@@ -141,7 +150,7 @@ export function Faq() {
       escape: achada == null,
     };
 
-    // Perguntar durante o fechamento cancela o fechamento: sem isto, a seção
+    // Perguntar durante o fechamento cancela o fechamento: sem isto, a coluna
     // encolheria no meio da resposta nova por causa de um clique já desfeito.
     window.clearTimeout(fechamento.current);
     const primeira = !aberto;
@@ -211,89 +220,115 @@ export function Faq() {
           tela. A textura da seção passa a ser só a do campo, que é uma caixa e
           se comporta como as outras caixas do site. */}
 
-      <div
-        className="relative mx-auto w-full transition-[max-width] motion-reduce:transition-none"
-        style={{ ...TRANSICAO, maxWidth: aberto ? ABERTA : FECHADA }}
-      >
-        {/* As colunas moram no `style` de propósito: `grid-template-columns` só
-            vale onde o elemento é grid, e ele só é grid em `lg`. Assim o mesmo
-            objeto descreve os dois estados sem precisar de quatro classes
-            condicionais — e o vão vem de `VAO`, que é o mesmo número que o sinal
-            atravessa. */}
+      <div className="relative mx-auto w-full max-w-screen-2xl">
+        {/* ─── O CABEÇALHO, em largura total ──────────────────────────────── */}
+        <motion.div
+          initial={parado ? undefined : { opacity: 0, y: 16 }}
+          animate={naTela ? { opacity: 1, y: 0 } : undefined}
+          transition={{ duration: 0.6, ease: EASE }}
+        >
+          {/* O rótulo, e ele agora CONTA.
+              Saiu daqui o ponto que pulsava: um LED em loop eterno num fundo
+              preto liso é movimento sem informação, e o dono viu isso antes de
+              qualquer argumento. No lugar entrou a única coisa que esta seção
+              tem de verdade para dizer sobre si mesma — quantas das respostas
+              escritas já foram lidas. Um contador não pisca à toa: ele só se
+              mexe quando alguém pergunta.
+
+              O brilho é o `texto-aceso-fraco` do site, e não um glow novo. É o
+              mesmo par de camadas — núcleo curto que engorda a letra, halo largo
+              que sangra no preto — um passo abaixo da palavra acesa da
+              comparação, porque um rótulo de doze pixels que brilha igual a uma
+              manchete de setenta some com a hierarquia da página inteira. */}
+          <span className="flex items-baseline gap-2.5">
+            <span className="texto-aceso-fraco text-[12px] font-medium uppercase tracking-[0.24em] text-[#F4F1E8]">
+              {ABERTURA.rotulo}
+            </span>
+            <AnimatePresence>
+              {cobertas > 0 && (
+                <motion.span
+                  key="contador"
+                  initial={parado ? undefined : { opacity: 0, y: -4 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -4 }}
+                  transition={{ duration: 0.3, ease: EASE }}
+                  className="text-[11px] uppercase tracking-[0.2em] text-white/30 tabular-nums"
+                >
+                  · {dois(cobertas)} de {dois(DUVIDAS.length)}
+                </motion.span>
+              )}
+            </AnimatePresence>
+          </span>
+
+          {/* O traço, que é o contador em forma de barra. Ele se estende uma vez
+              quando a seção entra na tela e depois só cresce por dentro, a cada
+              resposta lida. Nenhum dos dois movimentos se repete — que é a
+              diferença entre um estado e um enfeite. */}
+          <motion.div
+            aria-hidden
+            className="mt-3 h-px w-full max-w-[13rem] origin-left bg-white/[0.12]"
+            initial={parado ? undefined : { scaleX: 0 }}
+            animate={naTela ? { scaleX: 1 } : undefined}
+            transition={{ duration: 0.7, ease: EASE, delay: 0.15 }}
+          >
+            <motion.div
+              className="h-px w-full origin-left bg-[#F4F1E8]"
+              initial={false}
+              animate={{ scaleX: cobertas / DUVIDAS.length }}
+              transition={{ duration: 0.5, ease: EASE }}
+            />
+          </motion.div>
+
+          <h2 className="mt-5 font-serif text-[2.6rem] leading-[0.95] tracking-[-0.03em] text-[#F4F1E8] md:text-[3.6rem]">
+            {ABERTURA.titulo}
+          </h2>
+          <p className="mt-3 text-[15px] text-white/50">{ABERTURA.dica}</p>
+        </motion.div>
+
+        {/* ─── AS DUAS COLUNAS ─────────────────────────────────────────────
+         *
+         * As colunas moram no `style` de propósito: `grid-template-columns` só
+         * vale onde o elemento é grid, e ele só é grid em `lg`. Assim o mesmo
+         * objeto descreve os dois estados sem quatro classes condicionais.
+         *
+         * O vão NÃO é `gap`: é recuo das duas colunas (`pr-16` e `pl-16`) com a
+         * divisória no meio. Com gap, a divisória teria de ser um absoluto solto
+         * por cima do grid, posicionado por uma conta em `calc` que só se manteria
+         * certa enquanto ninguém mexesse nas frações. Como recuo, ela é a borda
+         * de um elemento que já está no lugar certo — e o sinal tem exatamente
+         * meio vão para atravessar, que é o `VAO` que ele já conhece.
+         */}
         <div
-          className="transition-[grid-template-columns,column-gap] motion-reduce:transition-none lg:grid lg:items-start"
+          className="mt-10 transition-[grid-template-columns] motion-reduce:transition-none lg:mt-14 lg:grid"
           style={{
             ...TRANSICAO,
             gridTemplateColumns: aberto
-              ? 'minmax(0, 1fr) minmax(0, 1.1fr)'
+              ? 'minmax(0, 1fr) minmax(0, 44%)'
               : 'minmax(0, 1fr) minmax(0, 0fr)',
-            columnGap: aberto ? VAO : 0,
           }}
         >
           {/* ─── A COLUNA DA PERGUNTA ─────────────────────────────────────── */}
-          <div className="lg:sticky lg:top-24">
-            <motion.div
-              initial={parado ? undefined : { opacity: 0, y: 16 }}
-              animate={naTela ? { opacity: 1, y: 0 } : undefined}
-              transition={{ duration: 0.6, ease: EASE }}
-            >
-              {/* O rótulo, e ele agora CONTA.
-                  Saiu daqui o ponto que pulsava: um LED em loop eterno num fundo
-                  preto liso é movimento sem informação, e o dono viu isso antes
-                  de qualquer argumento. No lugar entrou a única coisa que esta
-                  seção tem de verdade para dizer sobre si mesma — quantas das
-                  respostas escritas já foram lidas. Um contador não pisca à toa:
-                  ele só se mexe quando alguém pergunta. */}
-              <span className="flex items-baseline gap-2.5">
-                <span className="text-[11px] font-medium uppercase tracking-[0.2em] text-white/50">
-                  {ABERTURA.rotulo}
-                </span>
-                <AnimatePresence>
-                  {cobertas > 0 && (
-                    <motion.span
-                      key="contador"
-                      initial={parado ? undefined : { opacity: 0, y: -4 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -4 }}
-                      transition={{ duration: 0.3, ease: EASE }}
-                      className="text-[11px] uppercase tracking-[0.2em] text-white/30 tabular-nums"
-                    >
-                      · {dois(cobertas)} de {dois(DUVIDAS.length)}
-                    </motion.span>
-                  )}
-                </AnimatePresence>
-              </span>
-
-              {/* O traço, que é o contador em forma de barra. Ele se estende uma
-                  vez quando a seção entra na tela e depois só cresce por dentro,
-                  a cada resposta lida. Nenhum dos dois movimentos se repete —
-                  que é a diferença entre um estado e um enfeite. */}
-              <motion.div
-                aria-hidden
-                className="mt-3 h-px w-full max-w-[13rem] origin-left bg-white/[0.12]"
-                initial={parado ? undefined : { scaleX: 0 }}
-                animate={naTela ? { scaleX: 1 } : undefined}
-                transition={{ duration: 0.7, ease: EASE, delay: 0.15 }}
-              >
-                <motion.div
-                  className="h-px w-full origin-left bg-[#F4F1E8]"
-                  initial={false}
-                  animate={{ scaleX: cobertas / DUVIDAS.length }}
-                  transition={{ duration: 0.5, ease: EASE }}
-                />
-              </motion.div>
-
-              <h2 className="mt-5 font-serif text-[2.6rem] leading-[0.95] tracking-[-0.03em] text-[#F4F1E8] md:text-[3.6rem]">
-                {ABERTURA.titulo}
-              </h2>
-              <p className="mt-3 text-[15px] text-white/50">{ABERTURA.dica}</p>
-            </motion.div>
+          <div
+            className={`relative transition-[padding] motion-reduce:transition-none lg:sticky lg:top-24 lg:self-start ${
+              aberto ? 'lg:pr-16' : 'lg:pr-0'
+            }`}
+            style={TRANSICAO}
+          >
+            {/* O sinal deitado mora AQUI, e não do outro lado: ele sai do campo,
+                e é da borda do campo que ele tem de partir. Na primeira pergunta
+                o desktop não ganha sinal — o gesto é o painel se abrindo, e um
+                risco atravessando um vão que ainda está nascendo correria por
+                cima de si mesmo. */}
+            <AnimatePresence>
+              {sinais > 0 && !abrindo && (
+                <Descida key="atravessa" sentido="direita" centro={MINIMA / 2} />
+              )}
+            </AnimatePresence>
 
             <motion.div
               initial={parado ? undefined : { opacity: 0, y: 16 }}
               animate={naTela ? { opacity: 1, y: 0 } : undefined}
               transition={{ duration: 0.6, ease: EASE, delay: 0.1 }}
-              className="mt-8"
             >
               <CampoPergunta
                 valor={rascunho}
@@ -334,27 +369,35 @@ export function Faq() {
 
           {/* ─── A COLUNA DAS RESPOSTAS ───────────────────────────────────────
            *
-           * `relative` e `min-w-0` fazem o trabalho estrutural: o primeiro é o
-           * poste em que o sinal se pendura (ele mora FORA da coluna, dentro do
-           * vão, em `left: -VAO`), e o segundo impede que uma palavra longa
-           * estoure a coluna e empurre o grid inteiro.
+           * `min-w-0` impede que uma palavra longa estoure a coluna e empurre o
+           * grid inteiro; `relative` é o poste da divisória e da descida.
            *
            * A margem de cima só existe empilhado. Dividido, o topo desta coluna
-           * tem de bater com o topo da outra — é o alinhamento que faz as duas
-           * lerem como duas metades da mesma coisa, e não como uma embaixo da
-           * outra que por acaso ficou ao lado.
+           * bate com o topo do campo — é esse alinhamento que faz as duas lerem
+           * como duas metades da mesma coisa, e é o que dá ao sinal uma linha
+           * reta para percorrer.
            */}
-          <div className={`relative min-w-0 ${aberto ? 'mt-10 lg:mt-0' : ''}`}>
+          <div
+            className={`relative min-w-0 transition-[padding] motion-reduce:transition-none ${
+              aberto ? 'mt-12 lg:mt-0 lg:pl-16' : 'lg:pl-0'
+            }`}
+            style={TRANSICAO}
+          >
+            {/* A divisória. Ela se DESENHA de cima para baixo quando o painel
+                abre, em vez de aparecer inteira: uma linha que surge pronta lê
+                como parte do fundo que sempre esteve ali, e esta linha é
+                consequência de uma pergunta. `inset-y-0` a faz correr a altura
+                cheia da coluna, que o grid estica até a mais alta das duas. */}
+            <motion.span
+              aria-hidden
+              className="absolute inset-y-0 left-0 hidden w-px origin-top bg-white/[0.10] lg:block"
+              initial={false}
+              animate={{ scaleY: aberto ? 1 : 0 }}
+              transition={{ duration: parado ? 0 : DESCIDA / 1000, ease: EASE }}
+            />
+
             <AnimatePresence>
-              {sinais > 0 && (
-                <>
-                  <Descida key="desce" sentido="baixo" />
-                  {/* Na primeira pergunta o desktop não ganha sinal: o gesto é a
-                      própria seção se partindo, e um risco atravessando um vão
-                      que ainda está nascendo correria por cima de si mesmo. */}
-                  {!abrindo && <Descida key="atravessa" sentido="direita" />}
-                </>
-              )}
+              {sinais > 0 && <Descida key="desce" sentido="baixo" />}
             </AnimatePresence>
 
             {/*

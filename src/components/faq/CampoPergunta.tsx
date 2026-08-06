@@ -10,8 +10,15 @@ interface CampoPerguntaProps {
   aoEnviar: () => void;
 }
 
-/** A altura de uma linha do campo, em pixels. */
-const MINIMA = 56;
+/**
+ * A altura de uma linha do campo, em pixels.
+ *
+ * Exportada porque o sinal que atravessa o vão se alinha pelo MEIO do campo, e
+ * esse meio é a metade deste número. Escrito de novo lá, os dois divergem no dia
+ * em que o campo mudar de corpo — e o risco passa a sair de um lugar onde não há
+ * campo nenhum.
+ */
+export const MINIMA = 56;
 /** Onde ele para de crescer e passa a rolar por dentro. */
 const MAXIMA = 168;
 

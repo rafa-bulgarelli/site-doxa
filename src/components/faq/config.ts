@@ -145,7 +145,10 @@ export const SEM_RESPOSTA = {
 };
 
 export const ABERTURA = {
-  rotulo: 'Perguntas',
+  /* "FAQ" e não "Perguntas": o título logo abaixo já pergunta, e um rótulo que
+     repete o que o título faz é uma linha a menos de informação na tela. A sigla
+     é o nome do objeto — quem chega sabe na hora o que esta seção é. */
+  rotulo: 'FAQ',
   titulo: 'O que você quer saber?',
   /*
    * A dica não é mais um convite, é um limite — e o limite é que vende.

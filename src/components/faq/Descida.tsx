@@ -4,13 +4,15 @@ import { motion } from 'framer-motion';
 export const ALTURA = 36;
 
 /**
- * O vão entre a coluna da pergunta e a das respostas, em pixels.
+ * Metade do vão entre as colunas, em pixels — o recuo que cada uma dá para a
+ * divisória, e o percurso do sinal deitado.
  *
- * É o gap do grid E o percurso do sinal deitado — o mesmo número, exportado de
- * um lugar só. Com dois valores separados, o dia em que o vão mudar é o dia em
- * que o risco passa a parar antes da coluna ou a entrar por dentro dela.
+ * É `pr-16` na coluna da pergunta, `pl-16` na das respostas E o comprimento do
+ * risco: um número só, exportado de um lugar só. Com valores separados, o dia em
+ * que o vão mudar é o dia em que o risco passa a parar antes da divisória ou a
+ * atravessar por cima dela.
  */
-export const VAO = 56;
+export const VAO = 64;
 
 /** Quanto o sinal leva para atravessar, em segundos. */
 export const VIAGEM = 0.42;
@@ -60,7 +62,7 @@ export type Sentido = 'baixo' | 'direita';
  * `linear`, e é a regra do site para sinal: um pulso que acelera e freia lê como
  * objeto sendo arrastado. Sinal não faz ease — ele apenas atravessa.
  */
-export function Descida({ sentido }: { sentido: Sentido }) {
+export function Descida({ sentido, centro = 0 }: { sentido: Sentido; centro?: number }) {
   const deitado = sentido === 'direita';
   const percurso = deitado ? VAO : ALTURA;
 
@@ -76,10 +78,12 @@ export function Descida({ sentido }: { sentido: Sentido }) {
       }`}
       style={
         deitado
-          ? // Pendurado à ESQUERDA da coluna, dentro do vão que o grid já abriu.
-            // O `marginTop` põe o risco na linha do texto que encabeça a coluna,
-            // e não colado no topo do box.
-            { left: -VAO, width: VAO, height: 2, marginTop: 9 }
+          ? // Dentro do recuo que a coluna da pergunta dá à divisória: começa na
+            // borda do campo e termina encostando nela. O `marginTop` é o que
+            // põe o risco na LINHA DO MEIO do campo — sem ele o sinal corre pelo
+            // topo do box e lê como um traço solto boiando ao lado da caixa, em
+            // vez de algo que saiu de dentro dela.
+            { right: 0, width: VAO, height: 2, marginTop: centro - 1 }
           : // Pendurado ACIMA da lista, dentro do vão que a margem já abriu.
             { height: ALTURA, marginTop: -ALTURA }
       }
