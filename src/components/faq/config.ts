@@ -137,13 +137,29 @@ export const DUVIDAS: readonly Duvida[] = [
 export const SEM_RESPOSTA = {
   titulo: 'Essa eu não sei responder.',
   corpo: 'Quem responde é o consultor, e é rápido: deixa o contato aqui em cima que ele fala com você em até 24 horas.',
-  acao: 'Ir para o formulário',
+  /* O rótulo diz o destino, e não o objeto. "Ir para o formulário" descreve um
+     campo de texto; quem está lendo isto quer saber com quem vai falar. O link
+     continua sendo o mesmo formulário — a promessa é que ele leva a uma pessoa,
+     que é o que a resposta acima acabou de dizer. */
+  acao: 'Falar com o consultor',
 };
 
 export const ABERTURA = {
   rotulo: 'Perguntas',
   titulo: 'O que você quer saber?',
-  dica: 'Pergunte o que quiser.',
+  /*
+   * A dica não é mais um convite, é um limite — e o limite é que vende.
+   *
+   * "Pergunte o que quiser" prometia um chat que responde tudo, e este campo
+   * responde seis coisas. Dizer o número na cara faz três trabalhos de uma vez:
+   * cumpre o que a seção pode cumprir, transforma os atalhos em um percurso com
+   * fim visível, e nomeia a saída — a pergunta que não está aqui é a razão de
+   * falar com alguém, que é o que a página inteira existe para conseguir.
+   *
+   * O "Seis" acompanha `DUVIDAS` logo acima: a sétima resposta escrita torna
+   * esta frase falsa, e ela muda no mesmo commit.
+   */
+  dica: 'Seis respostas. A sétima é com o consultor.',
   exemplo: 'Escreva a sua pergunta…',
 };
 
