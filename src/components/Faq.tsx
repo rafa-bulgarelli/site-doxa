@@ -2,6 +2,7 @@ import { useRef, useState } from 'react';
 import { AnimatePresence, motion, useInView, useReducedMotion } from 'framer-motion';
 import { X } from 'lucide-react';
 import { CampoPergunta } from './faq/CampoPergunta';
+import { Descida, VIAGEM } from './faq/Descida';
 import { Revela } from './faq/Revela';
 import { encontra } from './faq/busca';
 import { ABERTURA, DUVIDAS, SEM_RESPOSTA, type Duvida } from './faq/config';
@@ -10,18 +11,19 @@ import { MotionButton } from './ui/MotionButton';
 const EASE = [0.16, 1, 0.3, 1] as const;
 
 /**
- * Quanto o sinal leva para descer do campo até a resposta, em milissegundos.
+ * Quanto esperar para a resposta nascer, em milissegundos.
  *
- * Casado com a duração de `.pulso-descida` no CSS: a resposta nasce no instante
- * em que o sinal termina de chegar. Se os dois números divergirem, ou o texto
- * aparece antes de a linha chegar nele (e a linha vira enfeite), ou fica um vão
- * de nada entre os dois (e a linha vira atraso).
+ * Lido da própria descida, e não escrito de novo aqui: a resposta tem de
+ * aparecer no instante em que o sinal termina de chegar. Com dois números
+ * separados, um dia eles divergem — e então ou o texto aparece antes de a linha
+ * chegar nele (a linha vira enfeite), ou sobra um vão de nada entre os dois (a
+ * linha vira atraso).
  *
  * NÃO é latência fingida: não há nada sendo processado atrás disto, e o número é
  * o tempo de um gesto, não de uma espera. É o que torna a causa visível — a
  * mesma razão de uma porta mostrar que foi a maçaneta que a abriu.
  */
-const DESCIDA = 420;
+const DESCIDA = VIAGEM * 1000;
 
 /**
  * A pergunta digitada, com a primeira letra em caixa alta.
@@ -222,47 +224,17 @@ export function Faq() {
         )}
 
         {/*
-         * A DESCIDA: o sinal levando a pergunta até onde a resposta nasce.
+         * O vão entre os atalhos e as respostas, e ele é o palco da descida.
          *
-         * É a gramática do site aplicada ao FAQ. No hero, uma foto e uma voz
-         * correm por um fio até o vídeo pronto; na comparação, o argumento corre
-         * do cartão do "falta você" até o formulário. Aqui a pergunta corre até
-         * a resposta — e é por isso que o texto enviado se desfaz subindo no
-         * campo logo acima: as duas animações são o mesmo gesto contado em dois
-         * pedaços.
-         *
-         * O fio ocupa altura real enquanto existe, e não é absoluto: absoluto,
-         * ele passaria por cima da primeira resposta em vez de abrir caminho
-         * para ela. Some quando o sinal chega, e o que estava embaixo sobe pelo
-         * `layout` — o mesmo mecanismo da varrida do botão de limpar.
+         * `relative` e margem no wrapper, e não em cada filho: é isto que
+         * permite ao sinal ser ABSOLUTO, pendurado para dentro do vão que já
+         * existe. Nada se move para abrir espaço para ele — que era o defeito da
+         * primeira versão, em que a caixa do sinal crescia de zero a 44 pixels
+         * de altura e obrigava a lista inteira embaixo a se reposicionar a cada
+         * quadro da animação.
          */}
-        <AnimatePresence>
-          {descendo > 0 && (
-            <motion.div
-              key="descida"
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 44 }}
-              exit={{ opacity: 0, height: 0, transition: { duration: 0.2 } }}
-              transition={{ duration: 0.16, ease: EASE }}
-              className="mt-6 overflow-hidden"
-              aria-hidden
-            >
-              <svg className="h-11 w-full" viewBox="0 0 4 44" fill="none" preserveAspectRatio="none">
-                {/* O trilho, fraco: sem ele o pulso corre no vazio e não se lê
-                    como uma linha sendo percorrida. */}
-                <path d="M 2 0 L 2 44" stroke="rgba(255,255,255,0.10)" strokeWidth={2} />
-                <path
-                  d="M 2 0 L 2 44"
-                  pathLength={1}
-                  className="pulso pulso-descida"
-                  stroke="#FFFFFF"
-                  strokeWidth={2.5}
-                  strokeLinecap="round"
-                />
-              </svg>
-            </motion.div>
-          )}
-        </AnimatePresence>
+        <div className="relative mt-10">
+          <AnimatePresence>{descendo > 0 && <Descida key="descida" />}</AnimatePresence>
 
         {/*
          * A barra de limpar, e ela só existe quando há o que limpar.
@@ -286,7 +258,7 @@ export function Faq() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -8, transition: { duration: 0.2 } }}
               transition={{ duration: 0.35, ease: EASE }}
-              className="mt-10 flex items-center justify-between border-b border-white/[0.08] pb-3"
+              className="flex items-center justify-between border-b border-white/[0.08] pb-3"
             >
               <span className="text-[13px] text-white/35">
                 {trocas.length} {trocas.length === 1 ? 'resposta' : 'respostas'}
@@ -369,6 +341,7 @@ export function Faq() {
               </motion.div>
             ))}
           </AnimatePresence>
+          </div>
         </div>
       </div>
 

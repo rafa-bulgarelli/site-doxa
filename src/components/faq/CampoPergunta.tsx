@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { ArrowUp } from 'lucide-react';
-import { BordaViva } from '../comparacao/BordaViva';
 
 interface CampoPerguntaProps {
   valor: string;
@@ -90,8 +89,6 @@ function useExemploVivo(frases: readonly string[], ativo: boolean) {
 export function CampoPergunta({ valor, exemplos, aoDigitar, aoEnviar }: CampoPerguntaProps) {
   const parado = useReducedMotion() === true;
   const campoRef = useRef<HTMLTextAreaElement>(null);
-  const caixaRef = useRef<HTMLDivElement>(null);
-  const [comFoco, setComFoco] = useState(false);
   /** O texto que acabou de ser enviado e ainda está se desfazendo. */
   const [sumindo, setSumindo] = useState<string | null>(null);
 
@@ -155,31 +152,19 @@ export function CampoPergunta({ valor, exemplos, aoDigitar, aoEnviar }: CampoPer
        que só aceita clique nos poucos pixels da primeira linha é um campo que
        parece quebrado. */
     <div
-      ref={caixaRef}
       onClick={() => campoRef.current?.focus()}
       className="relative rounded-2xl border border-white/[0.12] bg-doxa-surface transition-colors focus-within:border-white/30"
     >
       <div className="dot-grid pointer-events-none absolute inset-0 rounded-2xl opacity-25" />
 
-      {/*
-       * O contorno vivo, só com o campo em foco.
-       *
-       * É o mesmo componente que corre a borda dos dois cartões da comparação, e
-       * isso é o ponto: o site tem UM jeito de dizer "esta caixa está ligada", e
-       * o FAQ passa a falar essa língua em vez de inventar a própria. Sem foco
-       * ele não existe — um contorno correndo sozinho numa seção parada é
-       * decoração, e com o cursor dentro dele é resposta.
-       */}
-      {comFoco && !parado && (
-        <BordaViva alvoRef={caixaRef} trecho="campo" raio={16} moldura={false} />
-      )}
+      {/* O contorno animado saiu daqui a pedido do dono. O campo continua
+          respondendo ao foco pela borda que clareia — transição de cor, não
+          animação: o que estava sobrando era movimento, não resposta. */}
 
       <textarea
         ref={campoRef}
         value={valor}
         onChange={(evento) => aoDigitar(evento.target.value)}
-        onFocus={() => setComFoco(true)}
-        onBlur={() => setComFoco(false)}
         onKeyDown={(evento) => {
           if (evento.key === 'Enter' && !evento.shiftKey) {
             evento.preventDefault();

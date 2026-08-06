@@ -10,15 +10,10 @@ interface BordaVivaProps {
    * último, depois da travessia. Os dois dividem o mesmo ciclo de sete segundos
    * e cada um acende na sua janela.
    *
-   * `campo` está fora desse ciclo: é o contorno do campo do FAQ, que corre sem
-   * parar enquanto alguém tem o campo em foco. Um sinal com janela ali ficaria
-   * escuro a maior parte do tempo em que a pessoa está escrevendo, que é
-   * exatamente o tempo em que ele precisa dizer que a coisa está ligada.
-   *
    * O nome escolhe a janela do ciclo e a medida da auréola; a geometria é a
-   * mesma nos três.
+   * mesma nos dois.
    */
-  trecho?: 'falta' | 'pedido' | 'campo';
+  trecho?: 'falta' | 'pedido';
   /** O raio dos cantos do alvo, em pixels. Combine com o `rounded-` dele. */
   raio?: number;
   /**
@@ -36,10 +31,9 @@ interface BordaVivaProps {
 const RAIO_PADRAO = 24;
 
 /** Qual classe de animação cada trecho do percurso usa. */
-const JANELA: Record<'falta' | 'pedido' | 'campo', string> = {
+const JANELA: Record<'falta' | 'pedido', string> = {
   falta: 'pulso-falta',
   pedido: 'pulso-borda',
-  campo: 'pulso-campo',
 };
 
 /** A espessura do sinal, em pixels. */
