@@ -446,7 +446,14 @@ body {
 
 .borda-viva {
   stroke-dasharray: 0.22 0.78;
-  filter: drop-shadow(0 0 7px rgba(255, 255, 255, 0.75));
+  /*
+   * Duas auréolas, e não uma maior: um `drop-shadow` só, aberto o bastante para
+   * o brilho se espalhar, perde o núcleo — o traço vira uma mancha sem fio
+   * dentro. Uma auréola curta e quase branca mantém a linha nítida, e uma larga
+   * e fraca é a fumaça em volta dela. Junto é o que o dono chamou de esfumaçado.
+   */
+  filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.95))
+    drop-shadow(0 0 18px rgba(255, 255, 255, 0.5));
   animation: borda-viva 4.5s linear 2.4s infinite both;
 }
 

@@ -7,7 +7,7 @@ import { ArrowLeft, Check } from 'lucide-react';
 import { DotGridSpotlight } from '../hero/DotGridSpotlight';
 import { BordaViva } from './BordaViva';
 import { MotionButton } from '../ui/MotionButton';
-import { FILTRO, PAGAMENTOS, RETORNO } from './config';
+import { FILTRO, NO_AR, PAGAMENTOS, RETORNO } from './config';
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
@@ -23,6 +23,8 @@ const ERRO = '#E8938C';
 
 interface Passo {
   chave: 'nome' | 'whatsapp' | 'arroba';
+  /** O nome da etapa na trilha do topo. Uma palavra, senão não é uma trilha. */
+  rotulo: string;
   pergunta: string;
   dica: string;
   exemplo: string;
@@ -60,6 +62,7 @@ function mascaraTelefone(valor: string) {
 const PASSOS: readonly Passo[] = [
   {
     chave: 'nome',
+    rotulo: 'Nome',
     pergunta: 'Como a gente te chama?',
     dica: 'Para a primeira mensagem não começar fria.',
     exemplo: 'Seu nome',
@@ -68,6 +71,7 @@ const PASSOS: readonly Passo[] = [
   },
   {
     chave: 'whatsapp',
+    rotulo: 'WhatsApp',
     pergunta: 'Qual é o seu WhatsApp?',
     dica: 'É por lá que o consultor fala com você.',
     exemplo: '(11) 98765-4321',
@@ -82,6 +86,7 @@ const PASSOS: readonly Passo[] = [
   },
   {
     chave: 'arroba',
+    rotulo: 'Perfil',
     pergunta: 'Qual é o @ da sua empresa?',
     dica: 'A gente olha o perfil antes de conversar.',
     exemplo: '@suaempresa',
@@ -218,7 +223,13 @@ export function Formulario({ cartaoRef }: { cartaoRef: RefObject<HTMLDivElement>
       // `group` do Tailwind — `group` sem nome também casaria com o `group-hover`
       // do botão lá dentro, e o disco dele se encheria com a mão em qualquer
       // canto do cartão, longe do botão.
-      className="cartao-pedido relative w-full overflow-hidden rounded-3xl border border-white/[0.11] bg-doxa-surface shadow-[0_40px_100px_-40px_rgba(0,0,0,0.5)] transition-[border-color,box-shadow] duration-500 hover:border-white/[0.22] hover:shadow-[0_52px_120px_-40px_rgba(0,0,0,0.6)]"
+      // Tres sombras, tres trabalhos. A preta longa assenta o cartao no papel.
+      // A branca externa e' o halo que o descola do creme. E a branca INTERNA e'
+      // a que o dono pediu: contra o preto do miolo, ela e' a unica que se ve
+      // como fumaca, subindo pelas bordas para dentro. Uma so' por fora nao
+      // aparece sobre papel claro, e uma so' por dentro deixa o cartao chapado
+      // contra o creme.
+      className="cartao-pedido relative w-full overflow-hidden rounded-3xl border border-white/[0.16] bg-doxa-surface shadow-[0_40px_100px_-40px_rgba(0,0,0,0.5),0_0_60px_-14px_rgba(255,255,255,0.28),inset_0_0_70px_-24px_rgba(255,255,255,0.22)] transition-[border-color,box-shadow] duration-500 hover:border-white/[0.3] hover:shadow-[0_52px_120px_-40px_rgba(0,0,0,0.6),0_0_80px_-12px_rgba(255,255,255,0.4),inset_0_0_80px_-20px_rgba(255,255,255,0.3)]"
     >
       <div className="dot-grid pointer-events-none absolute inset-0 opacity-40" />
       <DotGridSpotlight containerRef={cartaoRef} className="is-forte" />
@@ -233,53 +244,54 @@ export function Formulario({ cartaoRef }: { cartaoRef: RefObject<HTMLDivElement>
       <div className="relative p-8 md:p-12">
         {/* O andamento. Três de três é curto o bastante para ser dito por extenso,
             e dizer quantos faltam é o que impede a pessoa de imaginar dez. */}
+        {/* ── A trilha das etapas, e ela tem NOME.
+
+            Era "01 / 03" com uma barra ao lado, e o dono leu como morto — com
+            razão: uma fração informa quanto falta e não diz nada sobre o quê.
+            Com os nomes à vista, a pessoa vê a tarefa inteira antes de começar
+            — nome, WhatsApp, perfil — e o que ela avalia deixa de ser "quantas
+            perguntas ainda vêm" e passa a ser "isso é rápido".
+
+            Três estados, três tratamentos: a etapa da vez é a única em papel
+            cheio, com o texto em preto e o mesmo halo da borda do cartão; as
+            respondidas ficam com o fio verde e o visto, no verde do selo "Com
+            Doxa"; as que faltam são só um contorno apagado. É a linha do tempo
+            do preenchimento, e cada resposta acende um pedaço dela. */}
         {passo < PAGAMENTO && (
-          <div className="flex items-center gap-3">
-            {/* O número da vez em serifada e cheia, o total apagado ao lado: o
-                andamento passa a ter uma coisa em foco em vez de dois números
-                do mesmo tamanho. */}
-            <span className="flex items-baseline gap-1 font-serif text-[15px] tabular-nums leading-none">
-              <motion.span
-                key={passo}
-                initial={parado ? undefined : { opacity: 0, y: -6 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.35, ease: EASE }}
-                className="text-[#F4F1E8]"
-              >
-                {String(passo + 1).padStart(2, '0')}
-              </motion.span>
-              <span className="text-white/30">/</span>
-              <span className="text-white/30">{String(PASSOS.length).padStart(2, '0')}</span>
-            </span>
-
-            {/* Um segmento por pergunta, e não uma barra contínua. Uma barra diz
-                "falta tanto"; três casas dizem "são três, você está na
-                primeira" — e o que trava alguém num formulário é não saber
-                quantas vezes mais vai ter de responder.
-
-                O segmento da vez é o único aceso, com o brilho da borda. Os já
-                respondidos ficam em branco fechado, os que faltam em traço
-                apagado: passado, presente e futuro em três tons. */}
-            <div className="flex flex-1 gap-1.5">
-              {PASSOS.map((p, i) => (
-                <div key={p.chave} className="h-[3px] flex-1 overflow-hidden rounded-full bg-white/10">
-                  <motion.div
-                    className="h-full origin-left rounded-full"
-                    style={{
-                      background: i === passo ? '#F4F1E8' : 'rgba(255,255,255,0.45)',
-                      boxShadow: i === passo ? '0 0 10px rgba(255,255,255,0.7)' : 'none',
-                    }}
-                    initial={{ scaleX: 0 }}
-                    animate={{ scaleX: naTela && i <= passo ? 1 : 0 }}
-                    transition={{
-                      duration: 0.5,
-                      ease: EASE,
-                      delay: passo === 0 && i === 0 ? 0.5 : 0,
-                    }}
-                  />
-                </div>
-              ))}
-            </div>
+          <div className="flex flex-wrap items-center gap-2">
+            {PASSOS.map((p, i) => {
+              const feito = i < passo;
+              const agora = i === passo;
+              return (
+                <motion.span
+                  key={p.chave}
+                  initial={parado ? undefined : { opacity: 0, y: -8 }}
+                  animate={naTela || parado ? { opacity: 1, y: 0 } : undefined}
+                  transition={{ duration: 0.45, ease: EASE, delay: 0.35 + i * 0.09 }}
+                  className={`flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-[12px] leading-none transition-colors duration-500 ${
+                    agora
+                      ? 'border-transparent bg-[#F4F1E8] font-medium text-[#0B0B0B]'
+                      : feito
+                        ? 'text-[#F4F1E8]'
+                        : 'border-white/[0.12] text-white/30'
+                  }`}
+                  style={
+                    agora
+                      ? { boxShadow: '0 0 18px -2px rgba(255,255,255,0.55)' }
+                      : feito
+                        ? { borderColor: `${NO_AR}80`, background: `${NO_AR}1a` }
+                        : undefined
+                  }
+                >
+                  {feito ? (
+                    <Check className="h-3 w-3 shrink-0" strokeWidth={3} style={{ color: NO_AR }} />
+                  ) : (
+                    <span className="tabular-nums opacity-60">{String(i + 1).padStart(2, '0')}</span>
+                  )}
+                  {p.rotulo}
+                </motion.span>
+              );
+            })}
           </div>
         )}
 

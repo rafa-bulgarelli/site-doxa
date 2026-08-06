@@ -22,8 +22,9 @@ import {
   CUSTO_UNIDADE,
   FALTA,
   FATURA,
-  ENVIO,
   GARANTIA,
+  NO_AR,
+  PARADO,
   PERGUNTA,
   SEM_GARANTIA,
   TOTAL_ITENS,
@@ -55,21 +56,6 @@ const RESPIRO = 'mt-7 md:mt-10';
 const GIRO = 30;
 
 /**
- * As duas cores de estado, e são as duas únicas da seção.
- *
- * O dono pediu vermelho no lado sem Doxa e verde no lado com. É uma exceção
- * consciente à regra monocromática do `tailwind.config` — e é a exceção certa,
- * porque aqui a cor não decora: ela É o estado. Vermelho e verde num ponto que
- * pulsa é a gramática universal de "parado" e "no ar", e ela se lê antes de
- * qualquer palavra ser lida.
- *
- * Os dois valores saem da paleta que a ladainha já usa, em vez de dois hexes
- * novos: a seção passa a ter duas cores, não quatro.
- */
-const PARADO = '#E0453F';
-const NO_AR = '#3FA06A';
-
-/**
  * O logo no lugar da palavra: "Sem [DOXA]" e "Com [DOXA]", com o ponto de
  * estado na frente.
  *
@@ -81,24 +67,55 @@ const NO_AR = '#3FA06A';
 function Selo({ prefixo, escuro = false }: { prefixo: string; escuro?: boolean }) {
   const imovel = useReducedMotion() === true;
   const cor = escuro ? NO_AR : PARADO;
+
   return (
-    <span className="flex items-baseline gap-2">
-      {/* `items-baseline` no envelope alinharia o ponto pela linha de base do
-          texto e ele subiria acima dela; a caixa própria com `self-center` o
-          põe na altura do olho da palavra. */}
-      <span className="relative mr-1 flex h-2 w-2 self-center" aria-hidden>
-        <motion.span
-          className="absolute inline-flex h-full w-full rounded-full"
-          style={{ background: cor }}
-          animate={imovel ? undefined : { scale: [1, 2.8], opacity: [0.7, 0] }}
-          transition={{ duration: 1.8, ease: 'easeOut', repeat: Infinity, repeatDelay: 0.4 }}
+    /*
+     * A pílula é o enfeite que o dono pediu, e ela faz trabalho além de
+     * enfeitar: solto na página, o par ponto-mais-logo era um item de texto com
+     * uma bolinha na frente. Fechado numa cápsula com a borda e o fundo tingidos
+     * pela própria cor, vira um SELO — um objeto que declara um estado, que é o
+     * que ele sempre quis ser.
+     *
+     * A cor entra em três intensidades e nenhuma delas é chapada: um fio de
+     * borda, uma névoa de fundo e o ponto cheio. É o que deixa o vermelho e o
+     * verde presentes sem que a seção vire colorida — o olho lê "há uma cor
+     * aqui" e continua lendo preto e creme.
+     */
+    <span
+      className="inline-flex w-fit items-center gap-2.5 rounded-full border py-2 pl-3 pr-4"
+      style={{ borderColor: `${cor}59`, background: `${cor}14` }}
+    >
+      <span className="relative flex h-2 w-2 shrink-0" aria-hidden>
+        {/* Dois anéis, e o segundo sai com meio ciclo de atraso: um anel só
+            expande, some, e deixa um vão de silêncio antes do próximo — o que
+            se vê é um piscar intermitente. Defasados, sempre há um anel
+            nascendo enquanto o outro apaga, e a leitura passa de "pisca" para
+            "está transmitindo". */}
+        {[0, 0.9].map((atraso) => (
+          <motion.span
+            key={atraso}
+            className="absolute inline-flex h-full w-full rounded-full"
+            style={{ background: cor }}
+            animate={imovel ? undefined : { scale: [1, 3.4], opacity: [0.55, 0] }}
+            transition={{
+              duration: 1.8,
+              ease: 'easeOut',
+              repeat: Infinity,
+              delay: atraso,
+            }}
+          />
+        ))}
+        {/* O núcleo tem brilho próprio na cor: sem ele o ponto é um adesivo
+            colorido, com ele é uma luz acesa. */}
+        <span
+          className="relative inline-flex h-2 w-2 rounded-full"
+          style={{ background: cor, boxShadow: `0 0 10px ${cor}, 0 0 3px ${cor}` }}
         />
-        <span className="relative inline-flex h-2 w-2 rounded-full" style={{ background: cor }} />
       </span>
 
       {/* Caixa normal, a pedido do dono: em versalete o prefixo competia com o
           logo ao lado, e os dois juntos liam como duas marcas. */}
-      <span className={`text-[13px] tracking-tight ${escuro ? 'text-black/50' : 'text-white/50'}`}>
+      <span className={`text-[13px] tracking-tight ${escuro ? 'text-black/60' : 'text-white/60'}`}>
         {prefixo}
       </span>
       {/* A arte é branca sobre transparente — no painel creme ela vira tinta com
@@ -400,10 +417,6 @@ export function Comparacao() {
                 {TROCA_DEPOIS}
               </p>
             </div>
-
-            <p className="mt-6 max-w-md text-[15px] leading-relaxed text-black/55 md:text-base">
-              {ENVIO}
-            </p>
 
             {/* ── A ponta do fio, e ela é um cartão preto como o do outro lado.
                 Dois objetos escuros no papel, ligados por um fio com sinal

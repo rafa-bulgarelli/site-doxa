@@ -132,18 +132,17 @@ export const PERGUNTA = ['Quanto custa não ter a Doxa', 'na sua empresa?'];
  * acontecem — e é a mesma ordem em que a coluna abaixo dele está escrita, com o
  * custo riscado antes da garantia.
  */
-export const CONVITE = ['Corta a conta.', 'Depois viraliza.'];
+export const CONVITE = ['Você corta a conta inteira.', 'E ainda assim, viraliza.'];
 
-/**
- * O que se faz AGORA, que é diferente do que se faz depois.
+/*
+ * O parágrafo de instrução saiu da coluna, a pedido do dono.
  *
- * Falava do produto — "você manda uma foto e um áudio" —, e o dono corrigiu: a
- * foto e o áudio são o que acontece depois de fechar. Nesta tela, ao lado de um
- * formulário aberto, a única ação que existe é preencher o formulário. Uma
- * frase que descreve a etapa seguinte, colada na etapa atual, manda a pessoa
- * pensar em algo que ela ainda não pode fazer.
+ * Ele dizia "preencha aqui do lado, um consultor fala com você em até 24
+ * horas" — e as duas metades já estavam ditas em outro lugar: o formulário ao
+ * lado é visivelmente um formulário, e o prazo de 24 horas aparece na tela de
+ * confirmação, que é onde ele vira uma promessa que a pessoa precisa guardar.
+ * Escrito também aqui, era uma legenda explicando um objeto que está à vista.
  */
-export const ENVIO = 'Preencha aqui do lado. Um consultor fala com você em até 24 horas.';
 
 /**
  * A troca, dita como troca: o custo do jeito antigo riscado, e o que entra no
@@ -172,7 +171,7 @@ export const TROCA_DEPOIS = 'Uma foto e um áudio.';
  * extrato. A lista completa está logo acima, no painel escuro, contada uma a
  * uma; aqui embaixo o que precisa aparecer são as duas ou três que doem mais.
  */
-export const TROCA_ANTES = 'uma agência, tráfego pago e um estúdio';
+export const TROCA_ANTES = 'uma agência, tráfego pago…';
 
 /**
  * A frase de onde sai o fio até o formulário.
@@ -216,3 +215,20 @@ export const RETORNO = 'Um consultor entra em contato em até 24 horas.';
 
 /** As formas de pagamento, listadas antes de existirem de verdade. */
 export const PAGAMENTOS = ['Pix', 'Cartão', 'Apple Pay', 'Google Pay'];
+
+/**
+ * As duas cores de estado da seção, e são as duas únicas dela.
+ *
+ * Vermelho no lado sem Doxa, verde no lado com — pedido do dono, e exceção
+ * consciente à regra monocromática do `tailwind.config`. É a exceção certa
+ * porque aqui a cor não decora: ela É o estado, e "parado" e "no ar" se leem
+ * antes de qualquer palavra.
+ *
+ * Moram aqui e não em cada componente porque três lugares as usam: o selo dos
+ * dois painéis e a trilha de etapas do formulário. O verde da etapa concluída é
+ * o mesmo verde do selo "Com Doxa" de propósito — é a mesma afirmação, feita
+ * uma vez sobre a empresa e outra sobre o campo que a pessoa acabou de
+ * responder.
+ */
+export const PARADO = '#E0453F';
+export const NO_AR = '#3FA06A';
