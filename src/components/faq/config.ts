@@ -168,18 +168,24 @@ export const ABERTURA = {
   rotulo: 'FAQ',
   titulo: 'O que você quer saber?',
   /*
-   * A dica não é mais um convite, é um limite — e o limite é que vende.
+   * O CONVITE e o LIMITE, e são duas linhas porque são duas coisas.
    *
-   * "Pergunte o que quiser" prometia um chat que responde tudo, e este campo
-   * responde seis coisas. Dizer o número na cara faz três trabalhos de uma vez:
-   * cumpre o que a seção pode cumprir, transforma os atalhos em um percurso com
-   * fim visível, e nomeia a saída — a pergunta que não está aqui é a razão de
-   * falar com alguém, que é o que a página inteira existe para conseguir.
+   * O convite voltou a pedido do dono, e ele estava certo sobre o que faltava:
+   * a seção tinha um campo de escrever e uma frase que só falava do que ele NÃO
+   * faz. Ninguém digita numa caixa que se apresenta pelo teto.
+   *
+   * O limite fica, e nunca sai daqui: "pergunte o que quiser" sozinho prometia
+   * um chat que responde tudo, e este campo responde seis coisas escritas à
+   * mão. Juntos, os dois dizem a verdade inteira — pergunte o que quiser, e o
+   * que não estiver aqui vira uma conversa com alguém, que é o que a página
+   * existe para conseguir. É por isso que eles são renderizados em pesos
+   * diferentes: o convite é o que se lê, o limite é o que se confere.
    *
    * O "Seis" acompanha `DUVIDAS` logo acima: a sétima resposta escrita torna
-   * esta frase falsa, e ela muda no mesmo commit.
+   * essa frase falsa, e ela muda no mesmo commit.
    */
-  dica: 'Seis respostas. A sétima é com o consultor.',
+  dica: 'Pergunte o que quiser.',
+  limite: 'Seis respostas estão aqui. A sétima é com o consultor.',
   exemplo: 'Escreva a sua pergunta…',
 };
 

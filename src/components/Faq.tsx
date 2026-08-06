@@ -472,7 +472,18 @@ export function Faq() {
               <h2 className="mt-5 font-serif text-[2.9rem] leading-[0.95] tracking-[-0.03em] text-[#F4F1E8] md:text-[4.4rem]">
                 {ABERTURA.titulo}
               </h2>
-              <p className="mt-4 text-[15px] text-white/50 md:text-[17px]">{ABERTURA.dica}</p>
+              {/* O convite ACESO, o limite apagado atrás dele.
+                  Numa linha só e no mesmo cinza, as duas frases pesavam igual e
+                  o que sobrava na tela era o teto ("seis"), não a permissão
+                  ("pergunte") — que é a única das duas capaz de fazer alguém
+                  digitar. Em creme cheio e no corpo do texto do site, o convite
+                  vira a segunda coisa que se lê depois do título; o limite
+                  continua ali, do tamanho de uma nota de rodapé, para quem for
+                  conferir se a promessa é grande demais. */}
+              <p className="mt-4 max-w-lg text-[17px] leading-snug md:text-[19px]">
+                <span className="text-[#F4F1E8]">{ABERTURA.dica}</span>{' '}
+                <span className="text-white/40">{ABERTURA.limite}</span>
+              </p>
             </motion.div>
 
             <motion.div
