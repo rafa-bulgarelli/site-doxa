@@ -324,12 +324,13 @@ export function Comparacao() {
       <motion.div
         ref={claroRef}
         style={{ rotate: parado ? 0 : giro, background: PAPEL }}
-        /* Coluna flex, e é o que substituiu três `min-h` calculados na mão.
-           A faixa do título ocupa o que precisa, a grade fica com `flex-1` e
-           come o resto: o painel continua tendo exatamente uma tela de altura
-           sem ninguém precisar subtrair o padding e a altura da manchete de
-           `100vh` — e sem quebrar no dia em que a copy do título mudar. */
-        className="relative z-10 flex min-h-screen origin-bottom-left flex-col px-5 py-10 md:px-10 md:py-14"
+        /* Coluna flex centrada, e é o que substituiu três `min-h` calculados na
+           mão. A faixa do título e a grade ocupam o que precisam, e a sobra da
+           tela é dividida IGUAL entre o topo e o pé — em vez de a grade esticar
+           para comer tudo e abrir um vão entre a manchete e o argumento.
+           O painel continua tendo uma tela de altura sem ninguém subtrair
+           padding e altura de manchete de `100vh`. */
+        className="relative z-10 flex min-h-screen origin-bottom-left flex-col justify-center px-5 py-10 md:px-10 md:py-14"
       >
         {/* A textura atravessa a virada. Aqui ela é a mesma grade em tinta, e o
             facho é o mesmo facho com o sinal trocado: no preto os pontos
@@ -414,9 +415,18 @@ export function Comparacao() {
           </h2>
         </div>
 
+        {/* `items-start` e não `items-center`, e é o que põe as duas colunas
+            começando na MESMA linha: a garantia e a borda de cima do cartão do
+            pedido. Centradas, cada uma flutuava no meio da própria faixa e a
+            altura em que cada bloco caía era um acidente da altura do vizinho.
+
+            E a grade não estica mais (`flex-1` saiu): esticada, ela empurrava o
+            argumento para o meio da tela e abria um vão de 143px entre a
+            manchete e a primeira frase. Agora são 48px, e a sobra da tela vai
+            para as pontas, dividida pelo `justify-center` do painel. */}
         <div
           ref={gradeRef}
-          className="relative mx-auto mt-10 grid w-full max-w-screen-2xl flex-1 grid-cols-1 gap-x-16 gap-y-12 lg:mt-14 lg:grid-cols-[1fr_minmax(32rem,44%)] lg:items-center"
+          className="relative mx-auto mt-10 grid w-full max-w-screen-2xl grid-cols-1 gap-x-16 gap-y-12 lg:mt-12 lg:grid-cols-[1fr_minmax(32rem,44%)] lg:items-start"
         >
           {/* O fio primeiro no DOM, e as duas colunas `relative` depois dele.
               Ordem de pintura em CSS não é ordem de irmãos: um elemento
@@ -556,13 +566,23 @@ export function Comparacao() {
 
                 Fora do cartão, e não dentro: o que ele controla é o sinal dos
                 DOIS lados, inclusive o fio que corre pelo papel. Dentro da
-                caixa preta, prometeria mandar só nela. */}
+                caixa preta, prometeria mandar só nela.
+
+                FORA DO FLUXO no desktop, e é isso que alinha o cartão com a
+                garantia do outro lado. Em fluxo, ele são 48px de botão mais
+                respiro empurrando o cartão para baixo — e a borda de cima do
+                cartão nascia meia dúzia de linhas abaixo da frase com que ela
+                devia estar emparelhada. Absoluto, ele mora nos 48px de vão que
+                a grade já tem acima de si, exatamente onde sempre apareceu, sem
+                cobrar altura por isso. No telefone continua em fluxo: lá não há
+                coluna com que alinhar, e um botão flutuando sobre o bloco de
+                cima seria um botão em cima de texto. */}
             <button
               type="button"
               onClick={() => setSinalPausado((atual) => !atual)}
               aria-pressed={sinalPausado}
               aria-label={sinalPausado ? 'Retomar a animação das linhas' : 'Pausar a animação das linhas'}
-              className="mb-3 flex h-9 w-9 items-center justify-center self-end rounded-full border border-black/15 bg-black/[0.04] text-black/45 transition-colors hover:border-black/40 hover:text-[#0B0B0B] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/50"
+              className="mb-3 flex h-9 w-9 items-center justify-center self-end rounded-full border border-black/15 bg-black/[0.04] text-black/45 transition-colors hover:border-black/40 hover:text-[#0B0B0B] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/50 lg:absolute lg:-top-12 lg:right-0 lg:mb-0"
             >
               {sinalPausado ? (
                 <Play className="h-3.5 w-3.5" strokeWidth={2} />
