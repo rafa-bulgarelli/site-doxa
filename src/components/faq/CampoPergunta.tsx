@@ -4,14 +4,23 @@ import { ArrowUp } from 'lucide-react';
 import { CORES } from './cores';
 
 /**
- * As cores do anel, entregues ao CSS.
+ * As cores do campo aceso, entregues ao CSS.
  *
- * A primeira volta no fim: um `conic-gradient` não fecha sozinho, e sem repetir
- * a cor inicial haveria uma emenda dura entre o último e o primeiro tom —
- * girando, ela apareceria como uma costura dando voltas na borda.
+ * No anel, a primeira volta no fim: um `conic-gradient` não fecha sozinho, e sem
+ * repetir a cor inicial haveria uma emenda dura entre o último e o primeiro tom
+ * — girando, ela apareceria como uma costura dando voltas na borda.
+ *
+ * Na aurora, QUATRO das seis e não todas: seis manchas numa caixa de 56 pixels
+ * de altura se sobrepõem até virar um cinza colorido. Âmbar e rosa em cima,
+ * azul e violeta embaixo — os dois extremos do arco, que é o que dá a impressão
+ * de uma luz só, girando, em vez de um arco-íris parado.
  */
-const ANEL: CSSProperties = {
+const ACESO: CSSProperties = {
   ['--anel-siri-cores' as string]: [...CORES, CORES[0]].join(', '),
+  ['--aurora-1' as string]: CORES[0],
+  ['--aurora-2' as string]: CORES[2],
+  ['--aurora-3' as string]: CORES[4],
+  ['--aurora-4' as string]: CORES[3],
 };
 
 interface CampoPerguntaProps {
@@ -172,9 +181,19 @@ export function CampoPergunta({ valor, exemplos, aoDigitar, aoEnviar }: CampoPer
        parece quebrado. */
     <div
       onClick={() => campoRef.current?.focus()}
-      style={ANEL}
-      className="anel-siri relative rounded-2xl border border-white/[0.12] bg-doxa-surface transition-colors focus-within:border-white/30"
+      style={ACESO}
+      className="anel-siri relative rounded-2xl border border-white/[0.12] bg-doxa-surface focus-within:border-white/30"
     >
+      {/* A luz que mora atrás do vidro. Quatro manchas derivando em tempos
+          diferentes, recortadas pela borda da caixa — a ordem aqui é a ordem de
+          pintura, então a mais fria fica por baixo. */}
+      <div className="campo-aurora" aria-hidden>
+        <span className="aurora-4" />
+        <span className="aurora-3" />
+        <span className="aurora-2" />
+        <span className="aurora-1" />
+      </div>
+
       <div className="dot-grid pointer-events-none absolute inset-0 rounded-2xl opacity-25" />
 
       {/* O contorno animado voltou, com a regra que faltava na primeira vez:

@@ -225,13 +225,6 @@ export function Faq() {
     .filter(({ duvida }) => respondidas.has(duvida.pergunta))
     .map(({ duvida, i }) => ({ chave: duvida.chave, cor: corDaDuvida(i) }));
 
-  /* Os pontos da lista de respostas, do mais antigo para o mais novo. `trocas`
-     guarda a mais nova primeiro porque é assim que a pilha é lida; aqui a ordem
-     se inverte, porque uma régua que cresce cresce para a frente. */
-  const feitas: readonly Ponto[] = [...trocas]
-    .reverse()
-    .map((troca) => ({ chave: String(troca.id), cor: troca.cor }));
-
   const entrada = parado
     ? {}
     : {
@@ -452,15 +445,14 @@ export function Faq() {
                   transition={{ duration: 0.35, ease: EASE }}
                   className="flex items-center justify-between border-b border-white/[0.08] pb-3"
                 >
-                  {/* Os mesmos pontos do cabeçalho, com as mesmas cores: é o que
-                      diz, sem legenda, que a resposta de baixo é aquele ponto de
-                      cima. O texto fica ao lado deles porque o botão precisa de
-                      sujeito — "Limpar" sozinho não diz o que vai embora. */}
-                  <span className="flex items-center gap-3">
-                    <Bolinhas pontos={feitas} parado={parado} tamanho="h-1.5 w-1.5" />
-                    <span className="text-[13px] text-white/35">
-                      {trocas.length} {trocas.length === 1 ? 'resposta' : 'respostas'}
-                    </span>
+                  {/* Só a contagem aqui. Os pontos desceram para junto de cada
+                      pergunta, que é onde o dono os quis: empilhados nesta barra
+                      eles eram um resumo de uma lista que já está logo abaixo —
+                      ao lado da pergunta, cada um marca a SUA. O texto fica
+                      porque o botão precisa de sujeito: "Limpar" sozinho não diz
+                      o que vai embora. */}
+                  <span className="text-[13px] text-white/35">
+                    {trocas.length} {trocas.length === 1 ? 'resposta' : 'respostas'}
                   </span>
 
                   {/* Branco e cheio, e é o único botão sólido desta seção. Ele
@@ -514,10 +506,29 @@ export function Faq() {
                     }
                   >
                     {/* A pergunta fica à vista junto da resposta: sem ela, três
-                        respostas empilhadas viram três parágrafos sobre nada. */}
-                    <p className="font-serif text-[1.5rem] leading-tight tracking-[-0.02em] text-[#F4F1E8] md:text-[1.9rem]">
-                      {comoTitulo(troca.pergunta)}
-                    </p>
+                        respostas empilhadas viram três parágrafos sobre nada.
+
+                        E o ponto vem com ela, na cor daquela dúvida — o mesmo
+                        que acendeu lá em cima quando a resposta chegou. É o que
+                        liga os dois sem legenda nenhuma.
+
+                        `items-start` com a margem em `em`, e não `items-center`:
+                        centrado, o ponto de uma pergunta que quebra em duas
+                        linhas escorregaria para o meio das duas. Em `em` ele
+                        acompanha o corpo do título, que muda de 1,5 para 1,9rem
+                        em `md` — um valor em pixels ficaria certo num
+                        breakpoint e errado no outro. */}
+                    <div className="flex items-start gap-3">
+                      <span className="mt-[0.42em] shrink-0">
+                        <Bolinhas
+                          pontos={[{ chave: String(troca.id), cor: troca.cor }]}
+                          parado={parado}
+                        />
+                      </span>
+                      <p className="font-serif text-[1.5rem] leading-tight tracking-[-0.02em] text-[#F4F1E8] md:text-[1.9rem]">
+                        {comoTitulo(troca.pergunta)}
+                      </p>
+                    </div>
 
                     <div className="mt-3 border-l border-white/[0.14] pl-5">
                       {troca.paragrafos.map((paragrafo, i) => (
