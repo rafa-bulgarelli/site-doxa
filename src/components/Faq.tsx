@@ -3,7 +3,7 @@ import { AnimatePresence, motion, useInView, useReducedMotion } from 'framer-mot
 import { X } from 'lucide-react';
 import { Bolinhas, type Ponto } from './faq/Bolinhas';
 import { CampoPergunta, MINIMA } from './faq/CampoPergunta';
-import { Descida, VIAGEM } from './faq/Descida';
+import { CARGA, Descida, VIAGEM } from './faq/Descida';
 import { Revela } from './faq/Revela';
 import { encontra } from './faq/busca';
 import { ABERTURA, DUVIDAS, SEM_RESPOSTA, type Duvida } from './faq/config';
@@ -13,11 +13,16 @@ import { MotionButton } from './ui/MotionButton';
 const EASE = [0.16, 1, 0.3, 1] as const;
 
 /**
- * Quanto esperar para a resposta nascer, em milissegundos.
+ * Os tempos do gesto, em milissegundos, e por que são três.
  *
- * Lido da própria descida, e não escrito de novo aqui: a resposta tem de
- * aparecer no instante em que o sinal termina de chegar. Com dois números
- * separados, um dia eles divergem — e então ou o texto aparece antes de a linha
+ * O caminho da pergunta até a resposta tem dois trechos, e um número para cada:
+ * `LEITURA` é a barra varrendo o campo (o campo recebeu e está lendo) e
+ * `DESCIDA` é o risco atravessando dali até onde o texto nasce. `RESPOSTA` é a
+ * soma — o instante exato em que a resposta aparece.
+ *
+ * Todos LIDOS da própria `Descida`, e nenhum escrito de novo aqui: a resposta
+ * tem de aparecer no instante em que o sinal termina de chegar. Com valores
+ * separados eles divergem um dia, e então ou o texto aparece antes de a linha
  * chegar nele (a linha vira enfeite), ou sobra um vão de nada entre os dois (a
  * linha vira atraso).
  *
@@ -25,12 +30,13 @@ const EASE = [0.16, 1, 0.3, 1] as const;
  * o tempo de um gesto, não de uma espera. É o que torna a causa visível — a
  * mesma razão de uma porta mostrar que foi a maçaneta que a abriu.
  *
- * O MESMO número comanda a abertura da coluna de respostas, logo abaixo. Na
- * primeira pergunta não há sinal nenhum no desktop: o gesto é o painel se
- * abrindo, e a resposta nasce quando ele termina de abrir. Um só valor para as
- * duas coisas é o que garante que nunca haja espera sem causa na tela.
+ * `DESCIDA` comanda também a abertura da coluna, logo abaixo. Na primeira
+ * pergunta não há risco nenhum no desktop — o gesto é o painel se partindo, e
+ * ele leva exatamente o tempo que o risco levaria.
  */
+const LEITURA = CARGA * 1000;
 const DESCIDA = VIAGEM * 1000;
+const RESPOSTA = LEITURA + DESCIDA;
 
 /**
  * A faixa da seção antes e depois da primeira pergunta.
@@ -154,6 +160,9 @@ export function Faq() {
   /** Quantos sinais estão correndo agora. Contador, e não booleano: duas
       perguntas seguidas não podem apagar o fio uma da outra. */
   const [sinais, setSinais] = useState(0);
+  /** Quantas barras estão varrendo o campo — o trecho de dentro, pelo mesmo
+      motivo de ser contador. */
+  const [cargas, setCargas] = useState(0);
 
   const responder = (pergunta: string, duvida: Duvida | null) => {
     const achada = duvida ?? encontra(pergunta, DUVIDAS);
@@ -179,13 +188,28 @@ export function Faq() {
       return;
     }
 
-    setSinais((n) => n + 1);
+    /*
+     * O gesto, em dois trechos e na ordem em que se vê.
+     *
+     * Primeiro a barra varre o campo — o objeto que recebeu a pergunta é o
+     * objeto que mostra estar com ela. Só quando ela termina o risco parte, da
+     * linha em que ela parou. O `setTimeout` do meio é essa passagem de bastão:
+     * sem ele os dois correm juntos e voltam a ser duas animações que por acaso
+     * acontecem perto uma da outra.
+     */
+    setCargas((n) => n + 1);
     if (primeira) setAbrindo(true);
+
+    window.setTimeout(() => {
+      setCargas((n) => n - 1);
+      setSinais((n) => n + 1);
+    }, LEITURA);
+
     window.setTimeout(() => {
       setTrocas((atuais) => [nova, ...atuais]);
       setSinais((n) => n - 1);
       if (primeira) setAbrindo(false);
-    }, DESCIDA);
+    }, RESPOSTA);
   };
 
   const enviar = () => {
@@ -359,10 +383,18 @@ export function Faq() {
                 e é da borda do campo que ele tem de partir. Na primeira pergunta
                 o desktop não ganha sinal — o gesto é o painel se abrindo, e um
                 risco atravessando um vão que ainda está nascendo correria por
-                cima de si mesmo. */}
+                cima de si mesmo.
+
+                `linha={MINIMA}` é a BASE do campo, que é onde a barra de carga
+                acabou de terminar. Antes ele corria na meia-altura, e essa
+                diferença de 28 pixels era o bastante para os dois trechos não se
+                lerem como o mesmo movimento. O campo já voltou à altura mínima
+                quando o risco parte — quem envia esvazia o campo, e esvaziar o
+                devolve a uma linha —, então `MINIMA` é a base de verdade e não
+                uma aposta sobre ela. */}
             <AnimatePresence>
               {sinais > 0 && !abrindo && (
-                <Descida key="atravessa" sentido="direita" centro={MINIMA / 2} />
+                <Descida key="atravessa" sentido="direita" linha={MINIMA} />
               )}
             </AnimatePresence>
 
@@ -377,6 +409,7 @@ export function Faq() {
                    tempo todo dizendo o que ele sabe responder — e as seis frases
                    que ele escreve são exatamente as seis que têm resposta. */
                 exemplos={[ABERTURA.exemplo, ...DUVIDAS.map((d) => d.pergunta)]}
+                carregando={cargas > 0}
                 aoDigitar={setRascunho}
                 aoEnviar={enviar}
               />

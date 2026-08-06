@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState, type CSSProperties } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { ArrowUp } from 'lucide-react';
+import { CARGA, ESPESSURA } from './Descida';
 import { CORES } from './cores';
 
 /**
@@ -18,6 +19,8 @@ interface CampoPerguntaProps {
   valor: string;
   /** As frases que o campo escreve sozinho enquanto está vazio. */
   exemplos: readonly string[];
+  /** Se a pergunta acabou de ser enviada e o campo está lendo — dura `CARGA`. */
+  carregando: boolean;
   aoDigitar: (valor: string) => void;
   aoEnviar: () => void;
 }
@@ -105,7 +108,13 @@ function useExemploVivo(frases: readonly string[], ativo: boolean) {
  * Enter envia, Shift+Enter quebra linha. É a convenção de todo campo de conversa
  * e não precisa de legenda; o que precisaria de legenda é o contrário.
  */
-export function CampoPergunta({ valor, exemplos, aoDigitar, aoEnviar }: CampoPerguntaProps) {
+export function CampoPergunta({
+  valor,
+  exemplos,
+  carregando,
+  aoDigitar,
+  aoEnviar,
+}: CampoPerguntaProps) {
   const parado = useReducedMotion() === true;
   const campoRef = useRef<HTMLTextAreaElement>(null);
   /** O texto que acabou de ser enviado e ainda está se desfazendo. */
@@ -186,6 +195,53 @@ export function CampoPergunta({ valor, exemplos, aoDigitar, aoEnviar }: CampoPer
       </div>
 
       <div className="dot-grid pointer-events-none absolute inset-0 rounded-2xl opacity-25" />
+
+      {/* A BARRA DE CARGA: o campo lendo a pergunta que acabou de receber.
+
+          É o primeiro trecho de um gesto que tem dois. Antes, o único sinal era
+          um risco de 2px atravessando o vão ao lado — e o dono viu o defeito
+          exato: nada ligava aquele risco ao campo, então ele lia como um traço
+          jogado na tela. A barra resolve isso pela origem: ela corre DENTRO do
+          objeto, na base dele, e o risco parte da linha em que ela terminou.
+          Uma coisa só, contada em dois trechos.
+
+          `scaleX` e não `width`: largura é layout, e animar layout obriga o
+          navegador a refazer a página inteira a cada quadro — o mesmo erro que
+          derrubou a primeira versão do sinal. Escala sobe para o compositor.
+
+          O gradiente é o que faz a barra ter FRENTE: transparente atrás, cheia
+          na ponta. Como ele escala junto, a ponta continua acesa em qualquer
+          instante da corrida, e o que se vê é uma luz avançando, não um bloco
+          crescendo.
+
+          Recortada pela mesma curva da caixa (`overflow-hidden` com o mesmo
+          raio), a barra afina nos cantos em vez de cruzar por cima deles. */}
+      <AnimatePresence>
+        {carregando && (
+          <motion.div
+            key="carga"
+            aria-hidden
+            className="pointer-events-none absolute inset-0 overflow-hidden rounded-2xl"
+            initial={{ opacity: 1 }}
+            exit={{ opacity: 0, transition: { duration: 0.16 } }}
+          >
+            <motion.span
+              className="absolute bottom-0 left-0 w-full origin-left rounded-full"
+              style={{
+                height: ESPESSURA,
+                background:
+                  'linear-gradient(to right, rgba(244,241,232,0), rgba(244,241,232,0.35) 55%, #F4F1E8)',
+                boxShadow: '0 0 14px 3px rgba(244,241,232,0.4)',
+              }}
+              initial={{ scaleX: 0 }}
+              animate={{ scaleX: 1 }}
+              /* `linear`, que é a regra do site para sinal: um pulso que acelera
+                 e freia lê como objeto sendo arrastado. Sinal só atravessa. */
+              transition={{ duration: CARGA, ease: 'linear' }}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <textarea
         ref={campoRef}

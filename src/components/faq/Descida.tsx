@@ -7,18 +7,46 @@ export const ALTURA = 36;
  * Metade do vão entre as colunas, em pixels — o recuo que cada uma dá para a
  * divisória, e o percurso do sinal deitado.
  *
- * É `pr-16` na coluna da pergunta, `pl-16` na das respostas E o comprimento do
- * risco: um número só, exportado de um lugar só. Com valores separados, o dia em
- * que o vão mudar é o dia em que o risco passa a parar antes da divisória ou a
- * atravessar por cima dela.
+ * É `pr-16` na coluna da pergunta, `pl-16` na das respostas, e o dobro dele é o
+ * percurso do risco — um número só, exportado de um lugar só. Com valores
+ * separados, o dia em que o vão mudar é o dia em que o risco passa a parar antes
+ * da resposta ou a entrar por cima do texto dela.
  */
 export const VAO = 64;
 
 /** Quanto o sinal leva para atravessar, em segundos. */
 export const VIAGEM = 0.42;
 
-/** O comprimento do risco que corre. */
-const RISCO = 14;
+/**
+ * Quanto a barra leva varrendo o campo, em segundos — o primeiro trecho.
+ *
+ * Mora aqui, e não no campo, porque o campo e o sinal são um gesto só: a barra
+ * termina no instante em que o risco parte. Com o número escrito nos dois
+ * lugares, o dia em que um mudar é o dia em que aparece um buraco entre eles ou
+ * os dois correm por cima um do outro.
+ */
+export const CARGA = 0.3;
+
+/**
+ * A espessura do sinal, em pixels.
+ *
+ * Três, e não dois: o risco atravessa um vão VAZIO de 128 pixels, e um fio de
+ * dois pixels a 10% de branco não se lê como um objeto ali — se lê como sujeira
+ * na tela. É a mesma espessura da barra que corre no campo, porque é a mesma
+ * linha continuando.
+ */
+export const ESPESSURA = 3;
+
+/**
+ * O comprimento do risco que corre.
+ *
+ * Deitado ele é o dobro: o percurso é quase quatro vezes maior (128 contra 36),
+ * e um risco curto num percurso longo lê como um ponto viajando, não como algo
+ * sendo puxado. Em pé, 28 pixels num trilho de 36 seria o trilho inteiro coberto
+ * — e aí não há percurso nenhum para ver.
+ */
+const RISCO_DEITADO = 28;
+const RISCO_EM_PE = 14;
 
 /** Por onde a resposta nasce, visto de onde a pergunta foi escrita. */
 export type Sentido = 'baixo' | 'direita';
@@ -62,9 +90,17 @@ export type Sentido = 'baixo' | 'direita';
  * `linear`, e é a regra do site para sinal: um pulso que acelera e freia lê como
  * objeto sendo arrastado. Sinal não faz ease — ele apenas atravessa.
  */
-export function Descida({ sentido, centro = 0 }: { sentido: Sentido; centro?: number }) {
+export function Descida({ sentido, linha = 0 }: { sentido: Sentido; linha?: number }) {
   const deitado = sentido === 'direita';
-  const percurso = deitado ? VAO : ALTURA;
+  /* O VÃO INTEIRO, e não metade dele.
+     Parando na divisória, o risco morria no meio do caminho e a resposta nascia
+     do outro lado sem nada tê-la levado até lá — que era, exatamente, o que
+     fazia o traço parecer jogado na tela. Atravessando os 128, ele sai da borda
+     do campo e chega na borda do texto: um percurso com as duas pontas em
+     objetos que existem. A divisória deixa de ser o fim dele e passa a ser algo
+     por onde ele passa. */
+  const percurso = deitado ? VAO * 2 : ALTURA;
+  const risco = deitado ? RISCO_DEITADO : RISCO_EM_PE;
 
   return (
     <motion.div
@@ -78,12 +114,23 @@ export function Descida({ sentido, centro = 0 }: { sentido: Sentido; centro?: nu
       }`}
       style={
         deitado
-          ? // Dentro do recuo que a coluna da pergunta dá à divisória: começa na
-            // borda do campo e termina encostando nela. O `marginTop` é o que
-            // põe o risco na LINHA DO MEIO do campo — sem ele o sinal corre pelo
-            // topo do box e lê como um traço solto boiando ao lado da caixa, em
-            // vez de algo que saiu de dentro dela.
-            { right: 0, width: VAO, height: 2, marginTop: centro - 1 }
+          ? /*
+             * Atravessado no vão inteiro: `right: -VAO` empurra a ponta direita
+             * para dentro do recuo da OUTRA coluna, e a largura dobrada faz o
+             * trilho ir da borda do campo até a borda do texto da resposta.
+             *
+             * `linha` é a altura em que ele corre, e ela é a MESMA linha em que
+             * a barra do campo acabou de terminar — a base do campo. Um sinal
+             * que sai numa altura diferente da que a barra terminou não é o
+             * segundo trecho de um gesto: são duas animações que por acaso
+             * aconteceram perto uma da outra, e é assim que o olho lê.
+             */
+            {
+              right: -VAO,
+              width: VAO * 2,
+              height: ESPESSURA,
+              marginTop: linha - ESPESSURA,
+            }
           : // Pendurado ACIMA da lista, dentro do vão que a margem já abriu.
             { height: ALTURA, marginTop: -ALTURA }
       }
@@ -91,23 +138,32 @@ export function Descida({ sentido, centro = 0 }: { sentido: Sentido; centro?: nu
       {/* O trilho. Sem ele o risco corre no vazio e não se lê como um caminho
           sendo percorrido — lê como um cisco atravessando a tela. */}
       <span
-        className={`absolute left-0 top-0 rounded-full bg-white/[0.10] ${
-          deitado ? 'h-[2px] w-full' : 'h-full w-[2px]'
+        className={`absolute left-0 top-0 rounded-full bg-white/[0.14] ${
+          deitado ? 'w-full' : 'h-full'
         }`}
+        style={deitado ? { height: ESPESSURA } : { width: ESPESSURA }}
       />
 
-      {/* O risco. Some pelas pontas por OPACIDADE e não por recorte: recortado,
-          a auréola seria cortada junto no primeiro e no último quadro, e o
-          brilho apareceria com uma quina. */}
+      {/* O risco, com RASTRO: transparente atrás, cheio na ponta. Um bloco de
+          cor uniforme atravessando é um objeto sendo transportado; com a cauda
+          se apagando, o mesmo movimento lê como algo CORRENDO — e essa é a
+          diferença entre ver um traço e ver a pergunta indo embora.
+
+          Some pelas pontas por OPACIDADE e não por recorte: recortado, a auréola
+          seria cortada junto no primeiro e no último quadro, e o brilho
+          apareceria com uma quina. */}
       <motion.span
-        className={`absolute left-0 top-0 rounded-full bg-[#F4F1E8] ${
-          deitado ? 'h-[2px]' : 'w-[2px]'
-        }`}
+        className="absolute left-0 top-0 rounded-full"
         style={{
-          ...(deitado ? { width: RISCO } : { height: RISCO }),
-          boxShadow: '0 0 10px 2px rgba(244,241,232,0.45)',
+          ...(deitado
+            ? { width: risco, height: ESPESSURA }
+            : { height: risco, width: ESPESSURA }),
+          background: `linear-gradient(to ${
+            deitado ? 'right' : 'bottom'
+          }, rgba(244,241,232,0), #F4F1E8)`,
+          boxShadow: '0 0 14px 3px rgba(244,241,232,0.55)',
         }}
-        initial={deitado ? { x: -RISCO, opacity: 0 } : { y: -RISCO, opacity: 0 }}
+        initial={deitado ? { x: -risco, opacity: 0 } : { y: -risco, opacity: 0 }}
         animate={
           deitado
             ? { x: percurso, opacity: [0, 1, 1, 0] }
