@@ -5,7 +5,7 @@ import { Bolinhas, type Ponto } from './faq/Bolinhas';
 import { CARGA, CampoPergunta, MOLA } from './faq/CampoPergunta';
 import { Revela } from './faq/Revela';
 import { encontra } from './faq/busca';
-import { ABERTURA, DUVIDAS, SEM_RESPOSTA, type Duvida } from './faq/config';
+import { ABERTURA, DUVIDAS, ESPERA, SEM_RESPOSTA, type Duvida } from './faq/config';
 import { CORES, SEM_COR, corDaDuvida } from './faq/cores';
 import { MotionButton } from './ui/MotionButton';
 
@@ -102,24 +102,33 @@ interface Troca {
  * ─── O DESENHO: CABEÇALHO EM CIMA, DUAS COLUNAS EMBAIXO ──────────────────────
  *
  * Fechada, a seção é a coluna de 48rem CENTRADA que sempre foi: um campo sozinho
- * não tem o que fazer com a largura da página. Na primeira pergunta ela vai para
- * `max-w-screen-2xl` — a mesma faixa da comparação e do "como funciona" —, e é
- * só a partir daí que o rótulo, o título e o campo passam a nascer na MESMA
- * linha vertical dos títulos das outras seções. O alinhamento com a página é
- * consequência de haver duas colunas, não um estado permanente.
+ * não tem o que fazer com a largura da página. Ela vai para `max-w-screen-2xl` —
+ * a mesma faixa da comparação e do "como funciona" —, e é só a partir daí que o
+ * rótulo, o título e o campo passam a nascer na MESMA linha vertical dos títulos
+ * das outras seções. O alinhamento com a página é consequência de haver duas
+ * colunas, não um estado permanente.
  *
- * O cabeçalho fica FORA do grid, em largura total, e isso não é arranjo visual —
- * é o que faz o sinal ter para onde ir. Com o título dentro da coluna esquerda,
- * o topo da coluna de respostas caía na altura do rótulo e o campo ficava
- * duzentos pixels abaixo dele: o risco saía do campo, atravessava na altura
- * errada e lia como um traço boiando. Com o cabeçalho em cima, o topo das duas
- * colunas é o mesmo, o campo é a primeira coisa da esquerda e a resposta é a
- * primeira coisa da direita — o sinal corre reto entre os dois.
+ * ─── O GATILHO É O CLIQUE NO CAMPO, E NÃO A PRIMEIRA PERGUNTA ────────────────
+ *
+ * Isto mudou a pedido do dono, e o argumento dele é o certo: a caixa crescia
+ * sozinha, e crescer sozinha é movimento sem consequência. Agora o mesmo clique
+ * que abre o campo abre a página — a faixa alarga, as duas colunas nascem, e a
+ * da direita já diz que é ali que a resposta vai sair. A caixa maior deixa de
+ * ser um efeito e passa a ser o começo de uma conversa que tem dois lados.
+ *
+ * Quem clica fora sem escrever nada devolve tudo, mas SÓ enquanto não houver
+ * resposta na tela: com respostas, a coluna continua sendo necessária.
+ *
+ * O cabeçalho fica FORA do grid, em largura total. Com o título dentro da coluna
+ * esquerda, o topo da coluna de respostas caía na altura do rótulo e o campo
+ * ficava duzentos pixels abaixo dele — as duas metades começavam em alturas
+ * diferentes e não liam como metades de nada. Com o cabeçalho em cima, o topo
+ * das duas colunas é o mesmo: o campo é a primeira coisa da esquerda e a
+ * resposta é a primeira coisa da direita.
  *
  * Fechada, a coluna de respostas tem largura zero e o campo ocupa a faixa
- * inteira. Na PRIMEIRA pergunta ela abre para `minmax(32rem, 44%)` — a mesma
- * proporção que a comparação usa para o cartão do pedido — e a divisória se
- * desenha de cima para baixo entre as duas.
+ * inteira. Aberta ela vai para 44% — a mesma proporção que a comparação usa para
+ * o cartão do pedido — e a divisória se desenha de cima para baixo entre as duas.
  *
  * Isto resolve o defeito que o empilhamento tinha e que nenhuma dose de espaço
  * consertava: a resposta empurrava os atalhos para longe e cada nova pergunta
@@ -218,6 +227,28 @@ export function Faq() {
     setTrocas([]);
     window.clearTimeout(fechamento.current);
     fechamento.current = window.setTimeout(() => setAberto(false), parado ? 0 : PARTIDA);
+  };
+
+  /*
+   * A seção se parte no CLIQUE do campo, e não mais só na primeira pergunta.
+   *
+   * O dono viu o que faltava: a caixa crescia sozinha, e crescer sozinha é
+   * movimento sem consequência. Agora o mesmo clique que abre o campo abre a
+   * página — a faixa alarga, as duas colunas nascem, e a da direita já diz que é
+   * ali que a resposta vai sair. A caixa maior deixa de ser um efeito e passa a
+   * ser o começo de uma conversa que tem dois lados.
+   *
+   * Desistir devolve tudo, mas SÓ se não houver resposta na tela: com respostas,
+   * a coluna continua sendo necessária, e fechá-la porque alguém clicou fora do
+   * campo apagaria o que a pessoa está lendo.
+   */
+  const aoAbrirCampo = () => {
+    window.clearTimeout(fechamento.current);
+    setAberto(true);
+  };
+
+  const aoDesistir = () => {
+    if (trocas.length === 0) setAberto(false);
   };
 
   // Os atalhos somem conforme são usados: um botão que devolve a resposta que já
@@ -379,57 +410,64 @@ export function Faq() {
                 carregando={cargas > 0}
                 aoDigitar={setRascunho}
                 aoEnviar={enviar}
+                aoAbrir={aoAbrirCampo}
+                aoDesistir={aoDesistir}
+                /* Os atalhos DENTRO da caixa, no andar de baixo. São as
+                   perguntas de verdade com o rótulo curto — quem não quer
+                   formular nada toca no assunto, quem quer escreve no andar de
+                   cima. Enquanto moravam soltos aqui embaixo, liam como uma
+                   fileira de botões que por acaso ficava perto do campo.
+
+                   Eles vestem a MOLA do campo: crescem 4% sob a mão e afundam 4%
+                   no clique, na mesma curva com que a caixa acima abre e fecha.
+
+                   A escala vem do framer e não de `active:scale` do Tailwind: o
+                   framer escreve `transform` no `style` do elemento para animar
+                   a entrada e a saída, e um `transform` de classe seria
+                   sobrescrito por ele — o clique simplesmente não afundaria. */
+                bandeja={
+                  atalhos.length > 0 ? (
+                    <div className="flex flex-wrap gap-2">
+                      <AnimatePresence initial={false}>
+                        {atalhos.map((duvida, i) => (
+                          <motion.button
+                            key={duvida.chave}
+                            type="button"
+                            onClick={() => responder(duvida.pergunta, duvida)}
+                            layout={!parado}
+                            initial={parado ? undefined : { opacity: 0, y: 8 }}
+                            animate={
+                              naTela || trocas.length > 0
+                                ? {
+                                    opacity: 1,
+                                    y: 0,
+                                    transition: {
+                                      duration: 0.4,
+                                      ease: EASE,
+                                      delay: 0.2 + i * 0.05,
+                                    },
+                                  }
+                                : undefined
+                            }
+                            exit={{ opacity: 0, scale: 0.9, transition: { duration: 0.18 } }}
+                            whileHover={parado ? undefined : { scale: 1.04 }}
+                            whileTap={parado ? undefined : { scale: 0.96 }}
+                            /* Só a mão e o clique caem aqui: a entrada leva o
+                               atraso escalonado no próprio `animate`, e um
+                               atraso vazando para o hover faria o botão
+                               responder um quinto de segundo depois do mouse. */
+                            transition={{ duration: 0.2, ease: MOLA }}
+                            className="rounded-full border border-white/[0.14] bg-white/[0.03] px-4 py-2 text-[13px] font-medium text-white/60 outline-none transition-colors duration-200 hover:border-white/30 hover:bg-white/[0.07] hover:text-white focus-visible:ring-2 focus-visible:ring-white/50"
+                          >
+                            {duvida.atalho}
+                          </motion.button>
+                        ))}
+                      </AnimatePresence>
+                    </div>
+                  ) : null
+                }
               />
             </motion.div>
-
-            {/* Os atalhos. São as perguntas de verdade, com o rótulo curto — quem
-                clica não precisa formular nada, e quem prefere escrever tem o
-                campo logo acima.
-
-                Eles vestem a MOLA do campo: crescem 4% sob a mão e afundam 4% no
-                clique, na mesma curva com que a caixa acima abre e fecha. Isso é
-                o que faz os atalhos lerem como parte do campo e não como uma
-                fileira de botões que por acaso mora embaixo dele.
-
-                A escala vem do framer e não de `active:scale` do Tailwind: o
-                framer escreve `transform` no `style` do elemento para animar a
-                entrada e a saída, e um `transform` de classe seria sobrescrito
-                por ele — o clique simplesmente não afundaria. */}
-            {atalhos.length > 0 && (
-              <div className="mt-4 flex flex-wrap gap-2">
-                <AnimatePresence initial={false}>
-                  {atalhos.map((duvida, i) => (
-                    <motion.button
-                      key={duvida.chave}
-                      type="button"
-                      onClick={() => responder(duvida.pergunta, duvida)}
-                      layout={!parado}
-                      initial={parado ? undefined : { opacity: 0, y: 8 }}
-                      animate={
-                        naTela || trocas.length > 0
-                          ? {
-                              opacity: 1,
-                              y: 0,
-                              transition: { duration: 0.4, ease: EASE, delay: 0.2 + i * 0.05 },
-                            }
-                          : undefined
-                      }
-                      exit={{ opacity: 0, scale: 0.9, transition: { duration: 0.18 } }}
-                      whileHover={parado ? undefined : { scale: 1.04 }}
-                      whileTap={parado ? undefined : { scale: 0.96 }}
-                      /* Só a mão e o clique caem aqui: a entrada leva o atraso
-                         escalonado no próprio `animate`, e um atraso vazando
-                         para o hover faria o botão responder um quinto de
-                         segundo depois do mouse. */
-                      transition={{ duration: 0.2, ease: MOLA }}
-                      className="rounded-full border border-white/[0.14] bg-white/[0.03] px-4 py-2 text-[13px] font-medium text-white/60 outline-none transition-colors duration-200 hover:border-white/30 hover:bg-white/[0.07] hover:text-white focus-visible:ring-2 focus-visible:ring-white/50"
-                    >
-                      {duvida.atalho}
-                    </motion.button>
-                  ))}
-                </AnimatePresence>
-              </div>
-            )}
           </div>
 
           {/* ─── A COLUNA DAS RESPOSTAS ───────────────────────────────────────
@@ -459,6 +497,41 @@ export function Faq() {
               animate={{ scaleY: aberto ? 1 : 0 }}
               transition={{ duration: parado ? 0 : PARTIDA / 1000, ease: EASE }}
             />
+
+            {/*
+             * A promessa, enquanto a coluna ainda está vazia.
+             *
+             * Ela é a razão de a seção se partir no CLIQUE e não na pergunta.
+             * Sem ela, clicar para escrever abriria metade da tela em branco — e
+             * meia tela em branco lê como coisa quebrada, não como espaço
+             * reservado. Dizendo o que vai acontecer ali, o mesmo vazio vira
+             * promessa, e o campo crescendo do outro lado ganha consequência.
+             *
+             * Nasce DEPOIS da divisória, com o atraso de uma partida: ela é o
+             * conteúdo de um espaço que ainda está sendo aberto, e conteúdo que
+             * aparece antes do continente lê como texto boiando.
+             *
+             * Em `white/25`, e não na cor do texto: isto não é uma resposta, é o
+             * lugar onde uma vai nascer. No dia em que ler com o mesmo peso das
+             * respostas de verdade, vira ruído em cima delas.
+             */}
+            <AnimatePresence>
+              {aberto && trocas.length === 0 && (
+                <motion.div
+                  key="espera"
+                  initial={parado ? undefined : { opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10, transition: { duration: 0.22 } }}
+                  transition={{ duration: 0.5, ease: EASE, delay: parado ? 0 : PARTIDA / 1000 }}
+                  className="max-w-md"
+                >
+                  <p className="font-serif text-[1.5rem] leading-tight tracking-[-0.02em] text-white/25 md:text-[1.9rem]">
+                    {ESPERA.titulo}
+                  </p>
+                  <p className="mt-3 text-[15px] leading-relaxed text-white/25">{ESPERA.corpo}</p>
+                </motion.div>
+              )}
+            </AnimatePresence>
 
             {/*
              * A barra de limpar, e ela só existe quando há o que limpar.

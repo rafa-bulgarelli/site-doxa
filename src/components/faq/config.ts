@@ -144,6 +144,23 @@ export const SEM_RESPOSTA = {
   acao: 'Falar com o consultor',
 };
 
+/**
+ * O que a coluna das respostas diz enquanto ainda não há resposta nenhuma.
+ *
+ * Ela nasce no CLIQUE do campo, não na primeira pergunta, e é isso que a torna
+ * necessária: sem ela, clicar para escrever abriria metade da tela em branco, e
+ * uma metade em branco lê como coisa quebrada. Dizendo o que vai acontecer ali,
+ * o mesmo espaço vazio vira promessa — e a caixa crescendo do outro lado passa
+ * a ter consequência visível, que é a razão de ela crescer.
+ *
+ * Nenhuma afirmação comercial aqui, e por isso este texto pode ser escrito e não
+ * importado: ele fala do comportamento da tela, não do que a empresa entrega.
+ */
+export const ESPERA = {
+  titulo: 'A resposta aparece aqui.',
+  corpo: 'Escreva a pergunta ao lado, ou toque num assunto. Este lado da tela existe só para isso.',
+};
+
 export const ABERTURA = {
   /* "FAQ" e não "Perguntas": o título logo abaixo já pergunta, e um rótulo que
      repete o que o título faz é uma linha a menos de informação na tela. A sigla

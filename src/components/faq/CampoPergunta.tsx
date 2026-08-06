@@ -1,4 +1,12 @@
-import { useCallback, useEffect, useLayoutEffect, useRef, useState, type CSSProperties } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+  type CSSProperties,
+  type ReactNode,
+} from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { ArrowUp } from 'lucide-react';
 import { CORES } from './cores';
@@ -34,8 +42,8 @@ const MOLA_CSS = `cubic-bezier(${MOLA.join(',')})`;
  * porque cada tecla que quebra linha daria um solavanco no que a pessoa está
  * lendo. Cresce reto e rápido, e some.
  */
-const MORFO = `max-width 400ms ${MOLA_CSS}, height 400ms ${MOLA_CSS}`;
-const CRESCE = `max-width 400ms ${MOLA_CSS}, height 150ms ease-out`;
+const MORFO = `height 400ms ${MOLA_CSS}`;
+const CRESCE = 'height 150ms ease-out';
 
 /** A altura do campo fechado — a pastilha. */
 const FECHADO = 48;
@@ -44,16 +52,6 @@ const MINIMA = 68;
 const MAXIMA = 160;
 /** A faixa que a ação ocupa embaixo do texto. */
 const ACOES = 48;
-
-/**
- * A largura da pastilha fechada.
- *
- * Ela cabe a mais longa das perguntas de exemplo ("Por que cobrar R$ 100 só
- * para conversar?") sem cortar. Curta demais, o exemplo que se escreve sozinho
- * some pela direita a cada ciclo — e o exemplo é a coisa que ensina o que este
- * campo sabe responder.
- */
-const ESTREITO = '23rem';
 
 /** Quanto a barra leva varrendo o campo, em segundos. */
 export const CARGA = 0.5;
@@ -71,8 +69,20 @@ interface CampoPerguntaProps {
   exemplos: readonly string[];
   /** Se a pergunta acabou de ser enviada e o campo está lendo — dura `CARGA`. */
   carregando: boolean;
+  /**
+   * Os atalhos, no andar de baixo da mesma caixa.
+   *
+   * Entram por `prop` e não são montados aqui dentro porque quem sabe quais
+   * ainda não foram usadas é a seção — este componente só sabe que existe um
+   * segundo andar e como ele se solda ao primeiro.
+   */
+  bandeja?: ReactNode;
   aoDigitar: (valor: string) => void;
   aoEnviar: () => void;
+  /** O campo abriu — a seção usa isto para se partir em duas. */
+  aoAbrir: () => void;
+  /** O campo fechou SEM perguntar nada. */
+  aoDesistir: () => void;
 }
 
 /**
@@ -139,12 +149,24 @@ function useExemploVivo(frases: readonly string[], ativo: boolean) {
  * desfocando — duas partidas ao mesmo tempo eram uma a mais, e o fechamento já
  * conta a mesma história com o objeto inteiro em vez de com uma cópia do texto.
  *
+ * ─── DOIS ANDARES, UMA CAIXA ────────────────────────────────────────────────
+ *
+ * Em cima escreve-se; embaixo, a bandeja com os atalhos, dentro da MESMA borda e
+ * separada só por uma costura. Os dois eram objetos distintos e o dono viu o
+ * defeito: uma fileira de botões morando perto de um campo não diz que ela é a
+ * outra maneira de fazer a mesma coisa. Soldados, dizem.
+ *
  * ─── O QUE MUDA DE TAMANHO, E COMO ──────────────────────────────────────────
  *
- * `max-width` e `height`, as duas na MOLA, e nada de `width`: a caixa vive
- * dentro de uma coluna que também se mexe (a seção se parte em duas na primeira
- * pergunta), e uma largura fixa brigaria com ela. Com `max-width`, a pastilha
- * tem um teto próprio e a caixa aberta simplesmente aceita a coluna.
+ * Só a ALTURA, e só a do andar de cima. Largura não muda mais: a caixa tem a
+ * largura da coluna, que é a mesma dos atalhos — pedido do dono, e ele estava
+ * certo, porque duas larguras diferentes empilhadas leem como dois objetos
+ * mesmo depois de soldados. A bandeja tem a altura do que carrega e cresce
+ * sozinha; a caixa inteira é a soma dos dois.
+ *
+ * Quem justifica o crescimento é a SEÇÃO: abrir o campo parte a página em duas
+ * e a coluna da direita se anuncia. Sem isso, uma caixa que incha sozinha é
+ * movimento sem consequência — foi exatamente essa a leitura do dono.
  *
  * A altura é escrita no elemento a cada tecla, e é assim porque não existe
  * `height: auto` que sirva: `scrollHeight` só diz a altura do conteúdo quando a
@@ -159,8 +181,11 @@ export function CampoPergunta({
   valor,
   exemplos,
   carregando,
+  bandeja,
   aoDigitar,
   aoEnviar,
+  aoAbrir,
+  aoDesistir,
 }: CampoPerguntaProps) {
   const parado = useReducedMotion() === true;
   const campoRef = useRef<HTMLTextAreaElement>(null);
@@ -249,29 +274,40 @@ export function CampoPergunta({
   }, [aberto]);
 
   const abrir = () => {
+    if (aberto) return;
     setCrescendo(false);
     setAberto(true);
+    aoAbrir();
   };
 
   const enviar = () => {
     if (vazio) return;
     setCrescendo(false);
     setAberto(false);
+    /* NÃO avisa que fechou. Quem enviou não desistiu: a seção precisa continuar
+       partida para receber a resposta que está a caminho, e um aviso de
+       fechamento aqui a devolveria à coluna única no exato instante em que a
+       pergunta foi feita. */
     aoEnviar();
   };
 
-  /* Fechar ao perder o foco, e só se não houver nada escrito. `relatedTarget`
-     dentro da própria casca não conta: clicar no botão de enviar tira o foco do
-     texto, e uma caixa que se fecha no meio do clique é uma caixa que engole a
-     pergunta. */
-  const aoSair = (evento: React.FocusEvent<HTMLDivElement>) => {
-    if (cascaRef.current?.contains(evento.relatedTarget as Node | null) === true) return;
-    if (!vazio) return;
+  const desistir = () => {
     // Volta para a mola antes de fechar: quem digitou e apagou tudo deixou o
     // campo em regime de CRESCE, e fechar naquele regime devolveria a pastilha
     // em 150ms retos — o mesmo gesto de abrir, contado com outra física.
     setCrescendo(false);
     setAberto(false);
+    aoDesistir();
+  };
+
+  /* Fechar ao perder o foco, e só se não houver nada escrito. `relatedTarget`
+     dentro da própria casca não conta: clicar no botão de enviar (ou num
+     atalho, que agora mora no andar de baixo da mesma caixa) tira o foco do
+     texto, e uma caixa que se fecha no meio do clique é uma caixa que engole a
+     pergunta. */
+  const aoSair = (evento: React.FocusEvent<HTMLDivElement>) => {
+    if (cascaRef.current?.contains(evento.relatedTarget as Node | null) === true) return;
+    if (vazio) desistir();
   };
 
   const transicao = parado ? 'none' : crescendo ? CRESCE : MORFO;
@@ -280,39 +316,50 @@ export function CampoPergunta({
     <div
       ref={cascaRef}
       onBlur={aoSair}
-      className="relative w-full"
-      style={{ maxWidth: aberto ? '100%' : ESTREITO, transition: transicao }}
+      style={ACESO}
+      className="anel-siri relative w-full rounded-3xl border border-white/[0.12] bg-doxa-surface focus-within:border-white/30"
     >
-      {/* A caixa. O clique em qualquer parte dela cai no texto: um campo de
-          conversa que só aceita clique nos poucos pixels da primeira linha é um
-          campo que parece quebrado. */}
+      {/* A luz da Siri: não uma borda colorida, mas uma faixa BORRADA de cor
+          encostada na borda por dentro, e o halo dela atravessando para fora.
+          Duas voltas em sentidos contrários, só sob a mão ou sob o cursor de
+          texto (`.anel-siri`, no index.css).
+
+          Ela rima a CAIXA INTEIRA, os dois andares, e não só o campo de cima —
+          é o que prova que a bandeja não é um vizinho: a mesma luz que corre
+          pela borda de um corre pela do outro, porque é uma borda só. */}
+      <div className="anel-luz" aria-hidden>
+        <span className="luz-halo" />
+        <span className="luz-borda" />
+      </div>
+
+      <div className="dot-grid pointer-events-none absolute inset-0 rounded-3xl opacity-25" />
+
+      {/* ─── O ANDAR DE CIMA: onde se escreve ──────────────────────────────
+          O clique em qualquer parte dele cai no texto: um campo de conversa que
+          só aceita clique nos poucos pixels da primeira linha é um campo que
+          parece quebrado. É este andar que muda de altura — a bandeja embaixo
+          tem a altura do que ela carrega, e cresce sozinha. */}
       <div
         onMouseDown={(evento) => {
           if (!aberto || evento.target === campoRef.current) return;
           evento.preventDefault();
           campoRef.current?.focus();
         }}
-        style={{ ...ACESO, height: aberto ? alturaTexto + ACOES : FECHADO, transition: transicao }}
-        className="anel-siri relative w-full rounded-3xl border border-white/[0.12] bg-doxa-surface focus-within:border-white/30"
+        style={{ height: aberto ? alturaTexto + ACOES : FECHADO, transition: transicao }}
+        className="relative w-full"
       >
-        {/* A luz da Siri: não uma borda colorida, mas uma faixa BORRADA de cor
-            encostada na borda por dentro, e o halo dela atravessando para fora.
-            Duas voltas em sentidos contrários, só sob a mão ou sob o cursor de
-            texto (`.anel-siri`, no index.css). */}
-        <div className="anel-luz" aria-hidden>
-          <span className="luz-halo" />
-          <span className="luz-borda" />
-        </div>
-
-        <div className="dot-grid pointer-events-none absolute inset-0 rounded-3xl opacity-25" />
-
         {/* A BARRA DE CARGA: o campo lendo a pergunta que acabou de receber.
 
             É o único sinal que sobrou, e por decisão do dono: existia também um
             risco atravessando o vão até a coluna das respostas, e ele lia como
             um traço jogado na tela — longe do campo, sem nada o ligando ao
-            objeto que recebeu a pergunta. Dentro da caixa, na base dela, o sinal
-            tem dono.
+            objeto que recebeu a pergunta. Dentro da caixa, o sinal tem dono.
+
+            Ele corre na COSTURA entre os dois andares, que é a base do campo de
+            escrever. Não é acidente que caia em cima da linha divisória: o que
+            se vê é a costura da caixa acendendo da esquerda para a direita, e
+            uma linha que já existe acendendo é mais barato de ler do que um
+            objeto novo aparecendo.
 
             `scaleX` e não `width`: largura é layout, e animar layout obriga o
             navegador a refazer a página a cada quadro. Escala sobe para o
@@ -324,7 +371,13 @@ export function CampoPergunta({
             <motion.div
               key="carga"
               aria-hidden
-              className="pointer-events-none absolute inset-0 overflow-hidden rounded-3xl"
+              /* O recorte só arredonda embaixo quando NÃO há bandeja: aí a
+                 base do campo é a base da caixa, e a barra tem de morrer na
+                 curva. Com bandeja, aquela borda é reta, e arredondar ali
+                 cortaria a barra onde não há canto nenhum. */
+              className={`pointer-events-none absolute inset-0 overflow-hidden ${
+                bandeja == null ? 'rounded-b-3xl' : ''
+              }`}
               initial={{ opacity: 1 }}
               exit={{ opacity: 0, transition: { duration: 0.16 } }}
             >
@@ -366,7 +419,7 @@ export function CampoPergunta({
               evento.preventDefault();
               enviar();
             }
-            if (evento.key === 'Escape' && vazio) setAberto(false);
+            if (evento.key === 'Escape' && vazio) desistir();
           }}
           rows={1}
           placeholder="Escreva a sua pergunta…"
@@ -454,6 +507,27 @@ export function CampoPergunta({
           <ArrowUp className="h-4 w-4" strokeWidth={2.2} />
         </button>
       </div>
+
+      {/* ─── O ANDAR DE BAIXO: a bandeja dos atalhos ────────────────────────
+       *
+       * Soltos embaixo, os atalhos liam como uma fileira de botões que por
+       * acaso morava perto do campo — o dono viu isso e a palavra que ele usou
+       * foi "desconectados". Dentro da mesma borda, com uma linha separando os
+       * dois andares, eles passam a ser o que sempre foram: a outra maneira de
+       * fazer a mesma coisa que o campo faz. Quem não quer formular a pergunta
+       * toca no assunto; quem quer, escreve em cima. Uma caixa, duas portas.
+       *
+       * Sem fundo próprio: o que se vê é o `bg-doxa-surface` da caixa inteira
+       * atravessando os dois andares. Um fundo aqui, por mais sutil que fosse,
+       * desenharia de volta a fronteira que este bloco existe para apagar.
+       *
+       * `border-t` e não uma `<hr>`: a linha é a costura entre os andares, e
+       * costura é propriedade da caixa — não um elemento que alguém pode
+       * reposicionar sem perceber que estragou a solda.
+       */}
+      {bandeja != null && (
+        <div className="relative border-t border-white/[0.08] px-3 py-3">{bandeja}</div>
+      )}
     </div>
   );
 }
