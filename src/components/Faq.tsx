@@ -2,8 +2,7 @@ import { useRef, useState } from 'react';
 import { AnimatePresence, motion, useInView, useReducedMotion } from 'framer-motion';
 import { X } from 'lucide-react';
 import { Bolinhas, type Ponto } from './faq/Bolinhas';
-import { CampoPergunta, MINIMA } from './faq/CampoPergunta';
-import { CARGA, Descida, VIAGEM } from './faq/Descida';
+import { CARGA, CampoPergunta, MOLA } from './faq/CampoPergunta';
 import { Revela } from './faq/Revela';
 import { encontra } from './faq/busca';
 import { ABERTURA, DUVIDAS, SEM_RESPOSTA, type Duvida } from './faq/config';
@@ -13,30 +12,29 @@ import { MotionButton } from './ui/MotionButton';
 const EASE = [0.16, 1, 0.3, 1] as const;
 
 /**
- * Os tempos do gesto, em milissegundos, e por que são três.
+ * Quando a resposta nasce, em milissegundos.
  *
- * O caminho da pergunta até a resposta tem dois trechos, e um número para cada:
- * `LEITURA` é a barra varrendo o campo (o campo recebeu e está lendo) e
- * `DESCIDA` é o risco atravessando dali até onde o texto nasce. `RESPOSTA` é a
- * soma — o instante exato em que a resposta aparece.
- *
- * Todos LIDOS da própria `Descida`, e nenhum escrito de novo aqui: a resposta
- * tem de aparecer no instante em que o sinal termina de chegar. Com valores
- * separados eles divergem um dia, e então ou o texto aparece antes de a linha
- * chegar nele (a linha vira enfeite), ou sobra um vão de nada entre os dois (a
- * linha vira atraso).
+ * É a duração da barra que varre o campo, LIDA do próprio campo e não escrita de
+ * novo aqui: o texto tem de aparecer no instante em que a barra termina. Com
+ * dois números separados, um dia eles divergem — e então ou a resposta aparece
+ * antes de a barra chegar ao fim (a barra vira enfeite), ou sobra um vão de nada
+ * entre as duas (a barra vira atraso).
  *
  * NÃO é latência fingida: não há nada sendo processado atrás disto, e o número é
  * o tempo de um gesto, não de uma espera. É o que torna a causa visível — a
  * mesma razão de uma porta mostrar que foi a maçaneta que a abriu.
- *
- * `DESCIDA` comanda também a abertura da coluna, logo abaixo. Na primeira
- * pergunta não há risco nenhum no desktop — o gesto é o painel se partindo, e
- * ele leva exatamente o tempo que o risco levaria.
  */
-const LEITURA = CARGA * 1000;
-const DESCIDA = VIAGEM * 1000;
-const RESPOSTA = LEITURA + DESCIDA;
+const RESPOSTA = CARGA * 1000;
+
+/**
+ * Quanto a seção leva para se partir em duas.
+ *
+ * Um pouco MENOS que a barra, e de propósito: na primeira pergunta as duas
+ * coisas correm juntas, e o painel tem de estar parado quando o texto nasce
+ * dentro dele. Terminando junto, a resposta nasceria no último quadro de uma
+ * coluna ainda em movimento.
+ */
+const PARTIDA = 420;
 
 /**
  * A faixa da seção antes e depois da primeira pergunta.
@@ -53,7 +51,7 @@ const ABERTA = '96rem';
 
 /** A cadência da abertura — a mesma do resto do site. */
 const TRANSICAO = {
-  transitionDuration: `${DESCIDA}ms`,
+  transitionDuration: `${PARTIDA}ms`,
   transitionTimingFunction: `cubic-bezier(${EASE.join(',')})`,
 } as const;
 
@@ -152,16 +150,11 @@ export function Faq() {
 
   /** Se a coluna de respostas já está aberta. */
   const [aberto, setAberto] = useState(false);
-  /** Se ela está abrindo AGORA — dura o tempo de uma travessia. */
-  const [abrindo, setAbrindo] = useState(false);
   /** O relógio que devolve a seção à coluna única depois de limpar. */
   const fechamento = useRef<number | undefined>(undefined);
 
-  /** Quantos sinais estão correndo agora. Contador, e não booleano: duas
-      perguntas seguidas não podem apagar o fio uma da outra. */
-  const [sinais, setSinais] = useState(0);
-  /** Quantas barras estão varrendo o campo — o trecho de dentro, pelo mesmo
-      motivo de ser contador. */
+  /** Quantas barras estão varrendo o campo. Contador, e não booleano: duas
+      perguntas seguidas não podem apagar o sinal uma da outra. */
   const [cargas, setCargas] = useState(0);
 
   const responder = (pergunta: string, duvida: Duvida | null) => {
@@ -180,7 +173,6 @@ export function Faq() {
     // Perguntar durante o fechamento cancela o fechamento: sem isto, a coluna
     // encolheria no meio da resposta nova por causa de um clique já desfeito.
     window.clearTimeout(fechamento.current);
-    const primeira = !aberto;
     setAberto(true);
 
     if (parado) {
@@ -189,26 +181,20 @@ export function Faq() {
     }
 
     /*
-     * O gesto, em dois trechos e na ordem em que se vê.
+     * Um sinal só, e ele mora DENTRO do campo.
      *
-     * Primeiro a barra varre o campo — o objeto que recebeu a pergunta é o
-     * objeto que mostra estar com ela. Só quando ela termina o risco parte, da
-     * linha em que ela parou. O `setTimeout` do meio é essa passagem de bastão:
-     * sem ele os dois correm juntos e voltam a ser duas animações que por acaso
-     * acontecem perto uma da outra.
+     * Existia também um risco atravessando o vão até a coluna das respostas, e
+     * ele saiu a pedido do dono pelo motivo certo: longe do campo, sem nada o
+     * ligando ao objeto que recebeu a pergunta, ele lia como um traço jogado na
+     * tela. A barra que varre a base do campo faz o mesmo trabalho com o dono à
+     * vista — e quem clica num atalho vê a mesma barra correr, o que amarra o
+     * atalho ao campo sem precisar mover o foco para lá.
      */
     setCargas((n) => n + 1);
-    if (primeira) setAbrindo(true);
 
     window.setTimeout(() => {
       setCargas((n) => n - 1);
-      setSinais((n) => n + 1);
-    }, LEITURA);
-
-    window.setTimeout(() => {
       setTrocas((atuais) => [nova, ...atuais]);
-      setSinais((n) => n - 1);
-      if (primeira) setAbrindo(false);
     }, RESPOSTA);
   };
 
@@ -231,7 +217,7 @@ export function Faq() {
   const limpar = () => {
     setTrocas([]);
     window.clearTimeout(fechamento.current);
-    fechamento.current = window.setTimeout(() => setAberto(false), parado ? 0 : DESCIDA);
+    fechamento.current = window.setTimeout(() => setAberto(false), parado ? 0 : PARTIDA);
   };
 
   // Os atalhos somem conforme são usados: um botão que devolve a resposta que já
@@ -379,25 +365,6 @@ export function Faq() {
             }`}
             style={TRANSICAO}
           >
-            {/* O sinal deitado mora AQUI, e não do outro lado: ele sai do campo,
-                e é da borda do campo que ele tem de partir. Na primeira pergunta
-                o desktop não ganha sinal — o gesto é o painel se abrindo, e um
-                risco atravessando um vão que ainda está nascendo correria por
-                cima de si mesmo.
-
-                `linha={MINIMA}` é a BASE do campo, que é onde a barra de carga
-                acabou de terminar. Antes ele corria na meia-altura, e essa
-                diferença de 28 pixels era o bastante para os dois trechos não se
-                lerem como o mesmo movimento. O campo já voltou à altura mínima
-                quando o risco parte — quem envia esvazia o campo, e esvaziar o
-                devolve a uma linha —, então `MINIMA` é a base de verdade e não
-                uma aposta sobre ela. */}
-            <AnimatePresence>
-              {sinais > 0 && !abrindo && (
-                <Descida key="atravessa" sentido="direita" linha={MINIMA} />
-              )}
-            </AnimatePresence>
-
             <motion.div
               initial={parado ? undefined : { opacity: 0, y: 16 }}
               animate={naTela ? { opacity: 1, y: 0 } : undefined}
@@ -417,7 +384,17 @@ export function Faq() {
 
             {/* Os atalhos. São as perguntas de verdade, com o rótulo curto — quem
                 clica não precisa formular nada, e quem prefere escrever tem o
-                campo logo acima. */}
+                campo logo acima.
+
+                Eles vestem a MOLA do campo: crescem 4% sob a mão e afundam 4% no
+                clique, na mesma curva com que a caixa acima abre e fecha. Isso é
+                o que faz os atalhos lerem como parte do campo e não como uma
+                fileira de botões que por acaso mora embaixo dele.
+
+                A escala vem do framer e não de `active:scale` do Tailwind: o
+                framer escreve `transform` no `style` do elemento para animar a
+                entrada e a saída, e um `transform` de classe seria sobrescrito
+                por ele — o clique simplesmente não afundaria. */}
             {atalhos.length > 0 && (
               <div className="mt-4 flex flex-wrap gap-2">
                 <AnimatePresence initial={false}>
@@ -428,10 +405,24 @@ export function Faq() {
                       onClick={() => responder(duvida.pergunta, duvida)}
                       layout={!parado}
                       initial={parado ? undefined : { opacity: 0, y: 8 }}
-                      animate={naTela || trocas.length > 0 ? { opacity: 1, y: 0 } : undefined}
+                      animate={
+                        naTela || trocas.length > 0
+                          ? {
+                              opacity: 1,
+                              y: 0,
+                              transition: { duration: 0.4, ease: EASE, delay: 0.2 + i * 0.05 },
+                            }
+                          : undefined
+                      }
                       exit={{ opacity: 0, scale: 0.9, transition: { duration: 0.18 } }}
-                      transition={{ duration: 0.4, ease: EASE, delay: 0.2 + i * 0.05 }}
-                      className="rounded-full border border-white/[0.14] bg-white/[0.03] px-4 py-2 text-[13px] text-white/60 transition-colors hover:border-white/40 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50"
+                      whileHover={parado ? undefined : { scale: 1.04 }}
+                      whileTap={parado ? undefined : { scale: 0.96 }}
+                      /* Só a mão e o clique caem aqui: a entrada leva o atraso
+                         escalonado no próprio `animate`, e um atraso vazando
+                         para o hover faria o botão responder um quinto de
+                         segundo depois do mouse. */
+                      transition={{ duration: 0.2, ease: MOLA }}
+                      className="rounded-full border border-white/[0.14] bg-white/[0.03] px-4 py-2 text-[13px] font-medium text-white/60 outline-none transition-colors duration-200 hover:border-white/30 hover:bg-white/[0.07] hover:text-white focus-visible:ring-2 focus-visible:ring-white/50"
                     >
                       {duvida.atalho}
                     </motion.button>
@@ -444,12 +435,11 @@ export function Faq() {
           {/* ─── A COLUNA DAS RESPOSTAS ───────────────────────────────────────
            *
            * `min-w-0` impede que uma palavra longa estoure a coluna e empurre o
-           * grid inteiro; `relative` é o poste da divisória e da descida.
+           * grid inteiro; `relative` é o poste da divisória.
            *
            * A margem de cima só existe empilhado. Dividido, o topo desta coluna
            * bate com o topo do campo — é esse alinhamento que faz as duas lerem
-           * como duas metades da mesma coisa, e é o que dá ao sinal uma linha
-           * reta para percorrer.
+           * como duas metades da mesma coisa.
            */}
           <div
             className={`relative min-w-0 transition-[padding] motion-reduce:transition-none ${
@@ -467,12 +457,8 @@ export function Faq() {
               className="absolute inset-y-0 left-0 hidden w-px origin-top bg-white/[0.10] lg:block"
               initial={false}
               animate={{ scaleY: aberto ? 1 : 0 }}
-              transition={{ duration: parado ? 0 : DESCIDA / 1000, ease: EASE }}
+              transition={{ duration: parado ? 0 : PARTIDA / 1000, ease: EASE }}
             />
-
-            <AnimatePresence>
-              {sinais > 0 && <Descida key="desce" sentido="baixo" />}
-            </AnimatePresence>
 
             {/*
              * A barra de limpar, e ela só existe quando há o que limpar.

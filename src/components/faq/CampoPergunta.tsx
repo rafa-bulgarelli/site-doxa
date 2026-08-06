@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState, type CSSProperties } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { ArrowUp } from 'lucide-react';
-import { CARGA, ESPESSURA } from './Descida';
 import { CORES } from './cores';
 
 /**
@@ -15,35 +14,66 @@ const ACESO: CSSProperties = {
   ['--anel-siri-cores' as string]: [...CORES, CORES[0]].join(', '),
 };
 
-interface CampoPerguntaProps {
-  valor: string;
-  /** As frases que o campo escreve sozinho enquanto está vazio. */
-  exemplos: readonly string[];
-  /** Se a pergunta acabou de ser enviada e o campo está lendo — dura `CARGA`. */
-  carregando: boolean;
-  aoDigitar: (valor: string) => void;
-  aoEnviar: () => void;
-}
+/**
+ * A MOLA — a curva que passa do alvo e volta.
+ *
+ * É a única coisa que faz um objeto que muda de tamanho parecer ter massa. Uma
+ * curva que só desacelera (`ease-out`) entrega o mesmo tamanho final e lê como
+ * um valor sendo escrito; esta ultrapassa em ~7% e assenta, que é o que o olho
+ * reconhece como algo que se ABRIU. Vale para o campo, para os atalhos e para
+ * qualquer coisa desta seção que mude de forma.
+ */
+export const MOLA = [0.175, 0.885, 0.32, 1.275] as const;
+const MOLA_CSS = `cubic-bezier(${MOLA.join(',')})`;
 
 /**
- * A altura de uma linha do campo, em pixels.
+ * Dois regimes para a mesma caixa, e a diferença importa.
  *
- * Exportada porque o sinal que atravessa o vão se alinha pelo MEIO do campo, e
- * esse meio é a metade deste número. Escrito de novo lá, os dois divergem no dia
- * em que o campo mudar de corpo — e o risco passa a sair de um lugar onde não há
- * campo nenhum.
+ * `MORFO` é abrir e fechar: o gesto tem começo e fim, e a mola cabe. `CRESCE` é
+ * a caixa acompanhando o que está sendo digitado — aqui a mola seria um erro,
+ * porque cada tecla que quebra linha daria um solavanco no que a pessoa está
+ * lendo. Cresce reto e rápido, e some.
  */
-export const MINIMA = 56;
-/** Onde ele para de crescer e passa a rolar por dentro. */
-const MAXIMA = 168;
+const MORFO = `max-width 400ms ${MOLA_CSS}, height 400ms ${MOLA_CSS}`;
+const CRESCE = `max-width 400ms ${MOLA_CSS}, height 150ms ease-out`;
+
+/** A altura do campo fechado — a pastilha. */
+const FECHADO = 48;
+/** A altura da área de texto: onde ela começa e onde para de crescer. */
+const MINIMA = 68;
+const MAXIMA = 160;
+/** A faixa que a ação ocupa embaixo do texto. */
+const ACOES = 48;
+
+/**
+ * A largura da pastilha fechada.
+ *
+ * Ela cabe a mais longa das perguntas de exemplo ("Por que cobrar R$ 100 só
+ * para conversar?") sem cortar. Curta demais, o exemplo que se escreve sozinho
+ * some pela direita a cada ciclo — e o exemplo é a coisa que ensina o que este
+ * campo sabe responder.
+ */
+const ESTREITO = '23rem';
+
+/** Quanto a barra leva varrendo o campo, em segundos. */
+export const CARGA = 0.5;
+/** A espessura da barra, em pixels. */
+const ESPESSURA = 3;
 
 /** Milissegundos por letra escrita, por letra apagada, e a pausa na frase pronta. */
 const ESCREVE = 42;
 const APAGA = 22;
 const LE = 1900;
 
-/** Quanto tempo o texto enviado leva para se desfazer. */
-const SUMICO = 420;
+interface CampoPerguntaProps {
+  valor: string;
+  /** As frases que o campo escreve sozinho enquanto está fechado. */
+  exemplos: readonly string[];
+  /** Se a pergunta acabou de ser enviada e o campo está lendo — dura `CARGA`. */
+  carregando: boolean;
+  aoDigitar: (valor: string) => void;
+  aoEnviar: () => void;
+}
 
 /**
  * O exemplo que se escreve sozinho, uma pergunta depois da outra.
@@ -56,10 +86,12 @@ const SUMICO = 420;
  * parece inteligente e um que parece quebrado.
  *
  * Apaga mais rápido do que escreve, e é assim de propósito: apagar é a parte
- * chata: ninguém precisa vê-la no mesmo ritmo em que leu a frase.
+ * chata; ninguém precisa vê-la no mesmo ritmo em que leu a frase.
  *
- * Para de vez quando alguém digita. Um texto se escrevendo atrás do que a
- * pessoa está escrevendo é duas coisas disputando o mesmo lugar.
+ * Para de vez quando o campo ABRE. Antes ele parava quando alguém digitava, o
+ * que era a mesma ideia com o gatilho pior: abrir é o instante em que a pessoa
+ * declarou que vai escrever, e é aí que o texto de exemplo deixa de ser
+ * demonstração e vira uma coisa se mexendo atrás do cursor.
  */
 function useExemploVivo(frases: readonly string[], ativo: boolean) {
   const [indice, setIndice] = useState(0);
@@ -92,18 +124,33 @@ function useExemploVivo(frases: readonly string[], ativo: boolean) {
 }
 
 /**
- * O campo da pergunta: uma caixa que cresce, se acende e se apaga.
+ * O campo da pergunta: uma pastilha que vira caixa.
  *
- * A caixa cresce com o que se escreve porque um `<input>` corta a frase pela
- * esquerda quando ela passa da largura, e quem escreve uma pergunta longa perde
- * de vista o começo do que perguntou — logo antes de apertar enviar, que é o
- * pior momento para não poder reler.
+ * ─── POR QUE ELE FECHA ───────────────────────────────────────────────────────
+ *
+ * Antes era uma caixa grande e permanente. Uma caixa grande e vazia num fundo
+ * preto pede para ser preenchida e não diz o que aceita; a pastilha pede um
+ * CLIQUE, que é um compromisso muito menor, e é ela que carrega o exemplo se
+ * escrevendo sozinho. Quem clica já decidiu escrever — e é nesse instante, e
+ * não antes, que a caixa de escrever precisa existir.
+ *
+ * O gesto de enviar é o mesmo de trás para frente: a caixa se fecha de volta na
+ * pastilha. Isso substituiu a animação antiga em que o texto enviado subia
+ * desfocando — duas partidas ao mesmo tempo eram uma a mais, e o fechamento já
+ * conta a mesma história com o objeto inteiro em vez de com uma cópia do texto.
+ *
+ * ─── O QUE MUDA DE TAMANHO, E COMO ──────────────────────────────────────────
+ *
+ * `max-width` e `height`, as duas na MOLA, e nada de `width`: a caixa vive
+ * dentro de uma coluna que também se mexe (a seção se parte em duas na primeira
+ * pergunta), e uma largura fixa brigaria com ela. Com `max-width`, a pastilha
+ * tem um teto próprio e a caixa aberta simplesmente aceita a coluna.
  *
  * A altura é escrita no elemento a cada tecla, e é assim porque não existe
  * `height: auto` que sirva: `scrollHeight` só diz a altura do conteúdo quando a
- * caixa está MENOR do que ele. Encolher para a mínima antes de medir é o que dá
- * uma medida que não depende da altura do quadro anterior — sem isso a caixa só
- * sabe crescer, e apagar texto deixa o vão aberto.
+ * caixa está MENOR do que ele. O truque de medir com `transition: none` e
+ * devolver a altura antes de soltar é o que impede a medição de virar uma
+ * animação de zero até o tamanho certo, visível a cada letra.
  *
  * Enter envia, Shift+Enter quebra linha. É a convenção de todo campo de conversa
  * e não precisa de legenda; o que precisaria de legenda é o contrário.
@@ -117,203 +164,296 @@ export function CampoPergunta({
 }: CampoPerguntaProps) {
   const parado = useReducedMotion() === true;
   const campoRef = useRef<HTMLTextAreaElement>(null);
-  /** O texto que acabou de ser enviado e ainda está se desfazendo. */
-  const [sumindo, setSumindo] = useState<string | null>(null);
+  const cascaRef = useRef<HTMLDivElement>(null);
+  const veuAltoRef = useRef<HTMLDivElement>(null);
+  const veuBaixoRef = useRef<HTMLDivElement>(null);
 
-  const vazio = valor.length === 0;
-  const exemplo = useExemploVivo(exemplos, vazio && !parado);
+  const [aberto, setAberto] = useState(false);
+  /** Se a mudança de altura é a caixa crescendo com o texto, e não abrindo. */
+  const [crescendo, setCrescendo] = useState(false);
+  const [alturaTexto, setAlturaTexto] = useState(MINIMA);
+  const [rolando, setRolando] = useState(false);
 
-  const ajustar = useCallback(() => {
+  const vazio = valor.trim().length === 0;
+  const exemplo = useExemploVivo(exemplos, !aberto && !parado);
+
+  /*
+   * Os véus de cima e de baixo: o texto se apagando nas duas pontas quando há
+   * mais do que cabe. Sem eles, uma frase cortada ao meio pela borda lê como
+   * defeito de layout; apagando, lê como texto continuando fora da vista. As
+   * opacidades são escritas direto no nó, e não em estado: elas mudam a cada
+   * quadro de rolagem, e um `setState` por quadro repinta a seção inteira para
+   * mexer em dois números.
+   */
+  const ajustarVeus = useCallback(() => {
     const campo = campoRef.current;
     if (campo == null) return;
-    campo.style.height = `${MINIMA}px`;
+    const { scrollTop, scrollHeight, clientHeight } = campo;
+    if (veuAltoRef.current != null) {
+      veuAltoRef.current.style.opacity = String(Math.min(scrollTop / 20, 1));
+    }
+    if (veuBaixoRef.current != null) {
+      const abaixo = scrollHeight - clientHeight - scrollTop;
+      veuBaixoRef.current.style.opacity = String(Math.min(Math.max(abaixo - 16, 0) / 10, 1));
+    }
+  }, []);
+
+  const medir = useCallback(() => {
+    const campo = campoRef.current;
+    if (campo == null) return;
+    /* Medir sem que a medição vire animação: a altura só é legível em
+       `scrollHeight` com a caixa encolhida, e encolher com `transition` ligada
+       desenharia esse encolhimento na tela. Desliga, mede, devolve, força o
+       reflow com `offsetHeight` e só então religa. */
+    const anterior = campo.style.height;
+    campo.style.transition = 'none';
+    campo.style.height = '0px';
     const natural = campo.scrollHeight;
-    campo.style.height = `${Math.max(MINIMA, Math.min(natural, MAXIMA))}px`;
-    /*
-     * A barra de rolagem só pode existir quando há o que rolar.
-     *
-     * O dono viu uma barra numa caixa VAZIA, e ela era real: uma linha deste
-     * campo mede 56,375px (24,375 de entrelinha mais 32 de recuo) e o piso da
-     * caixa é 56. `scrollHeight` devolve inteiro e arredonda para baixo, então a
-     * altura calculada ficava três décimos de pixel menor que o conteúdo — o
-     * bastante para o navegador concluir que havia transbordo e desenhar a
-     * barra. Escondido por padrão, o arredondamento deixa de ter consequência; e
-     * quando o texto passa do TETO, aí sim há rolagem de verdade e a barra volta
-     * a ser a resposta certa.
-     */
-    campo.style.overflowY = natural > MAXIMA ? 'auto' : 'hidden';
+    campo.style.height = anterior;
+    void campo.offsetHeight;
+    campo.style.transition = '';
+
+    const nova = Math.max(MINIMA, Math.min(natural, MAXIMA));
+    campo.style.height = `${nova}px`;
+    setAlturaTexto(nova);
+    setRolando(natural > MAXIMA);
   }, []);
 
   // No layout e não em `useEffect`: a altura tem de estar certa no quadro em que
   // a letra aparece. Um quadro atrás, o campo dá um salto visível a cada linha.
-  useLayoutEffect(ajustar, [valor, ajustar]);
+  useLayoutEffect(medir, [valor, aberto, medir]);
+  useEffect(() => {
+    const id = window.setTimeout(ajustarVeus, 0);
+    return () => window.clearTimeout(id);
+  }, [alturaTexto, ajustarVeus]);
 
   // A largura muda a quebra de linha, e a quebra muda a altura. Sem isto, girar
   // o telefone deixa a caixa com a altura do retrato e o texto por baixo dela.
   useEffect(() => {
-    window.addEventListener('resize', ajustar);
-    return () => window.removeEventListener('resize', ajustar);
-  }, [ajustar]);
+    window.addEventListener('resize', medir);
+    return () => window.removeEventListener('resize', medir);
+  }, [medir]);
 
-  /*
-   * Enviar, e o texto não some em degrau.
-   *
-   * Ele é copiado para uma camada por cima e sai de lá desfocando e subindo,
-   * enquanto o campo já está vazio e pronto para a próxima. O corte seco fazia
-   * a pergunta desaparecer sem ir a lugar nenhum — e ela vai: a descida logo
-   * abaixo a leva até a resposta. As duas animações são o mesmo gesto contado em
-   * dois pedaços.
-   */
+  /* Aberto, o cursor vai para o texto — mas um quadro depois. Focar no mesmo
+     quadro em que a caixa começa a crescer faz o navegador rolar a página até
+     um elemento que ainda tem a altura antiga, e a seção dá um pulo. */
+  useEffect(() => {
+    if (!aberto) return;
+    const id = window.setTimeout(() => {
+      const campo = campoRef.current;
+      if (campo == null) return;
+      campo.focus();
+      campo.setSelectionRange(campo.value.length, campo.value.length);
+    }, 50);
+    return () => window.clearTimeout(id);
+  }, [aberto]);
+
+  const abrir = () => {
+    setCrescendo(false);
+    setAberto(true);
+  };
+
   const enviar = () => {
-    if (valor.trim().length === 0) return;
-    if (!parado) {
-      setSumindo(valor);
-      window.setTimeout(() => setSumindo(null), SUMICO);
-    }
+    if (vazio) return;
+    setCrescendo(false);
+    setAberto(false);
     aoEnviar();
   };
 
+  /* Fechar ao perder o foco, e só se não houver nada escrito. `relatedTarget`
+     dentro da própria casca não conta: clicar no botão de enviar tira o foco do
+     texto, e uma caixa que se fecha no meio do clique é uma caixa que engole a
+     pergunta. */
+  const aoSair = (evento: React.FocusEvent<HTMLDivElement>) => {
+    if (cascaRef.current?.contains(evento.relatedTarget as Node | null) === true) return;
+    if (!vazio) return;
+    // Volta para a mola antes de fechar: quem digitou e apagou tudo deixou o
+    // campo em regime de CRESCE, e fechar naquele regime devolveria a pastilha
+    // em 150ms retos — o mesmo gesto de abrir, contado com outra física.
+    setCrescendo(false);
+    setAberto(false);
+  };
+
+  const transicao = parado ? 'none' : crescendo ? CRESCE : MORFO;
+
   return (
-    /* A caixa inteira é o alvo do clique, e não só o texto: um campo de conversa
-       que só aceita clique nos poucos pixels da primeira linha é um campo que
-       parece quebrado. */
     <div
-      onClick={() => campoRef.current?.focus()}
-      style={ACESO}
-      className="anel-siri relative rounded-2xl border border-white/[0.12] bg-doxa-surface focus-within:border-white/30"
+      ref={cascaRef}
+      onBlur={aoSair}
+      className="relative w-full"
+      style={{ maxWidth: aberto ? '100%' : ESTREITO, transition: transicao }}
     >
-      {/* A luz da Siri: o mesmo gesto do telefone quando ela acorda — não uma
-          borda colorida, mas uma faixa BORRADA de cor encostada na borda por
-          dentro, e o halo dela atravessando para fora. Duas voltas, uma dentro
-          da outra e em sentidos contrários, porque é o cruzamento delas que faz
-          a cor cintilar em vez de desfilar. O regime de acender é o mesmo do
-          resto do campo: só sob a mão ou sob o cursor de texto (`.anel-siri`,
-          no index.css). */}
-      <div className="anel-luz" aria-hidden>
-        <span className="luz-halo" />
-        <span className="luz-borda" />
-      </div>
-
-      <div className="dot-grid pointer-events-none absolute inset-0 rounded-2xl opacity-25" />
-
-      {/* A BARRA DE CARGA: o campo lendo a pergunta que acabou de receber.
-
-          É o primeiro trecho de um gesto que tem dois. Antes, o único sinal era
-          um risco de 2px atravessando o vão ao lado — e o dono viu o defeito
-          exato: nada ligava aquele risco ao campo, então ele lia como um traço
-          jogado na tela. A barra resolve isso pela origem: ela corre DENTRO do
-          objeto, na base dele, e o risco parte da linha em que ela terminou.
-          Uma coisa só, contada em dois trechos.
-
-          `scaleX` e não `width`: largura é layout, e animar layout obriga o
-          navegador a refazer a página inteira a cada quadro — o mesmo erro que
-          derrubou a primeira versão do sinal. Escala sobe para o compositor.
-
-          O gradiente é o que faz a barra ter FRENTE: transparente atrás, cheia
-          na ponta. Como ele escala junto, a ponta continua acesa em qualquer
-          instante da corrida, e o que se vê é uma luz avançando, não um bloco
-          crescendo.
-
-          Recortada pela mesma curva da caixa (`overflow-hidden` com o mesmo
-          raio), a barra afina nos cantos em vez de cruzar por cima deles. */}
-      <AnimatePresence>
-        {carregando && (
-          <motion.div
-            key="carga"
-            aria-hidden
-            className="pointer-events-none absolute inset-0 overflow-hidden rounded-2xl"
-            initial={{ opacity: 1 }}
-            exit={{ opacity: 0, transition: { duration: 0.16 } }}
-          >
-            <motion.span
-              className="absolute bottom-0 left-0 w-full origin-left rounded-full"
-              style={{
-                height: ESPESSURA,
-                background:
-                  'linear-gradient(to right, rgba(244,241,232,0), rgba(244,241,232,0.35) 55%, #F4F1E8)',
-                boxShadow: '0 0 14px 3px rgba(244,241,232,0.4)',
-              }}
-              initial={{ scaleX: 0 }}
-              animate={{ scaleX: 1 }}
-              /* `linear`, que é a regra do site para sinal: um pulso que acelera
-                 e freia lê como objeto sendo arrastado. Sinal só atravessa. */
-              transition={{ duration: CARGA, ease: 'linear' }}
-            />
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      <textarea
-        ref={campoRef}
-        value={valor}
-        onChange={(evento) => aoDigitar(evento.target.value)}
-        onKeyDown={(evento) => {
-          if (evento.key === 'Enter' && !evento.shiftKey) {
-            evento.preventDefault();
-            enviar();
-          }
+      {/* A caixa. O clique em qualquer parte dela cai no texto: um campo de
+          conversa que só aceita clique nos poucos pixels da primeira linha é um
+          campo que parece quebrado. */}
+      <div
+        onMouseDown={(evento) => {
+          if (!aberto || evento.target === campoRef.current) return;
+          evento.preventDefault();
+          campoRef.current?.focus();
         }}
-        rows={1}
-        /* O `placeholder` nativo fica vazio: quem desenha o exemplo é a camada
-           abaixo, porque texto de placeholder não anima. O rótulo acessível
-           continua no `aria-label`, que é onde ele sempre esteve. */
-        placeholder=""
-        aria-label="Escreva a sua pergunta"
-        /* `resize-none` porque a alça de redimensionar do navegador briga com a
-           altura que este componente escreve — puxar a alça e digitar devolvia a
-           caixa ao tamanho calculado, o que lê como o campo desobedecendo. */
-        className="relative block w-full resize-none bg-transparent px-5 py-4 pr-16 text-[15px] leading-relaxed text-[#F4F1E8] outline-none"
-      />
-
-      {/* O exemplo que se escreve, na mesma métrica do campo — mesma fonte,
-          mesmo corpo, mesma entrelinha, mesmo recuo. Qualquer diferença aqui
-          aparece como um salto no instante em que a pessoa começa a digitar. */}
-      {vazio && sumindo == null && (
-        <div
-          aria-hidden
-          className="pointer-events-none absolute left-0 top-0 px-5 py-4 pr-16 text-[15px] leading-relaxed text-white/30"
-        >
-          {parado ? exemplos[0] : exemplo}
-          {!parado && <span className="cursor-exemplo">|</span>}
-        </div>
-      )}
-
-      {/* A pergunta enviada, se desfazendo. */}
-      <AnimatePresence>
-        {sumindo != null && (
-          <motion.div
-            key="sumindo"
-            aria-hidden
-            initial={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-            animate={{ opacity: 0, y: -14, filter: 'blur(6px)' }}
-            transition={{ duration: SUMICO / 1000, ease: [0.16, 1, 0.3, 1] }}
-            className="pointer-events-none absolute left-0 top-0 px-5 py-4 pr-16 text-[15px] leading-relaxed text-[#F4F1E8]"
-          >
-            {sumindo}
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* O botão de enviar, branco desde o primeiro olhar.
-
-          Ele já foi um contorno apagado que só acendia depois da pergunta
-          escrita — a ideia era que o botão dissesse "ainda não é hora". Só que
-          numa seção onde o campo escreve sozinho e nada mais pede clique, o
-          único jeito de descobrir que dá para PERGUNTAR é enxergando o botão; e
-          um contorno a 14% de branco no canto de uma caixa preta não é visto.
-          Sólido o tempo inteiro, ele é o convite.
-
-          Clicável mesmo vazio, e isso não mudou: desabilitar um botão sem dizer
-          por quê deixa a pessoa clicando num objeto morto. Sem texto, `enviar`
-          simplesmente não faz nada. */}
-      <button
-        type="button"
-        onClick={enviar}
-        aria-label="Enviar a pergunta"
-        className="absolute bottom-3 right-3 flex h-9 w-9 items-center justify-center rounded-full bg-[#F4F1E8] text-[#0B0B0B] transition-transform hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black motion-reduce:transition-none motion-reduce:hover:scale-100"
+        style={{ ...ACESO, height: aberto ? alturaTexto + ACOES : FECHADO, transition: transicao }}
+        className="anel-siri relative w-full rounded-3xl border border-white/[0.12] bg-doxa-surface focus-within:border-white/30"
       >
-        <ArrowUp className="h-4 w-4" strokeWidth={2.2} />
-      </button>
+        {/* A luz da Siri: não uma borda colorida, mas uma faixa BORRADA de cor
+            encostada na borda por dentro, e o halo dela atravessando para fora.
+            Duas voltas em sentidos contrários, só sob a mão ou sob o cursor de
+            texto (`.anel-siri`, no index.css). */}
+        <div className="anel-luz" aria-hidden>
+          <span className="luz-halo" />
+          <span className="luz-borda" />
+        </div>
+
+        <div className="dot-grid pointer-events-none absolute inset-0 rounded-3xl opacity-25" />
+
+        {/* A BARRA DE CARGA: o campo lendo a pergunta que acabou de receber.
+
+            É o único sinal que sobrou, e por decisão do dono: existia também um
+            risco atravessando o vão até a coluna das respostas, e ele lia como
+            um traço jogado na tela — longe do campo, sem nada o ligando ao
+            objeto que recebeu a pergunta. Dentro da caixa, na base dela, o sinal
+            tem dono.
+
+            `scaleX` e não `width`: largura é layout, e animar layout obriga o
+            navegador a refazer a página a cada quadro. Escala sobe para o
+            compositor. O gradiente é o que dá FRENTE à barra — como ele escala
+            junto, a ponta continua acesa em qualquer instante da corrida, e o
+            que se vê é luz avançando, não bloco crescendo. */}
+        <AnimatePresence>
+          {carregando && (
+            <motion.div
+              key="carga"
+              aria-hidden
+              className="pointer-events-none absolute inset-0 overflow-hidden rounded-3xl"
+              initial={{ opacity: 1 }}
+              exit={{ opacity: 0, transition: { duration: 0.16 } }}
+            >
+              <motion.span
+                className="absolute bottom-0 left-0 w-full origin-left rounded-full"
+                style={{
+                  height: ESPESSURA,
+                  background:
+                    'linear-gradient(to right, rgba(244,241,232,0), rgba(244,241,232,0.35) 55%, #F4F1E8)',
+                  boxShadow: '0 0 14px 3px rgba(244,241,232,0.4)',
+                }}
+                initial={{ scaleX: 0 }}
+                animate={{ scaleX: 1 }}
+                /* `linear`, que é a regra do site para sinal: um pulso que
+                   acelera e freia lê como objeto sendo arrastado. */
+                transition={{ duration: CARGA, ease: 'linear' }}
+              />
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* O texto. Absoluto e sempre montado: desmontá-lo ao fechar perderia o
+            que estava escrito e o cursor junto, e o que se quer é que ele
+            APAREÇA — some em opacidade e escala, e a caixa por cima o recorta.
+
+            `resize-none` porque a alça do navegador briga com a altura que este
+            componente escreve: puxar a alça e digitar devolvia a caixa ao
+            tamanho calculado, o que lê como o campo desobedecendo. */}
+        <textarea
+          ref={campoRef}
+          value={valor}
+          onChange={(evento) => {
+            setCrescendo(true);
+            aoDigitar(evento.target.value);
+          }}
+          onScroll={ajustarVeus}
+          onKeyDown={(evento) => {
+            if (evento.key === 'Enter' && !evento.shiftKey) {
+              evento.preventDefault();
+              enviar();
+            }
+            if (evento.key === 'Escape' && vazio) setAberto(false);
+          }}
+          rows={1}
+          placeholder="Escreva a sua pergunta…"
+          aria-label="Escreva a sua pergunta"
+          aria-hidden={!aberto}
+          tabIndex={aberto ? undefined : -1}
+          style={{
+            transition: parado
+              ? 'none'
+              : crescendo
+                ? 'height 150ms ease-out'
+                : `opacity 300ms ease-out, transform 300ms ease-out, height 400ms ${MOLA_CSS}`,
+          }}
+          className={`absolute inset-x-0 top-0 z-[1] block w-full resize-none bg-transparent px-5 py-4 pr-14 text-[15px] leading-relaxed text-[#F4F1E8] outline-none placeholder:text-white/30 ${
+            rolando ? 'overflow-y-auto' : 'overflow-y-hidden'
+          } ${aberto ? 'translate-y-0 scale-100 opacity-100' : 'pointer-events-none -translate-y-1 scale-95 opacity-0'}`}
+        />
+
+        {/* Os véus. Só existem abertos: fechados, seriam duas faixas escuras por
+            cima de uma pastilha de 48 pixels. */}
+        {aberto && (
+          <>
+            <div
+              ref={veuAltoRef}
+              aria-hidden
+              className="pointer-events-none absolute left-5 right-14 top-0 z-[2] h-8 rounded-t-3xl bg-gradient-to-b from-doxa-surface via-doxa-surface/90 to-transparent"
+              style={{ opacity: 0 }}
+            />
+            <div
+              ref={veuBaixoRef}
+              aria-hidden
+              className="pointer-events-none absolute left-5 right-14 z-[2] h-8 bg-gradient-to-t from-doxa-surface via-doxa-surface/90 to-transparent"
+              style={{ opacity: 0, top: alturaTexto - 32, transition: transicao }}
+            />
+          </>
+        )}
+
+        {/* A pastilha fechada: o exemplo que se escreve sozinho, e ele é o botão
+            de abrir. Um `button` de verdade, e não um texto com `onClick`, para
+            que teclado e leitor de tela cheguem no campo pelo mesmo caminho que
+            a mão. */}
+        <button
+          type="button"
+          onClick={abrir}
+          aria-label="Escrever uma pergunta"
+          aria-hidden={aberto}
+          tabIndex={aberto ? -1 : undefined}
+          style={{ transition: parado ? 'none' : `opacity 300ms ease-out, transform 300ms ${MOLA_CSS}` }}
+          className={`absolute inset-x-0 top-0 z-[1] cursor-text px-5 pr-14 text-left text-[15px] leading-none text-white/40 outline-none ${
+            aberto
+              ? 'pointer-events-none translate-y-1 scale-105 opacity-0'
+              : 'translate-y-0 scale-100 opacity-100'
+          }`}
+        >
+          {/* A altura da pastilha inteira, para o texto sentar no meio dela sem
+              depender de um `padding` que teria de ser recalculado à mão se a
+              pastilha mudar de corpo. */}
+          <span className="flex items-center" style={{ height: FECHADO }}>
+            <span className="truncate">
+              {parado ? exemplos[0] : exemplo}
+              {!parado && <span className="cursor-exemplo">|</span>}
+            </span>
+          </span>
+        </button>
+
+        {/* O botão de enviar, branco desde o primeiro olhar.
+
+            Numa seção onde o campo escreve sozinho e nada mais pede clique, o
+            único jeito de descobrir que dá para PERGUNTAR é enxergando o botão;
+            um contorno apagado no canto de uma caixa preta não é visto. Sólido o
+            tempo inteiro, ele é o convite.
+
+            Clicável mesmo vazio: desabilitar um botão sem dizer por quê deixa a
+            pessoa clicando num objeto morto. Fechado ele ABRE a caixa, aberto
+            ele envia — a mesma seta, porque em ambos os casos ela leva a
+            pergunta adiante. */}
+        <button
+          type="button"
+          onMouseDown={(evento) => evento.preventDefault()}
+          onClick={aberto ? enviar : abrir}
+          aria-label={aberto ? 'Enviar a pergunta' : 'Escrever uma pergunta'}
+          className="absolute bottom-1.5 right-1.5 z-[10] flex h-9 w-9 items-center justify-center rounded-full bg-[#F4F1E8] text-[#0B0B0B] transition-transform duration-300 hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black motion-reduce:transition-none motion-reduce:hover:scale-100"
+          style={{ transitionTimingFunction: MOLA_CSS }}
+        >
+          <ArrowUp className="h-4 w-4" strokeWidth={2.2} />
+        </button>
+      </div>
     </div>
   );
 }
