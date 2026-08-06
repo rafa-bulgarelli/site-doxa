@@ -331,18 +331,20 @@ export function Faq() {
     <section
       ref={secaoRef}
       id="faq"
-      /* ─── A SEÇÃO TEM ALTURA PRÓPRIA, e não só o seu conteúdo ──────────────
+      /* ─── A SEÇÃO TEM ALTURA PRÓPRIA, e o conteúdo mora no TOPO dela ───────
        *
-       * Fechada, esta seção é um rótulo, um título e uma pastilha de 48 pixels:
-       * duzentos e cinquenta pixels de coisa entre duas seções que ocupam telas
-       * inteiras. O que se lia disso não era "seção enxuta", era um vão entre a
-       * comparação e o rodapé — e um vão não é onde alguém para para perguntar.
+       * Fechada, esta seção era um rótulo, um título e uma pastilha de 48
+       * pixels: duzentos e cinquenta pixels de coisa entre duas seções que
+       * ocupam telas inteiras. O que se lia disso não era "seção enxuta", era um
+       * vão entre a comparação e o rodapé — e um vão não é onde alguém para
+       * para perguntar. Daí o `min-h`.
        *
-       * `min-h` com o conteúdo CENTRADO, e não mais recheio: padding empurra o
-       * título para cima e deixa o campo boiando no meio de um espaço que só
-       * cresce embaixo. Centrado numa altura fixa, o par título+campo fica no
-       * eixo do olhar em qualquer tela, e a seção passa a ter a mesma presença
-       * das vizinhas sem que nada dentro dela mude de tamanho.
+       * A altura veio de `min-h` e NÃO de recheio, e é essa a diferença que o
+       * dono cobrou: o padding daqui é o mesmo das outras seções do site
+       * (`py-16 md:py-24`), então o rótulo nasce na mesma linha em que nascem
+       * os rótulos delas. A altura extra fica toda EMBAIXO, que é para onde a
+       * seção cresce quando a primeira resposta chega — em vez de ficar
+       * repartida em cima e embaixo empurrando o título para o meio da tela.
        *
        * `svh` e não `vh`: no telefone, `vh` mede a tela com as barras do
        * navegador recolhidas, e uma seção que quer 92% disso nasce mais alta do
@@ -351,7 +353,7 @@ export function Faq() {
        * A altura é MÍNIMA: aberta, com respostas empilhadas na coluna da
        * direita, a seção cresce por cima dela como sempre cresceu.
        */
-      className="relative flex min-h-[80svh] flex-col justify-center overflow-x-clip bg-black px-5 py-28 md:min-h-[92svh] md:px-10 md:py-40"
+      className="relative flex min-h-[80svh] flex-col overflow-x-clip bg-black px-5 py-16 md:min-h-[92svh] md:px-10 md:py-24"
     >
       {/* SEM GRADE E SEM FACHO no fundo, a pedido do dono, e a razão é o que
           existe atrás deles: nada. Nas outras seções a textura corre por baixo
