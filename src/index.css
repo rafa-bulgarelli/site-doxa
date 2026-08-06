@@ -979,7 +979,10 @@ body {
 .anel-siri:hover::before,
 .anel-siri:focus-within::before {
   opacity: 1;
-  animation: anel-siri-gira 4s linear infinite;
+  /* Os mesmos 2,4s da `.luz-borda`, e não um tempo próprio: os dois desenham a
+     MESMA borda, um como fio e o outro como cor. Em tempos diferentes eles se
+     descolam e a borda passa a ter duas cores discordando na mesma linha. */
+  animation: anel-siri-gira 2.4s linear infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1031,11 +1034,23 @@ body {
   opacity: 1;
 }
 
+/*
+ * Onde cada faixa NASCE é o que decide se o texto continua legível.
+ *
+ * Um borrão espalha para os dois lados por igual — não há como pedir a ele que
+ * vaze só para fora. O que dá para escolher é o LUGAR da faixa antes de borrar,
+ * e é só isso que separa as duas: a fina nasce em cima da borda (é ela a cor do
+ * contorno, e tem de encostar no vidro); a larga nasce inteira do lado de FORA
+ * dela, de modo que o borrão gaste a maior parte do alcance na página, e não
+ * por dentro da caixa.
+ *
+ * A conta que manda aqui: o texto começa a 16px da borda de cima. Somando o
+ * quanto cada faixa entra (o seu recuo mais o seu borrão), nenhuma das duas
+ * chega lá — a fina morre nos 5px, a larga nos 12. O meio da caixa, que é onde
+ * a pergunta é lida, fica sendo o preto de sempre.
+ */
 .anel-luz span {
   position: absolute;
-  /* Um pixel para fora da borda de cada lado: a faixa tem de nascer NO vidro,
-     não um respiro depois dele. */
-  inset: -1px;
   border-radius: inherit;
 }
 
@@ -1059,42 +1074,52 @@ body {
   mask-composite: exclude;
 }
 
-/* A de dentro: fina e saturada, é ela que dá a COR encostada na borda. */
+/* A fina, em cima da borda: é ela a COR do contorno, e por isso é a única que
+   vai a força cheia. Borrão curto de propósito — o que se quer aqui é cor
+   acesa e definida, não brilho. */
 .luz-borda {
-  filter: blur(7px);
+  inset: -2px;
+  filter: blur(4px);
 }
 
 .luz-borda::before {
-  padding: 5px;
+  padding: 3px;
 }
 
-/* A de fora: larga, mais apagada e mais saturada, é ela que faz a luz
-   atravessar a parede da caixa. O `respira` é lento e de pouca amplitude de
-   propósito — a luz da Siri pulsa, mas não pisca. */
+/* A larga, inteira do lado de fora: é o clarão atravessando o vidro. Apagada,
+   porque brilho é o que estava pesando — a borda continua forte, o entorno é
+   que para de gritar. O `respira` é lento e de pouca amplitude: a luz da Siri
+   pulsa, mas não pisca. */
 .luz-halo {
-  filter: blur(22px) saturate(1.35);
-  opacity: 0.7;
+  inset: -8px;
+  filter: blur(12px) saturate(1.25);
+  opacity: 0.45;
 }
 
 .luz-halo::before {
-  padding: 13px;
+  padding: 8px;
 }
 
 @keyframes luz-respira {
   50% {
-    opacity: 0.42;
-    transform: scale(1.02);
+    opacity: 0.3;
+    transform: scale(1.015);
   }
 }
 
+/* A volta é rápida porque a graça está na TROCA: devagar, o que se vê é uma cor
+   fazendo o contorno; nesta cadência, a borda inteira muda de cor debaixo da
+   mão, que é o que o telefone faz. A fina anda junto com o fio de um pixel
+   (mesmos 2,4s, mesmo começo) — as duas coladas leem como uma borda só, acesa;
+   fora de fase, leem como duas. */
 .anel-siri:hover .luz-borda::before,
 .anel-siri:focus-within .luz-borda::before {
-  animation: anel-siri-gira 5s linear infinite;
+  animation: anel-siri-gira 2.4s linear infinite;
 }
 
 .anel-siri:hover .luz-halo::before,
 .anel-siri:focus-within .luz-halo::before {
-  animation: anel-siri-gira 8s linear infinite reverse;
+  animation: anel-siri-gira 3.4s linear infinite reverse;
 }
 
 .anel-siri:hover .luz-halo,
@@ -1147,9 +1172,22 @@ body {
   transition: opacity 620ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+/*
+ * A aurora acesa vale um TERÇO do que valia.
+ *
+ * Ela é a única luz que mora no meio da caixa — as duas faixas novas morrem
+ * antes de chegar lá —, então ela é, sozinha, o que estava atrapalhando a
+ * leitura da pergunta. Some de vez seria perder a profundidade que faz a caixa
+ * ter fundo em vez de ser um retângulo com a borda pintada; a um terço, ela
+ * volta a ser o que sempre devia ter sido: uma coisa que se percebe, não uma
+ * que se lê por cima.
+ *
+ * Um número só, aqui, e não as quatro opacidades lá embaixo: o equilíbrio entre
+ * as manchas é o que dá a cor da luz, e mexer nelas uma a uma o desfaz.
+ */
 .anel-siri:hover .campo-aurora,
 .anel-siri:focus-within .campo-aurora {
-  opacity: 1;
+  opacity: 0.34;
 }
 
 .campo-aurora span {
@@ -1160,11 +1198,7 @@ body {
   /* O borrão é maior que a mancha de propósito: assim ela não tem contorno
      nenhum, e o que se vê é luz, não um círculo colorido. */
   filter: blur(34px);
-  /* Recuada desde que a luz da borda entrou: a aurora é o VOLUME atrás do
-     vidro, e volume não pode disputar brilho com a faixa que agora desenha a
-     borda — as duas no talo viravam uma névoa colorida só, e o texto ficava
-     dentro dela. */
-  opacity: 0.4;
+  opacity: 0.55;
 }
 
 /* A luz vem da DIREITA, como na referência: o quente encosta no canto de cima,
