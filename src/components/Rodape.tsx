@@ -1,8 +1,10 @@
 import { useRef } from 'react';
 import { motion, useInView, useReducedMotion } from 'framer-motion';
 import wordmarkUrl from '../../brand/doxa-wordmark-white.png';
+import { useIsDesktop } from '../hooks/useIsDesktop';
 import { ArrastoInfinito } from './rodape/ArrastoInfinito';
-import { ATALHOS, FECHO, LADRILHOS, type Ladrilho } from './rodape/config';
+import { Peca, usePalco } from './rodape/Peca';
+import { ATALHOS, EXPOSTAS, FECHO, PECAS } from './rodape/config';
 import { MotionButton } from './ui/MotionButton';
 
 const EASE = [0.16, 1, 0.3, 1] as const;
@@ -11,182 +13,199 @@ const EASE = [0.16, 1, 0.3, 1] as const;
 const ANO = new Date().getFullYear();
 
 /**
- * Um ladrilho do mosaico.
+ * Quantos vídeos tocam ao mesmo tempo num telefone.
  *
- * Quatro formas, e a diferença entre elas é o que impede o campo de virar uma
- * parede de texto uniforme: a marca é peso, o número é tamanho, a frase é voz e
- * o arroba é assinatura. Arrastando, o que muda de tela para tela não é só o
- * conteúdo — é o RITMO, e é isso que dá vontade de continuar puxando.
- *
- * `select-none` em todos: arrastar por cima de texto selecionável faz o
- * navegador marcar as palavras em azul no meio do gesto, e o campo passa a
- * parecer um documento sendo lido em vez de um objeto sendo movido.
+ * Seis é o número do dono para a tela grande, e lá ele é o que cabe em cena. No
+ * telefone o campo mostra duas peças de cada vez e a rede quase sempre é a da
+ * rua — seis arquivos disputando a mesma banda entregam seis vídeos travando,
+ * que é pior do que dois rodando limpo e quatro stills.
  */
-function Ladrilho({ ladrilho }: { ladrilho: Ladrilho }) {
-  if (ladrilho.tipo === 'marca') {
-    return (
-      <span className="select-none font-serif text-[2.6rem] uppercase leading-none tracking-[-0.02em] text-[#F4F1E8] md:text-[4.5rem]">
-        Doxa
-      </span>
-    );
-  }
-
-  if (ladrilho.tipo === 'numero') {
-    return (
-      <span className="block select-none">
-        <span className="block font-serif text-[2.4rem] leading-none tracking-[-0.03em] text-[#F4F1E8] md:text-[4rem]">
-          {ladrilho.valor}
-        </span>
-        <span className="mt-2 block text-[12px] text-white/40 md:text-[13px]">
-          {ladrilho.rotulo}
-        </span>
-      </span>
-    );
-  }
-
-  if (ladrilho.tipo === 'arroba') {
-    return (
-      <span className="select-none text-[13px] tracking-wide text-white/35 md:text-[15px]">
-        {ladrilho.texto}
-      </span>
-    );
-  }
-
-  return (
-    <span className="block max-w-[13rem] select-none font-serif text-[1.4rem] leading-[1.1] tracking-[-0.02em] text-white/55 md:max-w-[18rem] md:text-[2rem]">
-      {ladrilho.texto}
-    </span>
-  );
-}
+const EXPOSTAS_MOBILE = 2;
 
 /**
- * O RODAPÉ — o campo infinito e o último pedido.
+ * Quanto do trecho de revelação precisa estar à vista para o campo acordar.
  *
- * ─── POR QUE UM CAMPO QUE SE ARRASTA ─────────────────────────────────────────
+ * Cedo de propósito: é este o instante em que a deriva começa e os primeiros
+ * vídeos pedem vaga, e um vídeo precisa de algum tempo entre o pedido e o
+ * primeiro quadro. Acordando com um sexto do rodapé à mostra, o campo já está
+ * vivo quando a pessoa termina de revelá-lo.
+ */
+const ACORDA = 0.15;
+
+/**
+ * E quanto para o FECHO entrar.
  *
- * Porque o gesto já é do site: o hero abre com um canvas onde a pessoa arrasta a
- * foto e o áudio que ela vai entregar. O rodapé fecha com o mesmo verbo, agora
- * sem nada para fazer — é o único lugar da página onde mexer não tem
- * consequência nenhuma, e é justamente por isso que ele pode ser um brinquedo.
+ * Ele mora no meio da tela, e é a última coisa que o reveal descobre. Animado
+ * junto com o despertar do campo, ele teria feito a sua entrada inteira atrás
+ * da página — e o que a pessoa veria ao chegar seria um texto já parado.
+ */
+const FECHO_A_VISTA = 0.55;
+
+/**
+ * O RODAPÉ — o campo infinito, agora em vídeo, e o último pedido.
  *
- * O mosaico é de TEXTO e não de imagem, e a razão é aritmética: o repositório
- * tem três clientes e seis arquivos de imagem. Um infinito construído com seis
- * peças denuncia o loop no primeiro puxão. Com a voz da página não há esse teto,
- * e o rodapé passa a repetir — de graça, e sem baixar um byte — as frases que a
- * pessoa leu ao longo de toda a rolagem.
+ * ─── ELE É FIXO, E A PÁGINA O DESCOBRE ───────────────────────────────────────
+ *
+ * Pedido do dono, e o que ele compra é a última transição da página: o rodapé
+ * não CHEGA rolando com o resto, ele já estava ali embaixo o tempo todo e o
+ * site é que desliza para fora da frente dele. É a diferença entre virar a
+ * última página e levantar a folha de cima.
+ *
+ * A mecânica é a mais simples que existe e não custa um único ouvinte de
+ * rolagem:
+ *
+ *  1. o rodapé é `fixed` no pé da janela, com a altura dela;
+ *  2. a página inteira (`<main>`, em `App.tsx`) é opaca e vem POR CIMA dele;
+ *  3. depois do `<main>` há um trecho vazio da altura de uma tela — o marco
+ *     daqui embaixo. Rolar por esse trecho é o que empurra a página para fora
+ *     e revela o rodapé, um pixel por pixel de rolagem.
+ *
+ * O `<main>` precisa de `z-10` para isso, e o marco precisa ser TRANSPARENTE:
+ * é justamente a ausência de fundo nele que deixa o rodapé aparecer por trás.
+ *
+ * O preço, e é o que a chave `ativo` paga: o rodapé está montado e "na tela"
+ * desde o primeiro pixel do site, escondido atrás dele. Sem alguém dizendo
+ * quando ele foi revelado, o campo estaria derivando e os vídeos tocando
+ * durante a rolagem inteira, atrás de uma parede preta.
+ *
+ * ─── O CAMPO É DE VÍDEO, e não mais de frases ────────────────────────────────
+ *
+ * Também pedido do dono. O argumento que colocou texto ali continua verdadeiro
+ * e virou uma dívida em vez de uma decisão — são três clientes, e três peças
+ * distintas denunciam o loop. O que se ganha em troca é a página fechando com a
+ * COISA que ela vende, em movimento, em vez de com uma repetição das frases que
+ * a pessoa leu duas telas acima.
+ *
+ * Catorze peças: seis tocando no máximo, oito esperando a vez como still.
+ * `rodape/Peca.tsx` explica por que o vídeo é um recurso com teto — em resumo,
+ * o infinito desenha o mosaico quatro vezes, e cinquenta e seis vídeos seriam
+ * um rodapé que derruba a aba.
+ *
+ * E o espaçamento ficou UNIFORME, a pedido: o desencontro dos pares existia
+ * para quebrar a leitura de tabela que catorze textos de alturas diferentes
+ * formavam. Catorze retângulos idênticos não têm esse problema, e o mesmo
+ * desencontro neles lê como grade desalinhada.
  *
  * ─── COMO O PEDIDO SOBREVIVE AO BRINQUEDO ────────────────────────────────────
  *
- * Um campo bonito no fim de uma página de venda tem um risco óbvio: a pessoa
- * chega ao formulário e fica brincando com o rodapé. Três coisas evitam isso.
- *
- *  1. O campo NÃO rouba a rolagem. A referência instalava um `wheel` global; se
- *     ele ficasse, o rodapé viraria uma sala sem porta.
- *  2. Ele tem altura limitada e nasce ATRÁS de um véu preto: o que está aceso na
- *     tela é o pedido, e o mosaico é a textura em volta dele.
- *  3. O botão é a única coisa clicável ali dentro. A camada do fecho é
+ *  1. O campo NÃO rouba a rolagem — nenhum `wheel` global, nunca.
+ *  2. Ele nasce atrás de um véu preto: o que está aceso na tela é o pedido, e o
+ *     mosaico é a textura em volta dele.
+ *  3. O botão é a única coisa clicável ali dentro: a camada do fecho é
  *     `pointer-events-none` inteira, com o botão reabrindo o clique só para si
- *     — assim o arrasto continua funcionando POR BAIXO do texto, e o texto não
- *     vira um buraco morto no meio do campo.
+ *     — assim o arrasto continua funcionando POR BAIXO do texto.
  */
 export function Rodape() {
-  const rodapeRef = useRef<HTMLElement>(null);
-  const naTela = useInView(rodapeRef, { amount: 0.25, once: true });
+  const marcoRef = useRef<HTMLDivElement>(null);
+  const revelado = useInView(marcoRef, { amount: ACORDA });
+  const noFecho = useInView(marcoRef, { amount: FECHO_A_VISTA, once: true });
   const parado = useReducedMotion() === true;
+  const desktop = useIsDesktop();
+  const palco = usePalco(desktop ? EXPOSTAS : EXPOSTAS_MOBILE);
 
   return (
-    <footer ref={rodapeRef} className="relative bg-black">
-      {/* ─── O CAMPO ──────────────────────────────────────────────────────────
-       *
-       * `aria-hidden` no campo inteiro, e sem culpa: cada frase daqui é uma
-       * repetição do que a página já disse em outro lugar, e ela aparece quatro
-       * vezes por causa das cópias do infinito. Um leitor de tela atravessando
-       * setenta e dois ladrilhos de texto duplicado antes de chegar ao botão é
-       * pior do que não ter campo nenhum. O que importa — o pedido e os links —
-       * está fora dele.
-       */}
-      <div
-        aria-hidden
-        className="relative h-[68vh] min-h-[460px] overflow-hidden md:h-[74vh]"
-      >
-        <ArrastoInfinito className="grid grid-cols-[repeat(6,auto)] items-start gap-x-14 gap-y-16 p-10 md:gap-x-28 md:gap-y-28 md:p-16">
-          {LADRILHOS.map((ladrilho, indice) => (
-            <div
-              key={indice}
-              /* O desencontro vertical dos pares: sem ele as seis colunas
-                 formam linhas retas e o mosaico lê como uma tabela. Deslocado,
-                 lê como um mural. Em `mt` fixo e não em porcentagem — a altura
-                 de um ladrilho de texto depende de quantas linhas a frase
-                 quebrou, e uma porcentagem disso desalinha as cópias entre si,
-                 que é exatamente onde a emenda do infinito apareceria. */
-              className="even:mt-10 md:even:mt-20"
+    <>
+      {/* O MARCO: o trecho de rolagem que revela o rodapé. Uma tela de altura,
+          sem fundo nenhum — o que se vê atravessando ele é o rodapé fixo lá
+          atrás. É também o que o `useInView` observa: a fração dele que está à
+          vista é, ao pixel, a fração do rodapé que foi revelada. */}
+      <div ref={marcoRef} aria-hidden className="h-[100svh]" />
+
+      <footer className="fixed inset-x-0 bottom-0 z-0 flex h-[100svh] flex-col bg-black">
+        <div className="relative min-h-0 flex-1">
+          {/* ─── O CAMPO ────────────────────────────────────────────────────
+           *
+           * `aria-hidden` no mosaico e SÓ nele: cada peça daqui é um reel que a
+           * parede de prova já apresentou com nome e números, e ela aparece
+           * quatro vezes por causa das cópias do infinito. Um leitor de tela
+           * atravessando cinquenta e seis molduras antes de chegar ao botão é
+           * pior do que não ter campo nenhum. O fecho, que é o que importa,
+           * está FORA desta camada — antes ele estava dentro, e era um pedido
+           * de contato invisível para quem lê a página com os ouvidos.
+           */}
+          <div aria-hidden className="absolute inset-0 overflow-hidden">
+            <ArrastoInfinito
+              ativo={revelado}
+              /* Sete colunas para catorze peças, que é o retrato exato do
+                 pedido: duas fileiras, seis em cena e oito adiante. E vãos
+                 IGUAIS nos dois eixos — é o que faz o campo ler como uma grade
+                 de vídeos e não como uma colagem. */
+              className="grid grid-cols-[repeat(7,auto)] items-start gap-8 p-8 md:gap-14 md:p-14"
             >
-              <Ladrilho ladrilho={ladrilho} />
-            </div>
-          ))}
-        </ArrastoInfinito>
+              {PECAS.map((reel, indice) => (
+                <Peca key={indice} reel={reel} palco={palco} ativo={revelado} />
+              ))}
+            </ArrastoInfinito>
 
-        {/* O véu, e os dois esfumaçados. O véu tira o mosaico da frente do
-            pedido; os esfumaçados dissolvem a faixa no preto da página em cima
-            e no rodapé de serviço embaixo, para o campo não ter borda dura —
-            uma linha reta cortando palavras ao meio anunciaria a caixa. */}
-        <div className="pointer-events-none absolute inset-0 bg-black/55" />
-        <div className="pointer-events-none absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-black to-transparent" />
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-36 bg-gradient-to-t from-black to-transparent" />
+            {/* O véu, e os dois esfumaçados. O véu tira o mosaico da frente do
+                pedido — mais denso do que era, porque agora o que está atrás
+                dele tem imagem e movimento em vez de texto cinza. Os
+                esfumaçados dissolvem o campo no preto em cima e na barra de
+                serviço embaixo, para ele não ter borda dura. */}
+            <div className="pointer-events-none absolute inset-0 bg-black/65" />
+            <div className="pointer-events-none absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-black to-transparent" />
+            <div className="pointer-events-none absolute inset-x-0 bottom-0 h-36 bg-gradient-to-t from-black to-transparent" />
+          </div>
 
-        {/* ─── O FECHO ─────────────────────────────────────────────────────── */}
-        <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center px-5 text-center">
-          <motion.div
-            initial={parado ? undefined : { opacity: 0, y: 20 }}
-            animate={naTela ? { opacity: 1, y: 0 } : undefined}
-            transition={{ duration: 0.7, ease: EASE }}
-          >
-            <h2 className="font-serif text-[2.6rem] leading-[0.95] tracking-[-0.03em] text-[#F4F1E8] md:text-[4.4rem]">
-              {FECHO.titulo}
-              <span className="block text-white/45">{FECHO.linha}</span>
-            </h2>
+          {/* ─── O FECHO ─────────────────────────────────────────────────── */}
+          <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center px-5 text-center">
+            <motion.div
+              initial={parado ? undefined : { opacity: 0, y: 20 }}
+              animate={noFecho ? { opacity: 1, y: 0 } : undefined}
+              transition={{ duration: 0.7, ease: EASE }}
+            >
+              <h2 className="font-serif text-[2.6rem] leading-[0.95] tracking-[-0.03em] text-[#F4F1E8] md:text-[4.4rem]">
+                {FECHO.titulo}
+                <span className="block text-white/45">{FECHO.linha}</span>
+              </h2>
 
-            <p className="mx-auto mt-5 max-w-md text-[15px] text-white/50">{FECHO.publico}</p>
+              <p className="mx-auto mt-5 max-w-md text-[15px] text-white/50">{FECHO.publico}</p>
 
-            {/* O único ponto clicável do campo. `pointer-events-auto` devolve o
-                clique a ele e a mais nada: em volta, a mão continua arrastando
-                o mosaico. */}
-            <div className="pointer-events-auto mt-9 flex justify-center">
-              <MotionButton label={FECHO.acao} href={FECHO.destino} />
-            </div>
-          </motion.div>
+              {/* O único ponto clicável do campo. `pointer-events-auto` devolve
+                  o clique a ele e a mais nada: em volta, a mão continua
+                  arrastando o mosaico. */}
+              <div className="pointer-events-auto mt-9 flex justify-center">
+                <MotionButton label={FECHO.acao} href={FECHO.destino} />
+              </div>
+            </motion.div>
+          </div>
         </div>
-      </div>
 
-      {/* ─── A BARRA DE SERVIÇO ───────────────────────────────────────────────
-       *
-       * Quieta de propósito, e FORA do campo. Quem chega no rodapé procurando um
-       * link não quer brincar com nada para achá-lo — e um link dentro de uma
-       * superfície que se arrasta é um link que foge da mão.
-       *
-       * Só entram âncoras que existem de verdade (`rodape/config.ts` explica o
-       * porquê, e ele é uma cicatriz: `#pedido` era apontado por dois botões e
-       * não existia em elemento nenhum da página).
-       */}
-      <div className="border-t border-white/[0.08] px-5 py-8 md:px-10">
-        <div className="mx-auto flex w-full max-w-screen-2xl flex-col items-start gap-6 sm:flex-row sm:items-center sm:justify-between">
-          <img src={wordmarkUrl} alt="Doxa" className="h-5 w-auto md:h-6" width={657} height={173} />
+        {/* ─── A BARRA DE SERVIÇO ───────────────────────────────────────────
+         *
+         * Quieta de propósito, e FORA do campo. Quem chega no rodapé procurando
+         * um link não quer brincar com nada para achá-lo — e um link dentro de
+         * uma superfície que se arrasta é um link que foge da mão.
+         *
+         * `shrink-0`: ela é a única parte do rodapé com altura própria, e o
+         * campo acima é que se ajusta ao que sobra da tela.
+         */}
+        <div className="shrink-0 border-t border-white/[0.08] px-5 py-8 md:px-10">
+          <div className="mx-auto flex w-full max-w-screen-2xl flex-col items-start gap-6 sm:flex-row sm:items-center sm:justify-between">
+            <img
+              src={wordmarkUrl}
+              alt="Doxa"
+              className="h-5 w-auto md:h-6"
+              width={657}
+              height={173}
+            />
 
-          <nav className="flex flex-wrap items-center gap-x-7 gap-y-3">
-            {ATALHOS.map((atalho) => (
-              <a
-                key={atalho.destino}
-                href={atalho.destino}
-                className="text-[13px] text-white/45 transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50"
-              >
-                {atalho.rotulo}
-              </a>
-            ))}
-          </nav>
+            <nav className="flex flex-wrap items-center gap-x-7 gap-y-3">
+              {ATALHOS.map((atalho) => (
+                <a
+                  key={atalho.destino}
+                  href={atalho.destino}
+                  className="text-[13px] text-white/45 transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50"
+                >
+                  {atalho.rotulo}
+                </a>
+              ))}
+            </nav>
 
-          <p className="text-[13px] text-white/25">© {ANO} Doxa</p>
+            <p className="text-[13px] text-white/25">© {ANO} Doxa</p>
+          </div>
         </div>
-      </div>
-    </footer>
+      </footer>
+    </>
   );
 }

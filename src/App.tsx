@@ -89,33 +89,53 @@ export default function App() {
   }, []);
 
   return (
-    <main className="bg-black">
-      <Hero />
-      {/* Um `Suspense` por seção, e não um em volta das três: com um só, a
-          seção mais lenta seguraria as outras duas prontas fora da tela. */}
-      <Suspense fallback={<Vao />}>
-        <HowItWorks />
-      </Suspense>
-      <Suspense fallback={<Vao />}>
-        <ProofWall />
-      </Suspense>
-      <Suspense fallback={<Vao />}>
-        <Comparacao />
-      </Suspense>
-      {/* O FAQ vem DEPOIS do pedido, e não antes. Perguntas frequentes antes do
-          formulário são uma lista de objeções apresentada a quem ainda não
-          objetou nada; depois dele, são a última porta para quem chegou até o
-          fim e travou em alguma coisa. */}
-      <Suspense fallback={<Vao />}>
-        <Faq />
-      </Suspense>
+    <>
+      {/*
+       * O `<main>` é OPACO e vem por cima, e é só isso que faz o rodapé se
+       * revelar.
+       *
+       * O rodapé é `fixed` no pé da janela desde o primeiro pixel do site
+       * (`Rodape.tsx` explica o porquê). O que o esconde durante toda a rolagem
+       * é esta camada: preta, e um degrau acima dele. Chegando ao fim, a página
+       * desliza para fora da frente e o que estava atrás aparece — o site sai da
+       * frente do rodapé, em vez de o rodapé chegar.
+       *
+       * `relative` porque `z-index` não faz nada em `position: static`, e sem
+       * ele o rodapé fixo ficaria por cima da página inteira.
+       */}
+      <main className="relative z-10 bg-black">
+        <Hero />
+        {/* Um `Suspense` por seção, e não um em volta das três: com um só, a
+            seção mais lenta seguraria as outras duas prontas fora da tela. */}
+        <Suspense fallback={<Vao />}>
+          <HowItWorks />
+        </Suspense>
+        <Suspense fallback={<Vao />}>
+          <ProofWall />
+        </Suspense>
+        <Suspense fallback={<Vao />}>
+          <Comparacao />
+        </Suspense>
+        {/* O FAQ vem DEPOIS do pedido, e não antes. Perguntas frequentes antes
+            do formulário são uma lista de objeções apresentada a quem ainda não
+            objetou nada; depois dele, são a última porta para quem chegou até o
+            fim e travou em alguma coisa. */}
+        <Suspense fallback={<Vao />}>
+          <Faq />
+        </Suspense>
+      </main>
+
       {/* O rodapé fecha com o mesmo verbo com que o hero abriu: lá se arrasta a
           foto e o áudio que a pessoa vai entregar, aqui se arrasta um campo que
           não acaba e não pede nada. O último objeto da página é o único em que
-          mexer não tem consequência — e é por isso que ele pode ser brinquedo. */}
+          mexer não tem consequência — e é por isso que ele pode ser brinquedo.
+
+          FORA do `<main>`, e é obrigatório que seja: ele é a camada de baixo do
+          reveal, e o `<main>` é a de cima. Dentro dele, o rodapé estaria dentro
+          da própria coisa que existe para escondê-lo. */}
       <Suspense fallback={<Vao />}>
         <Rodape />
       </Suspense>
-    </main>
+    </>
   );
 }

@@ -1,12 +1,5 @@
-import {
-  CONVITE,
-  FALTA,
-  FILTRO,
-  GARANTIA,
-  RETORNO,
-  TROCA_DEPOIS,
-} from '../comparacao/config';
-import { REELS } from '../proof/reels';
+import { TROCA_DEPOIS } from '../comparacao/config';
+import { REELS, type Reel } from '../proof/reels';
 
 /*
  * ─── O CONTEÚDO DO RODAPÉ ────────────────────────────────────────────────────
@@ -22,72 +15,49 @@ import { REELS } from '../proof/reels';
  * leu até o fim") e os rótulos de navegação. Nenhum dos dois promete nada.
  */
 
-/* Desestruturado com padrão em vez de indexado: o `tsconfig` deste repo trata
-   `ARRAY[0]` como possivelmente indefinido, e um `!` para calar o compilador é
-   exatamente o tipo de coisa que o contrato de estilo proíbe. */
-const [VIEWS_PROMETIDAS = '', DINHEIRO_DE_VOLTA = ''] = GARANTIA;
-const [CORTA_A_CONTA = '', E_VIRALIZA = ''] = CONVITE;
-const [FALTA_UMA_COISA = '', VOCE = ''] = FALTA;
+/**
+ * ─── O MOSAICO É DE VÍDEO, a pedido do dono ─────────────────────────────────
+ *
+ * Ele era de TEXTO, e o argumento de então está aqui porque continua verdadeiro
+ * e agora é uma dívida em vez de uma decisão: este repositório tem TRÊS
+ * clientes, e um infinito construído com três peças distintas denuncia o loop
+ * no primeiro puxão. O que mudou é o que se ganha do outro lado — o rodapé
+ * passa a fechar a página com a MESMA coisa que a página inteira promete
+ * entregar, em movimento, em vez de com uma repetição das frases que a pessoa
+ * acabou de ler duas telas acima.
+ *
+ * PENDENTE-DONO: as catorze peças são os três reels reais repetidos, exatamente
+ * como a parede de prova faz em `proof/reels.ts` e pela mesma razão — a
+ * repetição é quantos retângulos se desenha, e nunca uma afirmação de quantos
+ * casos existem. Quando os arquivos que faltam entrarem em `REELS`, a
+ * repetição para sozinha e não há nada para desfazer aqui.
+ */
 
 /**
- * Um ladrilho do mosaico, e por que eles são de TEXTO.
+ * Quantas peças o mosaico tem, e o corte entre as duas metades.
  *
- * O infinito precisa de material que não se repita antes de a pessoa cansar de
- * arrastar. Este repositório tem TRÊS clientes e seis imagens ao todo — um
- * mosaico feito delas denuncia o loop no primeiro puxão, e o que se lê não é
- * "que legal", é "é sempre a mesma coisa". Texto não tem esse teto: cabem
- * quantas combinações a página tiver de voz, sem um único byte baixado.
- *
- * `marca` é a assinatura, `numero` é um resultado publicado com o perfil que o
- * fez, `frase` é uma linha que a página já diz em outro lugar e `arroba` é só o
- * perfil — checável por fora, que é a razão de ele existir na parede de prova.
+ * `EXPOSTAS` é o teto de vídeos TOCANDO ao mesmo tempo — número do dono, e é
+ * também o que a tela comporta sem virar um mural de coisas se mexendo. As
+ * `ESCONDIDAS` existem no campo desde o primeiro quadro: elas são o que a
+ * pessoa encontra ao arrastar, e é ter mais do que cabe na tela que faz o campo
+ * parecer não ter fim. Uma peça escondida é um still — vira vídeo quando entra
+ * em cena e uma vaga se abre.
  */
-export type Ladrilho =
-  | { tipo: 'marca' }
-  | { tipo: 'numero'; valor: string; rotulo: string }
-  | { tipo: 'frase'; texto: string }
-  | { tipo: 'arroba'; texto: string };
+export const EXPOSTAS = 6;
+const ESCONDIDAS = 8;
 
-/* Os números vêm dos reels, e SÓ dos que têm número. `flatMap` com lista vazia
-   em vez de `filter` mais `!`: quem não teve as visualizações entregues pelo
-   dono simplesmente não vira ladrilho, em vez de virar um ladrilho vazio. */
-const NUMEROS: readonly Ladrilho[] = REELS.flatMap((reel) =>
-  reel.views == null ? [] : [{ tipo: 'numero' as const, valor: reel.views, rotulo: reel.handle }],
+/**
+ * As peças, na ordem em que a grade as recebe.
+ *
+ * A volta pelo resto (`% REELS.length`) é o que garante que dois vizinhos nunca
+ * sejam o mesmo arquivo: com três clientes e catorze lugares, a sequência anda
+ * sempre um passo à frente, e o que a tela mostra de cada vez é sempre a
+ * alternância dos três — nunca o mesmo cliente duas vezes lado a lado.
+ */
+export const PECAS: readonly Reel[] = Array.from(
+  { length: EXPOSTAS + ESCONDIDAS },
+  (_, indice) => REELS[indice % REELS.length],
 );
-
-const [PRIMEIRO_NUMERO, SEGUNDO_NUMERO] = NUMEROS;
-
-/**
- * O mosaico, INTERCALADO à mão e não concatenado por tipo.
- *
- * Concatenando, os quatro `DOXA` sairiam juntos e o mosaico teria um canto de
- * marca, um canto de números e um canto de frases — que é um pôster, não um
- * campo. Alternados, qualquer tela que a pessoa arraste até tem um pouco de
- * cada coisa, e é isso que faz o infinito parecer ter sido composto em vez de
- * sorteado.
- */
-export const LADRILHOS: readonly Ladrilho[] = [
-  { tipo: 'marca' },
-  { tipo: 'frase', texto: VIEWS_PROMETIDAS },
-  { tipo: 'arroba', texto: '@corealquimias' },
-  { tipo: 'frase', texto: DINHEIRO_DE_VOLTA },
-  ...(PRIMEIRO_NUMERO == null ? [] : [PRIMEIRO_NUMERO]),
-  { tipo: 'frase', texto: TROCA_DEPOIS },
-
-  { tipo: 'frase', texto: CORTA_A_CONTA },
-  { tipo: 'marca' },
-  { tipo: 'frase', texto: E_VIRALIZA },
-  { tipo: 'arroba', texto: '@uninovamotos' },
-  { tipo: 'frase', texto: `${FILTRO.valor} ${FILTRO.titulo}` },
-  ...(SEGUNDO_NUMERO == null ? [] : [SEGUNDO_NUMERO]),
-
-  { tipo: 'frase', texto: FALTA_UMA_COISA },
-  { tipo: 'marca' },
-  { tipo: 'frase', texto: VOCE },
-  { tipo: 'frase', texto: RETORNO },
-  { tipo: 'arroba', texto: 'Magalu' },
-  { tipo: 'marca' },
-];
 
 /**
  * O fecho: a última coisa que a página fala.

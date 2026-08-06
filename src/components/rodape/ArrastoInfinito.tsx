@@ -49,6 +49,16 @@ interface ArrastoInfinitoProps {
   children: ReactNode;
   /** Classes da grade interna — quem chama decide colunas, vãos e recuos. */
   className?: string;
+  /**
+   * Se a deriva pode correr.
+   *
+   * Existe porque o rodapé virou `fixed`: ele está montado e "na tela" desde o
+   * primeiro pixel da página, escondido atrás dela. Sem esta chave, o campo
+   * estaria derivando — e, com vídeo dentro, tocando — durante a rolagem
+   * inteira, atrás de uma parede preta que ninguém atravessa. Quem sabe se o
+   * rodapé foi revelado é quem o desenha, não este componente.
+   */
+  ativo?: boolean;
 }
 
 /**
@@ -87,7 +97,7 @@ interface ArrastoInfinitoProps {
  * existem no que já está aqui. `class-variance-authority` e `cn` também ficaram
  * de fora: eram três pacotes para escolher entre três strings.
  */
-export function ArrastoInfinito({ children, className = '' }: ArrastoInfinitoProps) {
+export function ArrastoInfinito({ children, className = '', ativo = true }: ArrastoInfinitoProps) {
   const gradeRef = useRef<HTMLDivElement>(null);
   const x = useMotionValue(0);
   const y = useMotionValue(0);
@@ -173,7 +183,7 @@ export function ArrastoInfinito({ children, className = '' }: ArrastoInfinitoPro
 
   const soltarDeriva = useCallback(() => {
     pararDeriva();
-    if (parado || meia.x === 0 || meia.y === 0) return;
+    if (!ativo || parado || meia.x === 0 || meia.y === 0) return;
 
     /* `repeat: loop` volta ao valor inicial a cada volta, e é justamente o que
        se quer: o fim do percurso é uma metade adiante, que desenha exatamente a
@@ -190,7 +200,7 @@ export function ArrastoInfinito({ children, className = '' }: ArrastoInfinitoPro
       repeat: Infinity,
       repeatType: 'loop',
     });
-  }, [pararDeriva, parado, x, y, meia]);
+  }, [pararDeriva, ativo, parado, x, y, meia]);
 
   useEffect(() => {
     soltarDeriva();
