@@ -1139,145 +1139,14 @@ body {
 }
 
 /*
- * ─── A AURORA DO CAMPO ───────────────────────────────────────────────────────
- *
- * A luz que se move dentro da caixa sob a mão. O anel de um pixel acima dá o
- * contorno; ela dá o VOLUME — é a diferença entre uma borda colorida e algo
- * aceso morando atrás do vidro, que é o que o dono pediu.
- *
- * Manchas com `filter: blur`, e não gradientes parados: um radial-gradient em
- * posição fixa é uma mancha desenhada, e ela pode ser bonita, mas não é líquida.
- * O que dá o líquido é cada mancha andar e respirar no SEU tempo — sete, nove e
- * onze segundos, propositalmente não múltiplos, de modo que o arranjo dos três
- * nunca se repete e ninguém consegue pegar o loop.
- *
- * Elas moram numa camada com `overflow: hidden` PRÓPRIA, e não na caixa: a caixa
- * precisa continuar deixando o anel de foco do botão de enviar sair para fora
- * dela. Recortadas, as manchas encostam na borda por dentro em vez de terminar
- * no meio do campo — é o que faz a luz parecer vir de trás da parede, e é
- * exatamente o que a referência mostra nos cantos.
- *
- * Tudo isto só existe sob a mão ou sob o cursor de texto. Fora daí a camada está
- * em `opacity: 0` e NENHUMA animação está declarada — o navegador não tem um
- * quadro para calcular, e três `blur` de 160 pixels não custam nada quando não
- * estão na tela.
- */
-.campo-aurora {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-  border-radius: inherit;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 620ms cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-/*
- * A aurora acesa vale um TERÇO do que valia.
- *
- * Ela é a única luz que mora no meio da caixa — as duas faixas novas morrem
- * antes de chegar lá —, então ela é, sozinha, o que estava atrapalhando a
- * leitura da pergunta. Some de vez seria perder a profundidade que faz a caixa
- * ter fundo em vez de ser um retângulo com a borda pintada; a um terço, ela
- * volta a ser o que sempre devia ter sido: uma coisa que se percebe, não uma
- * que se lê por cima.
- *
- * Um número só, aqui, e não as quatro opacidades lá embaixo: o equilíbrio entre
- * as manchas é o que dá a cor da luz, e mexer nelas uma a uma o desfaz.
- */
-.anel-siri:hover .campo-aurora,
-.anel-siri:focus-within .campo-aurora {
-  opacity: 0.34;
-}
-
-.campo-aurora span {
-  position: absolute;
-  width: 15rem;
-  height: 15rem;
-  border-radius: 9999px;
-  /* O borrão é maior que a mancha de propósito: assim ela não tem contorno
-     nenhum, e o que se vê é luz, não um círculo colorido. */
-  filter: blur(34px);
-  opacity: 0.55;
-}
-
-/* A luz vem da DIREITA, como na referência: o quente encosta no canto de cima,
-   o frio no de baixo, e o meio da caixa fica limpo para o texto ser lido. Uma
-   aurora centrada viraria fundo, e fundo atrás de texto é ruído. */
-.campo-aurora .aurora-1 {
-  right: -3rem;
-  top: -9rem;
-  background: var(--aurora-1);
-}
-
-.campo-aurora .aurora-2 {
-  right: -6rem;
-  top: -5rem;
-  background: var(--aurora-2);
-}
-
-.campo-aurora .aurora-3 {
-  right: 4rem;
-  bottom: -11rem;
-  background: var(--aurora-3);
-  opacity: 0.4;
-}
-
-.campo-aurora .aurora-4 {
-  left: 30%;
-  bottom: -12rem;
-  background: var(--aurora-4);
-  opacity: 0.3;
-}
-
-@keyframes aurora-a {
-  50% {
-    transform: translate3d(-3.5rem, 1.2rem, 0) scale(1.25);
-  }
-}
-
-@keyframes aurora-b {
-  50% {
-    transform: translate3d(-1.5rem, 2.5rem, 0) scale(0.85);
-  }
-}
-
-@keyframes aurora-c {
-  50% {
-    transform: translate3d(3rem, -1.5rem, 0) scale(1.2);
-  }
-}
-
-/* As animações são declaradas SÓ aqui dentro — é o que garante que a camada
-   apagada não tenha nada rodando atrás dela. */
-.anel-siri:hover .campo-aurora .aurora-1,
-.anel-siri:focus-within .campo-aurora .aurora-1 {
-  animation: aurora-a 7s ease-in-out infinite;
-}
-
-.anel-siri:hover .campo-aurora .aurora-2,
-.anel-siri:focus-within .campo-aurora .aurora-2 {
-  animation: aurora-b 9s ease-in-out infinite;
-}
-
-.anel-siri:hover .campo-aurora .aurora-3,
-.anel-siri:focus-within .campo-aurora .aurora-3 {
-  animation: aurora-c 11s ease-in-out infinite;
-}
-
-.anel-siri:hover .campo-aurora .aurora-4,
-.anel-siri:focus-within .campo-aurora .aurora-4 {
-  animation: aurora-b 13s ease-in-out infinite reverse;
-}
-
-/*
  * O clarão distante, muito além de onde o borrão da faixa alcança.
  *
- * O halo perto da borda deixou de ser trabalho dele — quem faz agora é a
- * `.luz-halo`, e com a cor certa, girando. O que sobra aqui é o que um `blur`
- * de 22 pixels não alcança: os 70 pixels de clarão que tiram a caixa do preto e
- * a fazem parecer um objeto aceso na página, e não um retângulo com a borda
- * pintada. Em `box-shadow` e não em `filter`, para não repintar o conteúdo.
+ * É o que separa uma caixa com a borda pintada de um objeto ACESO na página: os
+ * 70 pixels de luz que tiram o preto em volta. Tudo o que existia por DENTRO do
+ * campo saiu — a aurora que morava atrás do vidro estava lendo como um fundo
+ * alaranjado à direita, e fundo colorido atrás de texto é ruído, por mais baixa
+ * que seja a opacidade. Restou o que a caixa faz para fora. Em `box-shadow` e
+ * não em `filter`, para não repintar o conteúdo.
  */
 .anel-siri {
   transition:
@@ -1290,13 +1159,4 @@ body {
   box-shadow:
     0 0 40px -12px rgba(222, 92, 126, 0.2),
     0 0 70px -14px rgba(90, 160, 224, 0.18);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  /* A luz continua acendendo — ela é o estado "esta caixa está sob a sua mão".
-     O que para é a deriva das manchas. */
-  .anel-siri:hover .campo-aurora span,
-  .anel-siri:focus-within .campo-aurora span {
-    animation: none;
-  }
 }

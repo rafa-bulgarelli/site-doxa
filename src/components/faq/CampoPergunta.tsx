@@ -6,21 +6,12 @@ import { CORES } from './cores';
 /**
  * As cores do campo aceso, entregues ao CSS.
  *
- * No anel, a primeira volta no fim: um `conic-gradient` não fecha sozinho, e sem
- * repetir a cor inicial haveria uma emenda dura entre o último e o primeiro tom
- * — girando, ela apareceria como uma costura dando voltas na borda.
- *
- * Na aurora, QUATRO das seis e não todas: seis manchas numa caixa de 56 pixels
- * de altura se sobrepõem até virar um cinza colorido. Âmbar e rosa em cima,
- * azul e violeta embaixo — os dois extremos do arco, que é o que dá a impressão
- * de uma luz só, girando, em vez de um arco-íris parado.
+ * A primeira volta no fim: um `conic-gradient` não fecha sozinho, e sem repetir
+ * a cor inicial haveria uma emenda dura entre o último e o primeiro tom —
+ * girando, ela apareceria como uma costura dando voltas na borda.
  */
 const ACESO: CSSProperties = {
   ['--anel-siri-cores' as string]: [...CORES, CORES[0]].join(', '),
-  ['--aurora-1' as string]: CORES[0],
-  ['--aurora-2' as string]: CORES[2],
-  ['--aurora-3' as string]: CORES[4],
-  ['--aurora-4' as string]: CORES[3],
 };
 
 interface CampoPerguntaProps {
@@ -173,8 +164,6 @@ export function CampoPergunta({ valor, exemplos, aoDigitar, aoEnviar }: CampoPer
     aoEnviar();
   };
 
-  const temTexto = valor.trim().length > 0;
-
   return (
     /* A caixa inteira é o alvo do clique, e não só o texto: um campo de conversa
        que só aceita clique nos poucos pixels da primeira linha é um campo que
@@ -184,16 +173,6 @@ export function CampoPergunta({ valor, exemplos, aoDigitar, aoEnviar }: CampoPer
       style={ACESO}
       className="anel-siri relative rounded-2xl border border-white/[0.12] bg-doxa-surface focus-within:border-white/30"
     >
-      {/* A luz que mora atrás do vidro. Quatro manchas derivando em tempos
-          diferentes, recortadas pela borda da caixa — a ordem aqui é a ordem de
-          pintura, então a mais fria fica por baixo. */}
-      <div className="campo-aurora" aria-hidden>
-        <span className="aurora-4" />
-        <span className="aurora-3" />
-        <span className="aurora-2" />
-        <span className="aurora-1" />
-      </div>
-
       {/* A luz da Siri: o mesmo gesto do telefone quando ela acorda — não uma
           borda colorida, mas uma faixa BORRADA de cor encostada na borda por
           dentro, e o halo dela atravessando para fora. Duas voltas, uma dentro
@@ -259,19 +238,23 @@ export function CampoPergunta({ valor, exemplos, aoDigitar, aoEnviar }: CampoPer
         )}
       </AnimatePresence>
 
-      {/* O botão de enviar acende com o que foi escrito. Apagado ele continua
-          clicável de propósito: desabilitar um botão sem dizer por quê deixa a
-          pessoa clicando num objeto morto — assim ele responde, e o campo é que
-          diz que falta a pergunta. */}
+      {/* O botão de enviar, branco desde o primeiro olhar.
+
+          Ele já foi um contorno apagado que só acendia depois da pergunta
+          escrita — a ideia era que o botão dissesse "ainda não é hora". Só que
+          numa seção onde o campo escreve sozinho e nada mais pede clique, o
+          único jeito de descobrir que dá para PERGUNTAR é enxergando o botão; e
+          um contorno a 14% de branco no canto de uma caixa preta não é visto.
+          Sólido o tempo inteiro, ele é o convite.
+
+          Clicável mesmo vazio, e isso não mudou: desabilitar um botão sem dizer
+          por quê deixa a pessoa clicando num objeto morto. Sem texto, `enviar`
+          simplesmente não faz nada. */}
       <button
         type="button"
         onClick={enviar}
         aria-label="Enviar a pergunta"
-        className={`absolute bottom-3 right-3 flex h-9 w-9 items-center justify-center rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black ${
-          temTexto
-            ? 'bg-[#F4F1E8] text-[#0B0B0B]'
-            : 'border border-white/[0.14] text-white/30 hover:text-white/60'
-        }`}
+        className="absolute bottom-3 right-3 flex h-9 w-9 items-center justify-center rounded-full bg-[#F4F1E8] text-[#0B0B0B] transition-transform hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black motion-reduce:transition-none motion-reduce:hover:scale-100"
       >
         <ArrowUp className="h-4 w-4" strokeWidth={2.2} />
       </button>
