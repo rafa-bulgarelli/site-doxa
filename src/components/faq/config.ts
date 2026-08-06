@@ -143,7 +143,7 @@ export const SEM_RESPOSTA = {
 export const ABERTURA = {
   rotulo: 'Perguntas',
   titulo: 'O que você quer saber?',
-  dica: 'Escolha uma, ou escreva a sua.',
+  dica: 'Pergunte o que quiser.',
   exemplo: 'Escreva a sua pergunta…',
 };
 

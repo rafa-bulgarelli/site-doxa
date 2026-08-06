@@ -102,7 +102,21 @@ export function CampoPergunta({ valor, exemplos, aoDigitar, aoEnviar }: CampoPer
     const campo = campoRef.current;
     if (campo == null) return;
     campo.style.height = `${MINIMA}px`;
-    campo.style.height = `${Math.max(MINIMA, Math.min(campo.scrollHeight, MAXIMA))}px`;
+    const natural = campo.scrollHeight;
+    campo.style.height = `${Math.max(MINIMA, Math.min(natural, MAXIMA))}px`;
+    /*
+     * A barra de rolagem só pode existir quando há o que rolar.
+     *
+     * O dono viu uma barra numa caixa VAZIA, e ela era real: uma linha deste
+     * campo mede 56,375px (24,375 de entrelinha mais 32 de recuo) e o piso da
+     * caixa é 56. `scrollHeight` devolve inteiro e arredonda para baixo, então a
+     * altura calculada ficava três décimos de pixel menor que o conteúdo — o
+     * bastante para o navegador concluir que havia transbordo e desenhar a
+     * barra. Escondido por padrão, o arredondamento deixa de ter consequência; e
+     * quando o texto passa do TETO, aí sim há rolagem de verdade e a barra volta
+     * a ser a resposta certa.
+     */
+    campo.style.overflowY = natural > MAXIMA ? 'auto' : 'hidden';
   }, []);
 
   // No layout e não em `useEffect`: a altura tem de estar certa no quadro em que

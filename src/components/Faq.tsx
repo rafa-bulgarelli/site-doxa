@@ -1,7 +1,6 @@
 import { useRef, useState } from 'react';
 import { AnimatePresence, motion, useInView, useReducedMotion } from 'framer-motion';
 import { X } from 'lucide-react';
-import { DotGridSpotlight } from './hero/DotGridSpotlight';
 import { CampoPergunta } from './faq/CampoPergunta';
 import { Revela } from './faq/Revela';
 import { encontra } from './faq/busca';
@@ -136,12 +135,13 @@ export function Faq() {
       id="faq"
       className="relative overflow-hidden bg-black px-5 py-24 md:px-10 md:py-32"
     >
-      <div className="dot-grid pointer-events-none absolute inset-0 opacity-30" />
-      {/* O facho que acende os pontos sob a mão — o mesmo do hero e do cartão do
-          pedido. Esta seção era a única da página que não reagia ao ponteiro, e
-          era boa parte do motivo de ela parecer morta: não faltava efeito, faltava
-          a página INTEIRA falando a mesma língua aqui dentro. */}
-      <DotGridSpotlight containerRef={secaoRef} />
+      {/* SEM GRADE E SEM FACHO no fundo, a pedido do dono, e a razão é o que
+          existe atrás deles: nada. Nas outras seções a textura corre por baixo
+          de cartões, painéis e imagens, e o facho é uma luz passando SOB alguma
+          coisa. Aqui o fundo é preto liso do começo ao fim — a mesma luz vira
+          uma mancha clara boiando sozinha, e a grade parada vira sujeira na
+          tela. A textura da seção passa a ser só a do campo, que é uma caixa e
+          se comporta como as outras caixas do site. */}
 
       <div className="relative mx-auto w-full max-w-3xl">
         <motion.div
@@ -155,7 +155,11 @@ export function Faq() {
               enquanto o outro apaga. Lá ele diz que o sistema está no ar; aqui
               diz que tem alguém do outro lado da pergunta. Em creme, porque a
               cor de estado é da seção de comparação e esta não tem estado. */}
-          <span className="inline-flex items-center gap-2.5">
+          {/* `gap-4` e não `gap-2.5`: o anel cresce até 4,4 vezes o ponto, o
+              que põe a borda dele a quase catorze pixels do ponto. Com dez de
+              vão, o pulso passava POR CIMA da palavra a cada volta. O vão tem
+              de ser maior que o alcance do anel, senão o rótulo pisca junto. */}
+          <span className="inline-flex items-center gap-4">
             <span className="relative flex h-2 w-2 shrink-0" aria-hidden>
               {['selo-anel', 'selo-anel selo-anel-tardio'].map((classe) => (
                 <span
