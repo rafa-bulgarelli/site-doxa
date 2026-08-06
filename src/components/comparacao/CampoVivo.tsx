@@ -42,8 +42,13 @@ const FOLGA_FILETE = 0.34;
  * de como cursor. O afastamento é o mesmo que um tipógrafo daria: pequeno o
  * bastante para o traço continuar dizendo onde se escreve, grande o bastante
  * para ser outra coisa.
+ *
+ * 0,15em são os 6px que o dono pediu no corpo cheio da tela grande (40px). Em
+ * `em` e não em pixels porque o número tem de valer no campo inteiro: fixo em
+ * 6px, ele seria a mesma distância num texto que encolheu à metade — e aí o
+ * respiro que aqui é discreto vira um vão.
  */
-const RESPIRO_CURSOR = 0.1;
+const RESPIRO_CURSOR = 0.15;
 
 /**
  * O campo em que cada letra entra caindo, e que se reduz em vez de cortar.
