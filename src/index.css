@@ -992,6 +992,128 @@ body {
 }
 
 /*
+ * ─── A LUZ DA SIRI, NA BORDA ─────────────────────────────────────────────────
+ *
+ * O que o dono pediu, com o nome dele: o gradiente que corre nas bordas da tela
+ * quando a Siri acorda. O anel de um pixel acima NÃO é isso — ele é uma borda
+ * colorida, e uma borda colorida lê como enfeite. A luz da Siri é uma FAIXA
+ * BORRADA encostada na borda por dentro, brilhando mais no encosto e morrendo
+ * para o centro, com o halo dela atravessando o vidro e saindo para fora.
+ *
+ * A ordem em que o navegador aplica as coisas é o que dita a estrutura deste
+ * bloco: num mesmo elemento, `filter` roda ANTES da `mask`. Borrar e mascarar
+ * juntos devolveria um cone borrado (que é quase idêntico ao cone nítido) e
+ * depois um corte SECO na faixa — exatamente o contrário de um brilho. Então a
+ * faixa mascarada mora no `::before`, e o borrão fica no `span` que o contém:
+ * assim o borrão pega o resultado já recortado e o espalha para os dois lados.
+ *
+ * São duas, e giram em sentidos CONTRÁRIOS. Uma volta só, por mais lenta que
+ * seja, é um desfile: dá para acompanhar uma cor dando a volta na caixa. Duas
+ * cruzando em tempos primos entre si (5s e 8s) fazem as cores se somarem em
+ * lugares diferentes a cada instante — que é o cintilar da referência, e o que
+ * impede o olho de pegar o loop.
+ *
+ * Nada disto existe fora do hover e do foco: sem eles a camada está em
+ * `opacity: 0`, nenhuma `animation` está declarada, e um `blur` de 22 pixels
+ * que não está na tela não custa quadro nenhum.
+ */
+.anel-luz {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 520ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.anel-siri:hover .anel-luz,
+.anel-siri:focus-within .anel-luz {
+  opacity: 1;
+}
+
+.anel-luz span {
+  position: absolute;
+  /* Um pixel para fora da borda de cada lado: a faixa tem de nascer NO vidro,
+     não um respiro depois dele. */
+  inset: -1px;
+  border-radius: inherit;
+}
+
+/* O mesmo recorte de "só a borda" do anel — dois gradientes iguais, um limitado
+   ao content-box e outro à caixa inteira, subtraídos. A quina reta que a
+   máscara deixa por dentro é menor que o borrão que vem por cima, então ela
+   nunca chega a aparecer. */
+.anel-luz span::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: conic-gradient(from var(--anel-siri), var(--anel-siri-cores));
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  mask-composite: exclude;
+}
+
+/* A de dentro: fina e saturada, é ela que dá a COR encostada na borda. */
+.luz-borda {
+  filter: blur(7px);
+}
+
+.luz-borda::before {
+  padding: 5px;
+}
+
+/* A de fora: larga, mais apagada e mais saturada, é ela que faz a luz
+   atravessar a parede da caixa. O `respira` é lento e de pouca amplitude de
+   propósito — a luz da Siri pulsa, mas não pisca. */
+.luz-halo {
+  filter: blur(22px) saturate(1.35);
+  opacity: 0.7;
+}
+
+.luz-halo::before {
+  padding: 13px;
+}
+
+@keyframes luz-respira {
+  50% {
+    opacity: 0.42;
+    transform: scale(1.02);
+  }
+}
+
+.anel-siri:hover .luz-borda::before,
+.anel-siri:focus-within .luz-borda::before {
+  animation: anel-siri-gira 5s linear infinite;
+}
+
+.anel-siri:hover .luz-halo::before,
+.anel-siri:focus-within .luz-halo::before {
+  animation: anel-siri-gira 8s linear infinite reverse;
+}
+
+.anel-siri:hover .luz-halo,
+.anel-siri:focus-within .luz-halo {
+  animation: luz-respira 3.6s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* A luz continua acendendo — ela é o estado "esta caixa está sob a sua mão",
+     e isso não é decoração. O que para é a volta e o pulso. */
+  .anel-siri:hover .anel-luz span,
+  .anel-siri:focus-within .anel-luz span,
+  .anel-siri:hover .anel-luz span::before,
+  .anel-siri:focus-within .anel-luz span::before {
+    animation: none;
+  }
+}
+
+/*
  * ─── A AURORA DO CAMPO ───────────────────────────────────────────────────────
  *
  * A luz que se move dentro da caixa sob a mão. O anel de um pixel acima dá o
@@ -1038,7 +1160,11 @@ body {
   /* O borrão é maior que a mancha de propósito: assim ela não tem contorno
      nenhum, e o que se vê é luz, não um círculo colorido. */
   filter: blur(34px);
-  opacity: 0.55;
+  /* Recuada desde que a luz da borda entrou: a aurora é o VOLUME atrás do
+     vidro, e volume não pode disputar brilho com a faixa que agora desenha a
+     borda — as duas no talo viravam uma névoa colorida só, e o texto ficava
+     dentro dela. */
+  opacity: 0.4;
 }
 
 /* A luz vem da DIREITA, como na referência: o quente encosta no canto de cima,
@@ -1111,11 +1237,13 @@ body {
 }
 
 /*
- * O halo por fora, que é a mesma luz atravessando a parede da caixa.
+ * O clarão distante, muito além de onde o borrão da faixa alcança.
  *
- * Sem ele a aurora para na borda e a caixa lê como uma janela com algo aceso
- * dentro; com ele, a luz continua do outro lado e a caixa passa a ser o objeto
- * que brilha. Em `box-shadow` e não em `filter`, para não repintar o conteúdo.
+ * O halo perto da borda deixou de ser trabalho dele — quem faz agora é a
+ * `.luz-halo`, e com a cor certa, girando. O que sobra aqui é o que um `blur`
+ * de 22 pixels não alcança: os 70 pixels de clarão que tiram a caixa do preto e
+ * a fazem parecer um objeto aceso na página, e não um retângulo com a borda
+ * pintada. Em `box-shadow` e não em `filter`, para não repintar o conteúdo.
  */
 .anel-siri {
   transition:
@@ -1126,8 +1254,8 @@ body {
 .anel-siri:hover,
 .anel-siri:focus-within {
   box-shadow:
-    0 0 30px -6px rgba(222, 92, 126, 0.28),
-    0 0 60px -10px rgba(90, 160, 224, 0.22);
+    0 0 40px -12px rgba(222, 92, 126, 0.2),
+    0 0 70px -14px rgba(90, 160, 224, 0.18);
 }
 
 @media (prefers-reduced-motion: reduce) {

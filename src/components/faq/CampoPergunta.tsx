@@ -194,13 +194,19 @@ export function CampoPergunta({ valor, exemplos, aoDigitar, aoEnviar }: CampoPer
         <span className="aurora-1" />
       </div>
 
-      <div className="dot-grid pointer-events-none absolute inset-0 rounded-2xl opacity-25" />
+      {/* A luz da Siri: o mesmo gesto do telefone quando ela acorda — não uma
+          borda colorida, mas uma faixa BORRADA de cor encostada na borda por
+          dentro, e o halo dela atravessando para fora. Duas voltas, uma dentro
+          da outra e em sentidos contrários, porque é o cruzamento delas que faz
+          a cor cintilar em vez de desfilar. O regime de acender é o mesmo do
+          resto do campo: só sob a mão ou sob o cursor de texto (`.anel-siri`,
+          no index.css). */}
+      <div className="anel-luz" aria-hidden>
+        <span className="luz-halo" />
+        <span className="luz-borda" />
+      </div>
 
-      {/* O contorno animado voltou, com a regra que faltava na primeira vez:
-          ele só existe sob a MÃO ou sob o cursor de texto (`.anel-siri`, no
-          index.css). Correndo eternamente, era movimento sem resposta e saiu
-          daqui a pedido do dono; preso ao hover e ao foco, ele passa a dizer
-          uma coisa verdadeira — esta caixa está esperando você. */}
+      <div className="dot-grid pointer-events-none absolute inset-0 rounded-2xl opacity-25" />
 
       <textarea
         ref={campoRef}
