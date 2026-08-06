@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useLayoutEffect, useRef, useState, type RefObject } from 'react';
 import { AnimatePresence, motion, useInView, useReducedMotion } from 'framer-motion';
 import { X } from 'lucide-react';
 import { Bolinhas, type Ponto } from './faq/Bolinhas';
@@ -90,6 +90,86 @@ interface Troca {
 }
 
 /**
+ * A âncora do formulário, que mora no painel claro da comparação
+ * (`Comparacao.tsx`). Ela já é pública: os botões "Falar com o consultor" e o
+ * fecho do rodapé saltam para cá. Aqui ela é lida, e nada mais.
+ */
+const ANCORA_PEDIDO = 'pedido';
+
+/**
+ * A posição de um elemento na PÁGINA, somada pela cadeia de `offsetTop`.
+ *
+ * E não `getBoundingClientRect`, que seria a leitura óbvia: o painel claro da
+ * comparação sobe GIRADO e só assenta em zero grau perto do fim da rolagem. O
+ * rect enxerga a caixa girada — o pé do formulário mede um valor diferente a
+ * cada quadro da subida, e medir no quadro errado é congelar um recuo torto.
+ * `offsetTop` é posição de LAYOUT: transform não a toca, e ela vale a mesma
+ * coisa antes, durante e depois do giro.
+ */
+function topoNaPagina(el: HTMLElement): number {
+  let y = 0;
+  for (let n: HTMLElement | null = el; n; n = n.offsetParent as HTMLElement | null) y += n.offsetTop;
+  return y;
+}
+
+/**
+ * O ar acima do rótulo "FAQ" é o ar abaixo do formulário — MEDIDO, e não escrito.
+ *
+ * O pedido do dono era uma simetria: o vão entre o pé do formulário e a costura
+ * (onde o papel vira preto) tem de medir o mesmo que o vão entre a costura e o
+ * rótulo "FAQ". Escrever isso como padding não funciona, e o motivo é que o vão
+ * de cima NÃO é um padding: é o `pb-24` do painel claro MAIS metade da sobra
+ * que o `min-h-screen` dele deixa quando o conteúdo é menor que a tela. Ele
+ * anda meio pixel a cada pixel de altura de janela — 102px numa tela de 853,
+ * 146 em 940, 213 em 1080 — e a sobra ainda muda com a LARGURA, porque a faixa
+ * do título quebra em mais ou menos linhas. Nenhuma constante em CSS acerta os
+ * dois lados ao mesmo tempo; `calc()` em `svh` erra até trinta pixels de uma
+ * largura para a outra.
+ *
+ * Então o número vem da página: distância do pé do `#pedido` até o topo desta
+ * seção, relida a cada mudança de layout. Não há laço — o recuo daqui muda a
+ * altura do corpo, mas não move nada que esteja ACIMA desta seção, então a
+ * segunda medição devolve o mesmo valor e o React não re-renderiza.
+ *
+ * Enquanto não há medida — antes da comparação montar, ou numa página que não
+ * a tenha —, valem as classes do elemento (`pt-10 md:pt-24`), que são o valor
+ * certo justamente nos casos em que o painel não sobra espaço nenhum: no
+ * telefone e em qualquer tela onde o conteúdo dele passa da altura da janela.
+ */
+function useArDoPedido(secaoRef: RefObject<HTMLElement>): number | null {
+  const [ar, setAr] = useState<number | null>(null);
+
+  useLayoutEffect(() => {
+    const secao = secaoRef.current;
+    if (!secao) return;
+
+    const medir = () => {
+      const pedido = document.getElementById(ANCORA_PEDIDO);
+      if (!pedido) return;
+      const vao = topoNaPagina(secao) - (topoNaPagina(pedido) + pedido.offsetHeight);
+      if (vao > 0) setAr(vao);
+    };
+
+    medir();
+
+    /* No CORPO, e não na janela: a comparação é `lazy`, e quando ela monta
+       depois desta seção o que muda não é o tamanho da janela, é a altura da
+       página. O observador pega as duas coisas — o mount tardio, a fonte que
+       chega, a coluna que reflui — e o `resize` cobre o caso em que a janela
+       muda de largura sem que a altura do corpo mude. */
+    const observador = new ResizeObserver(medir);
+    observador.observe(document.body);
+    window.addEventListener('resize', medir);
+    return () => {
+      observador.disconnect();
+      window.removeEventListener('resize', medir);
+    };
+  }, [secaoRef]);
+
+  return ar;
+}
+
+/**
  * O FAQ, em forma de conversa — e as respostas são escritas, não geradas.
  *
  * A forma é de chat porque a página inteira fala de uma máquina que trabalha
@@ -170,6 +250,7 @@ export function Faq() {
   const parado = useReducedMotion() === true;
   const secaoRef = useRef<HTMLElement>(null);
   const naTela = useInView(secaoRef, { amount: 0.2, once: true });
+  const arDoPedido = useArDoPedido(secaoRef);
 
   const [rascunho, setRascunho] = useState('');
   const [trocas, setTrocas] = useState<readonly Troca[]>([]);
@@ -341,17 +422,17 @@ export function Faq() {
        *
        * ─── O RECUO DE CIMA É O RECUO DE BAIXO DO FORMULÁRIO ─────────────────
        *
-       * `pt-10 md:pt-24` não é o `py` padrão do site: é, ao pixel, o recuo do PÉ
-       * do painel claro da comparação (`Comparacao.tsx`, `py-10 … md:pb-24`), que
-       * é a seção que termina logo acima desta. O pedido mora lá, o FAQ vem
-       * depois dele, e as duas medidas se encostam numa costura só — quando
-       * diferem, o que se lê no meio da página é um degrau, e não uma pausa.
+       * O recuo do topo é MEDIDO, e o `useArDoPedido` acima explica por quê: o
+       * vão que ele espelha não é um padding, é padding mais sobra de
+       * centragem, e anda com o tamanho da janela. As classes `pt-10 md:pt-24`
+       * continuam aqui como o valor de partida — elas são o número certo
+       * exatamente nas telas em que o painel claro não sobra espaço nenhum.
        *
-       * E a sobra de altura que o `min-h` cria NÃO entra nessa conta: ela cai
-       * toda embaixo, que é para onde a seção cresce quando a primeira resposta
-       * chega. Foi por isso que o `justify-center` saiu daqui — ele repartia a
-       * sobra pelos dois lados e inflava o vão de cima para quase trezentos
-       * pixels, três vezes o recuo que ele devia estar espelhando.
+       * E a sobra de altura que o `min-h` DESTA seção cria não entra na conta:
+       * ela cai toda embaixo, que é para onde a seção cresce quando a primeira
+       * resposta chega. Foi por isso que o `justify-center` saiu daqui — ele
+       * repartia essa sobra pelos dois lados e inflava o vão de cima para quase
+       * trezentos pixels, o dobro do recuo que ele devia estar espelhando.
        *
        * `svh` e não `vh`: no telefone, `vh` mede a tela com as barras do
        * navegador recolhidas, e uma seção que quer 92% disso nasce mais alta do
@@ -361,6 +442,7 @@ export function Faq() {
        * direita, a seção cresce por cima dela como sempre cresceu.
        */
       className="relative flex min-h-[80svh] flex-col overflow-x-clip bg-black px-5 pb-16 pt-10 md:min-h-[92svh] md:px-10 md:pb-24 md:pt-24"
+      style={arDoPedido === null ? undefined : { paddingTop: arDoPedido }}
     >
       {/* SEM GRADE E SEM FACHO no fundo, a pedido do dono, e a razão é o que
           existe atrás deles: nada. Nas outras seções a textura corre por baixo
