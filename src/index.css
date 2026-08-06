@@ -248,8 +248,17 @@ body {
  * a mão, apagado o bastante para a pergunta continuar sendo a coisa mais legível
  * da caixa.
  */
+/*
+ * E a pegada é METADE da do resto do site, a pedido do dono.
+ *
+ * O facho de 620px é calibrado para uma tela: nela, uma poça de luz desse
+ * tamanho é um foco. Dentro de um cartão de seiscentos pixels de largura, a
+ * mesma poça cobre o cartão inteiro e deixa de ser foco — vira iluminação, e
+ * então não há mais nada para a mão descobrir. Pela metade, o facho volta a ser
+ * um ponto de luz que se move sobre uma superfície escura.
+ */
 .dot-grid-glow.is-forte {
-  --spot-size: 620px;
+  --spot-size: 310px;
   --dot-lit-radius: 1.6px;
   --dot-bloom-radius: 5px;
   --dot-lit-color: rgba(255, 255, 255, 0.62);
@@ -305,6 +314,23 @@ body {
     rgba(0, 0, 0, 0.92) 45%,
     transparent 100%
   );
+}
+
+/*
+ * A palavra acesa: "você", no cartão que fecha o argumento.
+ *
+ * `text-shadow` e não `filter: drop-shadow`, porque o brilho tem de sair das
+ * letras e não da caixa — um drop-shadow no bloco desenharia um halo retangular
+ * atrás de uma frase de duas palavras.
+ *
+ * Duas camadas: um núcleo curto que engorda a letra e um halo largo que sangra
+ * no preto em volta. Uma só ou fica dura como contorno, ou fica difusa como
+ * neblina; as duas juntas leem como algo que emite luz.
+ */
+.texto-aceso {
+  text-shadow:
+    0 0 12px rgba(255, 255, 255, 0.35),
+    0 0 38px rgba(255, 255, 255, 0.28);
 }
 
 /* The brand allows no chromatic accent, so "highlight" has to be light itself:

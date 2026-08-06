@@ -360,12 +360,21 @@ export function Comparacao() {
                 `w-fit`: o cartão tem a largura da frase. Esticado na coluna, o
                 fio sairia de uma borda a meio metro do texto e a ligação
                 deixaria de ser entre as duas COISAS. */}
+            {/* O halo branco é o mesmo do painel que tem a vez em "Como
+                funciona": a sombra preta assenta o cartão no papel, a branca o
+                acende. Duas sombras, dois trabalhos. */}
             <div
               ref={faltaRef}
-              className="mt-8 w-fit rounded-2xl border border-white/[0.11] bg-doxa-surface px-7 py-6 shadow-[0_30px_70px_-35px_rgba(0,0,0,0.5)]"
+              className="mt-8 w-fit rounded-2xl border border-white/[0.14] bg-doxa-surface px-7 py-6 shadow-[0_30px_70px_-35px_rgba(0,0,0,0.5),0_0_70px_-25px_rgba(255,255,255,0.35)]"
             >
-              <p className="font-serif text-[1.6rem] leading-tight tracking-[-0.02em] text-[#F4F1E8] md:text-[2rem]">
-                {FALTA[0]} <span className="text-white/45">{FALTA[1]}</span>
+              {/* A ênfase é em "você", e não no que falta. A primeira metade
+                  recua para cinza e a palavra que sobra fica em branco cheio,
+                  acesa: é a única coisa que a página ainda não tem, e é a pessoa
+                  que está lendo. Apagada, como estava, a frase dizia o
+                  contrário — que o que falta é pouca coisa. */}
+              <p className="font-serif text-[1.6rem] leading-tight tracking-[-0.02em] text-white/45 md:text-[2rem]">
+                {FALTA[0]}{' '}
+                <span className="texto-aceso text-white">{FALTA[1]}</span>
               </p>
             </div>
 

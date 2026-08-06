@@ -29,12 +29,23 @@ const COM_NUMERO = REELS.filter((reel) => reel.views != null);
  * O selo é o mesmo que a parede de prova mostra, e vem do mesmo campo: é uma
  * afirmação sobre a conta de outra pessoa, e só aparece onde o dado diz que a
  * plataforma a concedeu.
+ *
+ * Azul, e é o mesmo `#3897f0` da parede de prova — a única cor que a página
+ * inteira aceita fora dos assets, porque não é decoração nossa: é a marca de uma
+ * plataforma, e um selo de verificado em cinza não é um selo de verificado. O
+ * check por dentro sai em papel, e não em preto como lá: aqui o selo está sobre
+ * creme, e é assim que o feed o desenha.
  */
 function Perfil({ handle, verificado }: { handle: string; verificado: boolean }) {
   return (
     <span className="inline-flex items-center gap-1 text-[#0B0B0B]">
       {handle.startsWith('@') ? handle : `@${handle.toLowerCase()}`}
-      {verificado && <BadgeCheck className="h-4 w-4 shrink-0 text-black/45" strokeWidth={2} />}
+      {verificado && (
+        <BadgeCheck
+          className="h-4 w-4 shrink-0 fill-[#3897f0] text-[#F4F1E8]"
+          strokeWidth={2}
+        />
+      )}
     </span>
   );
 }
