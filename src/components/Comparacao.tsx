@@ -11,6 +11,7 @@ import {
 import { Pause, Play } from 'lucide-react';
 import wordmarkUrl from '../../brand/doxa-wordmark-white.png';
 import { DotGridSpotlight } from './hero/DotGridSpotlight';
+import { BordaViva } from './comparacao/BordaViva';
 import { FioConvite } from './comparacao/FioConvite';
 import { Formulario } from './comparacao/Formulario';
 import { Ladainha } from './comparacao/Ladainha';
@@ -66,7 +67,6 @@ const GIRO = 30;
  * uma segunda vez, num objeto de oito pixels.
  */
 function Selo({ prefixo, escuro = false }: { prefixo: string; escuro?: boolean }) {
-  const imovel = useReducedMotion() === true;
   const cor = escuro ? NO_AR : PARADO;
 
   return (
@@ -92,32 +92,15 @@ function Selo({ prefixo, escuro = false }: { prefixo: string; escuro?: boolean }
             se vê é um piscar intermitente. Defasados, sempre há um anel
             nascendo enquanto o outro apaga, e a leitura passa de "pisca" para
             "está transmitindo". */}
-        {[0, 1.6].map((atraso) => (
-          <motion.span
-            key={atraso}
-            className="absolute inline-flex h-full w-full rounded-full"
+        {/* Os dois anéis são CSS puro, e o motivo está em `.selo-anel`: em JS
+            eles rodavam na thread principal, junto com o giro do painel e o
+            facho do ponteiro, e engasgavam. `transform` e `opacity` em CSS
+            sobem para o compositor e ficam lisos por construção. */}
+        {['selo-anel', 'selo-anel selo-anel-tardio'].map((classe) => (
+          <span
+            key={classe}
+            className={`absolute inline-flex h-full w-full rounded-full ${classe}`}
             style={{ background: cor }}
-            /*
-             * Liso de ponta a ponta, e é `linear` que faz isso.
-             *
-             * Com `easeOut` o anel disparava para fora e depois quase parava:
-             * o olho lê o freio como um solavanco, e o dono chamou de estranho
-             * com razão. Em velocidade constante ele apenas se afasta.
-             *
-             * A opacidade tem um ponto no meio do caminho para não cair junto
-             * com a escala. Interpolada em linha reta de 0,5 a 0, ela some cedo
-             * demais e o anel desaparece antes de chegar longe — com o ponto em
-             * 45% ele se mantém visível na parte do percurso em que ainda está
-             * crescendo, e só então esvai.
-             */
-            animate={imovel ? undefined : { scale: [1, 2.5, 4.4], opacity: [0.5, 0.26, 0] }}
-            transition={{
-              duration: 3.2,
-              ease: 'linear',
-              times: [0, 0.45, 1],
-              repeat: Infinity,
-              delay: atraso,
-            }}
           />
         ))}
         {/* O núcleo tem brilho próprio na cor: sem ele o ponto é um adesivo
@@ -461,16 +444,45 @@ export function Comparacao() {
             {/* O halo branco é o mesmo do painel que tem a vez em "Como
                 funciona": a sombra preta assenta o cartão no papel, a branca o
                 acende. Duas sombras, dois trabalhos. */}
+            {/* `relative`, e é o que faz o contorno vivo caber aqui dentro: o
+                SVG é desenhado em `inset-0` desta caixa. */}
             <div
               ref={faltaRef}
-              className="mt-8 w-fit rounded-2xl border border-white/[0.14] bg-doxa-surface px-7 py-6 shadow-[0_30px_70px_-35px_rgba(0,0,0,0.5),0_0_70px_-25px_rgba(255,255,255,0.35)]"
+              className="relative mt-8 w-fit rounded-2xl border border-white/[0.14] bg-doxa-surface px-7 py-6 shadow-[0_30px_70px_-35px_rgba(0,0,0,0.5),0_0_70px_-25px_rgba(255,255,255,0.35)]"
             >
+              {/* ── ONDE O SINAL NASCE.
+
+                  O percurso inteiro começa neste cartão, a pedido do dono: a
+                  borda branca acende aqui, se abre em dois, os ramos correm o
+                  contorno separados, se reencontram na borda direita — que é o
+                  ponto exato de onde o fio sai — e daí a energia atravessa o
+                  papel em tinta até o cartão do pedido, onde a mesma coisa
+                  acontece de novo. É o argumento virando pedido, desenhado.
+
+                  `moldura` desligada: este cartão já tem uma borda branca de
+                  verdade, e um segundo fio a um pixel e meio dela não lê como
+                  contorno mais forte, lê como contorno mal desenhado. Raio 16
+                  porque a caixa é `rounded-2xl`, e não `rounded-3xl` como a do
+                  pedido — o arco tem de ser concêntrico com o canto que ele
+                  acompanha, senão sobra uma fresta em cada esquina. */}
+              <BordaViva
+                alvoRef={faltaRef}
+                pausado={sinalPausado}
+                trecho="falta"
+                raio={16}
+                moldura={false}
+              />
+
               {/* A frase inteira acesa, em dois degraus. Nenhuma das metades é
                   apagada — apagada, a primeira dizia que o que falta é pouca
                   coisa —, mas elas não brilham igual: creme com brilho fraco na
                   que pergunta, branco cheio com brilho forte na resposta. Duas
-                  coisas brilhando no mesmo passo não são duas ênfases. */}
-              <p className="texto-aceso-fraco font-serif text-[1.6rem] leading-tight tracking-[-0.02em] text-[#F4F1E8] md:text-[2rem]">
+                  coisas brilhando no mesmo passo não são duas ênfases.
+
+                  `relative` para ficar ACIMA do contorno: um irmão posicionado
+                  pinta por cima de um estático, e sem isto a auréola do sinal
+                  passaria na frente da frase a cada volta. */}
+              <p className="texto-aceso-fraco relative font-serif text-[1.6rem] leading-tight tracking-[-0.02em] text-[#F4F1E8] md:text-[2rem]">
                 {FALTA[0]}{' '}
                 <span className="texto-aceso text-white">{FALTA[1]}</span>
               </p>

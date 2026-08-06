@@ -5,10 +5,29 @@ interface BordaVivaProps {
   alvoRef: RefObject<HTMLElement>;
   /** O visitante parou o sinal. Congela onde está, em vez de sumir. */
   pausado: boolean;
+  /**
+   * Qual trecho do percurso este contorno é.
+   *
+   * `falta` é o primeiro — o sinal nasce ali e sai pelo fio. `pedido` é o
+   * último, depois da travessia. Os dois nomes escolhem a janela do ciclo e a
+   * medida da auréola; a geometria é a mesma nos dois.
+   */
+  trecho?: 'falta' | 'pedido';
+  /** O raio dos cantos do alvo, em pixels. Combine com o `rounded-` dele. */
+  raio?: number;
+  /**
+   * Desenha o fio fraco permanente por cima da borda do alvo.
+   *
+   * Ligado onde o contorno do cartão é fraco demais para o olho segurar o
+   * perímetro entre uma passagem e outra. Desligado onde o alvo já tem uma
+   * borda visível — dois fios a um pixel e meio um do outro não leem como um
+   * contorno mais forte, leem como um contorno mal desenhado.
+   */
+  moldura?: boolean;
 }
 
-/** O mesmo raio do `rounded-3xl` do cartão, em pixels. */
-const RAIO = 24;
+/** O raio do `rounded-3xl` do cartão do pedido, em pixels. */
+const RAIO_PADRAO = 24;
 
 /** A espessura do sinal, em pixels. */
 const TRACO = 3;
@@ -41,7 +60,7 @@ const RECUO = TRACO / 2;
  * pelo lado de fora, e é a única coisa que denuncia um traçado desenhado à mão
  * por cima de um elemento.
  */
-function meiaVolta(largura: number, altura: number, topo: boolean) {
+function meiaVolta(largura: number, altura: number, topo: boolean, raio: number) {
   // As quatro paredes, já recuadas para dentro do corte do cartão.
   const esq = RECUO;
   const dir = largura - RECUO;
@@ -50,7 +69,7 @@ function meiaVolta(largura: number, altura: number, topo: boolean) {
   const meio = altura / 2;
   // O raio encolhe junto com o recuo, senão o arco deixa de ser concêntrico com
   // o canto do cartão e o contorno abre uma fresta em cada esquina.
-  const r = Math.min(RAIO - RECUO, (dir - esq) / 2, (baixo - cima) / 2);
+  const r = Math.min(raio - RECUO, (dir - esq) / 2, (baixo - cima) / 2);
   if (topo) {
     return [
       `M ${esq} ${meio}`,
@@ -72,14 +91,15 @@ function meiaVolta(largura: number, altura: number, topo: boolean) {
 }
 
 /**
- * O sinal que chega pelo fio, se abre em dois e contorna o cartão.
+ * O sinal se abre em dois, contorna o cartão e se reencontra do outro lado.
  *
- * É a continuação de `FioConvite`, não um efeito à parte: o fio vem do
- * argumento e morre na borda esquerda do cartão, e o que acontecia com o sinal
- * depois disso era nada. Aqui ele se divide no ponto exato em que chega, os dois
- * ramos correm o contorno em sentidos opostos, se reencontram no meio da borda
- * direita e apagam juntos. A pessoa não precisa reparar em nada disso — o que
- * ela vê é que o cartão está LIGADO na frase, e que a energia veio de lá.
+ * Serve as duas pontas do fio, e é a mesma peça nas duas porque é o mesmo gesto:
+ * no cartão do "falta você" ele NASCE — bifurca na borda esquerda, corre o
+ * contorno em sentidos opostos e se reencontra no meio da borda direita, que é
+ * exatamente de onde o fio parte —, e no cartão do pedido ele CHEGA, pela
+ * esquerda, e faz o mesmo caminho para morrer à direita. Entre um e outro está a
+ * travessia do papel. A pessoa não precisa reparar em nada disso: o que ela vê é
+ * que os dois cartões estão LIGADOS, e de que lado veio a energia.
  *
  * Desenhado em cima do cartão e por baixo do conteúdo, com o brilho sangrando
  * para dentro: é isso que ilumina o miolo sem lavar o texto por cima dele.
@@ -89,7 +109,13 @@ function meiaVolta(largura: number, altura: number, topo: boolean) {
  * contorno em `%` acompanharia a caixa esticando os cantos — o raio deixaria de
  * ser um raio e viraria uma elipse.
  */
-export function BordaViva({ alvoRef, pausado }: BordaVivaProps) {
+export function BordaViva({
+  alvoRef,
+  pausado,
+  trecho = 'pedido',
+  raio = RAIO_PADRAO,
+  moldura = true,
+}: BordaVivaProps) {
   const [caixa, setCaixa] = useState({ largura: 0, altura: 0 });
 
   useLayoutEffect(() => {
@@ -113,7 +139,7 @@ export function BordaViva({ alvoRef, pausado }: BordaVivaProps) {
       aria-hidden="true"
     >
       {[true, false].map((topo) => {
-        const d = meiaVolta(caixa.largura, caixa.altura, topo);
+        const d = meiaVolta(caixa.largura, caixa.altura, topo, raio);
         return (
           <g key={topo ? 'topo' : 'base'}>
             {/*
@@ -124,7 +150,7 @@ export function BordaViva({ alvoRef, pausado }: BordaVivaProps) {
              * como a caixa se mexendo. Um fio fraco permanente é a moldura sobre
              * a qual o sinal corre.
              */}
-            <path d={d} stroke="rgba(255,255,255,0.13)" strokeWidth={1} />
+            {moldura && <path d={d} stroke="rgba(255,255,255,0.13)" strokeWidth={1} />}
 
             {/*
              * O sinal, em um traço só com auréola larga — o vocabulário do
@@ -135,7 +161,7 @@ export function BordaViva({ alvoRef, pausado }: BordaVivaProps) {
             <path
               d={d}
               pathLength={1}
-              className="pulso pulso-borda"
+              className={`pulso ${trecho === 'falta' ? 'pulso-falta' : 'pulso-borda'}`}
               stroke="#FFFFFF"
               strokeWidth={TRACO}
               strokeLinecap="round"

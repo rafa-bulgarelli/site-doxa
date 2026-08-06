@@ -467,18 +467,66 @@ body {
  * que a sete segundos dão dois décimos de segundo: curto o bastante para ler
  * como um sinal, longo o bastante para não piscar.
  */
+/*
+ * TRÊS JANELAS DE UM CICLO SÓ, e a ordem delas é o percurso.
+ *
+ * O sinal nasce no cartão do "falta você", se abre em dois, contorna aquela
+ * caixa, se reencontra na borda direita dela — que é exatamente de onde o fio
+ * sai —, atravessa o papel pelo fio e vai contornar o cartão do pedido. Um
+ * percurso, três trechos, um ciclo de sete segundos: como as três animações
+ * partem do mesmo carregamento e têm a mesma duração, elas nunca se
+ * desencontram, e nada precisa de um temporizador vigiando o outro.
+ *
+ * As janelas não se sobrepõem, e é isso que faz o sinal ser UM. Duas acesas ao
+ * mesmo tempo seriam dois sinais, e a leitura deixaria de ser "aquilo andou até
+ * aqui" para virar "esta seção tem uns brilhos".
+ *
+ * O tamanho de cada janela é proporcional ao CAMINHO que ela percorre, e não
+ * igual: meia volta no cartão pequeno tem uns 370px, o fio uns 520, meia volta
+ * no cartão do pedido uns 1050. Repartido em partes iguais, o mesmo sinal
+ * andaria devagar na caixa pequena e dispararia na grande — e um sinal que muda
+ * de velocidade ao mudar de superfície deixa de parecer a mesma coisa em
+ * movimento. Os 16% de silêncio no fim são o que o torna um EVENTO: sem a
+ * pausa, é uma esteira.
+ */
+@keyframes pulso-falta {
+  0% {
+    stroke-dashoffset: 0.05;
+    opacity: 0;
+  }
+  2.5% {
+    opacity: 1;
+  }
+  14.5% {
+    opacity: 1;
+  }
+  17% {
+    stroke-dashoffset: -1.05;
+    opacity: 0;
+  }
+  100% {
+    stroke-dashoffset: -1.05;
+    opacity: 0;
+  }
+}
+
 @keyframes pulso-fio {
   0% {
     stroke-dashoffset: 0.05;
     opacity: 0;
   }
-  3% {
+  /* Parado e invisível enquanto o sinal dá a volta no cartão de origem. */
+  19% {
+    stroke-dashoffset: 0.05;
+    opacity: 0;
+  }
+  21.5% {
     opacity: 1;
   }
-  22% {
+  39.5% {
     opacity: 1;
   }
-  26% {
+  42% {
     stroke-dashoffset: -1.05;
     opacity: 0;
   }
@@ -495,17 +543,17 @@ body {
   }
   /* Parado e invisível enquanto o fio atravessa: é o que garante um par de
      linhas por vez. */
-  28% {
+  44% {
     stroke-dashoffset: 0.05;
     opacity: 0;
   }
-  31% {
+  46.5% {
     opacity: 1;
   }
-  68% {
+  81.5% {
     opacity: 1;
   }
-  72% {
+  84% {
     stroke-dashoffset: -1.05;
     opacity: 0;
   }
@@ -522,8 +570,22 @@ body {
  * tamanho: o traço é uma FRAÇÃO do caminho, e serve tanto para o fio de duzentos
  * pixels quanto para o contorno de um cartão que muda de altura a cada passo.
  */
+/*
+ * O VÃO É MAIOR QUE O CAMINHO, e isso é a correção de um fantasma real.
+ *
+ * `stroke-dasharray` é um PADRÃO, não um traço: ele se repete pelo caminho
+ * inteiro. Com 0,05 de traço e 0,95 de vão o período dava exatamente 1 — o
+ * mesmo `pathLength` —, então existia sempre uma segunda cópia do traço a uma
+ * volta de distância da primeira. Enquanto a ponta principal saía pelo encontro,
+ * a cópia entrava pela bifurcação: em 68% do ciclo, com opacidade ainda cheia.
+ * Era o defeito que o dono viu — "elas somem e reaparecem no início do card".
+ *
+ * Com o vão em 1,95 o período vai a 2, e a cópia mais próxima fica a uma volta
+ * INTEIRA de distância: ela nunca alcança o caminho enquanto a de verdade o
+ * percorre. O traço passa a ser um só, do começo ao fim.
+ */
 .pulso {
-  stroke-dasharray: 0.05 0.95;
+  stroke-dasharray: 0.05 1.95;
   animation-duration: 7s;
   animation-timing-function: linear;
   animation-iteration-count: infinite;
@@ -557,8 +619,82 @@ body {
     drop-shadow(0 0 44px rgba(255, 255, 255, 0.45));
 }
 
+/*
+ * A mesma auréola, na medida do cartão pequeno.
+ *
+ * As camadas são as três de sempre, com os raios pela metade. O brilho de um
+ * sinal tem de ser proporcional ao objeto que ele contorna: os 44px calibrados
+ * para um cartão de 450px de altura, numa caixa de 90px, cobrem a caixa inteira
+ * — o que se veria não seria uma linha correndo pela borda, e sim o cartão
+ * piscando. Metade do raio, mesma gramática.
+ */
+.pulso-falta {
+  animation-name: pulso-falta;
+  filter: drop-shadow(0 0 4px rgba(255, 255, 255, 1))
+    drop-shadow(0 0 11px rgba(255, 255, 255, 0.85))
+    drop-shadow(0 0 24px rgba(255, 255, 255, 0.45));
+}
+
 @media (prefers-reduced-motion: reduce) {
   .pulso {
+    animation: none;
+    opacity: 0;
+  }
+}
+
+/*
+ * O anel do selo — em CSS, e essa é a correção de um travamento real.
+ *
+ * Era animado em JS. Uma sequência de quadros-chave com `times` não entra no
+ * caminho acelerado do framer-motion: ela roda na thread principal, um quadro
+ * por vez, na MESMA seção em que o painel gira com o scroll, o facho reescreve
+ * variáveis a cada movimento do ponteiro e três auréolas de `drop-shadow`
+ * repintam o contorno de um cartão inteiro. Um anel de oito pixels perde essa
+ * disputa: ele não fica lento, ele fica ENGASGADO — anda, para, anda —, que foi
+ * o que o dono descreveu.
+ *
+ * Em CSS, `transform` e `opacity` sobem para o compositor e passam a ser
+ * desenhados fora da thread principal. O anel fica liso mesmo enquanto o resto
+ * da seção trabalha, e o navegador para de ser acordado por JS a cada quadro
+ * para mover dois pontinhos.
+ *
+ * Continua `linear`: com `ease-out` o anel disparava e quase parava no fim, e o
+ * olho lê o freio como solavanco. A opacidade tem um ponto no meio do caminho
+ * para não cair junto com a escala — em linha reta ela some cedo demais e o anel
+ * desaparece antes de chegar longe.
+ */
+@keyframes selo-anel {
+  0% {
+    transform: scale(1);
+    opacity: 0.5;
+  }
+  45% {
+    opacity: 0.26;
+  }
+  100% {
+    transform: scale(4.4);
+    opacity: 0;
+  }
+}
+
+.selo-anel {
+  animation: selo-anel 3.2s linear infinite;
+}
+
+/*
+ * O segundo anel, com meio ciclo de atraso — NEGATIVO.
+ *
+ * Um atraso positivo deixaria o segundo anel mudo nos primeiros 1,6s: o selo
+ * nasceria piscando e só depois passaria a transmitir. Negativo, ele já começa
+ * na metade do próprio percurso, e desde o primeiro quadro sempre há um anel
+ * nascendo enquanto o outro apaga.
+ */
+.selo-anel-tardio {
+  animation-delay: -1.6s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .selo-anel {
     animation: none;
     opacity: 0;
   }
