@@ -37,6 +37,17 @@ const RESPOSTA = CARGA * 1000;
 const PARTIDA = 420;
 
 /**
+ * A saída de uma resposta, e o intervalo entre uma e a seguinte.
+ *
+ * Vivem aqui em cima porque duas coisas dependem deles: a animação de cada
+ * resposta, lá embaixo, e a conta de quando a seção pode se recompor depois de
+ * limpar. Escritos nos dois lugares, um dia a seção fecha no meio da varrida —
+ * que foi exatamente o defeito que o dono viu.
+ */
+const SAIDA = 300;
+const CASCATA = 60;
+
+/**
  * A faixa da seção antes e depois da primeira pergunta.
  *
  * Fechada ela é a coluna centrada de sempre: sem resposta nenhuma na tela, uma
@@ -119,12 +130,21 @@ interface Troca {
  * Quem clica fora sem escrever nada devolve tudo, mas SÓ enquanto não houver
  * resposta na tela: com respostas, a coluna continua sendo necessária.
  *
- * O cabeçalho fica FORA do grid, em largura total. Com o título dentro da coluna
- * esquerda, o topo da coluna de respostas caía na altura do rótulo e o campo
- * ficava duzentos pixels abaixo dele — as duas metades começavam em alturas
- * diferentes e não liam como metades de nada. Com o cabeçalho em cima, o topo
- * das duas colunas é o mesmo: o campo é a primeira coisa da esquerda e a
- * resposta é a primeira coisa da direita.
+ * ─── O CABEÇALHO MORA NA COLUNA DA ESQUERDA ─────────────────────────────────
+ *
+ * Ele já ficou fora do grid, em largura total, e a razão era o sinal que
+ * atravessava o vão: com o título dentro da coluna, o risco saía do campo numa
+ * altura e a resposta nascia em outra. O sinal não existe mais, e o dono pediu a
+ * coisa que essa arrumação impedia — que TODO o lado esquerdo fique fixo ao
+ * rolar, e não só o campo.
+ *
+ * `sticky` gruda um elemento, não uma região: para o rótulo, a régua, o título e
+ * o campo grudarem JUNTOS, eles têm de ser o mesmo elemento. Dois `sticky`
+ * irmãos com o mesmo `top` se sobreporiam no primeiro pixel de rolagem.
+ *
+ * A consequência é que a coluna das respostas passa a começar na altura do
+ * rótulo, e não na do campo. É o preço, e ele é barato: o que se lê à direita é
+ * a resposta, e ela ganha a altura inteira da seção para existir.
  *
  * Fechada, a coluna de respostas tem largura zero e o campo ocupa a faixa
  * inteira. Aberta ela vai para 44% — a mesma proporção que a comparação usa para
@@ -165,6 +185,9 @@ export function Faq() {
   /** Quantas barras estão varrendo o campo. Contador, e não booleano: duas
       perguntas seguidas não podem apagar o sinal uma da outra. */
   const [cargas, setCargas] = useState(0);
+
+  /** Se a pilha de respostas está saindo agora. */
+  const [limpando, setLimpando] = useState(false);
 
   /* Se o campo está aberto AGORA — um espelho do estado que mora lá dentro.
      Não é a mesma coisa que `aberto`: a seção continua partida enquanto houver
@@ -234,9 +257,27 @@ export function Faq() {
    * ela estava, e só então a seção se recompõe.
    */
   const limpar = () => {
+    /*
+     * A conta da VARRIDA, e ela é o conserto de um engasgo que o dono viu.
+     *
+     * As respostas saem em cascata: 300ms cada uma, com 60 de atraso entre
+     * uma e a seguinte. A última, portanto, só termina em `300 + (n-1)*60`.
+     * Fechar depois de um tempo FIXO fazia a coluna encolher por baixo das
+     * respostas que ainda estavam saindo — o texto se refluía em duas linhas a
+     * menos no meio da própria saída, e o que era uma varrida virava solavanco.
+     * Contando as que existem, a pilha sai inteira na largura em que estava e a
+     * seção só se recompõe depois.
+     */
+    const quantas = trocas.length;
+    const varrida = parado ? 0 : SAIDA + Math.max(0, quantas - 1) * CASCATA;
+
     setTrocas([]);
+    setLimpando(true);
     window.clearTimeout(fechamento.current);
-    fechamento.current = window.setTimeout(() => setAberto(false), parado ? 0 : PARTIDA);
+    fechamento.current = window.setTimeout(() => {
+      setAberto(false);
+      setLimpando(false);
+    }, varrida);
   };
 
   /*
@@ -304,61 +345,6 @@ export function Faq() {
         className="relative mx-auto w-full transition-[max-width] motion-reduce:transition-none"
         style={{ ...TRANSICAO, maxWidth: aberto ? ABERTA : FECHADA }}
       >
-        {/* ─── O CABEÇALHO ────────────────────────────────────────────────── */}
-        <motion.div
-          initial={parado ? undefined : { opacity: 0, y: 16 }}
-          animate={naTela ? { opacity: 1, y: 0 } : undefined}
-          transition={{ duration: 0.6, ease: EASE }}
-        >
-          {/* O rótulo, em SERIFA e aceso.
-              Saiu daqui o ponto que pulsava: um LED em loop eterno num fundo
-              preto liso é movimento sem informação, e o dono viu isso antes de
-              qualquer argumento. E saiu também o "01 de 06" que o substituiu:
-              dois algarismos pedem para ser lidos e comparados, enquanto seis
-              pontos dizem o total num relance.
-
-              A serifa é a do site — a mesma dos títulos —, e não a sans dos
-              rótulos das outras seções. É o que tira "FAQ" da categoria de
-              etiqueta e o põe na de nome próprio da seção. Em `texto-aceso`, o
-              brilho forte: no `fraco` ele sumia contra o preto, que foi
-              exatamente a reclamação. */}
-          <span className="flex items-center gap-4">
-            <span className="texto-aceso font-serif text-[19px] uppercase leading-none tracking-[0.2em] text-[#F4F1E8]">
-              {ABERTURA.rotulo}
-            </span>
-            <Bolinhas pontos={lidas} parado={parado} />
-          </span>
-
-          {/* A barra, que é o mesmo progresso em forma de régua. Ela se estende
-              uma vez quando a seção entra na tela e depois só é PREENCHIDA, a
-              cada resposta lida — o gradiente por baixo é fixo em 13rem, então
-              o que cresce revela as cores na ordem em que os pontos acendem, em
-              vez de espremer as seis dentro do pedaço já ganho. */}
-          <motion.div
-            aria-hidden
-            className="mt-3.5 h-[3px] w-full max-w-[13rem] origin-left overflow-hidden rounded-full bg-white/[0.10]"
-            initial={parado ? undefined : { scaleX: 0 }}
-            animate={naTela ? { scaleX: 1 } : undefined}
-            transition={{ duration: 0.7, ease: EASE, delay: 0.15 }}
-          >
-            <motion.div
-              className="h-full rounded-full"
-              style={{
-                backgroundImage: `linear-gradient(90deg, ${CORES.join(', ')})`,
-                backgroundSize: '13rem 100%',
-              }}
-              initial={false}
-              animate={{ width: `${(cobertas / DUVIDAS.length) * 100}%` }}
-              transition={parado ? { duration: 0 } : { duration: 0.55, ease: EASE }}
-            />
-          </motion.div>
-
-          <h2 className="mt-5 font-serif text-[2.6rem] leading-[0.95] tracking-[-0.03em] text-[#F4F1E8] md:text-[3.6rem]">
-            {ABERTURA.titulo}
-          </h2>
-          <p className="mt-3 text-[15px] text-white/50">{ABERTURA.dica}</p>
-        </motion.div>
-
         {/* ─── AS DUAS COLUNAS ─────────────────────────────────────────────
          *
          * As colunas moram no `style` de propósito: `grid-template-columns` só
@@ -393,7 +379,7 @@ export function Faq() {
          * animação, que antes não existia.
          */}
         <div
-          className="mt-10 transition-[grid-template-columns] motion-reduce:transition-none lg:mt-14 lg:grid"
+          className="transition-[grid-template-columns] motion-reduce:transition-none lg:grid"
           style={{
             ...TRANSICAO,
             gridTemplateColumns: aberto
@@ -408,7 +394,63 @@ export function Faq() {
             }`}
             style={TRANSICAO}
           >
+            {/* ─── O CABEÇALHO ────────────────────────────────────────────────── */}
             <motion.div
+              initial={parado ? undefined : { opacity: 0, y: 16 }}
+              animate={naTela ? { opacity: 1, y: 0 } : undefined}
+              transition={{ duration: 0.6, ease: EASE }}
+            >
+              {/* O rótulo, em SERIFA e aceso.
+                  Saiu daqui o ponto que pulsava: um LED em loop eterno num fundo
+                  preto liso é movimento sem informação, e o dono viu isso antes de
+                  qualquer argumento. E saiu também o "01 de 06" que o substituiu:
+                  dois algarismos pedem para ser lidos e comparados, enquanto seis
+                  pontos dizem o total num relance.
+
+                  A serifa é a do site — a mesma dos títulos —, e não a sans dos
+                  rótulos das outras seções. É o que tira "FAQ" da categoria de
+                  etiqueta e o põe na de nome próprio da seção. Em `texto-aceso`, o
+                  brilho forte: no `fraco` ele sumia contra o preto, que foi
+                  exatamente a reclamação. */}
+              <span className="flex items-center gap-4">
+                <span className="texto-aceso font-serif text-[19px] uppercase leading-none tracking-[0.2em] text-[#F4F1E8]">
+                  {ABERTURA.rotulo}
+                </span>
+                <Bolinhas pontos={lidas} parado={parado} />
+              </span>
+
+              {/* A barra, que é o mesmo progresso em forma de régua. Ela se estende
+                  uma vez quando a seção entra na tela e depois só é PREENCHIDA, a
+                  cada resposta lida — o gradiente por baixo é fixo em 13rem, então
+                  o que cresce revela as cores na ordem em que os pontos acendem, em
+                  vez de espremer as seis dentro do pedaço já ganho. */}
+              <motion.div
+                aria-hidden
+                className="mt-3.5 h-[3px] w-full max-w-[13rem] origin-left overflow-hidden rounded-full bg-white/[0.10]"
+                initial={parado ? undefined : { scaleX: 0 }}
+                animate={naTela ? { scaleX: 1 } : undefined}
+                transition={{ duration: 0.7, ease: EASE, delay: 0.15 }}
+              >
+                <motion.div
+                  className="h-full rounded-full"
+                  style={{
+                    backgroundImage: `linear-gradient(90deg, ${CORES.join(', ')})`,
+                    backgroundSize: '13rem 100%',
+                  }}
+                  initial={false}
+                  animate={{ width: `${(cobertas / DUVIDAS.length) * 100}%` }}
+                  transition={parado ? { duration: 0 } : { duration: 0.55, ease: EASE }}
+                />
+              </motion.div>
+
+              <h2 className="mt-5 font-serif text-[2.6rem] leading-[0.95] tracking-[-0.03em] text-[#F4F1E8] md:text-[3.6rem]">
+                {ABERTURA.titulo}
+              </h2>
+              <p className="mt-3 text-[15px] text-white/50">{ABERTURA.dica}</p>
+            </motion.div>
+
+            <motion.div
+              className="mt-10 lg:mt-14"
               initial={parado ? undefined : { opacity: 0, y: 16 }}
               animate={naTela ? { opacity: 1, y: 0 } : undefined}
               transition={{ duration: 0.6, ease: EASE, delay: 0.1 }}
@@ -477,7 +519,13 @@ export function Faq() {
                                atraso vazando para o hover faria o botão
                                responder um quinto de segundo depois do mouse. */
                             transition={{ duration: 0.2, ease: MOLA }}
-                            className="rounded-full border border-white/[0.14] bg-white/[0.03] px-4 py-2 text-[13px] font-medium text-white/60 outline-none transition-colors duration-200 hover:border-white/30 hover:bg-white/[0.07] hover:text-white focus-visible:ring-2 focus-visible:ring-white/50"
+                            /* Fundo OPACO, e mais claro que a caixa. Translúcido a 3% de
+                               branco, o atalho era um buraco um pouco mais claro
+                               no fundo da caixa; sólido em #1F1F1F ele é um
+                               objeto POUSADO nela — e é isso que faz uma
+                               pastilha parecer clicável sem precisar de mais
+                               contorno. */
+                            className="rounded-full border border-white/[0.14] bg-[#1F1F1F] px-4 py-2 text-[13px] font-medium text-white/70 outline-none transition-colors duration-200 hover:border-white/30 hover:bg-[#2A2A2A] hover:text-white focus-visible:ring-2 focus-visible:ring-white/50"
                           >
                             {duvida.atalho}
                           </motion.button>
@@ -536,7 +584,7 @@ export function Faq() {
              * respostas de verdade, vira ruído em cima delas.
              */}
             <AnimatePresence>
-              {aberto && trocas.length === 0 && (
+              {aberto && !limpando && trocas.length === 0 && (
                 <motion.div
                   key="espera"
                   initial={parado ? undefined : { opacity: 0, y: 10 }}
@@ -633,7 +681,11 @@ export function Faq() {
                             opacity: 0,
                             y: -16,
                             scale: 0.97,
-                            transition: { duration: 0.3, ease: EASE, delay: i * 0.06 },
+                            transition: {
+                              duration: SAIDA / 1000,
+                              ease: EASE,
+                              delay: (i * CASCATA) / 1000,
+                            },
                           }
                     }
                   >

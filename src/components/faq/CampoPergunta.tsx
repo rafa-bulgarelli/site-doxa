@@ -530,13 +530,19 @@ export function CampoPergunta({
             Clicável mesmo vazio: desabilitar um botão sem dizer por quê deixa a
             pessoa clicando num objeto morto. Fechado ele ABRE a caixa, aberto
             ele envia — a mesma seta, porque em ambos os casos ela leva a
-            pergunta adiante. */}
+            pergunta adiante.
+
+            Preso no TOPO e não no rodapé do andar. Ancorado embaixo, ele descia
+            junto com a caixa que cresce, e um botão que muda de lugar enquanto
+            a pessoa digita é um alvo que se mexe. Em cima ele fica no mesmo
+            pixel da pastilha fechada até a caixa cheia — e é lá que a primeira
+            linha do texto está, que é o lugar de onde se envia. */}
         <button
           type="button"
           onMouseDown={(evento) => evento.preventDefault()}
           onClick={aberto ? enviar : abrir}
           aria-label={aberto ? 'Enviar a pergunta' : 'Escrever uma pergunta'}
-          className="absolute bottom-1.5 right-1.5 z-[10] flex h-9 w-9 items-center justify-center rounded-full bg-[#F4F1E8] text-[#0B0B0B] transition-transform duration-300 hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black motion-reduce:transition-none motion-reduce:hover:scale-100"
+          className="absolute right-1.5 top-1.5 z-[10] flex h-9 w-9 items-center justify-center rounded-full bg-[#F4F1E8] text-[#0B0B0B] transition-transform duration-300 hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black motion-reduce:transition-none motion-reduce:hover:scale-100"
           style={{ transitionTimingFunction: MOLA_CSS }}
         >
           <ArrowUp className="h-4 w-4" strokeWidth={2.2} />
