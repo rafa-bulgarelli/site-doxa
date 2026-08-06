@@ -9,6 +9,7 @@ import {
   useTransform,
 } from 'framer-motion';
 import wordmarkUrl from '../../brand/doxa-wordmark-white.png';
+import { DotGridSpotlight } from './hero/DotGridSpotlight';
 import { FioConvite } from './comparacao/FioConvite';
 import { Formulario } from './comparacao/Formulario';
 import { Ladainha } from './comparacao/Ladainha';
@@ -126,7 +127,7 @@ export function Comparacao() {
   const claroRef = useRef<HTMLDivElement>(null);
   /** As três peças do fio: a caixa em que ele mora e as duas pontas. */
   const gradeRef = useRef<HTMLDivElement>(null);
-  const faltaRef = useRef<HTMLSpanElement>(null);
+  const faltaRef = useRef<HTMLDivElement>(null);
   const cartaoRef = useRef<HTMLDivElement>(null);
   const parado = useReducedMotion() === true;
   const isDesktop = useIsDesktop();
@@ -159,6 +160,7 @@ export function Comparacao() {
         className="sticky top-0 flex h-screen flex-col px-5 pb-10 pt-16 md:px-10 md:pb-14 md:pt-24"
       >
         <div className="dot-grid pointer-events-none absolute inset-0 opacity-40" />
+        <DotGridSpotlight containerRef={escuroRef} />
 
         <div className="relative mx-auto flex h-full w-full max-w-screen-2xl flex-col">
           <Selo prefixo="Sem" />
@@ -205,7 +207,7 @@ export function Comparacao() {
           <div
             className={`${RESPIRO} flex items-baseline justify-between gap-6 border-t border-white/[0.09] pt-7 md:pt-10`}
           >
-            <span className="text-[11px] uppercase tracking-[0.18em] text-white/35">{FATURA}</span>
+            <span className="text-[12px] tracking-[0.06em] text-white/35">{FATURA}</span>
             <span className="text-[11px] tabular-nums tracking-[0.14em] text-white/35">
               {TOTAL_ITENS} itens
             </span>
@@ -253,6 +255,16 @@ export function Comparacao() {
         style={{ rotate: parado ? 0 : giro, background: PAPEL }}
         className="relative z-10 min-h-screen origin-bottom-left px-5 py-10 md:px-10 md:py-14"
       >
+        {/* A textura atravessa a virada. Aqui ela é a mesma grade em tinta, e o
+            facho é o mesmo facho com o sinal trocado: no preto os pontos
+            acendem sob a mão, no papel eles escurecem. É o que impede o painel
+            claro de ler como outra página — ele é a mesma página, de manhã.
+
+            Debaixo do clarão do topo, e não por cima: o gradiente branco é o que
+            dá volume ao papel, e a grade passando na frente dele viraria uma
+            tela de pontos com uma luz atrás. */}
+        <div className="dot-grid-tinta pointer-events-none absolute inset-0" />
+        <DotGridSpotlight containerRef={claroRef} className="is-tinta" />
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(70%_50%_at_50%_0%,rgba(255,255,255,0.85),transparent_70%)]" />
 
         {/* Duas colunas: o argumento à esquerda, o pedido à direita. A copy
@@ -274,7 +286,7 @@ export function Comparacao() {
             as colunas ainda estão lado a lado. */}
         <div
           ref={gradeRef}
-          className="relative mx-auto grid min-h-[calc(100vh-5rem)] w-full max-w-screen-2xl grid-cols-1 gap-x-16 gap-y-12 lg:grid-cols-[1fr_minmax(30rem,40%)] lg:items-center md:min-h-[calc(100vh-7rem)]"
+          className="relative mx-auto grid min-h-[calc(100vh-5rem)] w-full max-w-screen-2xl grid-cols-1 gap-x-16 gap-y-12 lg:grid-cols-[1fr_minmax(32rem,44%)] lg:items-center md:min-h-[calc(100vh-7rem)]"
         >
           {/* O fio primeiro no DOM, e as duas colunas `relative` depois dele.
               Ordem de pintura em CSS não é ordem de irmãos: um elemento
@@ -338,14 +350,24 @@ export function Comparacao() {
               {ENVIO} {RETORNO}
             </p>
 
-            {/* A ponta do fio. O `span` interno é o que é medido — o parágrafo
-                ocupa a coluna inteira, e o fio sairia do vazio à direita da
-                frase em vez de da última palavra dela. */}
-            <p className="mt-8 font-serif text-[1.6rem] leading-tight tracking-[-0.02em] text-[#0B0B0B] md:text-[2rem]">
-              <span ref={faltaRef} className="inline-block">
-                {FALTA[0]} <span className="text-black/45">{FALTA[1]}</span>
-              </span>
-            </p>
+            {/* ── A ponta do fio, e ela é um cartão preto como o do outro lado.
+                Dois objetos escuros no papel, ligados por um fio com sinal
+                correndo dentro: é o desenho do hero — duas entradas e uma saída
+                — dito de novo no fim da página, com a pessoa no lugar da
+                entrada que falta. Ninguém precisa reparar nisso para funcionar;
+                é a página rimando consigo mesma.
+
+                `w-fit`: o cartão tem a largura da frase. Esticado na coluna, o
+                fio sairia de uma borda a meio metro do texto e a ligação
+                deixaria de ser entre as duas COISAS. */}
+            <div
+              ref={faltaRef}
+              className="mt-8 w-fit rounded-2xl border border-white/[0.11] bg-doxa-surface px-7 py-6 shadow-[0_30px_70px_-35px_rgba(0,0,0,0.5)]"
+            >
+              <p className="font-serif text-[1.6rem] leading-tight tracking-[-0.02em] text-[#F4F1E8] md:text-[2rem]">
+                {FALTA[0]} <span className="text-white/45">{FALTA[1]}</span>
+              </p>
+            </div>
 
             <div className="mt-10">
               <ProvaRotativa />

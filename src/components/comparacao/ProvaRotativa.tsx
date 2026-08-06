@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
+import { BadgeCheck } from 'lucide-react';
 import { REELS } from '../proof/reels';
 
 const EASE = [0.16, 1, 0.3, 1] as const;
@@ -16,6 +17,27 @@ const TURNO = 3400;
  * sozinha e ninguém precisa lembrar dela.
  */
 const COM_NUMERO = REELS.filter((reel) => reel.views != null);
+
+/**
+ * O perfil, sempre com arroba e com o selo quando ele existe.
+ *
+ * O dono pediu a arroba em todos, e um dos registros de `reels.ts` guarda o nome
+ * comercial em vez do usuário ("Magalu"). Prefixar aqui é o conserto de exibição
+ * — inventar o usuário de um perfil real seria mandar quem clica para um lugar
+ * que talvez não exista.
+ *
+ * O selo é o mesmo que a parede de prova mostra, e vem do mesmo campo: é uma
+ * afirmação sobre a conta de outra pessoa, e só aparece onde o dado diz que a
+ * plataforma a concedeu.
+ */
+function Perfil({ handle, verificado }: { handle: string; verificado: boolean }) {
+  return (
+    <span className="inline-flex items-center gap-1 text-[#0B0B0B]">
+      {handle.startsWith('@') ? handle : `@${handle.toLowerCase()}`}
+      {verificado && <BadgeCheck className="h-4 w-4 shrink-0 text-black/45" strokeWidth={2} />}
+    </span>
+  );
+}
 
 /**
  * A prova, embaixo do argumento: quem já publicou e o que aquilo fez.
@@ -49,14 +71,16 @@ export function ProvaRotativa() {
 
   return (
     <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-      <span className="text-[11px] uppercase tracking-[0.18em] text-black/35">Já publicados</span>
+      {/* Caixa normal, a pedido do dono: em versalete o rótulo grita mais alto
+          que o dado que ele apresenta, e é o dado que interessa. */}
+      <span className="text-[12px] tracking-[0.06em] text-black/35">Já publicados</span>
 
       {/* Parado, a faixa não vira uma lista: ela mostra o primeiro e fica. Quem
           pediu menos movimento pediu menos movimento, não menos informação — e a
           lista inteira já está na parede de prova, uma seção acima. */}
       {parado ? (
         <span className="text-[15px] text-black/60">
-          {atual.handle} · {atual.views} de views
+          <Perfil handle={atual.handle} verificado={atual.verified} /> · {atual.views} de views
         </span>
       ) : (
         // `mode="wait"`: os dois cruzando no mesmo lugar viram um borrão de duas
@@ -70,7 +94,7 @@ export function ProvaRotativa() {
             transition={{ duration: 0.45, ease: EASE }}
             className="text-[15px] text-black/60"
           >
-            <span className="text-[#0B0B0B]">{atual.handle}</span> · {atual.views} de views
+            <Perfil handle={atual.handle} verificado={atual.verified} /> · {atual.views} de views
           </motion.span>
         </AnimatePresence>
       )}

@@ -219,7 +219,7 @@ export function Formulario({ cartaoRef }: { cartaoRef: RefObject<HTMLDivElement>
       // canto do cartão, longe do botão.
       className="cartao-pedido relative w-full overflow-hidden rounded-3xl border border-white/[0.11] bg-doxa-surface shadow-[0_40px_100px_-40px_rgba(0,0,0,0.5)] transition-[border-color,box-shadow] duration-500 hover:border-white/[0.22] hover:shadow-[0_52px_120px_-40px_rgba(0,0,0,0.6)]"
     >
-      <div className="dot-grid pointer-events-none absolute inset-0 opacity-70" />
+      <div className="dot-grid pointer-events-none absolute inset-0 opacity-40" />
       <DotGridSpotlight containerRef={cartaoRef} className="is-forte" />
       {/* A luz por dentro. Um retângulo preto chapado no creme lê como buraco no
           papel; com um clarão no topo ele lê como objeto iluminado — que é o
@@ -227,7 +227,7 @@ export function Formulario({ cartaoRef }: { cartaoRef: RefObject<HTMLDivElement>
           permite. */}
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(85%_55%_at_50%_0%,rgba(255,255,255,0.07),transparent_70%)]" />
 
-      <div className="relative p-7 md:p-10">
+      <div className="relative p-8 md:p-12">
         {/* O andamento. Três de três é curto o bastante para ser dito por extenso,
             e dizer quantos faltam é o que impede a pessoa de imaginar dez. */}
         {passo < PAGAMENTO && (
@@ -278,7 +278,7 @@ export function Formulario({ cartaoRef }: { cartaoRef: RefObject<HTMLDivElement>
             outros e o papel embaixo pulsar junto. Travar a altura no maior dos
             passos seria a outra ponta do mesmo erro: um vão morto no pé do
             cartão em todos os passos, para acertar um. */}
-        <div className="min-h-[16.5rem]">
+        <div className="min-h-[19rem]">
           <AnimatePresence mode="wait" initial={false}>
             {atual != null && (
               <motion.div key={atual.chave} {...desliza} className="mt-7">

@@ -199,20 +199,61 @@ body {
 }
 
 /*
+ * A MESMA grade, em tinta — para o papel.
+ *
+ * A página passa a ter uma textura só, e é a mudança que mais amarra o site: o
+ * visitante desce cinco telas sobre um campo de pontos que acende onde a mão
+ * passa, e no meio do caminho o fundo vira papel sem que a textura vá embora.
+ * Ela apenas troca de tinta. Um creme liso no meio de um site pontilhado lê
+ * como outra página; pontilhado, lê como a mesma página de manhã.
+ *
+ * Preto a 10% e não a 9% como o branco: sobre papel claro a mesma opacidade
+ * rende menos contraste — o ponto escuro desaparece antes do ponto claro.
+ */
+.dot-grid-tinta {
+  background-image: radial-gradient(
+    circle,
+    rgba(11, 11, 11, 0.1) var(--dot-radius),
+    transparent var(--dot-radius)
+  );
+  background-size: var(--dot-pitch) var(--dot-pitch);
+}
+
+/*
+ * O facho em tinta. Sobre papel não há o que ACENDER — o que existe é o oposto:
+ * os pontos ESCURECEM sob a mão. Mesma geometria, mesma pegada, sinal trocado,
+ * e é por isso que a leitura continua sendo "o site reage onde eu passo" em vez
+ * de dois efeitos diferentes em duas superfícies.
+ */
+.dot-grid-glow.is-tinta {
+  --spot-size: 520px;
+  --dot-lit-radius: 1.5px;
+  --dot-bloom-radius: 4.4px;
+  --dot-lit-color: rgba(11, 11, 11, 0.5);
+  --dot-bloom-color: rgba(11, 11, 11, 0.09);
+}
+
+/*
  * O mesmo facho, com o ganho aberto — para dentro do cartão do pedido.
  *
  * O do hero é contido de propósito: ele varre uma tela inteira atrás do
  * conteúdo e, forte, viraria uma lanterna passeando pela dobra. Aqui ele mora
- * numa caixa de meio metro que é o único elemento clicável da página, e a
- * mesma discrição vira invisibilidade. Ponto maior, halo maior, branco quase
- * cheio: os pontos ACENDEM sob a mão em vez de sugerir que acenderam.
+ * numa caixa que é o único elemento clicável da página, e a mesma discrição
+ * vira invisibilidade.
+ *
+ * Contido no teto, porém: o dono leu o cartão com os pontos no máximo e não
+ * conseguiu ler o que estava escrito. Num cartaz isso seria uma escolha; num
+ * FORMULÁRIO é um defeito — o texto atrás do qual os pontos brilham é a
+ * pergunta que a pessoa precisa responder. Aceso o bastante para ser visto sob
+ * a mão, apagado o bastante para a pergunta continuar sendo a coisa mais legível
+ * da caixa.
  */
 .dot-grid-glow.is-forte {
   --spot-size: 620px;
-  --dot-lit-radius: 1.7px;
-  --dot-bloom-radius: 5.4px;
-  --dot-lit-color: rgba(255, 255, 255, 0.92);
-  --dot-bloom-color: rgba(255, 255, 255, 0.18);
+  --dot-lit-radius: 1.6px;
+  --dot-bloom-radius: 5px;
+  --dot-lit-color: rgba(255, 255, 255, 0.62);
+  --dot-bloom-color: rgba(255, 255, 255, 0.12);
 }
 
 /*
@@ -230,10 +271,10 @@ body {
 @keyframes dot-twinkle {
   0%,
   100% {
-    filter: brightness(0.7);
+    filter: brightness(0.75);
   }
   50% {
-    filter: brightness(1.45);
+    filter: brightness(1.25);
   }
 }
 
