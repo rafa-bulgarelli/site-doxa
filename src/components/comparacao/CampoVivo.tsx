@@ -24,6 +24,16 @@ interface CampoVivoProps {
 const QUEDA = 16;
 
 /**
+ * A folga entre a linha de base e o filete, em `em`.
+ *
+ * Em `em` e não em pixels porque o filete tem de acompanhar o corpo quando o
+ * campo encolhe. Funda o bastante para a perna do "g" e a cauda do "ç" passarem
+ * sem encostar no fio, e não mais do que isso — o filete é a linha do caderno,
+ * e num caderno a linha fica embaixo da palavra, não dois dedos abaixo dela.
+ */
+const FOLGA_FILETE = 0.34;
+
+/**
  * O campo em que cada letra entra caindo, e que se reduz em vez de cortar.
  *
  * Um `<input>` não sabe animar o próprio conteúdo: o texto dele é desenhado pelo
@@ -59,6 +69,7 @@ export function CampoVivo({
 }: CampoVivoProps) {
   const parado = useReducedMotion() === true;
   const caixaRef = useRef<HTMLDivElement>(null);
+  const corpoRef = useRef<HTMLDivElement>(null);
   const medidorRef = useRef<HTMLSpanElement>(null);
   const medidorCursorRef = useRef<HTMLSpanElement>(null);
   const baseRef = useRef<HTMLSpanElement>(null);
@@ -69,6 +80,8 @@ export function CampoVivo({
   const [cursorX, setCursorX] = useState(0);
   /** Onde fica a linha de base do texto, em pixels a partir do topo da caixa. */
   const [baseY, setBaseY] = useState(0);
+  /** Quanta entrelinha sobra ABAIXO da linha de base, em pixels. */
+  const [sobra, setSobra] = useState(0);
 
   /**
    * Onde o cursor está no texto.
@@ -131,10 +144,22 @@ export function CampoVivo({
    * borda inferior com a linha de base da linha em que está. O `offsetTop` dele
    * É a linha de base, sem precisar saber nada sobre as métricas da fonte — o
    * que também significa que isto continua certo se a fonte mudar.
+   *
+   * E ele só funciona DENTRO DE UMA LINHA. Num container `flex` o marcador
+   * deixa de ser caixa inline e vira item de flex: `align-items: center` o
+   * centra, e o `offsetTop` passa a devolver metade da altura da caixa em vez
+   * da linha de base — uns treze pixels acima dela, que foi o cursor alto que o
+   * dono viu. Por isso a camada das letras é bloco comum, e não flex.
+   *
+   * A sobra é a mesma medida pela outra ponta: o que existe de entrelinha
+   * embaixo da linha de base. É com ela que o filete sobe até o texto.
    */
   useLayoutEffect(() => {
     const marcador = baseRef.current;
-    if (marcador != null) setBaseY(marcador.offsetTop);
+    const corpo = corpoRef.current;
+    if (marcador == null || corpo == null) return;
+    setBaseY(marcador.offsetTop);
+    setSobra(corpo.clientHeight - marcador.offsetTop);
   }, [escala, valor]);
 
   const letras = [...valor];
@@ -142,7 +167,7 @@ export function CampoVivo({
   return (
     <div
       ref={caixaRef}
-      className="campo-vivo relative mt-6 w-full border-b border-white/20 pb-3 font-serif text-[1.9rem] transition-colors focus-within:border-white/70 md:text-[2.5rem]"
+      className="campo-vivo relative mt-6 w-full border-b border-white/20 font-serif text-[1.9rem] transition-colors focus-within:border-white/70 md:text-[2.5rem]"
     >
       {/* O medidor: o mesmo texto, no corpo cheio, sem ocupar espaço nem ser
           lido. É dele que sai a largura natural com que a escala é calculada. */}
@@ -166,26 +191,35 @@ export function CampoVivo({
       </span>
 
       {/*
-       * `relative`, e é o que ancora o cursor e as letras na caixa CERTA.
+       * `relative`, e é o que ancora o cursor e as letras na caixa CERTA — a do
+       * input, que é exatamente onde o texto está.
        *
-       * Sem isto, os dois são absolutos em relação ao container de fora — que
-       * tem o `pb-3` da linha embaixo. Metade daquela caixa é metade do texto
-       * MAIS metade do respiro até a borda, então tudo assentava alguns pixels
-       * baixo demais e o cursor descia até encostar no filete. Ancorados aqui,
-       * a metade é a metade do input, que é exatamente onde o texto está.
+       * A margem negativa é o filete subindo. Uma caixa de uma linha é bem mais
+       * alta que a letra, e a sobra fica embaixo da linha de base: um `border-b`
+       * no pé dela pousa nessa entrelinha morta, longe do que foi escrito. Então
+       * o corpo devolve a sobra MEDIDA e desce só a folga que se quer — o fio
+       * passa a ficar a uma distância fixa do texto, e não da caixa.
        */}
-      <div className="relative" style={{ fontSize: `${escala * 100}%` }}>
+      <div
+        ref={corpoRef}
+        className="relative"
+        style={{
+          fontSize: `${escala * 100}%`,
+          marginBottom: `calc(${FOLGA_FILETE}em - ${sobra}px)`,
+        }}
+      >
         {/* A camada visível. `aria-hidden` porque o texto verdadeiro é o do
             input logo abaixo — sem isso, um leitor de tela anuncia o mesmo
             conteúdo duas vezes. */}
-        {/* `inset-0` mais `items-center`, e o alinhamento vertical é o motivo:
-            um `<input>` centraliza o próprio texto na altura da caixa, um `div`
-            encosta o dele no topo da linha. Empilhados sem isso, as letras
-            desenhadas ficam alguns pixels acima das que o cursor percorre — e é
-            o bastante para o traço parecer estar no lugar errado. */}
+        {/* Bloco comum, e não flex: as letras são `inline-block`, e é a linha
+            que as põe na mesma linha de base do input — a mesma entrelinha, o
+            mesmo corpo, o mesmo lugar. Um `flex items-center` empilhava igual e
+            custava caro por fora: dentro dele o marcador da base deixa de ser
+            caixa inline e passa a ser item centrado, e a medida do cursor sai
+            errada. */}
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-0 flex items-center whitespace-pre text-[#F4F1E8]"
+          className="pointer-events-none absolute inset-0 whitespace-pre text-[#F4F1E8]"
           style={{ fontSize: 'inherit' }}
         >
           {letras.map((letra, i) => (
@@ -248,6 +282,13 @@ export function CampoVivo({
          * e o nosso deslizando, na mesma linha, com meio caractere de distância
          * um do outro. Ele continua sendo quem guarda a posição da seleção; só
          * não é mais quem a desenha.
+         *
+         * `block` de propósito. Um input é `inline-block`, e como caixa inline
+         * ele é pendurado pela própria linha de base dentro de uma linha do
+         * corpo — a caixa que sai dali é a da LINHA, que não tem obrigação de
+         * medir o mesmo que a do input. Como bloco, a caixa do corpo é a caixa
+         * do input, e é isso que faz a camada desenhada por cima cair exatamente
+         * onde o texto de verdade está, em vez de por perto.
          */}
         <input
           id={id}
@@ -262,7 +303,7 @@ export function CampoVivo({
           onChange={(evento) => aoDigitar(evento.target.value)}
           onKeyDown={aoTeclar}
           onSelect={sincronizarCursor}
-          className="relative w-full bg-transparent text-transparent caret-transparent outline-none placeholder:text-white/20"
+          className="relative block w-full bg-transparent text-transparent caret-transparent outline-none placeholder:text-white/20"
           style={{ fontSize: 'inherit' }}
         />
       </div>
