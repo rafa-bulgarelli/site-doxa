@@ -277,32 +277,40 @@ export function Ladainha() {
           );
         })}
 
-        {/* ── O TEMPO, na fila dos outros — a pedido do dono.
+        {/* ── O TEMPO, na LINHA DELE — a pedido do dono, e é a segunda vez que
+            este pedaço muda de lugar.
 
-            Ele viveu um tempo como bloco solto embaixo da conta, para poder ter
-            margem: em linha, margem vertical não empurra nada, porque a caixa da
-            linha ignora. O preço daquilo era a leitura — separado por um vão, o
-            tempo virava uma frase de fecho, um comentário sobre a lista. Na
-            fila, ele é o ITEM VINTE E SEIS: vem depois do último, na mesma
-            respiração, e a conta termina cobrando uma coisa que não estava
-            escrita na nota.
+            Ele já foi bloco solto embaixo da conta; voltou para a fila como item
+            vinte e seis; e agora desce de novo, em destaque. Vale registrar as
+            duas leituras, porque as duas são verdadeiras e a escolha é do dono:
+            na fila, o tempo é mais uma linha da fatura e a conta termina cobrando
+            algo que não estava escrita na nota; embaixo e sozinho, ele deixa de
+            ser item e vira o TOTAL — a linha que fecha a soma.
 
-            Formatação dos outros, características dele. Do parágrafo ele herda o
-            que faz um item ser item: `inline-block`, sem quebra, e o vão devolvido
-            ao normal para a justificação não esticar por dentro da frase. Dele
-            continua tudo o que o distinguia — a serifa contra a sans da fatura, o
-            corpo grande, o creme cheio, e nenhum número na frente. As vinte e
-            cinco se contam; esta é a que não tem preço.
+            O que NÃO se repete é o defeito que tirou ele daqui da primeira vez.
+            Como bloco irmão, fora do parágrafo, sair da conta por cima dele
+            nunca disparava o `mouseleave` do parágrafo, e a lâmina que segue o
+            ponteiro ficava travada na tela depois de a mão já ter ido embora.
+            Por isso ele continua DENTRO do `<p>`: um `span` em `display: block`
+            ganha a linha inteira sem sair do envelope que escuta o mouse — e
+            um `<div>` aqui seria conteúdo de bloco dentro de parágrafo, que é
+            HTML inválido mesmo o React aceitando montar.
 
-            O gatilho é o próprio texto, e é a mesma razão dos outros itens: num
-            bloco de largura inteira, a lâmina apareceria com o ponteiro a mil
-            pixels da palavra, em qualquer ponto vazio da linha. */}
+            O filete em cima é o que faz a leitura de total: vinte e cinco itens,
+            uma linha, e embaixo dela a única coisa que a lista não sabe cobrar.
+            Sem ele, o tempo lê como um comentário solto sobre a conta — que foi
+            exatamente a razão de ele ter voltado para a fila da outra vez.
+
+            O gatilho é o próprio texto, e é a mesma razão dos outros itens: numa
+            caixa de largura inteira, a lâmina apareceria com o ponteiro a mil
+            pixels da palavra, em qualquer ponto vazio da linha. Daí o
+            `w-fit`. */}
         <motion.span
           initial={{ opacity: 0 }}
           animate={naTela ? { opacity: 1 } : undefined}
           transition={{ duration: 0.6, ease: EASE, delay: ITENS.length * CASCATA + 0.2 }}
           onMouseEnter={apontar(TEMPO)}
-          className={`inline-block whitespace-nowrap [word-spacing:normal] font-serif text-[1.7rem] leading-none text-[#F4F1E8] md:text-[2.4rem] ${
+          className={`mt-7 block w-fit border-t border-white/[0.12] pt-7 [word-spacing:normal] font-serif text-[2rem] leading-none text-[#F4F1E8] md:mt-9 md:pt-9 md:text-[3rem] ${
             podeSeguir ? 'cursor-default' : ''
           }`}
         >
