@@ -61,11 +61,14 @@ export function CampoVivo({
   const caixaRef = useRef<HTMLDivElement>(null);
   const medidorRef = useRef<HTMLSpanElement>(null);
   const medidorCursorRef = useRef<HTMLSpanElement>(null);
+  const baseRef = useRef<HTMLSpanElement>(null);
   /** Quanto do corpo natural cabe na linha, de 0 a 1. */
   const [escala, setEscala] = useState(1);
   /** Em que caractere o cursor está, e onde isso cai em pixels. */
   const [cursor, setCursor] = useState(0);
   const [cursorX, setCursorX] = useState(0);
+  /** Onde fica a linha de base do texto, em pixels a partir do topo da caixa. */
+  const [baseY, setBaseY] = useState(0);
 
   /**
    * Onde o cursor está no texto.
@@ -114,6 +117,25 @@ export function CampoVivo({
     const medidor = medidorCursorRef.current;
     if (medidor != null) setCursorX(medidor.scrollWidth * escala);
   }, [valor, cursor, escala]);
+
+  /*
+   * Onde está a linha de base do texto — MEDIDA, e não calculada.
+   *
+   * Centrar o cursor na altura da caixa parecia certo e não é: a caixa de uma
+   * linha é maior que a letra, e o glifo não fica no meio dela — ele se assenta
+   * na linha de base, com o vão da entrelinha dividido acima e abaixo. Um
+   * cursor centrado na caixa nasce alguns pixels abaixo do texto, que foi
+   * exatamente o que o dono viu.
+   *
+   * O truque é o marcador: um `inline-block` de altura zero alinha a própria
+   * borda inferior com a linha de base da linha em que está. O `offsetTop` dele
+   * É a linha de base, sem precisar saber nada sobre as métricas da fonte — o
+   * que também significa que isto continua certo se a fonte mudar.
+   */
+  useLayoutEffect(() => {
+    const marcador = baseRef.current;
+    if (marcador != null) setBaseY(marcador.offsetTop);
+  }, [escala, valor]);
 
   const letras = [...valor];
 
@@ -189,6 +211,9 @@ export function CampoVivo({
               {letra}
             </motion.span>
           ))}
+          {/* O marcador da linha de base. Sem largura, sem altura, sem tinta:
+              existe só para ser medido. */}
+          <span ref={baseRef} aria-hidden className="inline-block h-0 w-0" />
         </div>
 
         {/*
@@ -203,8 +228,11 @@ export function CampoVivo({
           aria-hidden
           /* Pouco mais alto que uma maiúscula e bem menos que a linha inteira.
              Em `em`, então ele encolhe junto quando o campo se reduz. */
-          className="caret-vivo pointer-events-none absolute top-1/2 h-[0.82em] w-[2px] -translate-y-1/2 rounded-full bg-[#F4F1E8]"
-          style={{ left: 0 }}
+          className="caret-vivo pointer-events-none absolute left-0 h-[0.84em] w-[2px] rounded-full bg-[#F4F1E8]"
+          /* Pendurado na linha de base: sobe 0,72em (pouco mais que uma
+             maiúscula) e desce 0,12em abaixo dela, que é onde um cursor de
+             editor de texto termina. */
+          style={{ top: baseY, marginTop: '-0.72em' }}
           animate={{ x: cursorX }}
           transition={
             parado

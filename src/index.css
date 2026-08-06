@@ -505,6 +505,44 @@ body {
 }
 
 /*
+ * As classes que aplicam as janelas acima.
+ *
+ * `pathLength="1"` no elemento é o que torna estes números independentes do
+ * tamanho: o traço é uma FRAÇÃO do caminho, e serve tanto para o fio de duzentos
+ * pixels quanto para o contorno de um cartão que muda de altura a cada passo.
+ */
+.pulso {
+  stroke-dasharray: 0.05 0.95;
+  animation-duration: 7s;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  animation-fill-mode: both;
+}
+
+/*
+ * A auréola em duas camadas: um núcleo curto que engorda o traço sem borrá-lo, e
+ * uma larga e fraca que é o brilho de fato. Uma só, aberta o bastante para
+ * espalhar, apaga o fio dentro dela.
+ */
+.pulso-fio {
+  animation-name: pulso-fio;
+  filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.85)) drop-shadow(0 0 16px rgba(0, 0, 0, 0.5));
+}
+
+.pulso-borda {
+  animation-name: pulso-borda;
+  filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.95))
+    drop-shadow(0 0 22px rgba(255, 255, 255, 0.6));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pulso {
+    animation: none;
+    opacity: 0;
+  }
+}
+
+/*
  * O cursor do campo, desenhado por nós.
  *
  * Pisca por atenuação em vez de sumir: o cursor nativo apaga em degrau, e ao

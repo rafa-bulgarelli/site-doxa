@@ -76,19 +76,21 @@ export function FioConvite({ containerRef, deRef, paraRef, pausado }: FioConvite
       setCaixa({ largura: container.offsetWidth, altura: container.offsetHeight });
 
       /*
-       * Sai pela direita da frase, na altura do meio dela. Entra no cartão
-       * ABAIXO do meio, e esse número é a correção de um cruzamento: mirando o
-       * centro, a curva subia o suficiente para passar por trás do bloco do
-       * custo riscado, que fica acima da frase e ocupa metade da coluna. Com a
-       * chegada mais baixa a curva sobe menos e o caminho inteiro corre por
-       * baixo do texto — sem precisar saber onde o texto está.
+       * Do meio da frase ao MEIO do cartão, e as duas pontas centradas nos
+       * próprios objetos é o que faz o fio ler como ligação entre eles.
+       *
+       * Chegou a entrar mais abaixo, para a curva não passar por trás do custo
+       * riscado. A copy encurtou desde então e o bloco subiu: o desvio deixou de
+       * ser necessário e virou um fio entrando torto num cartão. Se o
+       * cruzamento voltar, o conserto é mexer no LAYOUT — descer a frase ou
+       * subir o cartão —, não em desalinhar a chegada.
        */
       const origem = posicao(de, container);
       const destino = posicao(para, container);
       const x1 = origem.x + de.offsetWidth;
       const y1 = origem.y + de.offsetHeight / 2;
       const x2 = destino.x;
-      const y2 = destino.y + para.offsetHeight * 0.74;
+      const y2 = destino.y + para.offsetHeight / 2;
 
       // Uma ponta à direita da outra é a única geometria que este fio tem: nas
       // telas em que as colunas empilham ele não é renderizado. Se a medida vier
