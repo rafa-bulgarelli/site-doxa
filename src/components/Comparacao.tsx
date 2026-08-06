@@ -240,7 +240,14 @@ export function Comparacao() {
         {/* Duas colunas: o argumento à esquerda, o pedido à direita. A copy
             responde ponto a ponto o painel escuro — lá a conta não tinha
             garantia nenhuma, aqui a garantia é a maior coisa da tela — e o
-            formulário fica do lado em que o olho termina de ler. */}
+            formulário fica do lado em que o olho termina de ler.
+
+            O pedido é um cartão PRETO sobre o papel, e é o que fecha o arco da
+            página: ela é preta, o creme é a exceção que responde, e a marca
+            volta a ser preta no instante do compromisso. Ler à esquerda e
+            decidir à direita passa a ser também uma travessia de claro para
+            escuro — que é a mesma virada da seção, feita em quarenta
+            centímetros de tela em vez de em uma rolagem inteira. */}
         <div className="relative mx-auto grid min-h-[calc(100vh-5rem)] w-full max-w-screen-2xl grid-cols-1 gap-x-16 gap-y-12 lg:grid-cols-[1.05fr_1fr] lg:items-center md:min-h-[calc(100vh-7rem)]">
           <div className="flex flex-col">
             <Selo prefixo="Com" escuro />
