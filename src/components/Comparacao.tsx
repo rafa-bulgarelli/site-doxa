@@ -553,7 +553,15 @@ export function Comparacao() {
               escreve. Se a pausa voltar um dia, ela volta inteira. Quem pede
               menos movimento continua atendido por `prefers-reduced-motion`,
               que desliga o sinal na raiz, no CSS. */}
-          <div className="relative flex flex-col lg:items-end">
+          {/* `id="pedido"` mora AQUI, no formulário, e não na seção inteira.
+
+              Ele estava faltando: o "Falar com o consultor" do FAQ e agora o
+              fecho do rodapé apontam os dois para `#pedido`, e nenhum elemento
+              da página tinha esse id — os dois botões não levavam a lugar
+              nenhum. Na seção, o salto pararia no topo dela e a pessoa ainda
+              teria de procurar o formulário no meio de uma tabela de custos;
+              no formulário, ela cai no campo que veio preencher. */}
+          <div id="pedido" className="relative flex flex-col scroll-mt-24 lg:items-end">
             <Formulario cartaoRef={cartaoRef} />
           </div>
         </div>

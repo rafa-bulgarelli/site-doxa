@@ -25,6 +25,7 @@ const Comparacao = lazy(() =>
   import('./components/Comparacao').then((m) => ({ default: m.Comparacao })),
 );
 const Faq = lazy(() => import('./components/Faq').then((m) => ({ default: m.Faq })));
+const Rodape = lazy(() => import('./components/Rodape').then((m) => ({ default: m.Rodape })));
 
 /**
  * O vão que uma seção ocupa enquanto o seu pedaço não chegou.
@@ -42,12 +43,11 @@ function Vao() {
  * As seis seções do site, na ordem que o dono desenhou:
  * hero · como funciona · prova · comparação (CTA) · FAQ · rodapé.
  *
- * As duas últimas ainda não existem. O FAQ vai nascer da seção `SemCom`, que
- * está de STAND BY fora daqui: ela continua no repositório, inteira, e saiu da
- * página por decisão do dono — 640vh de linha do tempo presa ao scroll, logo
- * antes do pedido, transformava em passageiro justamente quem devia estar
- * decidindo. A `Comparacao` ocupa o lugar dela com o mesmo argumento e sem
- * sequestrar o scroll.
+ * As seis existem. A `SemCom` está de STAND BY fora daqui: ela continua no
+ * repositório, inteira, e saiu da página por decisão do dono — 640vh de linha
+ * do tempo presa ao scroll, logo antes do pedido, transformava em passageiro
+ * justamente quem devia estar decidindo. A `Comparacao` ocupa o lugar dela com
+ * o mesmo argumento e sem sequestrar o scroll.
  */
 export default function App() {
   /**
@@ -71,6 +71,7 @@ export default function App() {
       void import('./components/ProofWall');
       void import('./components/Comparacao');
       void import('./components/Faq');
+      void import('./components/Rodape');
     };
 
     // Testado por `typeof`, e não com `in`: os tipos do DOM já declaram
@@ -107,6 +108,13 @@ export default function App() {
           fim e travou em alguma coisa. */}
       <Suspense fallback={<Vao />}>
         <Faq />
+      </Suspense>
+      {/* O rodapé fecha com o mesmo verbo com que o hero abriu: lá se arrasta a
+          foto e o áudio que a pessoa vai entregar, aqui se arrasta um campo que
+          não acaba e não pede nada. O último objeto da página é o único em que
+          mexer não tem consequência — e é por isso que ele pode ser brinquedo. */}
+      <Suspense fallback={<Vao />}>
+        <Rodape />
       </Suspense>
     </main>
   );
