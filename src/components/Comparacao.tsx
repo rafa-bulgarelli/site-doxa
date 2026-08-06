@@ -159,8 +159,12 @@ export function Comparacao() {
         ref={escuroRef}
         className="sticky top-0 flex h-screen flex-col px-5 pb-10 pt-16 md:px-10 md:pb-14 md:pt-24"
       >
-        <div className="dot-grid pointer-events-none absolute inset-0 opacity-40" />
-        <DotGridSpotlight containerRef={escuroRef} />
+        {/* Sem grade aqui, a pedido do dono, e o painel ganha com isso: a
+            ladainha é um bloco de texto justificado que ocupa metade da tela, e
+            pontos atrás dela disputam com as vinte e cinco linhas que a pessoa
+            precisa ler. É também o único painel escuro cuja atração já é o
+            texto — nos outros a grade preenche o vazio em volta do conteúdo,
+            aqui não há vazio. */}
 
         <div className="relative mx-auto flex h-full w-full max-w-screen-2xl flex-col">
           <Selo prefixo="Sem" />

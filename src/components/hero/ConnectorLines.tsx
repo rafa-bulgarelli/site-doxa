@@ -60,11 +60,12 @@ export function ConnectorLines({ containerRef, fromRefs, toRef }: ConnectorLines
   }, [containerRef]);
 
   useEffect(() => {
+    const observed = containerRef.current;
+    if (!observed) return;
+
     let frame = 0;
 
-    const tick = () => {
-      frame = requestAnimationFrame(tick);
-
+    const desenhar = () => {
       const container = containerRef.current;
       const target = toRef.current;
       if (!container || !target) return;
@@ -137,8 +138,43 @@ export function ConnectorLines({ containerRef, fromRefs, toRef }: ConnectorLines
       });
     };
 
-    frame = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(frame);
+    const tick = () => {
+      desenhar();
+      frame = requestAnimationFrame(tick);
+    };
+
+    /**
+     * The loop only runs while the hero is on screen.
+     *
+     * It re-measures three rectangles per frame, and reading a rectangle forces
+     * the browser to settle pending layout — sixty times a second, for the whole
+     * life of the page. That was still happening five screens down, inside the
+     * fly-through, which is the one place on this page that cannot spare a
+     * frame. Nothing about the wires changes: they are recomputed every frame
+     * that anyone can see them, which is the only frame that ever mattered.
+     *
+     * `rootMargin` starts it early. The cards drift on a CSS loop that keeps
+     * running off screen, so the geometry the wires were parked on is stale by
+     * the time the hero comes back — a screen of lead time means the first
+     * visible frame is already a fresh one.
+     */
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          if (!frame) frame = requestAnimationFrame(tick);
+        } else if (frame) {
+          cancelAnimationFrame(frame);
+          frame = 0;
+        }
+      },
+      { rootMargin: '100% 0px' },
+    );
+    observer.observe(observed);
+
+    return () => {
+      observer.disconnect();
+      if (frame) cancelAnimationFrame(frame);
+    };
   }, [containerRef, fromRefs, toRef]);
 
   if (!size.width || !size.height) return null;

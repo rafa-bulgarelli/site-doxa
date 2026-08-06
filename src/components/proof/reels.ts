@@ -44,7 +44,7 @@ export const REELS: readonly Reel[] = [
   {
     handle: '@corealquimias',
     verified: true,
-    posterUrl: '/media/core-poster.jpg',
+    posterUrl: '/media/core-poster.avif',
     videoUrl: '/media/core-video.mp4',
     views: '3,4M',
     likes: '170k',
@@ -54,7 +54,7 @@ export const REELS: readonly Reel[] = [
   {
     handle: '@uninovamotos',
     verified: true,
-    posterUrl: '/media/uninova-poster.jpg',
+    posterUrl: '/media/uninova-poster.avif',
     videoUrl: '/media/uninova-video.mp4',
     views: '+2,5M',
     likes: '+111k',
@@ -64,7 +64,7 @@ export const REELS: readonly Reel[] = [
   {
     handle: 'Magalu',
     verified: true,
-    posterUrl: '/media/magalu-poster.jpg',
+    posterUrl: '/media/magalu-poster.avif',
     videoUrl: '/media/magalu-video.mp4',
     views: null,
     likes: null,

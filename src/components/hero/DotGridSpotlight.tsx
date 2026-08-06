@@ -51,11 +51,19 @@ export function DotGridSpotlight({ containerRef, className = '' }: DotGridSpotli
       x = event.clientX - rect.left;
       y = event.clientY - rect.top;
       layer.style.opacity = '1';
+      // Promised only while the mask is actually moving. `will-change` in the
+      // stylesheet keeps every one of these layers on its own compositor
+      // surface for the whole life of the page, and there are six of them at
+      // full viewport size — tens of megabytes of GPU memory held for an effect
+      // that is idle until a pointer arrives. Set here and dropped on the way
+      // out, the hint costs nothing when nobody is pointing at this section.
+      layer.style.willChange = '-webkit-mask-position, mask-position';
       if (!frame) frame = requestAnimationFrame(flush);
     };
 
     const handleLeave = () => {
       layer.style.opacity = '0';
+      layer.style.willChange = '';
     };
 
     container.addEventListener('pointermove', handleMove);

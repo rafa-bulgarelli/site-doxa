@@ -191,9 +191,12 @@ body {
     calc(var(--spot-y) - var(--spot-size) / 2);
   mask-position: calc(var(--spot-x) - var(--spot-size) / 2)
     calc(var(--spot-y) - var(--spot-size) / 2);
-  /* The mask moves every frame the cursor does; keeping the layer on its own
-     surface stops the whole hero from repainting behind it. */
-  will-change: -webkit-mask-position, mask-position;
+  /* The mask moves every frame the cursor does, and keeping the layer on its
+     own surface stops the whole section from repainting behind it — but that
+     promise is made by `DotGridSpotlight` on the first pointer move and dropped
+     when the pointer leaves. Declared here, it would hold a compositor surface
+     the size of the viewport for each of the six grids on the page, for the
+     whole life of it, whether or not anyone ever points at them. */
   opacity: 0;
   transition: opacity 220ms ease-out;
 }
