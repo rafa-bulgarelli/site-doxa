@@ -125,7 +125,7 @@ export const PERGUNTA = ['Quanto custa', 'continuar assim?'];
 export const CONVITE = 'Pronto para viralizar?';
 
 /** O que se envia. É a única coisa que o cliente faz. */
-export const ENVIO = 'Uma foto e um áudio. O resto é com a Doxa.';
+export const ENVIO = 'Você manda uma foto e um áudio. O resto é com a Doxa.';
 
 /**
  * A garantia, copiada palavra por palavra do hero.
@@ -136,5 +136,26 @@ export const ENVIO = 'Uma foto e um áudio. O resto é com a Doxa.';
  */
 export const GARANTIA = ['Um milhão de views.', 'Ou seu dinheiro de volta.'];
 
-/** O que se ganha ao clicar, para o botão não ser um salto no escuro. */
-export const CUSTO_DO_CLIQUE = 'Leva menos de um minuto.';
+/**
+ * A explicação dos R$ 100, e ela precisa estar ao lado do botão.
+ *
+ * PENDENTE-DONO: redação minha a partir do enquadramento do dono — os cem reais
+ * são espanta-curioso, não preço. Sem essa frase na mesma tela, cobrar para
+ * falar com um fornecedor lê como "eles cobram para me vender", e a conversão
+ * cai. Dita como filtro, ela vira sinal de que do outro lado tem gente séria.
+ *
+ * ATENÇÃO ao verbo: o que a página prometer por esses cem reais passa a ser
+ * serviço contratado. "Diagnóstico completo" obriga a entregar um diagnóstico
+ * completo. Prometer menos e entregar mais é a única direção segura aqui.
+ */
+export const FILTRO = {
+  valor: 'R$ 100',
+  titulo: 'simbólicos, e é filtro.',
+  corpo: 'Não é o preço do diagnóstico — é o que faz a gente conversar só com quem já decidiu.',
+};
+
+/** O que acontece depois de pagar. Vai na tela de sucesso e ao lado do botão. */
+export const RETORNO = 'Um consultor entra em contato em até 24 horas.';
+
+/** As formas de pagamento, listadas antes de existirem de verdade. */
+export const PAGAMENTOS = ['Pix', 'Cartão', 'Apple Pay', 'Google Pay'];

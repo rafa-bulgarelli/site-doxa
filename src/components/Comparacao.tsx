@@ -8,20 +8,19 @@ import {
   useScroll,
   useTransform,
 } from 'framer-motion';
-import { ShieldCheck } from 'lucide-react';
 import wordmarkUrl from '../../brand/doxa-wordmark-white.png';
-import { MotionButton } from './ui/MotionButton';
+import { Formulario } from './comparacao/Formulario';
 import { Ladainha } from './comparacao/Ladainha';
 import {
   CONVITE,
   CUSTO_ATE,
   CUSTO_DE,
-  CUSTO_DO_CLIQUE,
   CUSTO_UNIDADE,
   FATURA,
   ENVIO,
   GARANTIA,
   PERGUNTA,
+  RETORNO,
   SEM_GARANTIA,
   TOTAL_ITENS,
 } from './comparacao/config';
@@ -238,37 +237,38 @@ export function Comparacao() {
       >
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(70%_50%_at_50%_0%,rgba(255,255,255,0.85),transparent_70%)]" />
 
-        <div className="relative mx-auto flex min-h-[calc(100vh-5rem)] w-full max-w-screen-2xl flex-col md:min-h-[calc(100vh-7rem)]">
-          <Selo prefixo="Com" escuro />
+        {/* Duas colunas: o argumento à esquerda, o pedido à direita. A copy
+            responde ponto a ponto o painel escuro — lá a conta não tinha
+            garantia nenhuma, aqui a garantia é a maior coisa da tela — e o
+            formulário fica do lado em que o olho termina de ler. */}
+        <div className="relative mx-auto grid min-h-[calc(100vh-5rem)] w-full max-w-screen-2xl grid-cols-1 gap-x-16 gap-y-12 lg:grid-cols-[1.05fr_1fr] lg:items-center md:min-h-[calc(100vh-7rem)]">
+          <div className="flex flex-col">
+            <Selo prefixo="Com" escuro />
 
-          <div className="my-auto max-w-4xl py-10">
-            <h2 className="font-serif text-5xl leading-[0.95] tracking-[-0.03em] text-[#0B0B0B] md:text-[5.5rem]">
+            <h2 className="mt-7 font-serif text-[2.8rem] leading-[0.95] tracking-[-0.03em] text-[#0B0B0B] md:text-[4.4rem]">
               {CONVITE}
             </h2>
-            <p className="mt-6 max-w-xl text-lg leading-snug text-black/60 md:text-2xl">{ENVIO}</p>
+
+            {/* A garantia saiu do selo lateral e virou a maior coisa depois do
+                convite: ela é a resposta direta ao "nenhuma garantia de
+                viralizar" que fecha o painel escuro. Como resposta, ela precisa
+                do mesmo porte da pergunta. */}
+            <p className="mt-8 font-serif text-[2rem] leading-[1.08] tracking-[-0.02em] text-[#0B0B0B] md:text-[2.9rem]">
+              {GARANTIA[0]}
+              <br />
+              <span className="text-black/45">{GARANTIA[1]}</span>
+            </p>
+
+            <p className="mt-7 max-w-md text-[15px] leading-relaxed text-black/55 md:text-lg">
+              {ENVIO}
+            </p>
+            <p className="mt-2 max-w-md text-[15px] leading-relaxed text-black/40 md:text-lg">
+              {RETORNO}
+            </p>
           </div>
 
-          <div className="flex flex-wrap items-end justify-between gap-x-10 gap-y-8 border-t border-black/10 pt-8">
-            {/* A garantia como selo, e não como manchete: em corpo de título ela
-                disputa com o convite, e o painel fica com duas vozes. Numa caixa,
-                com o escudo do lado, ela vira o que é — a letra que tira o risco
-                de quem vai clicar. */}
-            <div className="flex max-w-xl items-start gap-4 rounded-2xl border border-black/10 bg-black/[0.04] p-5 md:p-6">
-              <ShieldCheck className="mt-1 h-7 w-7 shrink-0 text-[#0B0B0B]" strokeWidth={1.5} />
-              <p className="font-serif text-2xl leading-[1.12] tracking-[-0.02em] text-[#0B0B0B] md:text-[2rem]">
-                {GARANTIA[0]}
-                <br />
-                <span className="text-black/50">{GARANTIA[1]}</span>
-              </p>
-            </div>
-
-            {/* PENDENTE-DONO: sem destino. Enquanto o dono não define (Calendly,
-                WhatsApp ou formulário) o botão não navega, o que é melhor do que
-                um `href="#"`, que parece pronto e não é. */}
-            <div className="w-full max-w-sm">
-              <MotionButton label="Quero viralizar" variant="inverse" fullWidth />
-              <p className="mt-3 text-center text-[12px] text-black/40">{CUSTO_DO_CLIQUE}</p>
-            </div>
+          <div className="flex lg:justify-end">
+            <Formulario />
           </div>
         </div>
       </motion.div>
