@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react';
 import { AnimatePresence, motion, useInView, useReducedMotion } from 'framer-motion';
+import { X } from 'lucide-react';
 import { CampoPergunta } from './faq/CampoPergunta';
 import { encontra } from './faq/busca';
 import { ABERTURA, DUVIDAS, SEM_RESPOSTA, type Duvida } from './faq/config';
@@ -163,11 +164,81 @@ export function Faq() {
           </div>
         )}
 
+        {/*
+         * A barra de limpar, e ela só existe quando há o que limpar.
+         *
+         * O dono viu o defeito de uso: cada pergunta empilha uma resposta e a
+         * seção só cresce — quem faz cinco perguntas termina com uma página de
+         * texto embaixo do campo. Limpar aqui não destrói nada, e é por isso que
+         * é seguro: as respostas voltam com UM clique, porque os atalhos que
+         * tinham sumido reaparecem no mesmo gesto. O que se apaga é o histórico
+         * da sessão, não a informação.
+         *
+         * A contagem à esquerda existe para o botão ter sujeito. "Limpar"
+         * sozinho não diz o que vai embora; "3 respostas · Limpar" diz.
+         */}
+        <AnimatePresence initial={false}>
+          {trocas.length > 0 && (
+            <motion.div
+              key="barra"
+              layout={!parado}
+              initial={parado ? undefined : { opacity: 0, y: -8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8, transition: { duration: 0.2 } }}
+              transition={{ duration: 0.35, ease: EASE }}
+              className="mt-10 flex items-center justify-between border-b border-white/[0.08] pb-3"
+            >
+              <span className="text-[13px] text-white/35">
+                {trocas.length} {trocas.length === 1 ? 'resposta' : 'respostas'}
+              </span>
+
+              <button
+                type="button"
+                onClick={() => setTrocas([])}
+                className="group flex items-center gap-1.5 rounded-full border border-white/[0.14] py-1.5 pl-3 pr-3.5 text-[13px] text-white/50 transition-colors hover:border-white/40 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50"
+              >
+                {/* O X gira meia volta com a mão em cima. É o único movimento
+                    do botão, e ele antecipa o que o clique faz: alguma coisa
+                    vai ser desfeita. */}
+                <X
+                  className="h-3.5 w-3.5 transition-transform duration-300 group-hover:rotate-90 motion-reduce:transition-none"
+                  strokeWidth={2}
+                />
+                Limpar
+              </button>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
         {/* As respostas, a mais nova em cima. */}
-        <div className="mt-10 flex flex-col gap-8">
+        <div className="mt-8 flex flex-col gap-8">
           <AnimatePresence initial={false}>
-            {trocas.map((troca) => (
-              <motion.div key={troca.id} layout={!parado} {...entrada}>
+            {trocas.map((troca, i) => (
+              <motion.div
+                key={troca.id}
+                layout={!parado}
+                {...entrada}
+                /*
+                 * A saída é em cascata, de cima para baixo, e não em bloco.
+                 *
+                 * Todas somem no mesmo clique — se saíssem juntas, a seção
+                 * inteira piscaria e o olho não teria o que seguir. Com seis
+                 * centésimos entre uma e outra, o que se vê é uma varrida: a
+                 * pilha é levantada de cima, e o pé da página sobe atrás dela.
+                 * O `layout` é quem faz esse "atrás dela" acontecer sem
+                 * ninguém animar altura na mão.
+                 */
+                exit={
+                  parado
+                    ? { opacity: 0 }
+                    : {
+                        opacity: 0,
+                        y: -16,
+                        scale: 0.97,
+                        transition: { duration: 0.3, ease: EASE, delay: i * 0.06 },
+                      }
+                }
+              >
                 {/* A pergunta fica à vista junto da resposta: sem ela, três
                     respostas empilhadas viram três parágrafos sobre nada. */}
                 <p className="font-serif text-[1.5rem] leading-tight tracking-[-0.02em] text-[#F4F1E8] md:text-[1.9rem]">
