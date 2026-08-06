@@ -143,7 +143,16 @@ export function CampoVivo({
         {valor.slice(0, cursor)}
       </span>
 
-      <div style={{ fontSize: `${escala * 100}%` }}>
+      {/*
+       * `relative`, e é o que ancora o cursor e as letras na caixa CERTA.
+       *
+       * Sem isto, os dois são absolutos em relação ao container de fora — que
+       * tem o `pb-3` da linha embaixo. Metade daquela caixa é metade do texto
+       * MAIS metade do respiro até a borda, então tudo assentava alguns pixels
+       * baixo demais e o cursor descia até encostar no filete. Ancorados aqui,
+       * a metade é a metade do input, que é exatamente onde o texto está.
+       */}
+      <div className="relative" style={{ fontSize: `${escala * 100}%` }}>
         {/* A camada visível. `aria-hidden` porque o texto verdadeiro é o do
             input logo abaixo — sem isso, um leitor de tela anuncia o mesmo
             conteúdo duas vezes. */}
@@ -192,7 +201,9 @@ export function CampoVivo({
          */}
         <motion.span
           aria-hidden
-          className="caret-vivo pointer-events-none absolute top-1/2 h-[0.95em] w-[2px] -translate-y-1/2 rounded-full bg-[#F4F1E8]"
+          /* Pouco mais alto que uma maiúscula e bem menos que a linha inteira.
+             Em `em`, então ele encolhe junto quando o campo se reduz. */
+          className="caret-vivo pointer-events-none absolute top-1/2 h-[0.82em] w-[2px] -translate-y-1/2 rounded-full bg-[#F4F1E8]"
           style={{ left: 0 }}
           animate={{ x: cursorX }}
           transition={
