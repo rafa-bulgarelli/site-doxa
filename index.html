@@ -4,12 +4,23 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Doxa</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Almarai:wght@300;400;700;800&family=Instrument+Serif:ital@0;1&display=swap"
-      rel="stylesheet"
-    />
+    <!-- As duas fontes que a primeira dobra desenha: a serifada do título e a
+         sans do corpo. Declaradas aqui porque um `@font-face` dentro do CSS só
+         é descoberto depois de o CSS baixar e o navegador achar o texto que
+         precisa dele — com o preload elas viajam junto com o CSS, e não depois.
+         Só estas duas: precarregar as seis faria as outras quatro competirem
+         por banda com o que está na tela. `crossorigin` é obrigatório mesmo
+         sendo mesma origem, senão o navegador baixa o arquivo duas vezes. -->
+    <link rel="preload" as="font" type="font/woff2" crossorigin
+      href="/fonts/InstrumentSerif-400-normal-latin.woff2" />
+    <link rel="preload" as="font" type="font/woff2" crossorigin
+      href="/fonts/Almarai-400-normal-latin.woff2" />
+
+    <!-- A foto do primeiro case do hero: é ela que o navegador mede como maior
+         elemento da dobra, e sem isto ele só a descobre depois de baixar,
+         parsear e executar o JS que a monta. -->
+    <link rel="preload" as="image" type="image/avif" href="/media/magalu-foto.avif"
+      fetchpriority="high" />
   </head>
   <body>
     <div id="root"></div>
