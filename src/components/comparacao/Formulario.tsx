@@ -6,6 +6,7 @@ import { ArrowLeft, Check } from 'lucide-react';
 // bundle, e é o que faz o único elemento clicável da página responder à mão.
 import { DotGridSpotlight } from '../hero/DotGridSpotlight';
 import { BordaViva } from './BordaViva';
+import { CampoVivo } from './CampoVivo';
 import { MotionButton } from '../ui/MotionButton';
 import { FILTRO, NO_AR, PAGAMENTOS, RETORNO } from './config';
 
@@ -346,37 +347,31 @@ export function Formulario({
                   <span className="mt-2 block text-[13px] text-white/45">{atual.dica}</span>
                 </label>
 
-                {/* Linha embaixo e nada mais. O cartão já é a caixa — dar borda
-                    ao campo seria uma caixa dentro de outra, e o campo deixaria
-                    de ser tipografia, que é o que o resto do painel é. */}
-                <input
-                  id={`campo-${atual.chave}`}
-                  ref={campoRef}
-                  type={atual.tipo}
-                  inputMode={atual.tipo === 'tel' ? 'tel' : 'text'}
-                  autoComplete={
-                    atual.chave === 'whatsapp' ? 'tel' : atual.chave === 'nome' ? 'name' : 'off'
-                  }
-                  value={dados[atual.chave]}
-                  placeholder={atual.exemplo}
-                  aria-invalid={erro != null}
-                  aria-describedby={erro != null ? `erro-${atual.chave}` : undefined}
-                  onChange={(evento) => {
-                    const bruto = evento.target.value;
-                    const valor = atual.formata != null ? atual.formata(bruto) : bruto;
-                    setDados((d) => ({ ...d, [atual.chave]: valor }));
-                    if (erro != null) setErro(null);
-                  }}
-                  onKeyDown={(evento) => {
-                    if (evento.key === 'Enter') {
-                      evento.preventDefault();
-                      avancar();
-                    }
-                  }}
-                  className="mt-6 w-full border-b border-white/20 bg-transparent pb-3 font-serif text-[1.9rem] text-[#F4F1E8] outline-none transition-colors placeholder:text-white/20 focus:border-white/70 md:text-[2.5rem]"
-                />
+                <CampoVivo
+              id={`campo-${atual.chave}`}
+              valor={dados[atual.chave]}
+              exemplo={atual.exemplo}
+              tipo={atual.tipo}
+              autoComplete={
+                atual.chave === 'whatsapp' ? 'tel' : atual.chave === 'nome' ? 'name' : 'off'
+              }
+              invalido={erro != null}
+              descritoPor={erro != null ? `erro-${atual.chave}` : undefined}
+              campoRef={campoRef}
+              aoDigitar={(bruto) => {
+                const valor = atual.formata != null ? atual.formata(bruto) : bruto;
+                setDados((d) => ({ ...d, [atual.chave]: valor }));
+                if (erro != null) setErro(null);
+              }}
+              aoTeclar={(evento) => {
+                if (evento.key === 'Enter') {
+                  evento.preventDefault();
+                  avancar();
+                }
+              }}
+            />
 
-                {/* A linha do erro tem altura fixa. Sem isso o botão sobe e desce
+            {/* A linha do erro tem altura fixa. Sem isso o botão sobe e desce
                     conforme a validação fala, e ele é justamente o alvo que a
                     pessoa está mirando. */}
                 <div className="mt-3 min-h-[1.5rem]">
@@ -394,8 +389,47 @@ export function Formulario({
                     importante da página não pode ser a menor coisa clicável
                     dela: aqui ela é a mesma pílula que se enche de tinta do
                     hero e da parede de prova. */}
-                <div className="mt-3">
-                  <MotionButton label="Continuar" onClick={avancar} fullWidth />
+                {/* O voltar só existe quando há para onde voltar, e entra com
+                    o mesmo salto elástico da lâmina — mola de atrito baixo: ele
+                    passa do tamanho, recua e para. É o gesto que a página usa
+                    para dizer "isto acabou de aparecer".
+
+                    Fora do `MotionButton`: aquele é a pílula que se enche de
+                    tinta e é a ação PRINCIPAL da tela. Dois deles lado a lado
+                    seriam duas ações do mesmo peso, e voltar não é. Um disco de
+                    contorno ao lado de uma pílula cheia diz a hierarquia sem
+                    precisar de rótulo. */}
+                <div className="mt-3 flex items-center gap-3">
+                  <AnimatePresence initial={false}>
+                    {passo > 0 && (
+                      <motion.button
+                        key="voltar"
+                        type="button"
+                        onClick={() => voltar(passo - 1)}
+                        aria-label="Voltar para a pergunta anterior"
+                        initial={parado ? false : { scale: 0.3, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        exit={{ scale: 0.4, opacity: 0, transition: { duration: 0.18 } }}
+                        transition={
+                          parado
+                            ? { duration: 0.15 }
+                            : {
+                                opacity: { duration: 0.14 },
+                                scale: { type: 'spring', stiffness: 560, damping: 12, mass: 0.6 },
+                              }
+                        }
+                        className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full border border-white/20 text-white/60 transition-colors hover:border-white/50 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black"
+                      >
+                        <ArrowLeft className="h-5 w-5" strokeWidth={2} />
+                      </motion.button>
+                    )}
+                  </AnimatePresence>
+
+                  {/* `min-w-0` para a pílula ceder a largura do disco em vez de
+                      empurrá-lo para fora da caixa. */}
+                  <div className="min-w-0 flex-1">
+                    <MotionButton label="Continuar" onClick={avancar} fullWidth />
+                  </div>
                 </div>
               </motion.div>
             )}
