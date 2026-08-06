@@ -34,6 +34,18 @@ const QUEDA = 16;
 const FOLGA_FILETE = 0.34;
 
 /**
+ * O respiro entre a última letra e o cursor, em `em`.
+ *
+ * A largura do texto medido é onde o próximo caractere COMEÇA, e um traço
+ * plantado ali encosta na letra anterior — em serifa de contraste alto, com a
+ * perna do "j" ou a cauda do "y", ele lê como parte do desenho da letra em vez
+ * de como cursor. O afastamento é o mesmo que um tipógrafo daria: pequeno o
+ * bastante para o traço continuar dizendo onde se escreve, grande o bastante
+ * para ser outra coisa.
+ */
+const RESPIRO_CURSOR = 0.1;
+
+/**
  * O campo em que cada letra entra caindo, e que se reduz em vez de cortar.
  *
  * Um `<input>` não sabe animar o próprio conteúdo: o texto dele é desenhado pelo
@@ -125,10 +137,21 @@ export function CampoVivo({
    * Medido no corpo CHEIO e multiplicado pela escala, e não medido já reduzido:
    * o medidor tem de ficar fora da caixa que encolhe, senão o valor que ele
    * devolve depende do valor que ele mesmo produziu no quadro anterior.
+   *
+   * O respiro entra AQUI, dentro do número que a mola persegue, e não como
+   * margem no traço: como margem ele apareceria de um quadro para o outro na
+   * primeira tecla, enquanto o resto do movimento é mola. E não existe no campo
+   * vazio — ali não há letra anterior de que se afastar, e o cursor tem de
+   * nascer exatamente onde a primeira letra vai cair.
    */
   useLayoutEffect(() => {
     const medidor = medidorCursorRef.current;
-    if (medidor != null) setCursorX(medidor.scrollWidth * escala);
+    const corpo = corpoRef.current;
+    if (medidor == null || corpo == null) return;
+    const largura = medidor.scrollWidth * escala;
+    // O `em` do corpo já vem reduzido pela escala: o respiro encolhe junto.
+    const em = parseFloat(getComputedStyle(corpo).fontSize);
+    setCursorX(cursor > 0 ? largura + RESPIRO_CURSOR * em : 0);
   }, [valor, cursor, escala]);
 
   /*
