@@ -18,7 +18,7 @@ import {
   useTransform,
   type MotionValue,
 } from 'framer-motion';
-import { REELS, WALL_REELS, WALL_REELS_MOBILE, type Reel } from './proof/reels';
+import { WALL_REELS, WALL_REELS_MOBILE, type Reel } from './proof/reels';
 import { DotGridSpotlight } from './hero/DotGridSpotlight';
 import { MotionButton } from './ui/MotionButton';
 import { useIsDesktop } from '../hooks/useIsDesktop';
@@ -233,15 +233,40 @@ const HOVER_SPRING = { mass: 0.6, stiffness: 200, damping: 26 };
 const HOVER_INSTANT = { stiffness: 1000, damping: 100 };
 
 /**
- * PENDENTE-DONO: the owner's framing of the scale — "milhares de clientes,
- * centenas de vídeos novos todos os dias". Rendered as he said it, and marked
- * because a round adjective is the weakest form of a number he actually has.
- * Exact beats big: "2.400 clientes" outsells "milhares" every time, and this
- * page's whole credibility rests on being the kind that quotes figures.
+ * Quantas empresas já publicaram com a Doxa.
+ *
+ * PENDENTE-DONO: o número é do dono — ele disse "mais de 1500 clientes". Está
+ * exato e não como "milhares" de propósito, e era o que a versão anterior deste
+ * arquivo já pedia: adjetivo redondo é a forma mais fraca de um número que
+ * existe. Uma parede inteira montada para ser conferida não pode abrir com uma
+ * estimativa.
+ *
+ * ATENÇÃO ao verbo que acompanha: "1.500 empresas JÁ VIRALIZARAM" afirma que
+ * todas as mil e quinhentas passaram do milhão de views, e é uma afirmação
+ * diferente de "1.500 clientes atendidos". O dono ditou a frase nessa forma e
+ * ela está escrita nessa forma; se o que ele tem são 1.500 CONTRATOS e não
+ * 1.500 viralizações, a linha correta é "1.500 empresas já publicam com a
+ * Doxa" — mesma força, sem prometer o resultado de todas.
+ */
+const CLIENTES = '1.500';
+
+/**
+ * Os dois números do alto, e agora eles contam a história em vez de listar
+ * estatísticas.
+ *
+ * Eram "Milhares de clientes atendidos" e "Centenas de vídeos novos por dia":
+ * dois fatos verdadeiros sobre o tamanho da operação e nenhum deles sobre o
+ * visitante. O dono leu como desconexo e estava certo — eles falavam da Doxa
+ * numa seção cujo trabalho é falar do que ele vai receber.
+ *
+ * Agora são a promessa e o método, nas palavras exatas em que o hero já os deu:
+ * um milhão de views ou o dinheiro de volta, sessenta conteúdos em noventa dias
+ * a partir de uma foto e um áudio. Repetidos aqui, em cima da prova publicada,
+ * deixam de ser promessa e viram legenda do que está passando na tela.
  */
 const SCALE_CLAIMS = [
-  { value: 'Milhares', label: 'de clientes atendidos' },
-  { value: 'Centenas', label: 'de vídeos novos por dia' },
+  { value: '1 milhão', label: 'de views somadas, ou seu dinheiro de volta' },
+  { value: '60 vídeos', label: 'em 90 dias, de uma foto e um áudio' },
 ];
 
 /**
@@ -979,16 +1004,24 @@ export function ProofWall() {
               and the reels flew through the middle of it. They go to the floor
               instead — see the block below. */}
           <div className="pointer-events-none absolute inset-x-0 top-0 z-20 flex flex-wrap items-end justify-between gap-x-10 gap-y-8 px-5 py-12 md:px-10 md:py-24">
+            {/* O número primeiro, e a promessa do hero no passado.
+
+                "A prova já está publicada" descrevia a seção; esta frase
+                entrega o argumento. E o argumento é uma vírgula: o hero promete
+                um milhão de views, e aqui a mesma frase aparece conjugada como
+                coisa que já aconteceu — mil e quinhentas vezes, com os vídeos
+                passando na tela enquanto se lê.
+
+                A contagem de `REELS` saiu daqui. Ela dizia quantos reels a
+                parede mostra, o que era honesto e útil quando o título falava
+                da parede; ao lado de "1.500", um "(3)" em versalete lê como a
+                letra miúda desmentindo a manchete. O número de arquivos que
+                temos não é o número de clientes que atendemos, e só um dos dois
+                é assunto desta seção. */}
             <h2 className="font-serif text-4xl font-normal leading-[1.05] tracking-[-0.02em] text-white md:text-6xl">
-              A prova já está
+              {CLIENTES} empresas já
               <br />
-              publicada.
-              {/* Counts `REELS`, never the drawn cards: the wall is padded with
-                  repeats today, and the one thing it must not do is put a
-                  number on them. */}
-              <span className="ml-3 align-super font-sans text-base font-medium tabular-nums text-white md:text-xl">
-                ({REELS.length})
-              </span>
+              viralizaram com a Doxa.
             </h2>
 
             <div className="hidden flex-wrap justify-end gap-x-10 gap-y-4 text-right lg:flex">
