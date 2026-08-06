@@ -436,7 +436,7 @@ export function Comparacao() {
                     de texto não anima. */}
                 <motion.span
                   aria-hidden
-                  className="absolute left-0 top-1/2 h-[2px] w-full origin-left bg-black/45"
+                  className="absolute left-0 top-1/2 h-[2px] w-full -translate-y-1/2 origin-left bg-black/45"
                   initial={{ scaleX: 0 }}
                   animate={{ scaleX: parado || conviteNaTela ? 1 : 0 }}
                   transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1], delay: 0.35 }}

@@ -60,8 +60,25 @@ export function CampoVivo({
   const parado = useReducedMotion() === true;
   const caixaRef = useRef<HTMLDivElement>(null);
   const medidorRef = useRef<HTMLSpanElement>(null);
+  const medidorCursorRef = useRef<HTMLSpanElement>(null);
   /** Quanto do corpo natural cabe na linha, de 0 a 1. */
   const [escala, setEscala] = useState(1);
+  /** Em que caractere o cursor está, e onde isso cai em pixels. */
+  const [cursor, setCursor] = useState(0);
+  const [cursorX, setCursorX] = useState(0);
+
+  /**
+   * Onde o cursor está no texto.
+   *
+   * `onSelect` cobre tudo que o move — digitar, apagar, setas, clique, arrastar
+   * seleção —, que é por que ele é o único ouvinte aqui. Ler `selectionStart`
+   * direto do elemento em vez de deduzir do valor é o que mantém o traço certo
+   * quando alguém edita no meio da frase.
+   */
+  const sincronizarCursor = () => {
+    const campo = campoRef.current;
+    if (campo != null) setCursor(campo.selectionStart ?? campo.value.length);
+  };
 
   useLayoutEffect(() => {
     const caixa = caixaRef.current;
@@ -86,12 +103,24 @@ export function CampoVivo({
     return () => observador.disconnect();
   }, [valor]);
 
+  /*
+   * Onde desenhar o cursor, em pixels.
+   *
+   * Medido no corpo CHEIO e multiplicado pela escala, e não medido já reduzido:
+   * o medidor tem de ficar fora da caixa que encolhe, senão o valor que ele
+   * devolve depende do valor que ele mesmo produziu no quadro anterior.
+   */
+  useLayoutEffect(() => {
+    const medidor = medidorCursorRef.current;
+    if (medidor != null) setCursorX(medidor.scrollWidth * escala);
+  }, [valor, cursor, escala]);
+
   const letras = [...valor];
 
   return (
     <div
       ref={caixaRef}
-      className="relative mt-6 w-full border-b border-white/20 pb-3 font-serif text-[1.9rem] transition-colors focus-within:border-white/70 md:text-[2.5rem]"
+      className="campo-vivo relative mt-6 w-full border-b border-white/20 pb-3 font-serif text-[1.9rem] transition-colors focus-within:border-white/70 md:text-[2.5rem]"
     >
       {/* O medidor: o mesmo texto, no corpo cheio, sem ocupar espaço nem ser
           lido. É dele que sai a largura natural com que a escala é calculada. */}
@@ -101,6 +130,17 @@ export function CampoVivo({
         className="pointer-events-none invisible absolute left-0 top-0 whitespace-pre"
       >
         {valor}
+      </span>
+      {/* O mesmo texto até onde o cursor está: a largura dele É a posição do
+          traço. Dois medidores e não um, porque as duas perguntas são
+          diferentes — um mede a frase inteira para saber se cabe, o outro mede
+          um pedaço dela para saber onde parar. */}
+      <span
+        ref={medidorCursorRef}
+        aria-hidden
+        className="pointer-events-none invisible absolute left-0 top-0 whitespace-pre"
+      >
+        {valor.slice(0, cursor)}
       </span>
 
       <div style={{ fontSize: `${escala * 100}%` }}>
@@ -143,12 +183,32 @@ export function CampoVivo({
         </div>
 
         {/*
-         * O input de verdade, com o texto transparente.
+         * O cursor, desenhado por nós e movido por mola.
          *
-         * `caret-transparent` não entra aqui: o cursor é a única parte dele que
-         * precisa continuar visível, e ele é desenhado na cor do `caret-color`,
-         * não na do texto. Assim o traço pisca no lugar certo, sobre as letras
-         * que a camada de cima desenhou.
+         * O nativo salta de uma posição para a outra, e ao lado de letras que
+         * chegam com mola ele é a única coisa dura na caixa. Com atrito alto a
+         * mola não balança — ela apenas alcança —, que é o que se quer de um
+         * cursor: suave, mas sem inércia visível atrás do que já foi digitado.
+         */}
+        <motion.span
+          aria-hidden
+          className="caret-vivo pointer-events-none absolute top-1/2 h-[0.95em] w-[2px] -translate-y-1/2 rounded-full bg-[#F4F1E8]"
+          style={{ left: 0 }}
+          animate={{ x: cursorX }}
+          transition={
+            parado
+              ? { duration: 0 }
+              : { type: 'spring', stiffness: 900, damping: 52, mass: 0.5 }
+          }
+        />
+
+        {/*
+         * O input de verdade: texto transparente E cursor transparente.
+         *
+         * O cursor nativo tem de sair junto, senão ficam dois — o dele saltando
+         * e o nosso deslizando, na mesma linha, com meio caractere de distância
+         * um do outro. Ele continua sendo quem guarda a posição da seleção; só
+         * não é mais quem a desenha.
          */}
         <input
           id={id}
@@ -162,7 +222,8 @@ export function CampoVivo({
           aria-describedby={descritoPor}
           onChange={(evento) => aoDigitar(evento.target.value)}
           onKeyDown={aoTeclar}
-          className="relative w-full bg-transparent text-transparent caret-[#F4F1E8] outline-none placeholder:text-white/20"
+          onSelect={sincronizarCursor}
+          className="relative w-full bg-transparent text-transparent caret-transparent outline-none placeholder:text-white/20"
           style={{ fontSize: 'inherit' }}
         />
       </div>

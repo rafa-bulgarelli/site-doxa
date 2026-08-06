@@ -435,68 +435,109 @@ body {
  * sobrepostos, não como uma coisa em movimento. O que sobrou é o vocabulário do
  * hero — um pulso limpo com auréola —, e é ele que a página inteira já fala.
  */
+/*
+ * O DESENHO DE CADA JANELA, e por que ele é assim.
+ *
+ * O bug que o dono viu: o traço sumia e reaparecia por um instante no início.
+ * A causa era a saída em degrau — a versão anterior levava a opacidade de 1 a 0
+ * em um centésimo do ciclo, que a sete segundos é menos de um quadro. Um corte
+ * assim não é lido como "apagou", é lido como falha; e o `stroke-dashoffset`,
+ * que só era declarado nos dois extremos da janela, ficava livre para o
+ * navegador reposicionar no reinício, ainda dentro do quadro em que a opacidade
+ * não tinha terminado de cair.
+ *
+ * A correção é declarar as DUAS propriedades em todos os pontos que importam:
+ * onde o traço espera, onde ele acende, onde apaga e onde fica parado até o
+ * próximo ciclo. Assim o percurso é sempre monotônico — entra por uma ponta,
+ * sai pela outra, e passa o resto do tempo invisível e IMÓVEL no fim do
+ * caminho. Não há volta ao início com nada aceso.
+ *
+ * As bordas de acender e apagar são rampas de três a quatro por cento do ciclo,
+ * que a sete segundos dão dois décimos de segundo: curto o bastante para ler
+ * como um sinal, longo o bastante para não piscar.
+ */
 @keyframes pulso-fio {
   0% {
-    stroke-dashoffset: 0.04;
+    stroke-dashoffset: 0.05;
+    opacity: 0;
+  }
+  3% {
+    opacity: 1;
+  }
+  22% {
     opacity: 1;
   }
   26% {
-    stroke-dashoffset: -1.01;
-    opacity: 1;
+    stroke-dashoffset: -1.05;
+    opacity: 0;
   }
-  26.01%,
   100% {
+    stroke-dashoffset: -1.05;
     opacity: 0;
   }
 }
 
 @keyframes pulso-borda {
-  0%,
-  29.99% {
+  0% {
+    stroke-dashoffset: 0.05;
     opacity: 0;
   }
-  30% {
-    stroke-dashoffset: 0.04;
+  /* Parado e invisível enquanto o fio atravessa: é o que garante um par de
+     linhas por vez. */
+  28% {
+    stroke-dashoffset: 0.05;
+    opacity: 0;
+  }
+  31% {
+    opacity: 1;
+  }
+  68% {
     opacity: 1;
   }
   72% {
-    stroke-dashoffset: -1.01;
-    opacity: 1;
+    stroke-dashoffset: -1.05;
+    opacity: 0;
   }
-  72.01%,
   100% {
+    stroke-dashoffset: -1.05;
     opacity: 0;
   }
 }
 
 /*
- * `pathLength="1"` no elemento é o que torna estes números independentes do
- * tamanho: o traço é uma FRAÇÃO do caminho, e serve tanto para o fio de duzentos
- * pixels quanto para o contorno de um cartão que muda de altura a cada passo.
+ * O cursor do campo, desenhado por nós.
+ *
+ * Pisca por atenuação em vez de sumir: o cursor nativo apaga em degrau, e ao
+ * lado de letras que chegam com mola isso é a única coisa dura na caixa. Não
+ * chega a zero — um traço que some por inteiro obriga o olho a reencontrá-lo a
+ * cada volta.
  */
-.pulso {
-  stroke-dasharray: 0.05 0.95;
-  animation-duration: 7s;
-  animation-timing-function: linear;
-  animation-iteration-count: infinite;
-  animation-fill-mode: both;
+@keyframes caret-piscar {
+  0%,
+  42% {
+    opacity: 1;
+  }
+  58%,
+  100% {
+    opacity: 0.18;
+  }
 }
 
-/*
- * A auréola, e ela é generosa a pedido do dono — a mesma presença que o sinal
- * tem no hero. Duas camadas: um núcleo curto que engorda o traço sem borrá-lo, e
- * uma larga e fraca que é o brilho de fato. Uma só, aberta o bastante para
- * espalhar, apaga o fio dentro dela.
- */
-.pulso-fio {
-  animation-name: pulso-fio;
-  filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.85)) drop-shadow(0 0 16px rgba(0, 0, 0, 0.5));
+.caret-vivo {
+  opacity: 0;
 }
 
-.pulso-borda {
-  animation-name: pulso-borda;
-  filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.95))
-    drop-shadow(0 0 22px rgba(255, 255, 255, 0.6));
+/* Só com o campo em foco. Um cursor piscando num campo que ninguém está
+   preenchendo é um convite falso. */
+.campo-vivo:focus-within .caret-vivo {
+  animation: caret-piscar 1.15s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .campo-vivo:focus-within .caret-vivo {
+    animation: none;
+    opacity: 1;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
