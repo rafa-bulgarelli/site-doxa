@@ -7,10 +7,18 @@ interface BordaVivaProps {
    * Qual trecho do percurso este contorno é.
    *
    * `falta` é o primeiro — o sinal nasce ali e sai pelo fio. `pedido` é o
-   * último, depois da travessia. Os dois nomes escolhem a janela do ciclo e a
-   * medida da auréola; a geometria é a mesma nos dois.
+   * último, depois da travessia. Os dois dividem o mesmo ciclo de sete segundos
+   * e cada um acende na sua janela.
+   *
+   * `campo` está fora desse ciclo: é o contorno do campo do FAQ, que corre sem
+   * parar enquanto alguém tem o campo em foco. Um sinal com janela ali ficaria
+   * escuro a maior parte do tempo em que a pessoa está escrevendo, que é
+   * exatamente o tempo em que ele precisa dizer que a coisa está ligada.
+   *
+   * O nome escolhe a janela do ciclo e a medida da auréola; a geometria é a
+   * mesma nos três.
    */
-  trecho?: 'falta' | 'pedido';
+  trecho?: 'falta' | 'pedido' | 'campo';
   /** O raio dos cantos do alvo, em pixels. Combine com o `rounded-` dele. */
   raio?: number;
   /**
@@ -26,6 +34,13 @@ interface BordaVivaProps {
 
 /** O raio do `rounded-3xl` do cartão do pedido, em pixels. */
 const RAIO_PADRAO = 24;
+
+/** Qual classe de animação cada trecho do percurso usa. */
+const JANELA: Record<'falta' | 'pedido' | 'campo', string> = {
+  falta: 'pulso-falta',
+  pedido: 'pulso-borda',
+  campo: 'pulso-campo',
+};
 
 /** A espessura do sinal, em pixels. */
 const TRACO = 3;
@@ -158,7 +173,7 @@ export function BordaViva({
             <path
               d={d}
               pathLength={1}
-              className={`pulso ${trecho === 'falta' ? 'pulso-falta' : 'pulso-borda'}`}
+              className={`pulso ${JANELA[trecho]}`}
               stroke="#FFFFFF"
               strokeWidth={TRACO}
               strokeLinecap="round"

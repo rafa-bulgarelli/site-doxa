@@ -1,12 +1,28 @@
 import { useRef, useState } from 'react';
 import { AnimatePresence, motion, useInView, useReducedMotion } from 'framer-motion';
 import { X } from 'lucide-react';
+import { DotGridSpotlight } from './hero/DotGridSpotlight';
 import { CampoPergunta } from './faq/CampoPergunta';
+import { Revela } from './faq/Revela';
 import { encontra } from './faq/busca';
 import { ABERTURA, DUVIDAS, SEM_RESPOSTA, type Duvida } from './faq/config';
 import { MotionButton } from './ui/MotionButton';
 
 const EASE = [0.16, 1, 0.3, 1] as const;
+
+/**
+ * Quanto o sinal leva para descer do campo até a resposta, em milissegundos.
+ *
+ * Casado com a duração de `.pulso-descida` no CSS: a resposta nasce no instante
+ * em que o sinal termina de chegar. Se os dois números divergirem, ou o texto
+ * aparece antes de a linha chegar nele (e a linha vira enfeite), ou fica um vão
+ * de nada entre os dois (e a linha vira atraso).
+ *
+ * NÃO é latência fingida: não há nada sendo processado atrás disto, e o número é
+ * o tempo de um gesto, não de uma espera. É o que torna a causa visível — a
+ * mesma razão de uma porta mostrar que foi a maçaneta que a abriu.
+ */
+const DESCIDA = 420;
 
 /**
  * A pergunta digitada, com a primeira letra em caixa alta.
@@ -69,17 +85,29 @@ export function Faq() {
   // sempre, e um índice se repete assim que a lista muda de forma.
   const proximoId = useRef(0);
 
+  /** Quantos sinais estão descendo agora. Contador, e não booleano: duas
+      perguntas seguidas não podem apagar o fio uma da outra. */
+  const [descendo, setDescendo] = useState(0);
+
   const responder = (pergunta: string, duvida: Duvida | null) => {
     const achada = duvida ?? encontra(pergunta, DUVIDAS);
-    setTrocas((atuais) => [
-      {
-        id: proximoId.current++,
-        pergunta,
-        paragrafos: achada?.resposta ?? [SEM_RESPOSTA.titulo, SEM_RESPOSTA.corpo],
-        escape: achada == null,
-      },
-      ...atuais,
-    ]);
+    const nova = {
+      id: proximoId.current++,
+      pergunta,
+      paragrafos: achada?.resposta ?? [SEM_RESPOSTA.titulo, SEM_RESPOSTA.corpo],
+      escape: achada == null,
+    };
+
+    if (parado) {
+      setTrocas((atuais) => [nova, ...atuais]);
+      return;
+    }
+
+    setDescendo((n) => n + 1);
+    window.setTimeout(() => {
+      setTrocas((atuais) => [nova, ...atuais]);
+      setDescendo((n) => n - 1);
+    }, DESCIDA);
   };
 
   const enviar = () => {
@@ -109,6 +137,11 @@ export function Faq() {
       className="relative overflow-hidden bg-black px-5 py-24 md:px-10 md:py-32"
     >
       <div className="dot-grid pointer-events-none absolute inset-0 opacity-30" />
+      {/* O facho que acende os pontos sob a mão — o mesmo do hero e do cartão do
+          pedido. Esta seção era a única da página que não reagia ao ponteiro, e
+          era boa parte do motivo de ela parecer morta: não faltava efeito, faltava
+          a página INTEIRA falando a mesma língua aqui dentro. */}
+      <DotGridSpotlight containerRef={secaoRef} />
 
       <div className="relative mx-auto w-full max-w-3xl">
         <motion.div
@@ -116,8 +149,25 @@ export function Faq() {
           animate={naTela ? { opacity: 1, y: 0 } : undefined}
           transition={{ duration: 0.6, ease: EASE }}
         >
-          <span className="text-[12px] font-medium tracking-[0.06em] text-white/50">
-            {ABERTURA.rotulo}
+          {/* O rótulo com o LED, e não mais uma palavra cinza sozinha.
+              É o mesmo ponto que pulsa nos selos "Sem Doxa" / "Com Doxa": núcleo
+              aceso com brilho próprio e dois anéis defasados, sempre um nascendo
+              enquanto o outro apaga. Lá ele diz que o sistema está no ar; aqui
+              diz que tem alguém do outro lado da pergunta. Em creme, porque a
+              cor de estado é da seção de comparação e esta não tem estado. */}
+          <span className="inline-flex items-center gap-2.5">
+            <span className="relative flex h-2 w-2 shrink-0" aria-hidden>
+              {['selo-anel', 'selo-anel selo-anel-tardio'].map((classe) => (
+                <span
+                  key={classe}
+                  className={`absolute inline-flex h-full w-full rounded-full bg-[#F4F1E8] ${classe}`}
+                />
+              ))}
+              <span className="relative inline-flex h-2 w-2 rounded-full bg-[#F4F1E8] shadow-[0_0_10px_#F4F1E8,0_0_3px_#F4F1E8]" />
+            </span>
+            <span className="text-[12px] font-medium tracking-[0.06em] text-white/60">
+              {ABERTURA.rotulo}
+            </span>
           </span>
           <h2 className="mt-4 font-serif text-[2.6rem] leading-[0.95] tracking-[-0.03em] text-[#F4F1E8] md:text-[3.6rem]">
             {ABERTURA.titulo}
@@ -133,7 +183,10 @@ export function Faq() {
         >
           <CampoPergunta
             valor={rascunho}
-            exemplo={ABERTURA.exemplo}
+            /* As perguntas de verdade, na ordem do arquivo. O campo passa o
+               tempo todo dizendo o que ele sabe responder — e as seis frases
+               que ele escreve são exatamente as seis que têm resposta. */
+            exemplos={[ABERTURA.exemplo, ...DUVIDAS.map((d) => d.pergunta)]}
             aoDigitar={setRascunho}
             aoEnviar={enviar}
           />
@@ -163,6 +216,49 @@ export function Faq() {
             </AnimatePresence>
           </div>
         )}
+
+        {/*
+         * A DESCIDA: o sinal levando a pergunta até onde a resposta nasce.
+         *
+         * É a gramática do site aplicada ao FAQ. No hero, uma foto e uma voz
+         * correm por um fio até o vídeo pronto; na comparação, o argumento corre
+         * do cartão do "falta você" até o formulário. Aqui a pergunta corre até
+         * a resposta — e é por isso que o texto enviado se desfaz subindo no
+         * campo logo acima: as duas animações são o mesmo gesto contado em dois
+         * pedaços.
+         *
+         * O fio ocupa altura real enquanto existe, e não é absoluto: absoluto,
+         * ele passaria por cima da primeira resposta em vez de abrir caminho
+         * para ela. Some quando o sinal chega, e o que estava embaixo sobe pelo
+         * `layout` — o mesmo mecanismo da varrida do botão de limpar.
+         */}
+        <AnimatePresence>
+          {descendo > 0 && (
+            <motion.div
+              key="descida"
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 44 }}
+              exit={{ opacity: 0, height: 0, transition: { duration: 0.2 } }}
+              transition={{ duration: 0.16, ease: EASE }}
+              className="mt-6 overflow-hidden"
+              aria-hidden
+            >
+              <svg className="h-11 w-full" viewBox="0 0 4 44" fill="none" preserveAspectRatio="none">
+                {/* O trilho, fraco: sem ele o pulso corre no vazio e não se lê
+                    como uma linha sendo percorrida. */}
+                <path d="M 2 0 L 2 44" stroke="rgba(255,255,255,0.10)" strokeWidth={2} />
+                <path
+                  d="M 2 0 L 2 44"
+                  pathLength={1}
+                  className="pulso pulso-descida"
+                  stroke="#FFFFFF"
+                  strokeWidth={2.5}
+                  strokeLinecap="round"
+                />
+              </svg>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {/*
          * A barra de limpar, e ela só existe quando há o que limpar.
@@ -253,7 +349,10 @@ export function Faq() {
                         i > 0 ? 'mt-3' : ''
                       }`}
                     >
-                      {paragrafo}
+                      {/* O segundo parágrafo começa depois do primeiro, e não
+                          junto: o atraso é o tempo de ler o de cima. Sem ele os
+                          dois se montam ao mesmo tempo e o efeito vira ruído. */}
+                      <Revela texto={paragrafo} atraso={i * 0.24} parado={parado} />
                     </p>
                   ))}
 

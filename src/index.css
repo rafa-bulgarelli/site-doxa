@@ -635,10 +635,113 @@ body {
     drop-shadow(0 0 24px rgba(255, 255, 255, 0.45));
 }
 
+/*
+ * O CAMPO DO FAQ, enquanto alguém está com ele.
+ *
+ * Aqui o sinal não divide ciclo com ninguém: ele existe só enquanto o campo tem
+ * foco, e nesse intervalo tem de estar SEMPRE correndo. As três janelas do
+ * percurso da comparação servem uma história com começo e fim — um sinal que
+ * sai de um cartão e chega no outro. Este serve outra coisa: dizer "isto aqui
+ * está ligado, escreva". Uma volta a cada 2,6 segundos, sem pausa entre elas,
+ * porque a pausa seria lida como a coisa tendo desligado.
+ */
+@keyframes pulso-campo {
+  0% {
+    stroke-dashoffset: 0.05;
+    opacity: 0;
+  }
+  8% {
+    opacity: 1;
+  }
+  86% {
+    opacity: 1;
+  }
+  100% {
+    stroke-dashoffset: -1.05;
+    opacity: 0;
+  }
+}
+
+.pulso-campo {
+  animation-name: pulso-campo;
+  animation-duration: 2.6s;
+  filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.95))
+    drop-shadow(0 0 12px rgba(255, 255, 255, 0.5));
+}
+
+/*
+ * A DESCIDA: o sinal que leva a pergunta do campo até onde a resposta nasce.
+ *
+ * É a gramática do site inteiro aplicada ao FAQ. No hero, uma foto e uma voz
+ * correm por um fio até o vídeo pronto; na comparação, o argumento corre até o
+ * formulário. Aqui a pergunta corre até a resposta. Ninguém precisa reparar —
+ * o que fica é a sensação de que alguma coisa ATRAVESSOU, e não de que um
+ * parágrafo apareceu.
+ *
+ * Uma vez só, e curta: 0,42s é o tempo de um gesto, não de uma espera. E não é
+ * latência fingida — não há nada sendo processado atrás disto. É o movimento
+ * que torna a causa visível, do mesmo jeito que uma porta que abre mostra que
+ * foi a maçaneta que a abriu.
+ */
+@keyframes pulso-descida {
+  0% {
+    stroke-dashoffset: 0.05;
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+  }
+  78% {
+    opacity: 1;
+  }
+  100% {
+    stroke-dashoffset: -1.05;
+    opacity: 0;
+  }
+}
+
+.pulso-descida {
+  animation-name: pulso-descida;
+  animation-duration: 0.42s;
+  animation-iteration-count: 1;
+  filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.95))
+    drop-shadow(0 0 14px rgba(255, 255, 255, 0.45));
+}
+
 @media (prefers-reduced-motion: reduce) {
   .pulso {
     animation: none;
     opacity: 0;
+  }
+}
+
+/*
+ * O traço que acompanha o exemplo se escrevendo.
+ *
+ * Pisca por atenuação, e é a mesma regra do cursor do formulário: apagar em
+ * degrau, ao lado de letras que chegam com física, é a única coisa dura na
+ * caixa. Aqui ele tem uma função a mais — é ele que diz que aquele texto é um
+ * EXEMPLO sendo escrito, e não algo que a pessoa digitou e esqueceu ali.
+ */
+@keyframes cursor-exemplo {
+  0%,
+  45% {
+    opacity: 0.9;
+  }
+  55%,
+  100% {
+    opacity: 0.15;
+  }
+}
+
+.cursor-exemplo {
+  margin-left: 1px;
+  animation: cursor-exemplo 1.05s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cursor-exemplo {
+    animation: none;
   }
 }
 
