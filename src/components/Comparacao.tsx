@@ -96,14 +96,24 @@ function Selo({ prefixo, escuro = false }: { prefixo: string; escuro?: boolean }
             key={atraso}
             className="absolute inline-flex h-full w-full rounded-full"
             style={{ background: cor }}
-            /* Lento e longo, a pedido do dono: em 1,8s o anel saltava e sumia,
-               e um LED que bate rápido lê como alarme. Em 3,2s ele se abre, vai
-               mais longe e desvanece — respira em vez de piscar, que é o que
-               diferencia "está ligado" de "algo está errado". */
-            animate={imovel ? undefined : { scale: [1, 4.2], opacity: [0.5, 0] }}
+            /*
+             * Liso de ponta a ponta, e é `linear` que faz isso.
+             *
+             * Com `easeOut` o anel disparava para fora e depois quase parava:
+             * o olho lê o freio como um solavanco, e o dono chamou de estranho
+             * com razão. Em velocidade constante ele apenas se afasta.
+             *
+             * A opacidade tem um ponto no meio do caminho para não cair junto
+             * com a escala. Interpolada em linha reta de 0,5 a 0, ela some cedo
+             * demais e o anel desaparece antes de chegar longe — com o ponto em
+             * 45% ele se mantém visível na parte do percurso em que ainda está
+             * crescendo, e só então esvai.
+             */
+            animate={imovel ? undefined : { scale: [1, 2.5, 4.4], opacity: [0.5, 0.26, 0] }}
             transition={{
               duration: 3.2,
-              ease: 'easeOut',
+              ease: 'linear',
+              times: [0, 0.45, 1],
               repeat: Infinity,
               delay: atraso,
             }}

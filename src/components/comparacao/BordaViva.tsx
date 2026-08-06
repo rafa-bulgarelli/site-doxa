@@ -101,39 +101,38 @@ export function BordaViva({ alvoRef }: BordaVivaProps) {
             <path d={d} stroke="rgba(255,255,255,0.13)" strokeWidth={1} />
 
             {/*
-             * As três camadas do rastro, do mais fraco ao mais forte — a ordem
-             * importa: a cabeça é desenhada por último e fica por cima das
-             * caudas, que é o que a mantém nítida.
+             * As quatro camadas do rastro, da mais fraca para a cabeça — e a
+             * ordem de pintura é o que mantém a cabeça nítida: desenhada por
+             * último, ela fica por cima das caudas.
+             *
+             * A espessura cai junto com a opacidade. Era o que faltava para
+             * isto ler como rastro: uma estrela cadente não tem só a cauda mais
+             * apagada, tem a cauda mais estreita. Com quatro traços de mesma
+             * espessura o que se via eram quatro riscos sobrepostos.
              *
              * `pathLength` normaliza o caminho para 1, e é o que torna o
              * desenho independente do tamanho: o traço passa a ser uma FRAÇÃO
              * do contorno, então os mesmos números servem para o cartão de uma
              * pergunta e para o do pagamento, que é bem mais alto.
              */}
-            <path
-              d={d}
-              pathLength={1}
-              className="cadente cadente-cauda cadente-borda-cauda"
-              stroke="rgba(255,255,255,0.9)"
-              strokeWidth={1.5}
-              strokeLinecap="round"
-            />
-            <path
-              d={d}
-              pathLength={1}
-              className="cadente cadente-meio cadente-borda-meio"
-              stroke="rgba(255,255,255,0.95)"
-              strokeWidth={1.5}
-              strokeLinecap="round"
-            />
-            <path
-              d={d}
-              pathLength={1}
-              className="cadente cadente-cabeca cadente-borda-cabeca"
-              stroke="#FFFFFF"
-              strokeWidth={1.8}
-              strokeLinecap="round"
-            />
+            {(
+              [
+                ['borda-c4', 1, 'rgba(255,255,255,0.85)'],
+                ['borda-c3', 1.3, 'rgba(255,255,255,0.9)'],
+                ['borda-c2', 1.7, 'rgba(255,255,255,0.95)'],
+                ['borda-c1', 2.2, '#FFFFFF'],
+              ] as const
+            ).map(([classe, largura, cor]) => (
+              <path
+                key={classe}
+                d={d}
+                pathLength={1}
+                className={`cadente ${classe}`}
+                stroke={cor}
+                strokeWidth={largura}
+                strokeLinecap="round"
+              />
+            ))}
           </g>
         );
       })}

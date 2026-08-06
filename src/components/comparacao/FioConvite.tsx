@@ -73,14 +73,20 @@ export function FioConvite({ containerRef, deRef, paraRef }: FioConviteProps) {
     const medir = () => {
       setCaixa({ largura: container.offsetWidth, altura: container.offsetHeight });
 
-      // Sai pela direita da frase, entra pela esquerda do cartão, os dois na
-      // altura do meio de si mesmos.
+      /*
+       * Sai pela direita da frase, na altura do meio dela. Entra no cartão
+       * ABAIXO do meio, e esse número é a correção de um cruzamento: mirando o
+       * centro, a curva subia o suficiente para passar por trás do bloco do
+       * custo riscado, que fica acima da frase e ocupa metade da coluna. Com a
+       * chegada mais baixa a curva sobe menos e o caminho inteiro corre por
+       * baixo do texto — sem precisar saber onde o texto está.
+       */
       const origem = posicao(de, container);
       const destino = posicao(para, container);
       const x1 = origem.x + de.offsetWidth;
       const y1 = origem.y + de.offsetHeight / 2;
       const x2 = destino.x;
-      const y2 = destino.y + para.offsetHeight / 2;
+      const y2 = destino.y + para.offsetHeight * 0.74;
 
       // Uma ponta à direita da outra é a única geometria que este fio tem: nas
       // telas em que as colunas empilham ele não é renderizado. Se a medida vier
@@ -120,34 +126,26 @@ export function FioConvite({ containerRef, deRef, paraRef }: FioConviteProps) {
       />
 
       {/*
-       * O sinal, em três camadas: cauda, meio e cabeça, nessa ordem de pintura.
+       * O sinal, em uma camada só.
        *
-       * Divide o ciclo de sete segundos com a borda do cartão — este trecho
-       * ocupa o primeiro quarto dele, e a borda só começa depois que ele
-       * termina. É o que garante o que o dono pediu: um par de linhas por vez,
-       * e nenhum disparo novo enquanto o anterior não se reencontrou e apagou.
+       * O rastro de estrela cadente ficou para a borda do cartão, a pedido do
+       * dono: sobre papel, uma cauda esmaecida em tinta vira uma sujeira cinza
+       * ao lado da linha, porque no claro o que desvanece não some — fica. No
+       * escuro, uma cauda fraca some de verdade, e é lá que o efeito funciona.
        *
-       * A auréola aqui é PRETA (`--pulse-glow`), porque este trecho corre sobre
-       * papel: luz branca sobre creme não se vê, o que se vê é tinta.
+       * Continua dividindo o ciclo de sete segundos com a borda: este trecho
+       * ocupa o primeiro quarto, e a borda só começa depois que ele termina. É
+       * o que garante um par de linhas por vez.
        */}
-      {(
-        [
-          ['cadente-cauda cadente-fio-cauda', 'rgba(11,11,11,0.75)', 2.5],
-          ['cadente-meio cadente-fio-meio', 'rgba(11,11,11,0.8)', 2.5],
-          ['cadente-cabeca cadente-fio-cabeca', 'rgba(11,11,11,0.95)', 2.8],
-        ] as const
-      ).map(([classe, cor, largura]) => (
-        <path
-          key={classe}
-          d={traco}
-          pathLength={1}
-          className={`cadente ${classe}`}
-          stroke={cor}
-          strokeWidth={largura}
-          strokeLinecap="round"
-          style={{ '--pulse-glow': 'rgba(0,0,0,0.45)' } as CSSProperties}
-        />
-      ))}
+      <path
+        d={traco}
+        pathLength={1}
+        className="cadente cadente-cabeca cadente-fio-cabeca"
+        stroke="rgba(11,11,11,0.9)"
+        strokeWidth={2.8}
+        strokeLinecap="round"
+        style={{ '--pulse-glow': 'rgba(0,0,0,0.45)' } as CSSProperties}
+      />
     </svg>
   );
 }

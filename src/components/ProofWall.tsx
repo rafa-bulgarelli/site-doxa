@@ -492,8 +492,8 @@ function ScaleClaims() {
     <>
       {SCALE_CLAIMS.map(({ value, label }) => (
         <div key={label} className="flex flex-col gap-1">
-          <span className="font-serif text-xl leading-none text-white lg:text-3xl">{value}</span>
-          <span className="text-[11px] leading-none text-white/50 lg:text-[12px]">{label}</span>
+          <span className="font-serif text-3xl leading-none text-white lg:text-[2.6rem]">{value}</span>
+          <span className="text-[13px] leading-snug text-white/60 lg:text-[15px]">{label}</span>
         </div>
       ))}
     </>

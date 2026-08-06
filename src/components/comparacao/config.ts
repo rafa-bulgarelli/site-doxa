@@ -171,7 +171,7 @@ export const TROCA_DEPOIS = 'Uma foto e um áudio.';
  * extrato. A lista completa está logo acima, no painel escuro, contada uma a
  * uma; aqui embaixo o que precisa aparecer são as duas ou três que doem mais.
  */
-export const TROCA_ANTES = 'uma agência, tráfego pago…';
+export const TROCA_ANTES = 'uma agência, tráfego pago, social media…';
 
 /**
  * A frase de onde sai o fio até o formulário.

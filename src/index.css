@@ -438,7 +438,7 @@ body {
  * isso que empilha a cauda ATRÁS dela em vez de à frente.
  */
 
-/* A cabeça e as duas caudas do fio, na primeira janela do ciclo. */
+/* O sinal do fio, na primeira janela do ciclo — uma camada só. */
 @keyframes cadente-fio-cabeca {
   0% {
     stroke-dashoffset: 0.04;
@@ -454,50 +454,26 @@ body {
   }
 }
 
-@keyframes cadente-fio-meio {
-  0% {
-    stroke-dashoffset: 0.11;
-    opacity: 0.45;
-  }
-  26% {
-    stroke-dashoffset: -0.94;
-    opacity: 0.45;
-  }
-  26.01%,
-  100% {
-    opacity: 0;
-  }
-}
-
-@keyframes cadente-fio-cauda {
-  0% {
-    stroke-dashoffset: 0.22;
-    opacity: 0.16;
-  }
-  26% {
-    stroke-dashoffset: -0.83;
-    opacity: 0.16;
-  }
-  26.01%,
-  100% {
-    opacity: 0;
-  }
-}
-
-/* As mesmas três camadas na borda, na segunda janela — e só depois que o fio
-   terminou de atravessar. */
-@keyframes cadente-borda-cabeca {
+/*
+ * ── AS QUATRO CAMADAS DA BORDA, na segunda janela do ciclo.
+ *
+ * Cada uma é mais comprida, mais fraca e mais FINA que a anterior, e a
+ * espessura é o que faltava: uma estrela cadente não tem só a cauda mais
+ * apagada, tem a cauda mais estreita. Com três traços de mesma espessura o que
+ * se via eram três riscos sobrepostos; afinando, eles viram um só que se dissolve.
+ */
+@keyframes borda-b1 {
   0%,
   29.99% {
     opacity: 0;
   }
   30% {
-    stroke-dashoffset: 0.04;
-    opacity: 1;
+    stroke-dashoffset: 0.035;
+    opacity: 1.0;
   }
   72% {
-    stroke-dashoffset: -1.01;
-    opacity: 1;
+    stroke-dashoffset: -1.015;
+    opacity: 1.0;
   }
   72.01%,
   100% {
@@ -505,18 +481,18 @@ body {
   }
 }
 
-@keyframes cadente-borda-meio {
+@keyframes borda-b2 {
   0%,
   29.99% {
     opacity: 0;
   }
   30% {
-    stroke-dashoffset: 0.11;
-    opacity: 0.42;
+    stroke-dashoffset: 0.100;
+    opacity: 0.5;
   }
   72% {
-    stroke-dashoffset: -0.94;
-    opacity: 0.42;
+    stroke-dashoffset: -0.950;
+    opacity: 0.5;
   }
   72.01%,
   100% {
@@ -524,18 +500,37 @@ body {
   }
 }
 
-@keyframes cadente-borda-cauda {
+@keyframes borda-b3 {
   0%,
   29.99% {
     opacity: 0;
   }
   30% {
-    stroke-dashoffset: 0.22;
-    opacity: 0.15;
+    stroke-dashoffset: 0.180;
+    opacity: 0.22;
   }
   72% {
-    stroke-dashoffset: -0.83;
-    opacity: 0.15;
+    stroke-dashoffset: -0.870;
+    opacity: 0.22;
+  }
+  72.01%,
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes borda-b4 {
+  0%,
+  29.99% {
+    opacity: 0;
+  }
+  30% {
+    stroke-dashoffset: 0.260;
+    opacity: 0.1;
+  }
+  72% {
+    stroke-dashoffset: -0.790;
+    opacity: 0.1;
   }
   72.01%,
   100% {
@@ -560,37 +555,32 @@ body {
   stroke-dasharray: 0.04 0.96;
 }
 
-.cadente-meio {
-  stroke-dasharray: 0.11 0.89;
-}
-
-.cadente-cauda {
-  stroke-dasharray: 0.22 0.78;
-}
-
 /* Brilho só na cabeça: uma auréola em cada camada empilharia três halos e o
    rastro inteiro viraria um borrão aceso. A cauda é rastro, não é luz. */
 .cadente-fio-cabeca {
   animation-name: cadente-fio-cabeca;
   filter: drop-shadow(0 0 5px var(--pulse-glow, rgba(255, 255, 255, 0.85)));
 }
-.cadente-fio-meio {
-  animation-name: cadente-fio-meio;
-}
-.cadente-fio-cauda {
-  animation-name: cadente-fio-cauda;
-}
 
-.cadente-borda-cabeca {
-  animation-name: cadente-borda-cabeca;
+/* Brilho só na cabeça: uma auréola por camada empilharia quatro halos e o
+   rastro inteiro viraria um borrão aceso. A cauda é rastro, não é luz. */
+.borda-c1 {
+  stroke-dasharray: 0.035 0.965;
+  animation-name: borda-b1;
   filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.95))
-    drop-shadow(0 0 18px rgba(255, 255, 255, 0.5));
+    drop-shadow(0 0 16px rgba(255, 255, 255, 0.55));
 }
-.cadente-borda-meio {
-  animation-name: cadente-borda-meio;
+.borda-c2 {
+  stroke-dasharray: 0.1 0.9;
+  animation-name: borda-b2;
 }
-.cadente-borda-cauda {
-  animation-name: cadente-borda-cauda;
+.borda-c3 {
+  stroke-dasharray: 0.18 0.82;
+  animation-name: borda-b3;
+}
+.borda-c4 {
+  stroke-dasharray: 0.26 0.74;
+  animation-name: borda-b4;
 }
 
 @media (prefers-reduced-motion: reduce) {

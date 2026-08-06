@@ -289,6 +289,14 @@ export function Ladainha() {
       <AnimatePresence>
         {apontado != null && podeSeguir && (
           <motion.div
+            /*
+             * A chave é o ITEM, e é ela que faz o salto acontecer em todo
+             * hover. Sem chave, apontar outro item trocava só o conteúdo de um
+             * elemento que continuava montado — e `initial` só roda quando algo
+             * entra em cena. O efeito acontecia uma vez, na primeira lâmina da
+             * sessão, e nunca mais.
+             */
+            key={apontado.nome}
             aria-hidden
             className="pointer-events-none fixed left-0 top-0 z-40"
             style={{ x, y, width: LAMINA.w, height: LAMINA.h }}
