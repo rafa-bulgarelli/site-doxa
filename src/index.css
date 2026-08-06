@@ -416,50 +416,187 @@ body {
 }
 
 /*
- * O sinal contornando o cartão do pedido, depois de chegar pelo fio.
+ * ── O SINAL DA SEÇÃO DE COMPARAÇÃO, EM UM CICLO SÓ.
  *
- * Um traço curto correndo por metade do contorno. Os dois caminhos partem do
- * mesmo ponto — o meio da borda esquerda, que é onde o fio aterrissa — e vão
- * por lados opostos, então o que se vê é o sinal se ABRINDO em dois, dando a
- * volta e se reencontrando na borda direita.
+ * São dois trechos de um mesmo percurso: o fio que sai da frase e atravessa até
+ * o cartão, e os dois ramos que contornam o cartão depois que ele chega. O dono
+ * pediu que nunca houvesse mais de um par em cena — enquanto os ramos não se
+ * reencontram e apagam, nada dispara de novo, nem no papel nem na borda.
  *
- * O ciclo é de 4,5s, o mesmo de `.connector-pulse`: os dois pulsos são o mesmo
- * sinal e não podem andar em velocidades diferentes. O atraso é o tempo que o
- * pulso do fio leva para atravessar até o cartão, e é o que faz um parecer virar
- * o outro em vez de dois efeitos acontecendo perto.
+ * Isso é feito com UM ciclo de sete segundos partilhado pelas duas animações,
+ * em vez de um controlador em JavaScript. Cada camada roda os mesmos 7s e só se
+ * mostra na sua janela: o fio de 0 a 26%, a borda de 30 a 72%, e o resto é o
+ * silêncio antes do próximo disparo. Duas animações CSS de mesma duração,
+ * iniciadas no mesmo carregamento, não se desencontram — e nada precisa de um
+ * temporizador vigiando o outro.
  *
- * `linear`, como todo sinal nesta página — um pulso que acelera e freia é um
- * objeto sendo movido, não uma corrente passando.
- *
- * O brilho sangra para os dois lados do traço, e é assim que o miolo do cartão
- * se ilumina: sem uma segunda camada de luz por cima do texto, que é o que
- * lavaria a pergunta que a pessoa está lendo.
+ * O RASTRO é o que faz a estrela cadente. Um traço uniforme é um risco andando;
+ * uma cabeça curta e opaca seguida de dois traços cada vez mais longos e mais
+ * fracos é uma coisa em movimento deixando marca no caminho. As três camadas
+ * correm na mesma velocidade e terminam no mesmo ponto — os `stroke-dashoffset`
+ * diferem exatamente pelo tanto que cada uma é mais comprida que a cabeça, e é
+ * isso que empilha a cauda ATRÁS dela em vez de à frente.
  */
-@keyframes borda-viva {
-  from {
-    stroke-dashoffset: 0.22;
+
+/* A cabeça e as duas caudas do fio, na primeira janela do ciclo. */
+@keyframes cadente-fio-cabeca {
+  0% {
+    stroke-dashoffset: 0.04;
+    opacity: 1;
   }
-  to {
-    stroke-dashoffset: -1;
+  26% {
+    stroke-dashoffset: -1.01;
+    opacity: 1;
+  }
+  26.01%,
+  100% {
+    opacity: 0;
   }
 }
 
-.borda-viva {
+@keyframes cadente-fio-meio {
+  0% {
+    stroke-dashoffset: 0.11;
+    opacity: 0.45;
+  }
+  26% {
+    stroke-dashoffset: -0.94;
+    opacity: 0.45;
+  }
+  26.01%,
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes cadente-fio-cauda {
+  0% {
+    stroke-dashoffset: 0.22;
+    opacity: 0.16;
+  }
+  26% {
+    stroke-dashoffset: -0.83;
+    opacity: 0.16;
+  }
+  26.01%,
+  100% {
+    opacity: 0;
+  }
+}
+
+/* As mesmas três camadas na borda, na segunda janela — e só depois que o fio
+   terminou de atravessar. */
+@keyframes cadente-borda-cabeca {
+  0%,
+  29.99% {
+    opacity: 0;
+  }
+  30% {
+    stroke-dashoffset: 0.04;
+    opacity: 1;
+  }
+  72% {
+    stroke-dashoffset: -1.01;
+    opacity: 1;
+  }
+  72.01%,
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes cadente-borda-meio {
+  0%,
+  29.99% {
+    opacity: 0;
+  }
+  30% {
+    stroke-dashoffset: 0.11;
+    opacity: 0.42;
+  }
+  72% {
+    stroke-dashoffset: -0.94;
+    opacity: 0.42;
+  }
+  72.01%,
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes cadente-borda-cauda {
+  0%,
+  29.99% {
+    opacity: 0;
+  }
+  30% {
+    stroke-dashoffset: 0.22;
+    opacity: 0.15;
+  }
+  72% {
+    stroke-dashoffset: -0.83;
+    opacity: 0.15;
+  }
+  72.01%,
+  100% {
+    opacity: 0;
+  }
+}
+
+/*
+ * O comprimento de cada camada, em fração do caminho. `pathLength="1"` no
+ * elemento é o que torna estes números independentes do tamanho: servem para o
+ * fio de duzentos pixels e para o contorno de um cartão que muda de altura a
+ * cada passo do formulário.
+ */
+.cadente {
+  animation-duration: 7s;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  animation-fill-mode: both;
+}
+
+.cadente-cabeca {
+  stroke-dasharray: 0.04 0.96;
+}
+
+.cadente-meio {
+  stroke-dasharray: 0.11 0.89;
+}
+
+.cadente-cauda {
   stroke-dasharray: 0.22 0.78;
-  /*
-   * Duas auréolas, e não uma maior: um `drop-shadow` só, aberto o bastante para
-   * o brilho se espalhar, perde o núcleo — o traço vira uma mancha sem fio
-   * dentro. Uma auréola curta e quase branca mantém a linha nítida, e uma larga
-   * e fraca é a fumaça em volta dela. Junto é o que o dono chamou de esfumaçado.
-   */
+}
+
+/* Brilho só na cabeça: uma auréola em cada camada empilharia três halos e o
+   rastro inteiro viraria um borrão aceso. A cauda é rastro, não é luz. */
+.cadente-fio-cabeca {
+  animation-name: cadente-fio-cabeca;
+  filter: drop-shadow(0 0 5px var(--pulse-glow, rgba(255, 255, 255, 0.85)));
+}
+.cadente-fio-meio {
+  animation-name: cadente-fio-meio;
+}
+.cadente-fio-cauda {
+  animation-name: cadente-fio-cauda;
+}
+
+.cadente-borda-cabeca {
+  animation-name: cadente-borda-cabeca;
   filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.95))
     drop-shadow(0 0 18px rgba(255, 255, 255, 0.5));
-  animation: borda-viva 4.5s linear 2.4s infinite both;
+}
+.cadente-borda-meio {
+  animation-name: cadente-borda-meio;
+}
+.cadente-borda-cauda {
+  animation-name: cadente-borda-cauda;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .borda-viva {
-    display: none;
+  .cadente {
+    animation: none;
+    opacity: 0;
   }
 }
 

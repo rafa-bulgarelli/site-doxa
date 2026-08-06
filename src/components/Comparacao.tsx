@@ -91,14 +91,18 @@ function Selo({ prefixo, escuro = false }: { prefixo: string; escuro?: boolean }
             se vê é um piscar intermitente. Defasados, sempre há um anel
             nascendo enquanto o outro apaga, e a leitura passa de "pisca" para
             "está transmitindo". */}
-        {[0, 0.9].map((atraso) => (
+        {[0, 1.6].map((atraso) => (
           <motion.span
             key={atraso}
             className="absolute inline-flex h-full w-full rounded-full"
             style={{ background: cor }}
-            animate={imovel ? undefined : { scale: [1, 3.4], opacity: [0.55, 0] }}
+            /* Lento e longo, a pedido do dono: em 1,8s o anel saltava e sumia,
+               e um LED que bate rápido lê como alarme. Em 3,2s ele se abre, vai
+               mais longe e desvanece — respira em vez de piscar, que é o que
+               diferencia "está ligado" de "algo está errado". */
+            animate={imovel ? undefined : { scale: [1, 4.2], opacity: [0.5, 0] }}
             transition={{
-              duration: 1.8,
+              duration: 3.2,
               ease: 'easeOut',
               repeat: Infinity,
               delay: atraso,

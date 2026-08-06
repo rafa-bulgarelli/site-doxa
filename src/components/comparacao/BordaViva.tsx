@@ -86,24 +86,57 @@ export function BordaViva({ alvoRef }: BordaVivaProps) {
       fill="none"
       aria-hidden="true"
     >
-      {[true, false].map((topo) => (
-        <path
-          key={topo ? 'topo' : 'base'}
-          d={meiaVolta(caixa.largura, caixa.altura, topo)}
-          /*
-           * `pathLength` normaliza o caminho para 1, e é o que torna este
-           * desenho independente do tamanho: o traço passa a ser uma FRAÇÃO do
-           * contorno, então o mesmo `stroke-dasharray` serve para o cartão de
-           * uma pergunta e para o do pagamento, que é bem mais alto. Sem isso,
-           * cada mudança de altura exigiria recalcular o traço em pixels.
-           */
-          pathLength={1}
-          className="borda-viva"
-          stroke="rgba(255,255,255,0.9)"
-          strokeWidth={1.5}
-          strokeLinecap="round"
-        />
-      ))}
+      {[true, false].map((topo) => {
+        const d = meiaVolta(caixa.largura, caixa.altura, topo);
+        return (
+          <g key={topo ? 'topo' : 'base'}>
+            {/*
+             * O contorno em repouso, e ele é a correção de um defeito real: sem
+             * uma borda desenhada o tempo todo, o único traço no perímetro era o
+             * pulso — e quando ele saía do caminho, o cartão ficava sem nada ali.
+             * A caixa não mudava de tamanho, mas o OLHO lê um contorno que some
+             * como a caixa se mexendo. Um fio fraco permanente é a moldura sobre
+             * a qual o sinal corre.
+             */}
+            <path d={d} stroke="rgba(255,255,255,0.13)" strokeWidth={1} />
+
+            {/*
+             * As três camadas do rastro, do mais fraco ao mais forte — a ordem
+             * importa: a cabeça é desenhada por último e fica por cima das
+             * caudas, que é o que a mantém nítida.
+             *
+             * `pathLength` normaliza o caminho para 1, e é o que torna o
+             * desenho independente do tamanho: o traço passa a ser uma FRAÇÃO
+             * do contorno, então os mesmos números servem para o cartão de uma
+             * pergunta e para o do pagamento, que é bem mais alto.
+             */}
+            <path
+              d={d}
+              pathLength={1}
+              className="cadente cadente-cauda cadente-borda-cauda"
+              stroke="rgba(255,255,255,0.9)"
+              strokeWidth={1.5}
+              strokeLinecap="round"
+            />
+            <path
+              d={d}
+              pathLength={1}
+              className="cadente cadente-meio cadente-borda-meio"
+              stroke="rgba(255,255,255,0.95)"
+              strokeWidth={1.5}
+              strokeLinecap="round"
+            />
+            <path
+              d={d}
+              pathLength={1}
+              className="cadente cadente-cabeca cadente-borda-cabeca"
+              stroke="#FFFFFF"
+              strokeWidth={1.8}
+              strokeLinecap="round"
+            />
+          </g>
+        );
+      })}
     </svg>
   );
 }

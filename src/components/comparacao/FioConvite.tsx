@@ -118,21 +118,36 @@ export function FioConvite({ containerRef, deRef, paraRef }: FioConviteProps) {
         strokeWidth={2}
         style={{ animation: 'connector-in 1.2s 0.9s ease-out both' }}
       />
-      {/* O sinal correndo por ele. Sai depois de o fio existir inteiro — um
-          pulso num fio pela metade lê como falha de desenho. */}
-      <path
-        d={traco}
-        className="connector-pulse"
-        stroke="rgba(11,11,11,0.75)"
-        strokeWidth={2.5}
-        strokeLinecap="round"
-        style={
-          {
-            '--pulse-glow': 'rgba(0,0,0,0.4)',
-            animationDelay: '1.9s',
-          } as CSSProperties
-        }
-      />
+
+      {/*
+       * O sinal, em três camadas: cauda, meio e cabeça, nessa ordem de pintura.
+       *
+       * Divide o ciclo de sete segundos com a borda do cartão — este trecho
+       * ocupa o primeiro quarto dele, e a borda só começa depois que ele
+       * termina. É o que garante o que o dono pediu: um par de linhas por vez,
+       * e nenhum disparo novo enquanto o anterior não se reencontrou e apagou.
+       *
+       * A auréola aqui é PRETA (`--pulse-glow`), porque este trecho corre sobre
+       * papel: luz branca sobre creme não se vê, o que se vê é tinta.
+       */}
+      {(
+        [
+          ['cadente-cauda cadente-fio-cauda', 'rgba(11,11,11,0.75)', 2.5],
+          ['cadente-meio cadente-fio-meio', 'rgba(11,11,11,0.8)', 2.5],
+          ['cadente-cabeca cadente-fio-cabeca', 'rgba(11,11,11,0.95)', 2.8],
+        ] as const
+      ).map(([classe, cor, largura]) => (
+        <path
+          key={classe}
+          d={traco}
+          pathLength={1}
+          className={`cadente ${classe}`}
+          stroke={cor}
+          strokeWidth={largura}
+          strokeLinecap="round"
+          style={{ '--pulse-glow': 'rgba(0,0,0,0.45)' } as CSSProperties}
+        />
+      ))}
     </svg>
   );
 }

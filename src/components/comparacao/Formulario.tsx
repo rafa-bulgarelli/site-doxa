@@ -268,9 +268,16 @@ export function Formulario({ cartaoRef }: { cartaoRef: RefObject<HTMLDivElement>
                   initial={parado ? undefined : { opacity: 0, y: -8 }}
                   animate={naTela || parado ? { opacity: 1, y: 0 } : undefined}
                   transition={{ duration: 0.45, ease: EASE, delay: 0.35 + i * 0.09 }}
-                  className={`flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-[12px] leading-none transition-colors duration-500 ${
+                  /* `whitespace-nowrap` e peso de fonte IGUAL nos três
+                     estados. A etapa da vez tinha `font-medium`, e uma pílula
+                     que engorda ao ficar ativa muda de largura — com `flex-wrap`
+                     na fila, isso é capaz de empurrar a terceira para a linha de
+                     baixo e mudar a altura do cartão inteiro no meio do
+                     preenchimento. O destaque vem do fundo, que não ocupa
+                     espaço nenhum. */
+                  className={`flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full border px-3 py-1.5 text-[12px] leading-none transition-colors duration-500 ${
                     agora
-                      ? 'border-transparent bg-[#F4F1E8] font-medium text-[#0B0B0B]'
+                      ? 'border-transparent bg-[#F4F1E8] text-[#0B0B0B]'
                       : feito
                         ? 'text-[#F4F1E8]'
                         : 'border-white/[0.12] text-white/30'
