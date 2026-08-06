@@ -213,14 +213,18 @@ export function Ladainha() {
 
   return (
     <>
-      {/* Os handlers vivem no envelope, e não no parágrafo da conta.
-          
-          Presos ao parágrafo, sair pelo bloco do tempo — que é um irmão, fora
-          dele — nunca disparava o `mouseleave`, e a lâmina ficava travada na
-          tela depois que o ponteiro já tinha ido embora. */}
-      <div onMouseMove={seguir} onMouseLeave={() => setApontado(null)}>
+      {/* Os handlers vivem no parágrafo, que voltou a ser a caixa de TUDO que
+          se aponta.
+
+          Eles moraram num envelope por um tempo, e por um motivo real: o tempo
+          era um bloco irmão, fora do parágrafo, e sair da conta por ele nunca
+          disparava o `mouseleave` — a lâmina ficava travada na tela depois de o
+          ponteiro já ter ido embora. Com o tempo de volta para dentro da conta,
+          o envelope não guarda mais nada que o parágrafo não guarde. */}
       <p
         ref={ref}
+        onMouseMove={seguir}
+        onMouseLeave={() => setApontado(null)}
         // Justificado, na SANS, e com o vão horizontal igual ao vertical.
         //
         // `word-spacing` de 0,75em com `line-height` 1,75 é a conta que o dono
@@ -272,33 +276,39 @@ export function Ladainha() {
             </Fragment>
           );
         })}
-      </p>
 
-      {/* O tempo, fora do parágrafo.
-          
-          Ele saiu de dentro da conta para poder ter margem: dentro, era um item
-          em linha, e margem vertical em elemento em linha não empurra nada — a
-          caixa da linha ignora. Fora, é um bloco, e ganha o mesmo respiro que
-          separa os outros blocos do painel. Continua apontável e continua sem
-          número: as vinte e cinco se contam, esta é a que não tem preço. */}
-      <motion.p
-        initial={{ opacity: 0 }}
-        animate={naTela ? { opacity: 1 } : undefined}
-        transition={{ duration: 0.6, ease: EASE, delay: ITENS.length * CASCATA + 0.2 }}
-        className="mt-7 font-serif text-[1.7rem] leading-none text-[#F4F1E8] md:mt-10 md:text-[2.4rem]"
-      >
-        {/* O gatilho é o TEXTO, não o parágrafo. O parágrafo é um bloco de
-            largura inteira: com o `mouseenter` nele, a lâmina do tempo aparecia
-            com o ponteiro a mil pixels da palavra, em qualquer ponto vazio da
-            linha. */}
-        <span
+        {/* ── O TEMPO, na fila dos outros — a pedido do dono.
+
+            Ele viveu um tempo como bloco solto embaixo da conta, para poder ter
+            margem: em linha, margem vertical não empurra nada, porque a caixa da
+            linha ignora. O preço daquilo era a leitura — separado por um vão, o
+            tempo virava uma frase de fecho, um comentário sobre a lista. Na
+            fila, ele é o ITEM VINTE E SEIS: vem depois do último, na mesma
+            respiração, e a conta termina cobrando uma coisa que não estava
+            escrita na nota.
+
+            Formatação dos outros, características dele. Do parágrafo ele herda o
+            que faz um item ser item: `inline-block`, sem quebra, e o vão devolvido
+            ao normal para a justificação não esticar por dentro da frase. Dele
+            continua tudo o que o distinguia — a serifa contra a sans da fatura, o
+            corpo grande, o creme cheio, e nenhum número na frente. As vinte e
+            cinco se contam; esta é a que não tem preço.
+
+            O gatilho é o próprio texto, e é a mesma razão dos outros itens: num
+            bloco de largura inteira, a lâmina apareceria com o ponteiro a mil
+            pixels da palavra, em qualquer ponto vazio da linha. */}
+        <motion.span
+          initial={{ opacity: 0 }}
+          animate={naTela ? { opacity: 1 } : undefined}
+          transition={{ duration: 0.6, ease: EASE, delay: ITENS.length * CASCATA + 0.2 }}
           onMouseEnter={apontar(TEMPO)}
-          className={`inline-block ${podeSeguir ? 'cursor-default' : ''}`}
+          className={`inline-block whitespace-nowrap [word-spacing:normal] font-serif text-[1.7rem] leading-none text-[#F4F1E8] md:text-[2.4rem] ${
+            podeSeguir ? 'cursor-default' : ''
+          }`}
         >
           {TEMPO.nome}
-        </span>
-      </motion.p>
-      </div>
+        </motion.span>
+      </p>
 
       {/* Fora do parágrafo e `fixed`: presa ao fluxo, a lâmina seria recortada
           pelo painel e não poderia acompanhar a mão até a borda da tela. */}
