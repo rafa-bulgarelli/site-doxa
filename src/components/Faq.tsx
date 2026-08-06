@@ -1,11 +1,13 @@
 import { useRef, useState } from 'react';
 import { AnimatePresence, motion, useInView, useReducedMotion } from 'framer-motion';
 import { X } from 'lucide-react';
+import { Bolinhas, type Ponto } from './faq/Bolinhas';
 import { CampoPergunta, MINIMA } from './faq/CampoPergunta';
 import { Descida, VIAGEM } from './faq/Descida';
 import { Revela } from './faq/Revela';
 import { encontra } from './faq/busca';
 import { ABERTURA, DUVIDAS, SEM_RESPOSTA, type Duvida } from './faq/config';
+import { CORES, SEM_COR, corDaDuvida } from './faq/cores';
 import { MotionButton } from './ui/MotionButton';
 
 const EASE = [0.16, 1, 0.3, 1] as const;
@@ -30,6 +32,19 @@ const EASE = [0.16, 1, 0.3, 1] as const;
  */
 const DESCIDA = VIAGEM * 1000;
 
+/**
+ * A faixa da seção antes e depois da primeira pergunta.
+ *
+ * Fechada ela é a coluna centrada de sempre: sem resposta nenhuma na tela, uma
+ * caixa de pergunta esticada por 1.400 pixels não tem o que fazer com eles — e
+ * o campo, que é o único objeto da seção, ficaria com a proporção de um rodapé.
+ * Aberta ela vai para `max-w-screen-2xl`, que é a MESMA faixa da comparação e do
+ * "como funciona": com as duas colunas em cena, a seção precisa de toda a
+ * largura da página, e passa a alinhar com o resto dela.
+ */
+const FECHADA = '48rem';
+const ABERTA = '96rem';
+
 /** A cadência da abertura — a mesma do resto do site. */
 const TRANSICAO = {
   transitionDuration: `${DESCIDA}ms`,
@@ -48,11 +63,6 @@ function comoTitulo(texto: string) {
   return texto.charAt(0).toUpperCase() + texto.slice(1);
 }
 
-/** Dois dígitos sempre: "02 de 06" tem a largura de "12 de 06" e não pula. */
-function dois(numero: number) {
-  return String(numero).padStart(2, '0');
-}
-
 /** Uma troca: o que foi perguntado e o que foi respondido. */
 interface Troca {
   id: number;
@@ -60,6 +70,8 @@ interface Troca {
   paragrafos: readonly string[];
   /** A resposta é o desvio para o consultor, e não uma resposta de fato. */
   escape: boolean;
+  /** A mesma que o ponto desta dúvida tem no cabeçalho — é o que liga os dois. */
+  cor: string;
 }
 
 /**
@@ -85,10 +97,12 @@ interface Troca {
  *
  * ─── O DESENHO: CABEÇALHO EM CIMA, DUAS COLUNAS EMBAIXO ──────────────────────
  *
- * A seção usa `max-w-screen-2xl`, que é a mesma faixa da comparação e do "como
- * funciona" — o rótulo, o título e o campo começam na MESMA linha vertical dos
- * títulos das outras seções, e a página passa a ter uma margem só. A largura não
- * se mexe mais: o que abre é a divisão interna, não o quadro.
+ * Fechada, a seção é a coluna de 48rem CENTRADA que sempre foi: um campo sozinho
+ * não tem o que fazer com a largura da página. Na primeira pergunta ela vai para
+ * `max-w-screen-2xl` — a mesma faixa da comparação e do "como funciona" —, e é
+ * só a partir daí que o rótulo, o título e o campo passam a nascer na MESMA
+ * linha vertical dos títulos das outras seções. O alinhamento com a página é
+ * consequência de haver duas colunas, não um estado permanente.
  *
  * O cabeçalho fica FORA do grid, em largura total, e isso não é arranjo visual —
  * é o que faz o sinal ter para onde ir. Com o título dentro da coluna esquerda,
@@ -148,6 +162,10 @@ export function Faq() {
       pergunta,
       paragrafos: achada?.resposta ?? [SEM_RESPOSTA.titulo, SEM_RESPOSTA.corpo],
       escape: achada == null,
+      // Pela POSIÇÃO da dúvida no arquivo, e não por uma cor guardada nela: a
+      // ordem das seis é o arco do anel, e é ela que decide qual tom cada uma
+      // recebe. Quem não foi achada fica com o creme do consultor.
+      cor: achada == null ? SEM_COR : corDaDuvida(DUVIDAS.indexOf(achada)),
     };
 
     // Perguntar durante o fechamento cancela o fechamento: sem isto, a coluna
@@ -198,6 +216,22 @@ export function Faq() {
   const atalhos = DUVIDAS.filter((d) => !respondidas.has(d.pergunta));
   const cobertas = DUVIDAS.length - atalhos.length;
 
+  /* Os pontos do cabeçalho, na ordem DO ARQUIVO e não na ordem em que foram
+     perguntados: é essa ordem que faz o âmbar vir sempre antes do coral,
+     independentemente de por onde a pessoa começou. Os pontos se acumulam da
+     esquerda para a direita como uma régua que se preenche, e não como um
+     histórico embaralhado. */
+  const lidas: readonly Ponto[] = DUVIDAS.map((duvida, i) => ({ duvida, i }))
+    .filter(({ duvida }) => respondidas.has(duvida.pergunta))
+    .map(({ duvida, i }) => ({ chave: duvida.chave, cor: corDaDuvida(i) }));
+
+  /* Os pontos da lista de respostas, do mais antigo para o mais novo. `trocas`
+     guarda a mais nova primeiro porque é assim que a pilha é lida; aqui a ordem
+     se inverte, porque uma régua que cresce cresce para a frente. */
+  const feitas: readonly Ponto[] = [...trocas]
+    .reverse()
+    .map((troca) => ({ chave: String(troca.id), cor: troca.cor }));
+
   const entrada = parado
     ? {}
     : {
@@ -220,62 +254,56 @@ export function Faq() {
           tela. A textura da seção passa a ser só a do campo, que é uma caixa e
           se comporta como as outras caixas do site. */}
 
-      <div className="relative mx-auto w-full max-w-screen-2xl">
-        {/* ─── O CABEÇALHO, em largura total ──────────────────────────────── */}
+      <div
+        className="relative mx-auto w-full transition-[max-width] motion-reduce:transition-none"
+        style={{ ...TRANSICAO, maxWidth: aberto ? ABERTA : FECHADA }}
+      >
+        {/* ─── O CABEÇALHO ────────────────────────────────────────────────── */}
         <motion.div
           initial={parado ? undefined : { opacity: 0, y: 16 }}
           animate={naTela ? { opacity: 1, y: 0 } : undefined}
           transition={{ duration: 0.6, ease: EASE }}
         >
-          {/* O rótulo, e ele agora CONTA.
+          {/* O rótulo, em SERIFA e aceso.
               Saiu daqui o ponto que pulsava: um LED em loop eterno num fundo
               preto liso é movimento sem informação, e o dono viu isso antes de
-              qualquer argumento. No lugar entrou a única coisa que esta seção
-              tem de verdade para dizer sobre si mesma — quantas das respostas
-              escritas já foram lidas. Um contador não pisca à toa: ele só se
-              mexe quando alguém pergunta.
+              qualquer argumento. E saiu também o "01 de 06" que o substituiu:
+              dois algarismos pedem para ser lidos e comparados, enquanto seis
+              pontos dizem o total num relance.
 
-              O brilho é o `texto-aceso-fraco` do site, e não um glow novo. É o
-              mesmo par de camadas — núcleo curto que engorda a letra, halo largo
-              que sangra no preto — um passo abaixo da palavra acesa da
-              comparação, porque um rótulo de doze pixels que brilha igual a uma
-              manchete de setenta some com a hierarquia da página inteira. */}
-          <span className="flex items-baseline gap-2.5">
-            <span className="texto-aceso-fraco text-[12px] font-medium uppercase tracking-[0.24em] text-[#F4F1E8]">
+              A serifa é a do site — a mesma dos títulos —, e não a sans dos
+              rótulos das outras seções. É o que tira "FAQ" da categoria de
+              etiqueta e o põe na de nome próprio da seção. Em `texto-aceso`, o
+              brilho forte: no `fraco` ele sumia contra o preto, que foi
+              exatamente a reclamação. */}
+          <span className="flex items-center gap-4">
+            <span className="texto-aceso font-serif text-[19px] uppercase leading-none tracking-[0.2em] text-[#F4F1E8]">
               {ABERTURA.rotulo}
             </span>
-            <AnimatePresence>
-              {cobertas > 0 && (
-                <motion.span
-                  key="contador"
-                  initial={parado ? undefined : { opacity: 0, y: -4 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -4 }}
-                  transition={{ duration: 0.3, ease: EASE }}
-                  className="text-[11px] uppercase tracking-[0.2em] text-white/30 tabular-nums"
-                >
-                  · {dois(cobertas)} de {dois(DUVIDAS.length)}
-                </motion.span>
-              )}
-            </AnimatePresence>
+            <Bolinhas pontos={lidas} parado={parado} />
           </span>
 
-          {/* O traço, que é o contador em forma de barra. Ele se estende uma vez
-              quando a seção entra na tela e depois só cresce por dentro, a cada
-              resposta lida. Nenhum dos dois movimentos se repete — que é a
-              diferença entre um estado e um enfeite. */}
+          {/* A barra, que é o mesmo progresso em forma de régua. Ela se estende
+              uma vez quando a seção entra na tela e depois só é PREENCHIDA, a
+              cada resposta lida — o gradiente por baixo é fixo em 13rem, então
+              o que cresce revela as cores na ordem em que os pontos acendem, em
+              vez de espremer as seis dentro do pedaço já ganho. */}
           <motion.div
             aria-hidden
-            className="mt-3 h-px w-full max-w-[13rem] origin-left bg-white/[0.12]"
+            className="mt-3.5 h-[3px] w-full max-w-[13rem] origin-left overflow-hidden rounded-full bg-white/[0.10]"
             initial={parado ? undefined : { scaleX: 0 }}
             animate={naTela ? { scaleX: 1 } : undefined}
             transition={{ duration: 0.7, ease: EASE, delay: 0.15 }}
           >
             <motion.div
-              className="h-px w-full origin-left bg-[#F4F1E8]"
+              className="h-full rounded-full"
+              style={{
+                backgroundImage: `linear-gradient(90deg, ${CORES.join(', ')})`,
+                backgroundSize: '13rem 100%',
+              }}
               initial={false}
-              animate={{ scaleX: cobertas / DUVIDAS.length }}
-              transition={{ duration: 0.5, ease: EASE }}
+              animate={{ width: `${(cobertas / DUVIDAS.length) * 100}%` }}
+              transition={parado ? { duration: 0 } : { duration: 0.55, ease: EASE }}
             />
           </motion.div>
 
@@ -424,14 +452,24 @@ export function Faq() {
                   transition={{ duration: 0.35, ease: EASE }}
                   className="flex items-center justify-between border-b border-white/[0.08] pb-3"
                 >
-                  <span className="text-[13px] text-white/35">
-                    {trocas.length} {trocas.length === 1 ? 'resposta' : 'respostas'}
+                  {/* Os mesmos pontos do cabeçalho, com as mesmas cores: é o que
+                      diz, sem legenda, que a resposta de baixo é aquele ponto de
+                      cima. O texto fica ao lado deles porque o botão precisa de
+                      sujeito — "Limpar" sozinho não diz o que vai embora. */}
+                  <span className="flex items-center gap-3">
+                    <Bolinhas pontos={feitas} parado={parado} tamanho="h-1.5 w-1.5" />
+                    <span className="text-[13px] text-white/35">
+                      {trocas.length} {trocas.length === 1 ? 'resposta' : 'respostas'}
+                    </span>
                   </span>
 
+                  {/* Branco e cheio, e é o único botão sólido desta seção. Ele
+                      não disputa com o de enviar: quando este existe, o campo
+                      já foi usado, e a ação que sobra na tela é desfazer. */}
                   <button
                     type="button"
                     onClick={limpar}
-                    className="group flex items-center gap-1.5 rounded-full border border-white/[0.14] py-1.5 pl-3 pr-3.5 text-[13px] text-white/50 transition-colors hover:border-white/40 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50"
+                    className="group flex shrink-0 items-center gap-1.5 rounded-full bg-[#F4F1E8] py-1.5 pl-3 pr-3.5 text-[13px] font-medium text-[#0B0B0B] transition-colors hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black"
                   >
                     {/* O X gira meia volta com a mão em cima. É o único movimento
                         do botão, e ele antecipa o que o clique faz: alguma coisa

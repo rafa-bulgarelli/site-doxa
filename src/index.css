@@ -913,3 +913,80 @@ body {
 .noise-overlay {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
+
+/*
+ * ─── O ANEL DO CAMPO DE PERGUNTA ─────────────────────────────────────────────
+ *
+ * A borda que acende e gira sob a mão. Ela já existiu aqui uma vez, correndo
+ * eternamente, e saiu a pedido do dono — com razão: uma luz que nunca para não
+ * é resposta a nada, é um objeto pedindo atenção sozinho num fundo preto. Volta
+ * agora com a única regra que faltava: só existe sob a MÃO ou sob o CURSOR de
+ * texto. Fora disso o campo é a caixa quieta de sempre.
+ *
+ * Isso também é o que a torna barata. Sem hover e sem foco não há `animation`
+ * declarada — o navegador não tem nenhum quadro para calcular, e a seção volta
+ * a custar zero quando ninguém está mexendo nela.
+ *
+ * `@property` é o que permite animar o ÂNGULO de um `conic-gradient`. Sem
+ * registrar o tipo, `--anel-siri` seria só um texto para o CSS e saltaria de 0
+ * a 360 sem passar pelo meio; registrado como `<angle>`, ele interpola. É
+ * também por isso que o anel NÃO é um box girando: um retângulo em rotação
+ * mostraria as quinas passando por dentro da máscara, e o que se veria seria
+ * uma hélice, não uma luz correndo pela borda.
+ *
+ * As cores vêm de fora, em `--anel-siri-cores`, escritas pelo componente a
+ * partir de `faq/cores.ts`. Repetidas aqui, o arco do anel e os pontos do
+ * cabeçalho divergiriam no primeiro ajuste de paleta.
+ *
+ * A máscara é o recorte clássico de "só a borda": dois gradientes iguais, um
+ * limitado ao content-box e outro ao box inteiro, subtraídos um do outro. O que
+ * sobra é exatamente o anel de um pixel que o `padding` define.
+ */
+@property --anel-siri {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes anel-siri-gira {
+  to {
+    --anel-siri: 360deg;
+  }
+}
+
+.anel-siri::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: conic-gradient(from var(--anel-siri), var(--anel-siri-cores));
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 420ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* `focus-within` e não `focus`: quem está com o cursor no campo é o textarea,
+   e é a caixa em volta dele que carrega o anel. */
+.anel-siri:hover::before,
+.anel-siri:focus-within::before {
+  opacity: 1;
+  animation: anel-siri-gira 4s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* O anel continua acendendo — ele é o estado "esta caixa está sob a sua
+     mão", e essa informação não é decoração. O que para é a volta. */
+  .anel-siri:hover::before,
+  .anel-siri:focus-within::before {
+    animation: none;
+  }
+}

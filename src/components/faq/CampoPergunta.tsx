@@ -1,6 +1,18 @@
-import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useRef, useState, type CSSProperties } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { ArrowUp } from 'lucide-react';
+import { CORES } from './cores';
+
+/**
+ * As cores do anel, entregues ao CSS.
+ *
+ * A primeira volta no fim: um `conic-gradient` não fecha sozinho, e sem repetir
+ * a cor inicial haveria uma emenda dura entre o último e o primeiro tom —
+ * girando, ela apareceria como uma costura dando voltas na borda.
+ */
+const ANEL: CSSProperties = {
+  ['--anel-siri-cores' as string]: [...CORES, CORES[0]].join(', '),
+};
 
 interface CampoPerguntaProps {
   valor: string;
@@ -160,13 +172,16 @@ export function CampoPergunta({ valor, exemplos, aoDigitar, aoEnviar }: CampoPer
        parece quebrado. */
     <div
       onClick={() => campoRef.current?.focus()}
-      className="relative rounded-2xl border border-white/[0.12] bg-doxa-surface transition-colors focus-within:border-white/30"
+      style={ANEL}
+      className="anel-siri relative rounded-2xl border border-white/[0.12] bg-doxa-surface transition-colors focus-within:border-white/30"
     >
       <div className="dot-grid pointer-events-none absolute inset-0 rounded-2xl opacity-25" />
 
-      {/* O contorno animado saiu daqui a pedido do dono. O campo continua
-          respondendo ao foco pela borda que clareia — transição de cor, não
-          animação: o que estava sobrando era movimento, não resposta. */}
+      {/* O contorno animado voltou, com a regra que faltava na primeira vez:
+          ele só existe sob a MÃO ou sob o cursor de texto (`.anel-siri`, no
+          index.css). Correndo eternamente, era movimento sem resposta e saiu
+          daqui a pedido do dono; preso ao hover e ao foco, ele passa a dizer
+          uma coisa verdadeira — esta caixa está esperando você. */}
 
       <textarea
         ref={campoRef}
