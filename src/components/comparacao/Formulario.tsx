@@ -207,6 +207,9 @@ export function Formulario({ cartaoRef }: { cartaoRef: RefObject<HTMLDivElement>
   return (
     <motion.div
       ref={cartaoRef}
+      /* O destino do `#pedido` — o FAQ manda para cá quem perguntou o que a
+         página não sabe responder. */
+      id="pedido"
       initial={parado ? undefined : { opacity: 0, y: 28, scale: 0.98 }}
       animate={naTela ? { opacity: 1, y: 0, scale: 1 } : undefined}
       transition={{ duration: 0.75, ease: EASE, delay: 0.15 }}

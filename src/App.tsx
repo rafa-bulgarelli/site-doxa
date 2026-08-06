@@ -24,6 +24,7 @@ const ProofWall = lazy(() =>
 const Comparacao = lazy(() =>
   import('./components/Comparacao').then((m) => ({ default: m.Comparacao })),
 );
+const Faq = lazy(() => import('./components/Faq').then((m) => ({ default: m.Faq })));
 
 /**
  * O vão que uma seção ocupa enquanto o seu pedaço não chegou.
@@ -69,6 +70,7 @@ export default function App() {
       void import('./components/HowItWorks');
       void import('./components/ProofWall');
       void import('./components/Comparacao');
+      void import('./components/Faq');
     };
 
     // Testado por `typeof`, e não com `in`: os tipos do DOM já declaram
@@ -98,6 +100,13 @@ export default function App() {
       </Suspense>
       <Suspense fallback={<Vao />}>
         <Comparacao />
+      </Suspense>
+      {/* O FAQ vem DEPOIS do pedido, e não antes. Perguntas frequentes antes do
+          formulário são uma lista de objeções apresentada a quem ainda não
+          objetou nada; depois dele, são a última porta para quem chegou até o
+          fim e travou em alguma coisa. */}
+      <Suspense fallback={<Vao />}>
+        <Faq />
       </Suspense>
     </main>
   );
