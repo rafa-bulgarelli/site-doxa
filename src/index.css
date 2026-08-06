@@ -254,12 +254,13 @@ body {
  * O facho de 620px é calibrado para uma tela: nela, uma poça de luz desse
  * tamanho é um foco. Dentro de um cartão de seiscentos pixels de largura, a
  * mesma poça cobre o cartão inteiro e deixa de ser foco — vira iluminação, e
- * então não há mais nada para a mão descobrir. O dono desceu de 620 para 310 e
- * de 310 para 206: um terço da largura do cartão, que é o ponto em que a luz
- * volta a ser um objeto sobre a superfície em vez de um estado dela.
+ * então não há mais nada para a mão descobrir. O dono desceu de 620 a 310, de
+ * 310 a 206 e daí a 124 — um quinto do que era, e um quinto da largura do
+ * cartão. É onde a luz para de ser um estado da superfície e vira um objeto
+ * pequeno sendo carregado por cima dela.
  */
 .dot-grid-glow.is-forte {
-  --spot-size: 206px;
+  --spot-size: 124px;
   --dot-lit-radius: 1.6px;
   --dot-bloom-radius: 5px;
   --dot-lit-color: rgba(255, 255, 255, 0.62);
@@ -332,6 +333,31 @@ body {
   text-shadow:
     0 0 12px rgba(255, 255, 255, 0.35),
     0 0 38px rgba(255, 255, 255, 0.28);
+}
+
+/*
+ * O mesmo brilho um passo abaixo, para o que acompanha a palavra acesa sem
+ * disputar com ela. Duas coisas brilhando igual não são duas ênfases — são
+ * nenhuma.
+ */
+.texto-aceso-fraco {
+  text-shadow:
+    0 0 10px rgba(255, 255, 255, 0.2),
+    0 0 28px rgba(255, 255, 255, 0.12);
+}
+
+/*
+ * E o mesmo gesto em tinta, para o papel.
+ *
+ * Um "glow preto" não ilumina: ele ADENSA. Sobre creme, a sombra escura em volta
+ * da letra engrossa o traço e afunda o entorno, e a frase ganha o peso que no
+ * escuro se consegue acendendo. É a mesma ideia do facho em tinta — mesma
+ * gramática, sinal trocado.
+ */
+.texto-aceso-tinta {
+  text-shadow:
+    0 0 14px rgba(11, 11, 11, 0.28),
+    0 0 40px rgba(11, 11, 11, 0.16);
 }
 
 /* The brand allows no chromatic accent, so "highlight" has to be light itself:

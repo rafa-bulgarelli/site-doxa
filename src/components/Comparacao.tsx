@@ -316,7 +316,11 @@ export function Comparacao() {
             <p className="mt-7 font-serif text-[1.9rem] leading-[1.08] tracking-[-0.02em] text-[#0B0B0B] md:text-[2.7rem]">
               {GARANTIA[0]}
               <br />
-              <span className="text-black/45">{GARANTIA[1]}</span>
+              {/* A segunda linha era a apagada do par, e é ela que carrega a
+                  garantia — o número impressiona, "ou seu dinheiro de volta" é
+                  o que faz alguém acreditar nele. Em tinta cheia e com o brilho
+                  em preto, ela passa a ser a linha mais pesada da coluna. */}
+              <span className="texto-aceso-tinta text-[#0B0B0B]">{GARANTIA[1]}</span>
             </p>
 
             {/* ── A troca, e ela é o argumento do painel escuro sendo cancelado.
@@ -367,12 +371,12 @@ export function Comparacao() {
               ref={faltaRef}
               className="mt-8 w-fit rounded-2xl border border-white/[0.14] bg-doxa-surface px-7 py-6 shadow-[0_30px_70px_-35px_rgba(0,0,0,0.5),0_0_70px_-25px_rgba(255,255,255,0.35)]"
             >
-              {/* A ênfase é em "você", e não no que falta. A primeira metade
-                  recua para cinza e a palavra que sobra fica em branco cheio,
-                  acesa: é a única coisa que a página ainda não tem, e é a pessoa
-                  que está lendo. Apagada, como estava, a frase dizia o
-                  contrário — que o que falta é pouca coisa. */}
-              <p className="font-serif text-[1.6rem] leading-tight tracking-[-0.02em] text-white/45 md:text-[2rem]">
+              {/* A frase inteira acesa, em dois degraus. Nenhuma das metades é
+                  apagada — apagada, a primeira dizia que o que falta é pouca
+                  coisa —, mas elas não brilham igual: creme com brilho fraco na
+                  que pergunta, branco cheio com brilho forte na resposta. Duas
+                  coisas brilhando no mesmo passo não são duas ênfases. */}
+              <p className="texto-aceso-fraco font-serif text-[1.6rem] leading-tight tracking-[-0.02em] text-[#F4F1E8] md:text-[2rem]">
                 {FALTA[0]}{' '}
                 <span className="texto-aceso text-white">{FALTA[1]}</span>
               </p>
