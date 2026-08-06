@@ -2,7 +2,6 @@ import { useCallback, useRef, useState } from 'react';
 import { useInView } from 'framer-motion';
 import { Pause, Play } from 'lucide-react';
 import { useIsDesktop } from '../hooks/useIsDesktop';
-import { DotGridSpotlight } from './hero/DotGridSpotlight';
 import {
   CloneArt,
   OnboardingArt,
@@ -226,8 +225,6 @@ export function HowItWorks() {
    * never be reached on a short viewport, which would leave the section frozen
    * forever on exactly the devices that can least afford a broken panel.
    */
-  /** The whole section, so the pointer light tracks the copy as well as the row. */
-  const sectionRef = useRef<HTMLElement>(null);
   const rowRef = useRef<HTMLDivElement>(null);
   const inView = useInView(rowRef, { amount: 0.15 });
 
@@ -265,14 +262,12 @@ export function HowItWorks() {
   }, []);
 
   return (
-    <section ref={sectionRef} className="relative bg-doxa-bg px-5 py-16 md:px-10 md:py-24">
-      {/* The dotted field the whole page is built on, and the light that follows
-          the pointer across it. Every other section already had both; this one
-          was the gap in the surface — three lit cards floating on flat black,
-          with the texture starting again above and below them. */}
-      <div className="dot-grid pointer-events-none absolute inset-0" />
-      <DotGridSpotlight containerRef={sectionRef} />
-
+    <section className="relative bg-doxa-bg px-5 py-16 md:px-10 md:py-24">
+      {/* No grid behind the row, on the owner's call. The panels carry their own
+          — that is what tells a card apart from the black around it — and a
+          second field behind them flattened the difference: the texture ran
+          edge to edge and the cards stopped reading as objects laid on top of
+          it. Here the black between the panels is doing work by staying empty. */}
       <div className="relative mx-auto w-full max-w-screen-2xl">
         <div className="flex flex-wrap items-end justify-between gap-x-6 gap-y-4">
           <div className="min-w-0">
