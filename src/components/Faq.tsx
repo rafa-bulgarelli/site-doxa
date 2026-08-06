@@ -331,7 +331,27 @@ export function Faq() {
     <section
       ref={secaoRef}
       id="faq"
-      className="relative overflow-x-clip bg-black px-5 py-24 md:px-10 md:py-32"
+      /* ─── A SEÇÃO TEM ALTURA PRÓPRIA, e não só o seu conteúdo ──────────────
+       *
+       * Fechada, esta seção é um rótulo, um título e uma pastilha de 48 pixels:
+       * duzentos e cinquenta pixels de coisa entre duas seções que ocupam telas
+       * inteiras. O que se lia disso não era "seção enxuta", era um vão entre a
+       * comparação e o rodapé — e um vão não é onde alguém para para perguntar.
+       *
+       * `min-h` com o conteúdo CENTRADO, e não mais recheio: padding empurra o
+       * título para cima e deixa o campo boiando no meio de um espaço que só
+       * cresce embaixo. Centrado numa altura fixa, o par título+campo fica no
+       * eixo do olhar em qualquer tela, e a seção passa a ter a mesma presença
+       * das vizinhas sem que nada dentro dela mude de tamanho.
+       *
+       * `svh` e não `vh`: no telefone, `vh` mede a tela com as barras do
+       * navegador recolhidas, e uma seção que quer 92% disso nasce mais alta do
+       * que o que se vê. `svh` é a medida pequena — a que existe o tempo todo.
+       *
+       * A altura é MÍNIMA: aberta, com respostas empilhadas na coluna da
+       * direita, a seção cresce por cima dela como sempre cresceu.
+       */
+      className="relative flex min-h-[80svh] flex-col justify-center overflow-x-clip bg-black px-5 py-28 md:min-h-[92svh] md:px-10 md:py-40"
     >
       {/* SEM GRADE E SEM FACHO no fundo, a pedido do dono, e a razão é o que
           existe atrás deles: nada. Nas outras seções a textura corre por baixo
@@ -443,14 +463,18 @@ export function Faq() {
                 />
               </motion.div>
 
-              <h2 className="mt-5 font-serif text-[2.6rem] leading-[0.95] tracking-[-0.03em] text-[#F4F1E8] md:text-[3.6rem]">
+              {/* No corpo do fecho do rodapé, e não mais um degrau abaixo: as
+                  duas são a última pergunta e a última frase da página, e uma
+                  seção com a altura das outras pedia um título com o peso dos
+                  outros. */}
+              <h2 className="mt-5 font-serif text-[2.9rem] leading-[0.95] tracking-[-0.03em] text-[#F4F1E8] md:text-[4.4rem]">
                 {ABERTURA.titulo}
               </h2>
-              <p className="mt-3 text-[15px] text-white/50">{ABERTURA.dica}</p>
+              <p className="mt-4 text-[15px] text-white/50 md:text-[17px]">{ABERTURA.dica}</p>
             </motion.div>
 
             <motion.div
-              className="mt-10 lg:mt-14"
+              className="mt-12 lg:mt-16"
               initial={parado ? undefined : { opacity: 0, y: 16 }}
               animate={naTela ? { opacity: 1, y: 0 } : undefined}
               transition={{ duration: 0.6, ease: EASE, delay: 0.1 }}

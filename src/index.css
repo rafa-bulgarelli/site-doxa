@@ -985,11 +985,58 @@ body {
   animation: anel-siri-gira 2.4s linear infinite;
 }
 
+/*
+ * ─── A ISCA: o anel chamando ANTES da mão ────────────────────────────────────
+ *
+ * O anel acima é uma RESPOSTA — ele só existe depois que alguém já encostou no
+ * campo. E aí estava o defeito que o dono viu: a coisa que mais convida da
+ * seção só aparece para quem já descobriu que ela existe. Fechado, o campo é
+ * uma pastilha escura num fundo preto, e nada nela diz que passar o mouse ali
+ * muda alguma coisa.
+ *
+ * A isca é o MESMO anel: a mesma volta, as mesmas cores, o mesmo desenho de um
+ * pixel. O que muda é a força e o regime — acende a pouco mais de um terço por
+ * um segundo e meio, e some por sete. Não é uma segunda animação inventada
+ * para chamar atenção: é a borda do hover se mostrando de longe, para que o
+ * hover, quando vier, seja RECONHECIDO em vez de descoberto.
+ *
+ * A pausa longa é o que a torna suportável, e ela é a cicatriz da primeira
+ * versão desta borda: um anel aceso sem parar num fundo preto é um objeto
+ * pedindo atenção sozinho, e foi exatamente por isso que ele saiu daqui uma
+ * vez. Um pulso espaçado é um chamado; o mesmo pulso sem intervalo é um alarme.
+ *
+ * `:not(:hover):not(:focus-within)` impede que as duas se somem: sob a mão a
+ * regra de cima assume sozinha, em opacidade cheia e sem pulso — e como ela
+ * vem antes, é o seletor daqui que precisa se calar, não ela.
+ */
+@keyframes anel-siri-chama {
+  0%,
+  100% {
+    opacity: 0;
+  }
+  6%,
+  22% {
+    opacity: 0.38;
+  }
+}
+
+.anel-siri-isca:not(:hover):not(:focus-within)::before {
+  animation:
+    anel-siri-gira 2.4s linear infinite,
+    anel-siri-chama 8.5s ease-in-out 1.2s infinite;
+}
+
 @media (prefers-reduced-motion: reduce) {
   /* O anel continua acendendo — ele é o estado "esta caixa está sob a sua
      mão", e essa informação não é decoração. O que para é a volta. */
   .anel-siri:hover::before,
   .anel-siri:focus-within::before {
+    animation: none;
+  }
+
+  /* A isca some inteira, e sem ressalva: ela é movimento que ninguém pediu num
+     campo que ninguém tocou — a definição exata do que a preferência desliga. */
+  .anel-siri-isca:not(:hover):not(:focus-within)::before {
     animation: none;
   }
 }

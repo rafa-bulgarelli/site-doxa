@@ -351,7 +351,14 @@ export function CampoPergunta({
       ref={cascaRef}
       onBlur={aoSair}
       style={ACESO}
-      className="anel-siri relative w-full rounded-3xl border border-white/[0.12] bg-doxa-surface focus-within:border-white/30"
+      /* A ISCA só existe FECHADO. Aberto, a pessoa já está com o cursor dentro
+         da caixa e o anel está aceso de verdade pelo `focus-within` — um pulso
+         por baixo dele seria a borda piscando durante a digitação. É o mesmo
+         raciocínio do exemplo que se escreve sozinho e para no clique: o
+         convite serve até o instante em que ele é aceito. */
+      className={`anel-siri relative w-full rounded-3xl border border-white/[0.12] bg-doxa-surface focus-within:border-white/30 ${
+        aberto ? '' : 'anel-siri-isca'
+      }`}
     >
       {/* A luz da Siri: não uma borda colorida, mas uma faixa BORRADA de cor
           encostada na borda por dentro, e o halo dela atravessando para fora.
