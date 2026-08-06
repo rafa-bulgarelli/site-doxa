@@ -7,8 +7,6 @@ interface FioConviteProps {
   deRef: RefObject<HTMLElement>;
   /** Onde ele chega: a borda esquerda do cartão do pedido. */
   paraRef: RefObject<HTMLElement>;
-  /** O visitante parou o sinal. Congela onde está, em vez de sumir. */
-  pausado: boolean;
 }
 
 /** Puxão mínimo nas alças da curva, para um salto curto ainda curvar. */
@@ -62,7 +60,7 @@ function posicao(elemento: HTMLElement, container: HTMLElement) {
  * nas duas pontas cobre tudo que pode mover as âncoras — o passo do formulário
  * trocando de altura, a fonte carregando, a janela mudando de tamanho.
  */
-export function FioConvite({ containerRef, deRef, paraRef, pausado }: FioConviteProps) {
+export function FioConvite({ containerRef, deRef, paraRef }: FioConviteProps) {
   const [caixa, setCaixa] = useState({ largura: 0, altura: 0 });
   const [traco, setTraco] = useState('');
 
@@ -144,7 +142,6 @@ export function FioConvite({ containerRef, deRef, paraRef, pausado }: FioConvite
         stroke="rgba(11,11,11,0.92)"
         strokeWidth={2.8}
         strokeLinecap="round"
-        style={{ animationPlayState: pausado ? 'paused' : 'running' }}
       />
     </svg>
   );

@@ -3,8 +3,6 @@ import { useLayoutEffect, useState, type RefObject } from 'react';
 interface BordaVivaProps {
   /** O cartão cuja borda o sinal percorre. */
   alvoRef: RefObject<HTMLElement>;
-  /** O visitante parou o sinal. Congela onde está, em vez de sumir. */
-  pausado: boolean;
   /**
    * Qual trecho do percurso este contorno é.
    *
@@ -111,7 +109,6 @@ function meiaVolta(largura: number, altura: number, topo: boolean, raio: number)
  */
 export function BordaViva({
   alvoRef,
-  pausado,
   trecho = 'pedido',
   raio = RAIO_PADRAO,
   moldura = true,
@@ -165,7 +162,6 @@ export function BordaViva({
               stroke="#FFFFFF"
               strokeWidth={TRACO}
               strokeLinecap="round"
-              style={{ animationPlayState: pausado ? 'paused' : 'running' }}
             />
           </g>
         );

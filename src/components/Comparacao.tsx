@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import {
   animate,
   motion,
@@ -8,7 +8,6 @@ import {
   useScroll,
   useTransform,
 } from 'framer-motion';
-import { Pause, Play } from 'lucide-react';
 import wordmarkUrl from '../../brand/doxa-wordmark-white.png';
 import { DotGridSpotlight } from './hero/DotGridSpotlight';
 import { BordaViva } from './comparacao/BordaViva';
@@ -184,16 +183,6 @@ export function Comparacao() {
   const cartaoRef = useRef<HTMLDivElement>(null);
   const parado = useReducedMotion() === true;
   const isDesktop = useIsDesktop();
-  /**
-   * O visitante parou o sinal.
-   *
-   * Mora aqui porque as duas linhas são uma só: o fio que atravessa o papel e os
-   * ramos que contornam o cartão dividem um ciclo, e pausar um sem o outro
-   * deixaria metade do percurso andando. `animationPlayState` congela cada um
-   * onde está, em vez de apagá-los — retomar continua de onde parou, que é o que
-   * um botão de pausa promete.
-   */
-  const [sinalPausado, setSinalPausado] = useState(false);
   const contaNaTela = useInView(escuroRef, { amount: 0.4, once: true });
   /**
    * Quando o painel claro chega — o que dispara o risco sobre o custo antigo.
@@ -326,11 +315,23 @@ export function Comparacao() {
         style={{ rotate: parado ? 0 : giro, background: PAPEL }}
         /* Coluna flex centrada, e é o que substituiu três `min-h` calculados na
            mão. A faixa do título e a grade ocupam o que precisam, e a sobra da
-           tela é dividida IGUAL entre o topo e o pé — em vez de a grade esticar
-           para comer tudo e abrir um vão entre a manchete e o argumento.
-           O painel continua tendo uma tela de altura sem ninguém subtrair
-           padding e altura de manchete de `100vh`. */
-        className="relative z-10 flex min-h-screen origin-bottom-left flex-col justify-center px-5 py-10 md:px-10 md:py-14"
+           tela é dividida entre o topo e o pé — em vez de a grade esticar para
+           comer tudo e abrir um vão entre a manchete e o argumento. O painel
+           continua tendo uma tela de altura sem ninguém subtrair padding e
+           altura de manchete de `100vh`.
+
+           Dividida, mas NÃO ao meio: o pé tem 96px de recuo contra 56 do topo,
+           e é o que sobe o bloco inteiro uns quarenta pixels. É centragem
+           óptica — o olho lê o meio geométrico como baixo, e um bloco centrado
+           na régua parece afundado na caixa. A diferença é constante, então a
+           correção vale igual em qualquer altura de tela.
+
+           `safe center` e não `center`: numa tela baixa, em que o conteúdo não
+           cabe, a centragem comum estoura para os DOIS lados e come o recuo do
+           topo — em 1280x800 o selo subia 28px para dentro da margem. Com
+           `safe`, a centragem desiste e vira início quando não há espaço, e o
+           que sobra transborda só pelo pé, onde há rolagem para resolver. */
+        className="relative z-10 flex min-h-screen origin-bottom-left flex-col px-5 py-10 [justify-content:safe_center] md:px-10 md:pb-24 md:pt-14"
       >
         {/* A textura atravessa a virada. Aqui ela é a mesma grade em tinta, e o
             facho é o mesmo facho com o sinal trocado: no preto os pontos
@@ -405,7 +406,7 @@ export function Comparacao() {
               for refeita, é melhor a frase vazar e ser vista na hora do que
               quebrar sozinha e deixar "viraliza." pendurada — quebra sozinha
               parece de propósito. */}
-          <h2 className="mt-7 font-serif text-[2.8rem] leading-[0.95] tracking-[-0.03em] text-[#0B0B0B] md:text-[4.4rem] lg:whitespace-nowrap lg:text-[clamp(2.8rem,calc(6.13vw_-_4.9px),5.8rem)]">
+          <h2 className="mt-8 font-serif text-[2.8rem] leading-[0.95] tracking-[-0.03em] text-[#0B0B0B] md:text-[4.4rem] lg:whitespace-nowrap lg:text-[clamp(2.8rem,calc(6.13vw_-_4.9px),5.8rem)]">
             {CONVITE[0]}
             {/* A quebra só existe onde a frase não cabe numa linha. No
                 desktop ela sai, e o espaço que a substitui tem de ser
@@ -426,7 +427,7 @@ export function Comparacao() {
             para as pontas, dividida pelo `justify-center` do painel. */}
         <div
           ref={gradeRef}
-          className="relative mx-auto mt-10 grid w-full max-w-screen-2xl grid-cols-1 gap-x-16 gap-y-12 lg:mt-12 lg:grid-cols-[1fr_minmax(32rem,44%)] lg:items-start"
+          className="relative mx-auto mt-10 grid w-full max-w-screen-2xl grid-cols-1 gap-x-16 gap-y-12 lg:mt-20 lg:grid-cols-[1fr_minmax(32rem,44%)] lg:items-start"
         >
           {/* O fio primeiro no DOM, e as duas colunas `relative` depois dele.
               Ordem de pintura em CSS não é ordem de irmãos: um elemento
@@ -439,12 +440,7 @@ export function Comparacao() {
               Desktop apenas: empilhado, as duas pontas ficam uma embaixo da
               outra e o fio seria um laço em volta do próprio argumento. */}
           {isDesktop && (
-            <FioConvite
-              containerRef={gradeRef}
-              deRef={faltaRef}
-              paraRef={cartaoRef}
-              pausado={sinalPausado}
-            />
+            <FioConvite containerRef={gradeRef} deRef={faltaRef} paraRef={cartaoRef} />
           )}
 
           <div className="relative flex flex-col">
@@ -529,13 +525,7 @@ export function Comparacao() {
                   porque a caixa é `rounded-2xl`, e não `rounded-3xl` como a do
                   pedido — o arco tem de ser concêntrico com o canto que ele
                   acompanha, senão sobra uma fresta em cada esquina. */}
-              <BordaViva
-                alvoRef={faltaRef}
-                pausado={sinalPausado}
-                trecho="falta"
-                raio={16}
-                moldura={false}
-              />
+              <BordaViva alvoRef={faltaRef} trecho="falta" raio={16} moldura={false} />
 
               {/* A frase inteira acesa, em dois degraus. Nenhuma das metades é
                   apagada — apagada, a primeira dizia que o que falta é pouca
@@ -557,41 +547,14 @@ export function Comparacao() {
             </div>
           </div>
 
+          {/* O botão de pausa saiu daqui, a pedido do dono, e a fiação dele foi
+              junto: um `pausado` que nunca vira `true` é pior do que nenhum —
+              três componentes carregando uma prop morta e um estado que ninguém
+              escreve. Se a pausa voltar um dia, ela volta inteira. Quem pede
+              menos movimento continua atendido por `prefers-reduced-motion`,
+              que desliga o sinal na raiz, no CSS. */}
           <div className="relative flex flex-col lg:items-end">
-            {/* Só o ícone, a pedido do dono. O rótulo vive no `aria-label`: um
-                botão de dois estados com desenho universal não precisa de
-                palavra ao lado, mas quem navega por leitor de tela precisa
-                saber o que ele faz — e precisa saber em qual estado está, que é
-                o trabalho do `aria-pressed`.
-
-                Fora do cartão, e não dentro: o que ele controla é o sinal dos
-                DOIS lados, inclusive o fio que corre pelo papel. Dentro da
-                caixa preta, prometeria mandar só nela.
-
-                FORA DO FLUXO no desktop, e é isso que alinha o cartão com a
-                garantia do outro lado. Em fluxo, ele são 48px de botão mais
-                respiro empurrando o cartão para baixo — e a borda de cima do
-                cartão nascia meia dúzia de linhas abaixo da frase com que ela
-                devia estar emparelhada. Absoluto, ele mora nos 48px de vão que
-                a grade já tem acima de si, exatamente onde sempre apareceu, sem
-                cobrar altura por isso. No telefone continua em fluxo: lá não há
-                coluna com que alinhar, e um botão flutuando sobre o bloco de
-                cima seria um botão em cima de texto. */}
-            <button
-              type="button"
-              onClick={() => setSinalPausado((atual) => !atual)}
-              aria-pressed={sinalPausado}
-              aria-label={sinalPausado ? 'Retomar a animação das linhas' : 'Pausar a animação das linhas'}
-              className="mb-3 flex h-9 w-9 items-center justify-center self-end rounded-full border border-black/15 bg-black/[0.04] text-black/45 transition-colors hover:border-black/40 hover:text-[#0B0B0B] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/50 lg:absolute lg:-top-12 lg:right-0 lg:mb-0"
-            >
-              {sinalPausado ? (
-                <Play className="h-3.5 w-3.5" strokeWidth={2} />
-              ) : (
-                <Pause className="h-3.5 w-3.5" strokeWidth={2} />
-              )}
-            </button>
-
-            <Formulario cartaoRef={cartaoRef} sinalPausado={sinalPausado} />
+            <Formulario cartaoRef={cartaoRef} />
           </div>
         </div>
       </motion.div>
