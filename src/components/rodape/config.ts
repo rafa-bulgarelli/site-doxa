@@ -26,7 +26,7 @@ import { REELS, type Reel } from '../proof/reels';
  * entregar, em movimento, em vez de com uma repetição das frases que a pessoa
  * acabou de ler duas telas acima.
  *
- * PENDENTE-DONO: as catorze peças são os três reels reais repetidos, exatamente
+ * PENDENTE-DONO: as seis peças são os três reels reais repetidos, exatamente
  * como a parede de prova faz em `proof/reels.ts` e pela mesma razão — a
  * repetição é quantos retângulos se desenha, e nunca uma afirmação de quantos
  * casos existem. Quando os arquivos que faltam entrarem em `REELS`, a
@@ -34,29 +34,61 @@ import { REELS, type Reel } from '../proof/reels';
  */
 
 /**
- * Quantas peças o mosaico tem, e o corte entre as duas metades.
+ * Quantos vídeos tocam ao mesmo tempo. Seis, que é o número de lugares do X.
  *
- * `EXPOSTAS` é o teto de vídeos TOCANDO ao mesmo tempo — número do dono, e é
- * também o que a tela comporta sem virar um mural de coisas se mexendo. As
- * `ESCONDIDAS` existem no campo desde o primeiro quadro: elas são o que a
- * pessoa encontra ao arrastar, e é ter mais do que cabe na tela que faz o campo
- * parecer não ter fim. Uma peça escondida é um still — vira vídeo quando entra
- * em cena e uma vaga se abre.
+ * O campo desenha o mosaico QUATRO vezes para que a volta do infinito seja
+ * invisível, então há vinte e quatro molduras no documento e não seis. Este é o
+ * teto de quantas delas estão TOCANDO — o resto é still, e a troca acontece
+ * conforme o campo deriva. `rodape/Peca.tsx` explica a mecânica das vagas.
  */
 export const EXPOSTAS = 6;
-const ESCONDIDAS = 8;
+
+/** Onde uma peça senta na grade do X: coluna e linha, de 1 em diante. */
+export interface Lugar {
+  coluna: number;
+  linha: number;
+}
 
 /**
- * As peças, na ordem em que a grade as recebe.
+ * ─── O X ─────────────────────────────────────────────────────────────────────
+ *
+ * Pedido do dono, e o desenho é uma grade de cinco colunas por três linhas com
+ * seis peças nas diagonais:
+ *
+ *     1 · · · 2
+ *     · 3 · 4 ·
+ *     5 · · · 6
+ *
+ * O MIOLO VAZIO é o motivo de o X ser melhor do que a grade cheia que estava
+ * aqui: o fecho ("Você leu até o fim") mora exatamente no centro da tela, e
+ * antes ele nascia por cima de um vídeo, com um véu de 65% pagando a conta de
+ * separar os dois. No X, o texto ocupa o buraco que o desenho já deixa — os
+ * vídeos passam a emoldurar o pedido em vez de disputar com ele.
+ *
+ * As posições são dadas em `gridColumn`/`gridRow` e não com células vazias de
+ * enfeite: oito divs vazias por cópia seriam trinta e duas no documento só para
+ * empurrar as outras. As colunas têm largura FIXA (e não `auto`) justamente
+ * porque disso: sem conteúdo, uma coluna `auto` mede zero e o X desmorona para
+ * o canto esquerdo.
+ */
+const LUGARES: readonly Lugar[] = [
+  { coluna: 1, linha: 1 },
+  { coluna: 5, linha: 1 },
+  { coluna: 2, linha: 2 },
+  { coluna: 4, linha: 2 },
+  { coluna: 1, linha: 3 },
+  { coluna: 5, linha: 3 },
+];
+
+/**
+ * As peças do X: cada lugar com o reel que o ocupa.
  *
  * A volta pelo resto (`% REELS.length`) é o que garante que dois vizinhos nunca
- * sejam o mesmo arquivo: com três clientes e catorze lugares, a sequência anda
- * sempre um passo à frente, e o que a tela mostra de cada vez é sempre a
- * alternância dos três — nunca o mesmo cliente duas vezes lado a lado.
+ * sejam o mesmo arquivo: com três clientes e seis lugares, a sequência anda
+ * sempre um passo à frente, e cada braço do X carrega um cliente diferente.
  */
-export const PECAS: readonly Reel[] = Array.from(
-  { length: EXPOSTAS + ESCONDIDAS },
-  (_, indice) => REELS[indice % REELS.length],
+export const PECAS: readonly { lugar: Lugar; reel: Reel }[] = LUGARES.map(
+  (lugar, indice) => ({ lugar, reel: REELS[indice % REELS.length] }),
 );
 
 /**

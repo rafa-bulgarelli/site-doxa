@@ -126,14 +126,20 @@ export function Rodape() {
           <div aria-hidden className="absolute inset-0 overflow-hidden">
             <ArrastoInfinito
               ativo={revelado}
-              /* Sete colunas para catorze peças, que é o retrato exato do
-                 pedido: duas fileiras, seis em cena e oito adiante. E vãos
-                 IGUAIS nos dois eixos — é o que faz o campo ler como uma grade
-                 de vídeos e não como uma colagem. */
-              className="grid grid-cols-[repeat(7,auto)] items-start gap-8 p-8 md:gap-14 md:p-14"
+              /* A grade do X: cinco colunas de largura FIXA por três linhas, com
+                 as seis peças nas diagonais (`rodape/config.ts` desenha o
+                 padrão). Fixa e não `auto` porque metade das células é vazia —
+                 uma coluna `auto` sem conteúdo mede zero, e o X desabaria para
+                 a esquerda.
+
+                 O vão HORIZONTAL é o dobro do vertical, e é ele que espalha o
+                 desenho: com vãos iguais, as seis peças formam um bloco
+                 compacto no meio da tela; abertas na largura, elas viram os
+                 quatro braços de um X com o pedido no miolo. */
+              className="grid grid-cols-[repeat(5,4.5rem)] grid-rows-[repeat(3,auto)] gap-x-6 gap-y-4 p-8 md:grid-cols-[repeat(5,8rem)] md:gap-x-32 md:gap-y-8 md:p-12"
             >
-              {PECAS.map((reel, indice) => (
-                <Peca key={indice} reel={reel} palco={palco} ativo={revelado} />
+              {PECAS.map(({ lugar, reel }, indice) => (
+                <Peca key={indice} reel={reel} lugar={lugar} palco={palco} ativo={revelado} />
               ))}
             </ArrastoInfinito>
 

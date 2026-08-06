@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import type { Reel } from '../proof/reels';
+import type { Lugar } from './config';
 
 /** Quanto uma peça sem vaga espera antes de tentar de novo, em milissegundos. */
 const ESPERA_VAGA = 1200;
@@ -58,6 +59,8 @@ export function usePalco(maximo: number): Palco {
 
 interface PecaProps {
   reel: Reel;
+  /** A célula da grade em que esta peça senta — é ela que desenha o X. */
+  lugar: Lugar;
   palco: Palco;
   /** Se o rodapé já está revelado. Escondido atrás da página, nada toca. */
   ativo: boolean;
@@ -76,7 +79,7 @@ interface PecaProps {
  * mesma moldura, e aparece em fade no quadro em que o arquivo já ia começar.
  * Assim não existe o buraco preto do buffer, e nada se mexe quando ele chega.
  */
-export function Peca({ reel, palco, ativo }: PecaProps) {
+export function Peca({ reel, lugar, palco, ativo }: PecaProps) {
   const cascaRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const [emCena, setEmCena] = useState(false);
@@ -144,7 +147,13 @@ export function Peca({ reel, palco, ativo }: PecaProps) {
   return (
     <div
       ref={cascaRef}
-      className="relative aspect-[9/16] w-[13rem] shrink-0 overflow-hidden rounded-xl border border-white/[0.14] bg-doxa-raised md:w-[20rem]"
+      /* A largura vem da COLUNA (`w-full`) e não de um número aqui: as colunas
+         do X são fixas justamente para que os lugares vazios do desenho tenham
+         medida, e uma peça mais larga que a coluna dela empurraria a diagonal
+         para fora do lugar. A altura é o formato do arquivo — 9:16, que é como
+         um reel é publicado. */
+      style={{ gridColumn: lugar.coluna, gridRow: lugar.linha }}
+      className="relative aspect-[9/16] w-full overflow-hidden rounded-xl border border-white/[0.14] bg-doxa-raised"
     >
       <img
         src={reel.posterUrl}
