@@ -331,7 +331,7 @@ export function Faq() {
     <section
       ref={secaoRef}
       id="faq"
-      /* ─── A SEÇÃO TEM ALTURA PRÓPRIA, e o conteúdo mora no TOPO dela ───────
+      /* ─── A SEÇÃO TEM ALTURA PRÓPRIA, e o conteúdo mora no MEIO dela ───────
        *
        * Fechada, esta seção era um rótulo, um título e uma pastilha de 48
        * pixels: duzentos e cinquenta pixels de coisa entre duas seções que
@@ -339,21 +339,26 @@ export function Faq() {
        * vão entre a comparação e o rodapé — e um vão não é onde alguém para
        * para perguntar. Daí o `min-h`.
        *
-       * A altura veio de `min-h` e NÃO de recheio, e é essa a diferença que o
-       * dono cobrou: o padding daqui é o mesmo das outras seções do site
-       * (`py-16 md:py-24`), então o rótulo nasce na mesma linha em que nascem
-       * os rótulos delas. A altura extra fica toda EMBAIXO, que é para onde a
-       * seção cresce quando a primeira resposta chega — em vez de ficar
-       * repartida em cima e embaixo empurrando o título para o meio da tela.
+       * A altura veio de `min-h` e NÃO de recheio: o padding daqui é o mesmo das
+       * outras seções do site (`py-16 md:py-24`). Mas padding igual em cima e
+       * embaixo não é ESPAÇO igual em cima e embaixo — a sobra de altura que o
+       * `min-h` cria não é padding, e enquanto ela caía toda depois do campo o
+       * que se via era um bloco encostado no teto com trezentos e sessenta
+       * pixels de preto sobrando debaixo do formulário. Daí o `justify-center`:
+       * a sobra se reparte, e o vão acima do rótulo passa a medir o mesmo que o
+       * vão abaixo do campo, seja qual for a altura da tela.
        *
        * `svh` e não `vh`: no telefone, `vh` mede a tela com as barras do
        * navegador recolhidas, e uma seção que quer 92% disso nasce mais alta do
        * que o que se vê. `svh` é a medida pequena — a que existe o tempo todo.
        *
        * A altura é MÍNIMA: aberta, com respostas empilhadas na coluna da
-       * direita, a seção cresce por cima dela como sempre cresceu.
+       * direita, a seção cresce por cima dela como sempre cresceu — e aí não há
+       * sobra para repartir, então o `justify-center` não faz nada. Ele só age
+       * enquanto o conteúdo é menor do que a tela, que é exatamente o estado
+       * fechado que ele foi posto para consertar.
        */
-      className="relative flex min-h-[80svh] flex-col overflow-x-clip bg-black px-5 py-16 md:min-h-[92svh] md:px-10 md:py-24"
+      className="relative flex min-h-[80svh] flex-col justify-center overflow-x-clip bg-black px-5 py-16 md:min-h-[92svh] md:px-10 md:py-24"
     >
       {/* SEM GRADE E SEM FACHO no fundo, a pedido do dono, e a razão é o que
           existe atrás deles: nada. Nas outras seções a textura corre por baixo
