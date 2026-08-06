@@ -166,6 +166,12 @@ export function Faq() {
       perguntas seguidas não podem apagar o sinal uma da outra. */
   const [cargas, setCargas] = useState(0);
 
+  /* Se o campo está aberto AGORA — um espelho do estado que mora lá dentro.
+     Não é a mesma coisa que `aberto`: a seção continua partida enquanto houver
+     resposta na tela, e o campo já voltou a ser pastilha faz tempo. Este aqui
+     serve a uma coisa só: os atalhos precisam saber a hora de entrar. */
+  const [escrevendo, setEscrevendo] = useState(false);
+
   const responder = (pergunta: string, duvida: Duvida | null) => {
     const achada = duvida ?? encontra(pergunta, DUVIDAS);
     const nova = {
@@ -211,6 +217,10 @@ export function Faq() {
     const pergunta = rascunho.trim();
     if (pergunta.length === 0) return;
     setRascunho('');
+    // Enviar fecha o campo lá dentro, e o espelho tem de fechar junto: sem
+    // isto os atalhos ficariam marcados como "já entraram", e a próxima
+    // abertura os revelaria parados em vez de os fazer nascer.
+    setEscrevendo(false);
     responder(pergunta, null);
   };
 
@@ -244,10 +254,12 @@ export function Faq() {
    */
   const aoAbrirCampo = () => {
     window.clearTimeout(fechamento.current);
+    setEscrevendo(true);
     setAberto(true);
   };
 
   const aoDesistir = () => {
+    setEscrevendo(false);
     if (trocas.length === 0) setAberto(false);
   };
 
@@ -435,19 +447,27 @@ export function Faq() {
                             type="button"
                             onClick={() => responder(duvida.pergunta, duvida)}
                             layout={!parado}
-                            initial={parado ? undefined : { opacity: 0, y: 8 }}
+                            initial={parado ? undefined : { opacity: 0, y: -6, scale: 0.94 }}
+                            /* Entram quando a GAVETA abre, um atrás do outro.
+                               A gaveta os traz de trás do campo; o escalonado é
+                               o que faz cada um chegar por conta própria em vez
+                               de o bloco inteiro deslizar como um adesivo. Sem
+                               `naTela` aqui: até a gaveta abrir eles estão
+                               recortados, e uma entrada gasta atrás de uma
+                               cortina fechada é uma entrada perdida. */
                             animate={
-                              naTela || trocas.length > 0
+                              escrevendo
                                 ? {
                                     opacity: 1,
                                     y: 0,
+                                    scale: 1,
                                     transition: {
-                                      duration: 0.4,
-                                      ease: EASE,
-                                      delay: 0.2 + i * 0.05,
+                                      duration: 0.34,
+                                      ease: MOLA,
+                                      delay: 0.1 + i * 0.04,
                                     },
                                   }
-                                : undefined
+                                : { opacity: 0, y: -6, scale: 0.94 }
                             }
                             exit={{ opacity: 0, scale: 0.9, transition: { duration: 0.18 } }}
                             whileHover={parado ? undefined : { scale: 1.04 }}

@@ -151,10 +151,16 @@ function useExemploVivo(frases: readonly string[], ativo: boolean) {
  *
  * ─── DOIS ANDARES, UMA CAIXA ────────────────────────────────────────────────
  *
- * Em cima escreve-se; embaixo, a bandeja com os atalhos, dentro da MESMA borda e
+ * Em cima escreve-se; embaixo, a gaveta com os atalhos, dentro da MESMA borda e
  * separada só por uma costura. Os dois eram objetos distintos e o dono viu o
  * defeito: uma fileira de botões morando perto de um campo não diz que ela é a
  * outra maneira de fazer a mesma coisa. Soldados, dizem.
+ *
+ * E a gaveta só existe DEPOIS do clique — ela sai de trás do andar de cima
+ * quando a caixa abre. É o que devolve à seção parada a pastilha limpa de 48
+ * pixels, e é o que dá ao clique uma terceira consequência: a página se parte,
+ * a direita se anuncia, e os assuntos saem de dentro da caixa. Três coisas
+ * acontecendo por um gesto só, que é o oposto de uma caixa inchando sozinha.
  *
  * ─── O QUE MUDA DE TAMANHO, E COMO ──────────────────────────────────────────
  *
@@ -193,10 +199,14 @@ export function CampoPergunta({
   const veuAltoRef = useRef<HTMLDivElement>(null);
   const veuBaixoRef = useRef<HTMLDivElement>(null);
 
+  const gavetaRef = useRef<HTMLDivElement>(null);
+  const bandejaRef = useRef<HTMLDivElement>(null);
+
   const [aberto, setAberto] = useState(false);
   /** Se a mudança de altura é a caixa crescendo com o texto, e não abrindo. */
   const [crescendo, setCrescendo] = useState(false);
   const [alturaTexto, setAlturaTexto] = useState(MINIMA);
+  const [alturaBandeja, setAlturaBandeja] = useState(0);
   const [rolando, setRolando] = useState(false);
 
   const vazio = valor.trim().length === 0;
@@ -258,6 +268,30 @@ export function CampoPergunta({
     window.addEventListener('resize', medir);
     return () => window.removeEventListener('resize', medir);
   }, [medir]);
+
+  // A altura da gaveta é a do que ela carrega, medida e não adivinhada: os
+  // atalhos somem conforme são usados e se reembrulham quando a coluna muda de
+  // largura — os dois acontecem sem que ninguém redimensione a janela.
+  useLayoutEffect(() => {
+    const conteudo = bandejaRef.current;
+    if (conteudo == null) return;
+    const olho = new ResizeObserver(() => setAlturaBandeja(conteudo.offsetHeight));
+    olho.observe(conteudo);
+    setAlturaBandeja(conteudo.offsetHeight);
+    return () => olho.disconnect();
+  }, [bandeja]);
+
+  /* Fechada, a gaveta é `inert`: recortada por `overflow-hidden`, ela some da
+     vista mas os atalhos continuariam FOCÁVEIS — quem navega por teclado
+     tabularia para dentro de botões invisíveis. `inert` os tira da ordem de
+     foco e do leitor de tela sem desmontá-los, que é o que permite a gaveta ter
+     altura para medir e uma saída para animar. */
+  useEffect(() => {
+    const gaveta = gavetaRef.current;
+    if (gaveta == null) return;
+    if (aberto) gaveta.removeAttribute('inert');
+    else gaveta.setAttribute('inert', '');
+  }, [aberto, bandeja]);
 
   /* Aberto, o cursor vai para o texto — mas um quadro depois. Focar no mesmo
      quadro em que a caixa começa a crescer faz o navegador rolar a página até
@@ -355,11 +389,11 @@ export function CampoPergunta({
             um traço jogado na tela — longe do campo, sem nada o ligando ao
             objeto que recebeu a pergunta. Dentro da caixa, o sinal tem dono.
 
-            Ele corre na COSTURA entre os dois andares, que é a base do campo de
-            escrever. Não é acidente que caia em cima da linha divisória: o que
-            se vê é a costura da caixa acendendo da esquerda para a direita, e
-            uma linha que já existe acendendo é mais barato de ler do que um
-            objeto novo aparecendo.
+            Ele corre na base do andar de escrever. Com a gaveta aberta, essa
+            base é a costura entre os dois andares, e o que se vê é uma linha que
+            JÁ EXISTE acendendo da esquerda para a direita — mais barato de ler
+            do que um objeto novo aparecendo. Fechada, é a própria borda de baixo
+            da caixa que acende.
 
             `scaleX` e não `width`: largura é layout, e animar layout obriga o
             navegador a refazer a página a cada quadro. Escala sobe para o
@@ -371,12 +405,13 @@ export function CampoPergunta({
             <motion.div
               key="carga"
               aria-hidden
-              /* O recorte só arredonda embaixo quando NÃO há bandeja: aí a
-                 base do campo é a base da caixa, e a barra tem de morrer na
-                 curva. Com bandeja, aquela borda é reta, e arredondar ali
-                 cortaria a barra onde não há canto nenhum. */
+              /* O recorte só arredonda embaixo quando a gaveta está FECHADA:
+                 aí a base do campo é a base da caixa, e a barra tem de morrer
+                 na curva. Com a gaveta aberta, aquela borda é a costura entre
+                 os andares — reta —, e arredondar ali cortaria a barra onde não
+                 há canto nenhum. */
               className={`pointer-events-none absolute inset-0 overflow-hidden ${
-                bandeja == null ? 'rounded-b-3xl' : ''
+                aberto && bandeja != null ? '' : 'rounded-b-3xl'
               }`}
               initial={{ opacity: 1 }}
               exit={{ opacity: 0, transition: { duration: 0.16 } }}
@@ -526,7 +561,38 @@ export function CampoPergunta({
        * reposicionar sem perceber que estragou a solda.
        */}
       {bandeja != null && (
-        <div className="relative border-t border-white/[0.08] px-3 py-3">{bandeja}</div>
+        <div
+          ref={gavetaRef}
+          aria-hidden={!aberto}
+          /* A gaveta: altura medida, e nunca `auto`.
+             `height: auto` não é animável, e a altura certa aqui não é uma
+             constante — os atalhos se reembrulham quando a coluna muda de
+             largura, o que acontece na própria abertura da seção. Um
+             `ResizeObserver` no conteúdo mantém o número honesto sem ninguém
+             ter de lembrar de atualizá-lo. */
+          style={{ height: aberto ? alturaBandeja : 0, transition: transicao }}
+          className="relative w-full overflow-hidden"
+        >
+          <div
+            ref={bandejaRef}
+            /* E ela sai DE TRÁS do campo: começa deslocada uma altura inteira
+               para cima, escondida atrás do andar de cima, e desce enquanto a
+               gaveta abre. Só a gaveta crescendo entregaria os atalhos parados
+               sendo revelados por uma cortina; com o deslize, eles saem de
+               algum lugar — que é o mesmo gesto da bandeja de anexos do
+               componente que o dono mandou. */
+            style={{
+              transform: aberto ? 'translateY(0)' : 'translateY(-100%)',
+              opacity: aberto ? 1 : 0,
+              transition: parado
+                ? 'none'
+                : `transform 400ms ${MOLA_CSS}, opacity 260ms ease-out`,
+            }}
+            className="border-t border-white/[0.08] px-3 py-3"
+          >
+            {bandeja}
+          </div>
+        </div>
       )}
     </div>
   );
