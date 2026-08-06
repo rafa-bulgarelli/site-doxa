@@ -9,13 +9,17 @@ import {
   useTransform,
 } from 'framer-motion';
 import wordmarkUrl from '../../brand/doxa-wordmark-white.png';
+import { FioConvite } from './comparacao/FioConvite';
 import { Formulario } from './comparacao/Formulario';
 import { Ladainha } from './comparacao/Ladainha';
+import { ProvaRotativa } from './comparacao/ProvaRotativa';
+import { useIsDesktop } from '../hooks/useIsDesktop';
 import {
   CONVITE,
   CUSTO_ATE,
   CUSTO_DE,
   CUSTO_UNIDADE,
+  FALTA,
   FATURA,
   ENVIO,
   GARANTIA,
@@ -23,6 +27,7 @@ import {
   RETORNO,
   SEM_GARANTIA,
   TOTAL_ITENS,
+  TROCA_DEPOIS,
 } from './comparacao/config';
 
 /** A cor do papel — a única superfície clara da página. */
@@ -119,8 +124,21 @@ function Contador({ ate, naTela }: { ate: number; naTela: boolean }) {
 export function Comparacao() {
   const escuroRef = useRef<HTMLDivElement>(null);
   const claroRef = useRef<HTMLDivElement>(null);
+  /** As três peças do fio: a caixa em que ele mora e as duas pontas. */
+  const gradeRef = useRef<HTMLDivElement>(null);
+  const faltaRef = useRef<HTMLSpanElement>(null);
+  const cartaoRef = useRef<HTMLDivElement>(null);
   const parado = useReducedMotion() === true;
+  const isDesktop = useIsDesktop();
   const contaNaTela = useInView(escuroRef, { amount: 0.4, once: true });
+  /**
+   * Quando o painel claro chega — o que dispara o risco sobre o custo antigo.
+   *
+   * Riscar é um GESTO, e um gesto que já aconteceu não é um gesto: com o traço
+   * pronto, o par vira só duas linhas de texto, uma delas cortada. Feito na
+   * frente de quem lê, é alguém cancelando a conta.
+   */
+  const conviteNaTela = useInView(claroRef, { amount: 0.25, once: true });
 
   // Os mesmos limites da referência: começa a girar quando o topo do painel
   // encosta no fim da tela e termina quando esse topo chega a um quarto dela.
@@ -248,8 +266,31 @@ export function Comparacao() {
             decidir à direita passa a ser também uma travessia de claro para
             escuro — que é a mesma virada da seção, feita em quarenta
             centímetros de tela em vez de em uma rolagem inteira. */}
-        <div className="relative mx-auto grid min-h-[calc(100vh-5rem)] w-full max-w-screen-2xl grid-cols-1 gap-x-16 gap-y-12 lg:grid-cols-[1.05fr_1fr] lg:items-center md:min-h-[calc(100vh-7rem)]">
-          <div className="flex flex-col">
+        {/* A coluna do pedido vale 40% da tela e é medida em POR CENTO, não em
+            `1fr` nem num `max-w`: o cartão é o único elemento clicável da página
+            e tem de crescer junto com o monitor, em vez de congelar numa largura
+            e deixar o papel em volta engordar sozinho. O piso de 30rem é o que
+            impede a coluna de espremer o formulário quando a janela é estreita e
+            as colunas ainda estão lado a lado. */}
+        <div
+          ref={gradeRef}
+          className="relative mx-auto grid min-h-[calc(100vh-5rem)] w-full max-w-screen-2xl grid-cols-1 gap-x-16 gap-y-12 lg:grid-cols-[1fr_minmax(30rem,40%)] lg:items-center md:min-h-[calc(100vh-7rem)]"
+        >
+          {/* O fio primeiro no DOM, e as duas colunas `relative` depois dele.
+              Ordem de pintura em CSS não é ordem de irmãos: um elemento
+              POSICIONADO pinta por cima de qualquer irmão estático, mesmo o que
+              vem antes dele no documento. Sem o `relative` nas colunas, o fio
+              passaria por cima do texto que o originou. Posicionadas, as três
+              caixas voltam a se resolver pela ordem do documento — o fio embaixo,
+              o argumento e o cartão em cima.
+
+              Desktop apenas: empilhado, as duas pontas ficam uma embaixo da
+              outra e o fio seria um laço em volta do próprio argumento. */}
+          {isDesktop && (
+            <FioConvite containerRef={gradeRef} deRef={faltaRef} paraRef={cartaoRef} />
+          )}
+
+          <div className="relative flex flex-col">
             <Selo prefixo="Com" escuro />
 
             <h2 className="mt-7 font-serif text-[2.8rem] leading-[0.95] tracking-[-0.03em] text-[#0B0B0B] md:text-[4.4rem]">
@@ -260,22 +301,59 @@ export function Comparacao() {
                 convite: ela é a resposta direta ao "nenhuma garantia de
                 viralizar" que fecha o painel escuro. Como resposta, ela precisa
                 do mesmo porte da pergunta. */}
-            <p className="mt-8 font-serif text-[2rem] leading-[1.08] tracking-[-0.02em] text-[#0B0B0B] md:text-[2.9rem]">
+            <p className="mt-7 font-serif text-[1.9rem] leading-[1.08] tracking-[-0.02em] text-[#0B0B0B] md:text-[2.7rem]">
               {GARANTIA[0]}
               <br />
               <span className="text-black/45">{GARANTIA[1]}</span>
             </p>
 
-            <p className="mt-7 max-w-md text-[15px] leading-relaxed text-black/55 md:text-lg">
-              {ENVIO}
+            {/* ── A troca, e ela é o argumento do painel escuro sendo cancelado.
+                Em cima, a conta que a seção acabou de somar — os MESMOS números
+                do outro painel, lidos do mesmo lugar, porque num comparativo
+                dois valores para o mesmo custo é o fim da credibilidade. O
+                traço passa por cima quando o painel chega. Embaixo, o que entra
+                no lugar: não um preço, o esforço. */}
+            <div className="mt-8">
+              <span className="relative inline-block font-serif text-[1.5rem] leading-tight text-black/35 md:text-[1.9rem]">
+                R$ {CUSTO_DE.toLocaleString('pt-BR')} a {CUSTO_ATE.toLocaleString('pt-BR')}
+                {CUSTO_UNIDADE}, {TOTAL_ITENS} contratações
+                {/* Dois pixels, e não um `line-through`: o risco é um gesto e
+                    precisa ser desenhado da esquerda para a direita. Decoração
+                    de texto não anima. */}
+                <motion.span
+                  aria-hidden
+                  className="absolute left-0 top-1/2 h-[2px] w-full origin-left bg-black/45"
+                  initial={{ scaleX: 0 }}
+                  animate={{ scaleX: parado || conviteNaTela ? 1 : 0 }}
+                  transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1], delay: 0.35 }}
+                />
+              </span>
+
+              <p className="mt-2 font-serif text-[1.9rem] leading-tight tracking-[-0.02em] text-[#0B0B0B] md:text-[2.4rem]">
+                {TROCA_DEPOIS}
+              </p>
+            </div>
+
+            <p className="mt-6 max-w-md text-[15px] leading-relaxed text-black/55 md:text-base">
+              {ENVIO} {RETORNO}
             </p>
-            <p className="mt-2 max-w-md text-[15px] leading-relaxed text-black/40 md:text-lg">
-              {RETORNO}
+
+            {/* A ponta do fio. O `span` interno é o que é medido — o parágrafo
+                ocupa a coluna inteira, e o fio sairia do vazio à direita da
+                frase em vez de da última palavra dela. */}
+            <p className="mt-8 font-serif text-[1.6rem] leading-tight tracking-[-0.02em] text-[#0B0B0B] md:text-[2rem]">
+              <span ref={faltaRef} className="inline-block">
+                {FALTA[0]} <span className="text-black/45">{FALTA[1]}</span>
+              </span>
             </p>
+
+            <div className="mt-10">
+              <ProvaRotativa />
+            </div>
           </div>
 
-          <div className="flex lg:justify-end">
-            <Formulario />
+          <div className="relative flex lg:justify-end">
+            <Formulario cartaoRef={cartaoRef} />
           </div>
         </div>
       </motion.div>

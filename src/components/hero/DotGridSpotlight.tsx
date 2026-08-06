@@ -3,6 +3,13 @@ import { useEffect, useRef, type RefObject } from 'react';
 interface DotGridSpotlightProps {
   /** The area the cursor is tracked inside; coordinates are relative to it. */
   containerRef: RefObject<HTMLElement>;
+  /**
+   * Extra classes on the lit layer, for surfaces that need a different gain —
+   * `is-forte` opens it up for the small dark card in the comparison section.
+   * The geometry still comes from the shared custom properties, so the lit dots
+   * cannot drift off their dim twins.
+   */
+  className?: string;
 }
 
 /**
@@ -17,7 +24,7 @@ interface DotGridSpotlightProps {
  * screen refreshes, so anything beyond the last position in a frame is paint
  * work thrown away.
  */
-export function DotGridSpotlight({ containerRef }: DotGridSpotlightProps) {
+export function DotGridSpotlight({ containerRef, className = '' }: DotGridSpotlightProps) {
   const layerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -61,6 +68,10 @@ export function DotGridSpotlight({ containerRef }: DotGridSpotlightProps) {
   }, [containerRef]);
 
   return (
-    <div ref={layerRef} className="dot-grid-glow pointer-events-none absolute inset-0" aria-hidden />
+    <div
+      ref={layerRef}
+      className={`dot-grid-glow pointer-events-none absolute inset-0 ${className}`}
+      aria-hidden
+    />
   );
 }

@@ -85,9 +85,16 @@ body {
   }
 }
 
+/*
+ * O brilho do pulso é uma variável porque o site tem dois papéis. No preto o
+ * sinal é luz branca; no creme da seção de comparação a mesma gramática tem de
+ * ser desenhada em TINTA, e uma auréola branca sobre papel claro é invisível.
+ * Só a cor muda — o dasharray, a velocidade e o "sinal não faz ease" são os
+ * mesmos, senão são dois sinais diferentes contando a mesma história.
+ */
 .connector-pulse {
   stroke-dasharray: 70 1165 70 1165;
-  filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.85));
+  filter: drop-shadow(0 0 5px var(--pulse-glow, rgba(255, 255, 255, 0.85)));
   animation: connector-pulse 4.5s linear infinite both;
 }
 
@@ -189,6 +196,55 @@ body {
   will-change: -webkit-mask-position, mask-position;
   opacity: 0;
   transition: opacity 220ms ease-out;
+}
+
+/*
+ * O mesmo facho, com o ganho aberto — para dentro do cartão do pedido.
+ *
+ * O do hero é contido de propósito: ele varre uma tela inteira atrás do
+ * conteúdo e, forte, viraria uma lanterna passeando pela dobra. Aqui ele mora
+ * numa caixa de meio metro que é o único elemento clicável da página, e a
+ * mesma discrição vira invisibilidade. Ponto maior, halo maior, branco quase
+ * cheio: os pontos ACENDEM sob a mão em vez de sugerir que acenderam.
+ */
+.dot-grid-glow.is-forte {
+  --spot-size: 620px;
+  --dot-lit-radius: 1.7px;
+  --dot-bloom-radius: 5.4px;
+  --dot-lit-color: rgba(255, 255, 255, 0.92);
+  --dot-bloom-color: rgba(255, 255, 255, 0.18);
+}
+
+/*
+ * O piscar.
+ *
+ * `filter` e não `opacity`, e isso é uma restrição real: a opacidade do facho é
+ * escrita inline pelo `DotGridSpotlight` para aparecer e sumir com o ponteiro, e
+ * uma animação CSS de opacidade venceria esse inline e deixaria os pontos
+ * pulsando com a mão longe do cartão. O brilho é a propriedade que sobra, e é a
+ * certa: pisca o que já está aceso sem discutir com quem acende.
+ *
+ * Só enquanto o ponteiro está sobre o cartão. Fora dele não há o que piscar, e
+ * uma animação infinita repintando uma camada invisível é trabalho jogado fora.
+ */
+@keyframes dot-twinkle {
+  0%,
+  100% {
+    filter: brightness(0.7);
+  }
+  50% {
+    filter: brightness(1.45);
+  }
+}
+
+.cartao-pedido:hover .dot-grid-glow.is-forte {
+  animation: dot-twinkle 2.4s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cartao-pedido:hover .dot-grid-glow.is-forte {
+    animation: none;
+  }
 }
 
 /*

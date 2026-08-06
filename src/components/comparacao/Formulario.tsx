@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type RefObject } from 'react';
 import { AnimatePresence, motion, useInView, useReducedMotion } from 'framer-motion';
 import { ArrowLeft, Check } from 'lucide-react';
 // O mesmo facho do hero, apontado para dentro deste cartão. É genérico apesar da
@@ -116,6 +116,9 @@ const PRONTO = PASSOS.length + 1;
  * o seu passo com um clique. É o que impede a sensação de funil sem saída: dá
  * para corrigir sem recomeçar.
  *
+ * O `ref` do cartão vem de FORA porque a seção precisa da geometria dele: é nele
+ * que o fio vindo do argumento aterrissa, e quem desenha o fio é o painel.
+ *
  * PENDENTE-DONO — duas coisas ainda não existem por baixo:
  *
  * 1. O PAGAMENTO. O passo está desenhado e desligado, a pedido do dono. Quando
@@ -127,7 +130,7 @@ const PRONTO = PASSOS.length + 1;
  *    enquanto não for, este formulário NÃO PODE IR AO AR — alguém preencheria,
  *    veria a confirmação e ninguém receberia nada.
  */
-export function Formulario() {
+export function Formulario({ cartaoRef }: { cartaoRef: RefObject<HTMLDivElement> }) {
   const [passo, setPasso] = useState(0);
   const [dados, setDados] = useState({ nome: '', whatsapp: '', arroba: '' });
   const [erro, setErro] = useState<string | null>(null);
@@ -135,7 +138,6 @@ export function Formulario() {
   /** Para onde a animação corre: 1 avança, -1 volta. */
   const [sentido, setSentido] = useState(1);
   const campoRef = useRef<HTMLInputElement>(null);
-  const cartaoRef = useRef<HTMLDivElement>(null);
   const parado = useReducedMotion() === true;
 
   /**
@@ -205,21 +207,27 @@ export function Formulario() {
       // qual painel tem a vez em "Como funciona". Sem escala: o cartão é uma
       // superfície, não um botão, e uma superfície que cresce ao ser apontada
       // promete um clique que ela não aceita.
-      // Sem `group` aqui, e não é detalhe: o `MotionButton` lá dentro é ele
-      // próprio um `group`, e um `group` sem nome no ancestral também casa com
-      // o `group-hover` dos descendentes — o disco do botão se encheria com o
-      // ponteiro em qualquer canto do cartão, longe do botão.
-      className="relative w-full max-w-[30rem] overflow-hidden rounded-3xl border border-white/[0.11] bg-doxa-surface shadow-[0_40px_100px_-40px_rgba(0,0,0,0.5)] transition-[border-color,box-shadow] duration-500 hover:border-white/[0.22] hover:shadow-[0_52px_120px_-40px_rgba(0,0,0,0.6)]"
+      //
+      // `w-full` e ponto: a largura é decidida pela coluna do grid, que vale 40%
+      // da tela e cresce com ela. Um `max-w` aqui seria uma segunda opinião
+      // sobre o mesmo número, e a que ganha é sempre a menor.
+      //
+      // `cartao-pedido` é o gancho do piscar: o CSS liga a cintilação dos pontos
+      // quando o ponteiro está sobre ESTE cartão. Uma classe própria, e não o
+      // `group` do Tailwind — `group` sem nome também casaria com o `group-hover`
+      // do botão lá dentro, e o disco dele se encheria com a mão em qualquer
+      // canto do cartão, longe do botão.
+      className="cartao-pedido relative w-full overflow-hidden rounded-3xl border border-white/[0.11] bg-doxa-surface shadow-[0_40px_100px_-40px_rgba(0,0,0,0.5)] transition-[border-color,box-shadow] duration-500 hover:border-white/[0.22] hover:shadow-[0_52px_120px_-40px_rgba(0,0,0,0.6)]"
     >
       <div className="dot-grid pointer-events-none absolute inset-0 opacity-70" />
-      <DotGridSpotlight containerRef={cartaoRef} />
+      <DotGridSpotlight containerRef={cartaoRef} className="is-forte" />
       {/* A luz por dentro. Um retângulo preto chapado no creme lê como buraco no
           papel; com um clarão no topo ele lê como objeto iluminado — que é o
           mesmo vocabulário do `hero-glow`, a única forma de destaque que a marca
           permite. */}
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(85%_55%_at_50%_0%,rgba(255,255,255,0.07),transparent_70%)]" />
 
-      <div className="relative p-7 md:p-9">
+      <div className="relative p-7 md:p-10">
         {/* O andamento. Três de três é curto o bastante para ser dito por extenso,
             e dizer quantos faltam é o que impede a pessoa de imaginar dez. */}
         {passo < PAGAMENTO && (
@@ -275,7 +283,7 @@ export function Formulario() {
             {atual != null && (
               <motion.div key={atual.chave} {...desliza} className="mt-7">
                 <label htmlFor={`campo-${atual.chave}`} className="block">
-                  <span className="block font-serif text-[1.75rem] leading-[1.1] tracking-[-0.02em] text-white md:text-[2.1rem]">
+                  <span className="block font-serif text-[1.75rem] leading-[1.1] tracking-[-0.02em] text-white md:text-[2.35rem]">
                     {atual.pergunta}
                   </span>
                   <span className="mt-2 block text-[13px] text-white/45">{atual.dica}</span>
@@ -308,7 +316,7 @@ export function Formulario() {
                       avancar();
                     }
                   }}
-                  className="mt-6 w-full border-b border-white/20 bg-transparent pb-3 font-serif text-[1.9rem] text-[#F4F1E8] outline-none transition-colors placeholder:text-white/20 focus:border-white/70 md:text-[2.3rem]"
+                  className="mt-6 w-full border-b border-white/20 bg-transparent pb-3 font-serif text-[1.9rem] text-[#F4F1E8] outline-none transition-colors placeholder:text-white/20 focus:border-white/70 md:text-[2.5rem]"
                 />
 
                 {/* A linha do erro tem altura fixa. Sem isso o botão sobe e desce
@@ -337,7 +345,7 @@ export function Formulario() {
 
             {passo === PAGAMENTO && (
               <motion.div key="pagamento" {...desliza} className="mt-7">
-                <p className="font-serif text-[1.75rem] leading-[1.1] tracking-[-0.02em] text-white md:text-[2.1rem]">
+                <p className="font-serif text-[1.75rem] leading-[1.1] tracking-[-0.02em] text-white md:text-[2.35rem]">
                   Falta o filtro.
                 </p>
 

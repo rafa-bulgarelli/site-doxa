@@ -128,6 +128,34 @@ export const CONVITE = 'Pronto para viralizar?';
 export const ENVIO = 'Você manda uma foto e um áudio. O resto é com a Doxa.';
 
 /**
+ * A troca, dita como troca: o custo do jeito antigo riscado, e o que entra no
+ * lugar dele.
+ *
+ * O riscado é o pedido do dono, e o que ele risca é O CUSTO — nunca um preço da
+ * Doxa ao lado. ATENÇÃO, é a armadilha mais cara desta seção: pôr "R$ 8.000 a
+ * 10.500" riscado com "R$ 100" embaixo diz que a Doxa custa cem reais por mês. O
+ * `FILTRO` de R$ 100 é espanta-curioso para falar com um consultor, não
+ * mensalidade, e uma página que promete cem reais de mensalidade cria a
+ * expectativa antes da primeira conversa — o consultor passa a corrigir a
+ * própria página em vez de vender. O que entra no lugar do custo é o ESFORÇO:
+ * vinte e cinco contratações viram uma foto e um áudio.
+ *
+ * PENDENTE-DONO: se o dono quiser um número aqui, ele tem de ser o preço real do
+ * serviço, decidido por ele, e passa a ser uma promessa pública.
+ */
+export const TROCA_DEPOIS = 'Uma foto e um áudio.';
+
+/**
+ * A frase de onde sai o fio até o formulário.
+ *
+ * PENDENTE-DONO: redação minha a partir do insight do dono — o hero mostra uma
+ * foto e uma voz correndo por um fio até o vídeo pronto, e aqui a última entrada
+ * que falta é a pessoa. A frase e o fio dizem a mesma coisa, e é por isso que
+ * ela é curta: o desenho já fez metade do trabalho.
+ */
+export const FALTA = ['Falta uma coisa:', 'você.'];
+
+/**
  * A garantia, copiada palavra por palavra do hero.
  *
  * Se a frase mudar, tem de mudar nos dois lugares no mesmo commit: duas versões
