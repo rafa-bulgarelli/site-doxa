@@ -249,16 +249,17 @@ body {
  * da caixa.
  */
 /*
- * E a pegada é METADE da do resto do site, a pedido do dono.
+ * E a pegada é um TERÇO da do resto do site, a pedido do dono.
  *
  * O facho de 620px é calibrado para uma tela: nela, uma poça de luz desse
  * tamanho é um foco. Dentro de um cartão de seiscentos pixels de largura, a
  * mesma poça cobre o cartão inteiro e deixa de ser foco — vira iluminação, e
- * então não há mais nada para a mão descobrir. Pela metade, o facho volta a ser
- * um ponto de luz que se move sobre uma superfície escura.
+ * então não há mais nada para a mão descobrir. O dono desceu de 620 para 310 e
+ * de 310 para 206: um terço da largura do cartão, que é o ponto em que a luz
+ * volta a ser um objeto sobre a superfície em vez de um estado dela.
  */
 .dot-grid-glow.is-forte {
-  --spot-size: 310px;
+  --spot-size: 206px;
   --dot-lit-radius: 1.6px;
   --dot-bloom-radius: 5px;
   --dot-lit-color: rgba(255, 255, 255, 0.62);
