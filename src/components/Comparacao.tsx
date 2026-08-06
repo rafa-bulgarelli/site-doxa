@@ -324,7 +324,12 @@ export function Comparacao() {
       <motion.div
         ref={claroRef}
         style={{ rotate: parado ? 0 : giro, background: PAPEL }}
-        className="relative z-10 min-h-screen origin-bottom-left px-5 py-10 md:px-10 md:py-14"
+        /* Coluna flex, e é o que substituiu três `min-h` calculados na mão.
+           A faixa do título ocupa o que precisa, a grade fica com `flex-1` e
+           come o resto: o painel continua tendo exatamente uma tela de altura
+           sem ninguém precisar subtrair o padding e a altura da manchete de
+           `100vh` — e sem quebrar no dia em que a copy do título mudar. */
+        className="relative z-10 flex min-h-screen origin-bottom-left flex-col px-5 py-10 md:px-10 md:py-14"
       >
         {/* A textura atravessa a virada. Aqui ela é a mesma grade em tinta, e o
             facho é o mesmo facho com o sinal trocado: no preto os pontos
@@ -355,9 +360,63 @@ export function Comparacao() {
             e deixar o papel em volta engordar sozinho. O piso de 30rem é o que
             impede a coluna de espremer o formulário quando a janela é estreita e
             as colunas ainda estão lado a lado. */}
+        {/* ── A FAIXA: o selo e a manchete, na largura inteira do papel.
+
+            A manchete morava na coluna do argumento e era ali que a seção
+            apertava. Uma frase desse porte numa coluna de 703px só cabe
+            quebrada, e quebrada ela ocupa a largura toda nas duas linhas — o
+            texto encosta nas duas bordas, não sobra respiro, e a coisa mais
+            importante da tela passa a ler como parágrafo. Em cima, numa linha
+            só, ela vira o que é: o título da seção. E a coluna que ela deixou
+            é justamente o ar que faltava embaixo.
+
+            Hierarquia por TAMANHO, de cima para baixo e sem empate: manchete
+            (~75px) · garantia (43px) · a troca (38px) · o cartão do falta
+            (32px) · a prova (15px). Cada degrau é grande o bastante para o olho
+            saber, sem ler, o que vem primeiro. */}
+        <div className="relative mx-auto w-full max-w-screen-2xl">
+          <Selo prefixo="Com" escuro />
+
+          {/* ── O CORPO DO TÍTULO É UMA CONTA, e ela está aqui.
+
+              Medida na página de verdade, a frase inteira ocupa 15 vezes o
+              corpo. Em 1370px de papel útil isso dá 91px de corpo máximo —
+              dentro da coluna de 703px daria 47px. Não é preferência: manchete
+              em uma linha e coluna estreita são incompatíveis, e quem cede é a
+              coluna.
+
+              O `clamp` é 92% do máximo que cabe: `(100vw - 80px de padding) /
+              15 × 0,92`. A folga é margem contra a diferença de rasterização de
+              cada máquina, e é também o respiro óptico da direita — uma
+              manchete que encosta exatamente nas duas margens lê como texto
+              justificado, não como título. O teto de 5,8rem é onde o
+              `max-w-screen-2xl` para de crescer, e abaixo de `lg` nada disso
+              vale: ali a frase quebra em duas, como sempre quebrou.
+
+              Em `lg:` e não numa classe própria no CSS, e isso é specificity:
+              as utilities do Tailwind saem DEPOIS do CSS escrito à mão, e entre
+              dois seletores de uma classe só quem vem por último ganha. Uma
+              `.titulo-convite` em `min-width: 1024px` perderia para o
+              `md:text-[4.4rem]` deste elemento e a manchete estouraria a faixa
+              a 1024px. Em `lg:`, é o próprio Tailwind que garante a ordem.
+
+              `nowrap` é o cinto de segurança: se a copy crescer e a conta não
+              for refeita, é melhor a frase vazar e ser vista na hora do que
+              quebrar sozinha e deixar "viraliza." pendurada — quebra sozinha
+              parece de propósito. */}
+          <h2 className="mt-7 font-serif text-[2.8rem] leading-[0.95] tracking-[-0.03em] text-[#0B0B0B] md:text-[4.4rem] lg:whitespace-nowrap lg:text-[clamp(2.8rem,calc(6.13vw_-_4.9px),5.8rem)]">
+            {CONVITE[0]}
+            {/* A quebra só existe onde a frase não cabe numa linha. No
+                desktop ela sai, e o espaço que a substitui tem de ser
+                explícito — o JSX come o espaço em branco entre linhas. */}
+            <br className="lg:hidden" />{' '}
+            <span className="texto-aceso-tinta">{CONVITE[1]}</span>
+          </h2>
+        </div>
+
         <div
           ref={gradeRef}
-          className="relative mx-auto grid min-h-[calc(100vh-5rem)] w-full max-w-screen-2xl grid-cols-1 gap-x-16 gap-y-12 lg:grid-cols-[1fr_minmax(32rem,44%)] lg:items-center md:min-h-[calc(100vh-7rem)]"
+          className="relative mx-auto mt-10 grid w-full max-w-screen-2xl flex-1 grid-cols-1 gap-x-16 gap-y-12 lg:mt-14 lg:grid-cols-[1fr_minmax(32rem,44%)] lg:items-center"
         >
           {/* O fio primeiro no DOM, e as duas colunas `relative` depois dele.
               Ordem de pintura em CSS não é ordem de irmãos: um elemento
@@ -379,22 +438,12 @@ export function Comparacao() {
           )}
 
           <div className="relative flex flex-col">
-            <Selo prefixo="Com" escuro />
-
-            {/* Duas linhas, e a ordem é o argumento: primeiro a conta cai,
-                depois vêm as views. É também a ordem em que a coluna abaixo
-                está escrita — o custo riscado antes da garantia. */}
-            <h2 className="mt-7 font-serif text-[2.8rem] leading-[0.95] tracking-[-0.03em] text-[#0B0B0B] md:text-[4.4rem]">
-              {CONVITE[0]}
-              <br />
-              <span className="texto-aceso-tinta">{CONVITE[1]}</span>
-            </h2>
-
             {/* A garantia saiu do selo lateral e virou a maior coisa depois do
                 convite: ela é a resposta direta ao "nenhuma garantia de
                 viralizar" que fecha o painel escuro. Como resposta, ela precisa
-                do mesmo porte da pergunta. */}
-            <p className="mt-7 font-serif text-[1.9rem] leading-[1.08] tracking-[-0.02em] text-[#0B0B0B] md:text-[2.7rem]">
+                do mesmo porte da pergunta. Com a manchete promovida à faixa,
+                ela abre a coluna — e é a segunda voz da seção, não a terceira. */}
+            <p className="font-serif text-[1.9rem] leading-[1.08] tracking-[-0.02em] text-[#0B0B0B] md:text-[2.7rem]">
               {GARANTIA[0]}
               <br />
               {/* A segunda linha era a apagada do par, e é ela que carrega a
@@ -410,7 +459,12 @@ export function Comparacao() {
                 dois valores para o mesmo custo é o fim da credibilidade. O
                 traço passa por cima quando o painel chega. Embaixo, o que entra
                 no lugar: não um preço, o esforço. */}
-            <div className="mt-8">
+            {/* O ritmo abriu junto com o espaço. Os blocos desta coluna ficavam
+                a 32px um do outro porque não havia mais para dar — com a
+                manchete fora, o vão vira 48 e cada bloco passa a ser lido como
+                uma unidade, e não como o parágrafo seguinte. Ar entre coisas é
+                o que diz que elas são coisas diferentes. */}
+            <div className="mt-8 lg:mt-12">
               <span className="relative inline-block font-serif text-[1.5rem] leading-tight text-black/35 md:text-[1.9rem]">
                 R$ {CUSTO_DE.toLocaleString('pt-BR')} a {CUSTO_ATE.toLocaleString('pt-BR')}
                 {CUSTO_UNIDADE} em {TROCA_ANTES}
@@ -448,7 +502,7 @@ export function Comparacao() {
                 SVG é desenhado em `inset-0` desta caixa. */}
             <div
               ref={faltaRef}
-              className="relative mt-8 w-fit rounded-2xl border border-white/[0.14] bg-doxa-surface px-7 py-6 shadow-[0_30px_70px_-35px_rgba(0,0,0,0.5),0_0_70px_-25px_rgba(255,255,255,0.35)]"
+              className="relative mt-8 w-fit rounded-2xl border border-white/[0.14] bg-doxa-surface px-7 py-6 shadow-[0_30px_70px_-35px_rgba(0,0,0,0.5),0_0_70px_-25px_rgba(255,255,255,0.35)] lg:mt-12"
             >
               {/* ── ONDE O SINAL NASCE.
 
@@ -488,7 +542,7 @@ export function Comparacao() {
               </p>
             </div>
 
-            <div className="mt-10">
+            <div className="mt-10 lg:mt-14">
               <ProvaRotativa />
             </div>
           </div>
