@@ -318,6 +318,26 @@ export function Faq() {
          * certa enquanto ninguém mexesse nas frações. Como recuo, ela é a borda
          * de um elemento que já está no lugar certo — e o sinal tem exatamente
          * meio vão para atravessar, que é o `VAO` que ele já conhece.
+         *
+         * ─── FECHADO É `0%`, E NUNCA `0fr` ────────────────────────────────────
+         *
+         * Aqui estava o engasgo que o dono viu, e ele não era peso de máquina: a
+         * abertura SALTAVA no meio do caminho.
+         *
+         * `grid-template-columns` só interpola quando os dois lados têm o mesmo
+         * número de tracks E o mesmo TIPO em cada um. Qualquer diferença de tipo
+         * derruba a propriedade inteira para `discrete`, e discrete não anda —
+         * troca de valor de uma vez na metade da duração. Fechado em `0fr` e
+         * aberto em `44%`, os tipos eram outros (`<flex>` contra `<percentage>`),
+         * então era exatamente isso que acontecia: a faixa e os recuos deslizavam
+         * os 420ms inteiros e a coluna da direita aparecia INTEIRA aos 210. O que
+         * se sente disso não é "rápido demais": é engasgo, porque são partes do
+         * mesmo gesto andando em regimes diferentes.
+         *
+         * Em `0%`, os dois lados são `minmax(<length-percentage>, <percentage>)`
+         * e o navegador interpola. Fechado, `0%` mede exatamente o que `0fr`
+         * media: zero. Não se ganhou nada no layout — ganhou-se o MEIO da
+         * animação, que antes não existia.
          */}
         <div
           className="mt-10 transition-[grid-template-columns] motion-reduce:transition-none lg:mt-14 lg:grid"
@@ -325,7 +345,7 @@ export function Faq() {
             ...TRANSICAO,
             gridTemplateColumns: aberto
               ? 'minmax(0, 1fr) minmax(0, 44%)'
-              : 'minmax(0, 1fr) minmax(0, 0fr)',
+              : 'minmax(0, 1fr) minmax(0, 0%)',
           }}
         >
           {/* ─── A COLUNA DA PERGUNTA ─────────────────────────────────────── */}
