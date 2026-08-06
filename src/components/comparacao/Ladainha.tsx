@@ -292,10 +292,41 @@ export function Ladainha() {
             aria-hidden
             className="pointer-events-none fixed left-0 top-0 z-40"
             style={{ x, y, width: LAMINA.w, height: LAMINA.h }}
-            initial={{ opacity: 0, scale: 0.72 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.86 }}
-            transition={{ duration: 0.4, ease: EASE }}
+            /*
+             * A lâmina não CHEGA: ela salta para o lugar.
+             *
+             * Antes era uma curva de tempo — 0,72 até 1 em quatro décimos — e o
+             * dono leu como um cartão "vindo do além", que é exatamente o que
+             * uma escala uniforme parece: um objeto viajando de longe, na mesma
+             * velocidade o caminho inteiro.
+             *
+             * Agora são duas molas com atritos diferentes. A escala parte de
+             * bem menor e passa DO PONTO antes de assentar — é o que dá o
+             * estalo de coisa que aparece em vez de coisa que se aproxima. A
+             * rotação tem amortecimento mais baixo de propósito: ela cruza o
+             * zero mais de uma vez, tomba para um lado, volta menos para o
+             * outro, e para. É a borracha que o dono pediu, e vem da física do
+             * movimento em vez de uma lista de quadros escrita à mão — uma
+             * mola não repete o mesmo balanço duas vezes, e por isso não vira
+             * um tique.
+             *
+             * A opacidade fica FORA das molas, numa curva curta de tempo: presa
+             * a uma mola elástica, ela também passaria do ponto, e "mais de cem
+             * por cento opaco" não existe — o que se vê é a lâmina piscando no
+             * fim do salto.
+             */
+            initial={parado ? { opacity: 0 } : { opacity: 0, scale: 0.42, rotate: -7 }}
+            animate={parado ? { opacity: 1 } : { opacity: 1, scale: 1, rotate: 0 }}
+            exit={{ opacity: 0, scale: 0.84, transition: { duration: 0.22, ease: 'easeIn' } }}
+            transition={
+              parado
+                ? { duration: 0.2 }
+                : {
+                    opacity: { duration: 0.16, ease: 'easeOut' },
+                    scale: { type: 'spring', stiffness: 470, damping: 13, mass: 0.75 },
+                    rotate: { type: 'spring', stiffness: 300, damping: 8.5, mass: 0.6 },
+                  }
+            }
           >
             {/* O deslocamento vive aqui dentro para não brigar com o `x`/`y` da
                 mola: a lâmina fica ao lado da mão sem que a posição precise ser

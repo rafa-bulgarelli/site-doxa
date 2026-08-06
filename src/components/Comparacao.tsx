@@ -25,9 +25,9 @@ import {
   ENVIO,
   GARANTIA,
   PERGUNTA,
-  RETORNO,
   SEM_GARANTIA,
   TOTAL_ITENS,
+  TROCA_ANTES,
   TROCA_DEPOIS,
 } from './comparacao/config';
 
@@ -54,10 +54,48 @@ const RESPIRO = 'mt-7 md:mt-10';
  */
 const GIRO = 30;
 
-/** O logo no lugar da palavra: "Sem [DOXA]" e "Com [DOXA]". */
+/**
+ * As duas cores de estado, e são as duas únicas da seção.
+ *
+ * O dono pediu vermelho no lado sem Doxa e verde no lado com. É uma exceção
+ * consciente à regra monocromática do `tailwind.config` — e é a exceção certa,
+ * porque aqui a cor não decora: ela É o estado. Vermelho e verde num ponto que
+ * pulsa é a gramática universal de "parado" e "no ar", e ela se lê antes de
+ * qualquer palavra ser lida.
+ *
+ * Os dois valores saem da paleta que a ladainha já usa, em vez de dois hexes
+ * novos: a seção passa a ter duas cores, não quatro.
+ */
+const PARADO = '#E0453F';
+const NO_AR = '#3FA06A';
+
+/**
+ * O logo no lugar da palavra: "Sem [DOXA]" e "Com [DOXA]", com o ponto de
+ * estado na frente.
+ *
+ * O ponto pulsa como um LED: um núcleo sólido e um anel que cresce e some. No
+ * lado escuro ele é vermelho e a seção inteira lê como sistema parado; no claro
+ * é verde, e a mesma marca aparece ligada. É a virada de preto para creme dita
+ * uma segunda vez, num objeto de oito pixels.
+ */
 function Selo({ prefixo, escuro = false }: { prefixo: string; escuro?: boolean }) {
+  const imovel = useReducedMotion() === true;
+  const cor = escuro ? NO_AR : PARADO;
   return (
     <span className="flex items-baseline gap-2">
+      {/* `items-baseline` no envelope alinharia o ponto pela linha de base do
+          texto e ele subiria acima dela; a caixa própria com `self-center` o
+          põe na altura do olho da palavra. */}
+      <span className="relative mr-1 flex h-2 w-2 self-center" aria-hidden>
+        <motion.span
+          className="absolute inline-flex h-full w-full rounded-full"
+          style={{ background: cor }}
+          animate={imovel ? undefined : { scale: [1, 2.8], opacity: [0.7, 0] }}
+          transition={{ duration: 1.8, ease: 'easeOut', repeat: Infinity, repeatDelay: 0.4 }}
+        />
+        <span className="relative inline-flex h-2 w-2 rounded-full" style={{ background: cor }} />
+      </span>
+
       {/* Caixa normal, a pedido do dono: em versalete o prefixo competia com o
           logo ao lado, e os dois juntos liam como duas marcas. */}
       <span className={`text-[13px] tracking-tight ${escuro ? 'text-black/50' : 'text-white/50'}`}>
@@ -228,9 +266,13 @@ export function Comparacao() {
               sistema, e o escudo cortado como ícone de erro. A frase não precisa
               de moldura — ela é a única coisa em branco cheio depois do título,
               e isso já a torna a segunda voz mais alta da tela. */}
-          <p className={`${RESPIRO} font-serif text-3xl leading-[1.1] tracking-[-0.02em] text-white md:text-[3.6rem]`}>
-            <span className="text-white/40">{SEM_GARANTIA[0]}</span>{' '}
-            {SEM_GARANTIA[1]}
+          {/* As duas metades acesas em degraus, como no cartão do outro painel:
+              creme fechado na que prepara, branco com brilho na que bate. A
+              primeira estava em cinza 40% e lia como rodapé de uma frase que é
+              o clímax da coluna. */}
+          <p className={`${RESPIRO} font-serif text-3xl leading-[1.1] tracking-[-0.02em] md:text-[3.6rem]`}>
+            <span className="text-[#F4F1E8]/60">{SEM_GARANTIA[0]}</span>{' '}
+            <span className="texto-aceso text-white">{SEM_GARANTIA[1]}</span>
           </p>
         </div>
       </div>
@@ -309,8 +351,13 @@ export function Comparacao() {
           <div className="relative flex flex-col">
             <Selo prefixo="Com" escuro />
 
+            {/* Duas linhas, e a ordem é o argumento: primeiro a conta cai,
+                depois vêm as views. É também a ordem em que a coluna abaixo
+                está escrita — o custo riscado antes da garantia. */}
             <h2 className="mt-7 font-serif text-[2.8rem] leading-[0.95] tracking-[-0.03em] text-[#0B0B0B] md:text-[4.4rem]">
-              {CONVITE}
+              {CONVITE[0]}
+              <br />
+              <span className="texto-aceso-tinta">{CONVITE[1]}</span>
             </h2>
 
             {/* A garantia saiu do selo lateral e virou a maior coisa depois do
@@ -336,7 +383,7 @@ export function Comparacao() {
             <div className="mt-8">
               <span className="relative inline-block font-serif text-[1.5rem] leading-tight text-black/35 md:text-[1.9rem]">
                 R$ {CUSTO_DE.toLocaleString('pt-BR')} a {CUSTO_ATE.toLocaleString('pt-BR')}
-                {CUSTO_UNIDADE}, {TOTAL_ITENS} contratações
+                {CUSTO_UNIDADE} em {TROCA_ANTES}
                 {/* Dois pixels, e não um `line-through`: o risco é um gesto e
                     precisa ser desenhado da esquerda para a direita. Decoração
                     de texto não anima. */}
@@ -355,7 +402,7 @@ export function Comparacao() {
             </div>
 
             <p className="mt-6 max-w-md text-[15px] leading-relaxed text-black/55 md:text-base">
-              {ENVIO} {RETORNO}
+              {ENVIO}
             </p>
 
             {/* ── A ponta do fio, e ela é um cartão preto como o do outro lado.

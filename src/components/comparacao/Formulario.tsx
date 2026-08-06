@@ -5,6 +5,7 @@ import { ArrowLeft, Check } from 'lucide-react';
 // pasta: recebe o container e escreve a posição do ponteiro nele. Custo zero de
 // bundle, e é o que faz o único elemento clicável da página responder à mão.
 import { DotGridSpotlight } from '../hero/DotGridSpotlight';
+import { BordaViva } from './BordaViva';
 import { MotionButton } from '../ui/MotionButton';
 import { FILTRO, PAGAMENTOS, RETORNO } from './config';
 
@@ -226,28 +227,58 @@ export function Formulario({ cartaoRef }: { cartaoRef: RefObject<HTMLDivElement>
           mesmo vocabulário do `hero-glow`, a única forma de destaque que a marca
           permite. */}
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(85%_55%_at_50%_0%,rgba(255,255,255,0.07),transparent_70%)]" />
+      {/* O sinal que chegou pelo fio continua aqui, contornando o cartão. */}
+      <BordaViva alvoRef={cartaoRef} />
 
       <div className="relative p-8 md:p-12">
         {/* O andamento. Três de três é curto o bastante para ser dito por extenso,
             e dizer quantos faltam é o que impede a pessoa de imaginar dez. */}
         {passo < PAGAMENTO && (
           <div className="flex items-center gap-3">
-            <span className="text-[11px] uppercase tracking-[0.18em] text-white/40">
-              {String(passo + 1).padStart(2, '0')} / {String(PASSOS.length).padStart(2, '0')}
+            {/* O número da vez em serifada e cheia, o total apagado ao lado: o
+                andamento passa a ter uma coisa em foco em vez de dois números
+                do mesmo tamanho. */}
+            <span className="flex items-baseline gap-1 font-serif text-[15px] tabular-nums leading-none">
+              <motion.span
+                key={passo}
+                initial={parado ? undefined : { opacity: 0, y: -6 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.35, ease: EASE }}
+                className="text-[#F4F1E8]"
+              >
+                {String(passo + 1).padStart(2, '0')}
+              </motion.span>
+              <span className="text-white/30">/</span>
+              <span className="text-white/30">{String(PASSOS.length).padStart(2, '0')}</span>
             </span>
-            <div className="h-px flex-1 bg-white/10">
-              {/* Desenha de zero quando o cartão chega, e não quando o React
-                  monta: montado é no carregamento da página, com a seção a
-                  quatro telas de distância, e a barra teria terminado seu
-                  movimento antes de alguém a ver. O atraso vale só no primeiro
-                  passo — nas trocas seguintes a barra já está em cena e esperar
-                  meio segundo seria a interface demorando a responder. */}
-              <motion.div
-                className="h-px origin-left bg-white/60"
-                initial={{ scaleX: 0 }}
-                animate={{ scaleX: naTela ? (passo + 1) / PASSOS.length : 0 }}
-                transition={{ duration: 0.6, ease: EASE, delay: passo === 0 ? 0.5 : 0 }}
-              />
+
+            {/* Um segmento por pergunta, e não uma barra contínua. Uma barra diz
+                "falta tanto"; três casas dizem "são três, você está na
+                primeira" — e o que trava alguém num formulário é não saber
+                quantas vezes mais vai ter de responder.
+
+                O segmento da vez é o único aceso, com o brilho da borda. Os já
+                respondidos ficam em branco fechado, os que faltam em traço
+                apagado: passado, presente e futuro em três tons. */}
+            <div className="flex flex-1 gap-1.5">
+              {PASSOS.map((p, i) => (
+                <div key={p.chave} className="h-[3px] flex-1 overflow-hidden rounded-full bg-white/10">
+                  <motion.div
+                    className="h-full origin-left rounded-full"
+                    style={{
+                      background: i === passo ? '#F4F1E8' : 'rgba(255,255,255,0.45)',
+                      boxShadow: i === passo ? '0 0 10px rgba(255,255,255,0.7)' : 'none',
+                    }}
+                    initial={{ scaleX: 0 }}
+                    animate={{ scaleX: naTela && i <= passo ? 1 : 0 }}
+                    transition={{
+                      duration: 0.5,
+                      ease: EASE,
+                      delay: passo === 0 && i === 0 ? 0.5 : 0,
+                    }}
+                  />
+                </div>
+              ))}
             </div>
           </div>
         )}

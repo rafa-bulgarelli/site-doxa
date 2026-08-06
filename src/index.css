@@ -416,6 +416,47 @@ body {
 }
 
 /*
+ * O sinal contornando o cartão do pedido, depois de chegar pelo fio.
+ *
+ * Um traço curto correndo por metade do contorno. Os dois caminhos partem do
+ * mesmo ponto — o meio da borda esquerda, que é onde o fio aterrissa — e vão
+ * por lados opostos, então o que se vê é o sinal se ABRINDO em dois, dando a
+ * volta e se reencontrando na borda direita.
+ *
+ * O ciclo é de 4,5s, o mesmo de `.connector-pulse`: os dois pulsos são o mesmo
+ * sinal e não podem andar em velocidades diferentes. O atraso é o tempo que o
+ * pulso do fio leva para atravessar até o cartão, e é o que faz um parecer virar
+ * o outro em vez de dois efeitos acontecendo perto.
+ *
+ * `linear`, como todo sinal nesta página — um pulso que acelera e freia é um
+ * objeto sendo movido, não uma corrente passando.
+ *
+ * O brilho sangra para os dois lados do traço, e é assim que o miolo do cartão
+ * se ilumina: sem uma segunda camada de luz por cima do texto, que é o que
+ * lavaria a pergunta que a pessoa está lendo.
+ */
+@keyframes borda-viva {
+  from {
+    stroke-dashoffset: 0.22;
+  }
+  to {
+    stroke-dashoffset: -1;
+  }
+}
+
+.borda-viva {
+  stroke-dasharray: 0.22 0.78;
+  filter: drop-shadow(0 0 7px rgba(255, 255, 255, 0.75));
+  animation: borda-viva 4.5s linear 2.4s infinite both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .borda-viva {
+    display: none;
+  }
+}
+
+/*
  * A palavra acesa: "você", no cartão que fecha o argumento.
  *
  * `text-shadow` e não `filter: drop-shadow`, porque o brilho tem de sair das

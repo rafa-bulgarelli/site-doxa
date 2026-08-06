@@ -84,13 +84,13 @@ export function ProvaRotativa() {
     <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
       {/* Caixa normal, a pedido do dono: em versalete o rótulo grita mais alto
           que o dado que ele apresenta, e é o dado que interessa. */}
-      <span className="text-[12px] tracking-[0.06em] text-black/35">Já publicados</span>
+      <span className="text-[12px] font-medium tracking-[0.06em] text-black/60">Já publicados</span>
 
       {/* Parado, a faixa não vira uma lista: ela mostra o primeiro e fica. Quem
           pediu menos movimento pediu menos movimento, não menos informação — e a
           lista inteira já está na parede de prova, uma seção acima. */}
       {parado ? (
-        <span className="text-[15px] text-black/60">
+        <span className="text-[15px] text-black/75">
           <Perfil handle={atual.handle} verificado={atual.verified} /> · {atual.views} de views
         </span>
       ) : (
@@ -103,7 +103,7 @@ export function ProvaRotativa() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.45, ease: EASE }}
-            className="text-[15px] text-black/60"
+            className="text-[15px] text-black/75"
           >
             <Perfil handle={atual.handle} verificado={atual.verified} /> · {atual.views} de views
           </motion.span>

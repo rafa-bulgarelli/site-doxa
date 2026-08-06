@@ -108,7 +108,7 @@ export const CUSTO_UNIDADE = '/mês';
  * texto grande" e passa a ser um documento — e um documento é sério de um jeito
  * que uma frase solta não é.
  */
-export const FATURA = 'Fatura mensal · recorrente';
+export const FATURA = 'Para fazer sozinho, você precisa de';
 
 /** Quantos itens a conta tem, contados e nunca escritos à mão. */
 export const TOTAL_ITENS = ITENS.length;
@@ -121,11 +121,29 @@ export const TOTAL_ITENS = ITENS.length;
  * nenhuma das duas frases fala do produto: uma fala do custo dele, a outra do
  * desejo dele. A virada de preto para creme é que responde.
  */
-export const PERGUNTA = ['Quanto custa', 'continuar assim?'];
-export const CONVITE = 'Pronto para viralizar?';
+export const PERGUNTA = ['Quanto custa não ter a Doxa', 'na sua empresa?'];
 
-/** O que se envia. É a única coisa que o cliente faz. */
-export const ENVIO = 'Você manda uma foto e um áudio. O resto é com a Doxa.';
+/**
+ * O convite, e a ORDEM dele é o pedido do dono.
+ *
+ * Era "Pronto para viralizar?", que é o fim da história contada primeiro. Com a
+ * Doxa dentro da empresa acontecem duas coisas, e nesta sequência: a conta cai,
+ * e depois vêm as views. O título agora diz as duas na ordem em que elas
+ * acontecem — e é a mesma ordem em que a coluna abaixo dele está escrita, com o
+ * custo riscado antes da garantia.
+ */
+export const CONVITE = ['Corta a conta.', 'Depois viraliza.'];
+
+/**
+ * O que se faz AGORA, que é diferente do que se faz depois.
+ *
+ * Falava do produto — "você manda uma foto e um áudio" —, e o dono corrigiu: a
+ * foto e o áudio são o que acontece depois de fechar. Nesta tela, ao lado de um
+ * formulário aberto, a única ação que existe é preencher o formulário. Uma
+ * frase que descreve a etapa seguinte, colada na etapa atual, manda a pessoa
+ * pensar em algo que ela ainda não pode fazer.
+ */
+export const ENVIO = 'Preencha aqui do lado. Um consultor fala com você em até 24 horas.';
 
 /**
  * A troca, dita como troca: o custo do jeito antigo riscado, e o que entra no
@@ -144,6 +162,17 @@ export const ENVIO = 'Você manda uma foto e um áudio. O resto é com a Doxa.';
  * serviço, decidido por ele, e passa a ser uma promessa pública.
  */
 export const TROCA_DEPOIS = 'Uma foto e um áudio.';
+
+/**
+ * O que está sendo riscado, dito em COISAS e não em contagem.
+ *
+ * Era "R$ 8.000 a 10.500/mês, 25 contratações", e o dono recusou o número: 25
+ * contratações é um total de inventário, e ninguém sente um total. Uma agência
+ * sente. Tráfego pago sente — é uma linha que a pessoa reconhece do próprio
+ * extrato. A lista completa está logo acima, no painel escuro, contada uma a
+ * uma; aqui embaixo o que precisa aparecer são as duas ou três que doem mais.
+ */
+export const TROCA_ANTES = 'uma agência, tráfego pago e um estúdio';
 
 /**
  * A frase de onde sai o fio até o formulário.
