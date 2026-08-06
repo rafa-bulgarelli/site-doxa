@@ -10,6 +10,23 @@ interface BordaVivaProps {
 /** O mesmo raio do `rounded-3xl` do cartão, em pixels. */
 const RAIO = 24;
 
+/** A espessura do sinal, em pixels. */
+const TRACO = 3;
+
+/**
+ * Quanto o contorno entra para dentro da caixa, em pixels.
+ *
+ * Metade do traço, e é o que faz o sinal aparecer inteiro. O cartão é
+ * `overflow-hidden`: um caminho desenhado na borda exata tem metade da
+ * espessura pendurada para FORA dela, e essa metade é recortada. O que sobrava
+ * era um traço com o dobro da espessura declarada de um lado só, a ponta
+ * redonda serrada ao meio pelo recorte e o brilho decepado junto — engordar o
+ * traço só engordava a parte invisível. Recuado, o sinal fica todo dentro do
+ * corte, com a ponta redonda inteira e a auréola livre para sangrar para o
+ * miolo, que é onde ela ilumina alguma coisa.
+ */
+const RECUO = TRACO / 2;
+
 /**
  * Metade do contorno do cartão, do meio da borda esquerda ao meio da direita.
  *
@@ -25,25 +42,32 @@ const RAIO = 24;
  * por cima de um elemento.
  */
 function meiaVolta(largura: number, altura: number, topo: boolean) {
-  const r = Math.min(RAIO, largura / 2, altura / 2);
+  // As quatro paredes, já recuadas para dentro do corte do cartão.
+  const esq = RECUO;
+  const dir = largura - RECUO;
+  const cima = RECUO;
+  const baixo = altura - RECUO;
   const meio = altura / 2;
+  // O raio encolhe junto com o recuo, senão o arco deixa de ser concêntrico com
+  // o canto do cartão e o contorno abre uma fresta em cada esquina.
+  const r = Math.min(RAIO - RECUO, (dir - esq) / 2, (baixo - cima) / 2);
   if (topo) {
     return [
-      `M 0 ${meio}`,
-      `L 0 ${r}`,
-      `A ${r} ${r} 0 0 1 ${r} 0`,
-      `L ${largura - r} 0`,
-      `A ${r} ${r} 0 0 1 ${largura} ${r}`,
-      `L ${largura} ${meio}`,
+      `M ${esq} ${meio}`,
+      `L ${esq} ${cima + r}`,
+      `A ${r} ${r} 0 0 1 ${esq + r} ${cima}`,
+      `L ${dir - r} ${cima}`,
+      `A ${r} ${r} 0 0 1 ${dir} ${cima + r}`,
+      `L ${dir} ${meio}`,
     ].join(' ');
   }
   return [
-    `M 0 ${meio}`,
-    `L 0 ${altura - r}`,
-    `A ${r} ${r} 0 0 0 ${r} ${altura}`,
-    `L ${largura - r} ${altura}`,
-    `A ${r} ${r} 0 0 0 ${largura} ${altura - r}`,
-    `L ${largura} ${meio}`,
+    `M ${esq} ${meio}`,
+    `L ${esq} ${baixo - r}`,
+    `A ${r} ${r} 0 0 0 ${esq + r} ${baixo}`,
+    `L ${dir - r} ${baixo}`,
+    `A ${r} ${r} 0 0 0 ${dir} ${baixo - r}`,
+    `L ${dir} ${meio}`,
   ].join(' ');
 }
 
@@ -113,7 +137,7 @@ export function BordaViva({ alvoRef, pausado }: BordaVivaProps) {
               pathLength={1}
               className="pulso pulso-borda"
               stroke="#FFFFFF"
-              strokeWidth={2}
+              strokeWidth={TRACO}
               strokeLinecap="round"
               style={{ animationPlayState: pausado ? 'paused' : 'running' }}
             />

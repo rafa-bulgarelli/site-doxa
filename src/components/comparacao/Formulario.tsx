@@ -66,7 +66,7 @@ const PASSOS: readonly Passo[] = [
     rotulo: 'Nome',
     pergunta: 'Como a gente te chama?',
     dica: 'Para a primeira mensagem não começar fria.',
-    exemplo: 'Seu nome',
+    exemplo: 'Seu nome completo',
     tipo: 'text',
     valida: (v) => (v.trim().length < 2 ? 'Escreve o seu nome.' : null),
   },
@@ -239,7 +239,9 @@ export function Formulario({
       // contra o creme.
       className="cartao-pedido relative w-full overflow-hidden rounded-3xl border border-white/[0.16] bg-doxa-surface shadow-[0_40px_100px_-40px_rgba(0,0,0,0.5),0_0_60px_-14px_rgba(255,255,255,0.28),inset_0_0_70px_-24px_rgba(255,255,255,0.22)] transition-[border-color,box-shadow] duration-500 hover:border-white/[0.3] hover:shadow-[0_52px_120px_-40px_rgba(0,0,0,0.6),0_0_80px_-12px_rgba(255,255,255,0.4),inset_0_0_80px_-20px_rgba(255,255,255,0.3)]"
     >
-      <div className="dot-grid pointer-events-none absolute inset-0 opacity-40" />
+      {/* A 25% e não a 40%: a grade em repouso corre por baixo da pergunta e do
+          campo, e ali ela é textura, não desenho. Vê-la é o defeito. */}
+      <div className="dot-grid pointer-events-none absolute inset-0 opacity-25" />
       <DotGridSpotlight containerRef={cartaoRef} className="is-forte" />
       {/* A luz por dentro. Um retângulo preto chapado no creme lê como buraco no
           papel; com um clarão no topo ele lê como objeto iluminado — que é o
@@ -344,7 +346,12 @@ export function Formulario({
                   <span className="block font-serif text-[1.75rem] leading-[1.1] tracking-[-0.02em] text-white md:text-[2.35rem]">
                     {atual.pergunta}
                   </span>
-                  <span className="mt-2 block text-[13px] text-white/45">{atual.dica}</span>
+                  {/* 15px e 70% de branco, e os dois números subiram juntos por
+                      um motivo só: esta linha é a que responde "por que você
+                      quer isso de mim?" — a única defesa que o formulário tem
+                      contra a pessoa desistir de entregar o dado. Escrita em
+                      13px a 45%, ela existia sem ser lida. */}
+                  <span className="mt-2 block text-[15px] text-white/70">{atual.dica}</span>
                 </label>
 
                 <CampoVivo

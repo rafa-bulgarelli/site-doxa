@@ -304,13 +304,16 @@ body {
  * Ela apenas troca de tinta. Um creme liso no meio de um site pontilhado lê
  * como outra página; pontilhado, lê como a mesma página de manhã.
  *
- * Preto a 10% e não a 9% como o branco: sobre papel claro a mesma opacidade
- * rende menos contraste — o ponto escuro desaparece antes do ponto claro.
+ * A 7%, e o número desceu de 10% a pedido do dono: o painel claro é o único
+ * lugar da página em que a textura divide a superfície com PARÁGRAFOS, e ali a
+ * grade cobra caro. Ponto escuro sobre papel claro cria contraste na mesma
+ * frequência do texto — o olho tenta separar os dois e cansa antes de acabar a
+ * leitura. Textura tem de ser sentida, não vista.
  */
 .dot-grid-tinta {
   background-image: radial-gradient(
     circle,
-    rgba(11, 11, 11, 0.1) var(--dot-radius),
+    rgba(11, 11, 11, 0.07) var(--dot-radius),
     transparent var(--dot-radius)
   );
   background-size: var(--dot-pitch) var(--dot-pitch);
@@ -326,8 +329,12 @@ body {
   --spot-size: 520px;
   --dot-lit-radius: 1.5px;
   --dot-bloom-radius: 4.4px;
-  --dot-lit-color: rgba(11, 11, 11, 0.5);
-  --dot-bloom-color: rgba(11, 11, 11, 0.09);
+  /* Mais claros do que eram (0,5 e 0,09), pelo mesmo motivo da grade em
+     repouso: sob a mão, a poça de pontos escuros passava por cima da headline
+     e do parágrafo do painel. O facho ainda se vê — ele só parou de disputar a
+     leitura com o que está escrito. */
+  --dot-lit-color: rgba(11, 11, 11, 0.32);
+  --dot-bloom-color: rgba(11, 11, 11, 0.06);
 }
 
 /*
@@ -360,8 +367,12 @@ body {
   --spot-size: 124px;
   --dot-lit-radius: 1.6px;
   --dot-bloom-radius: 5px;
-  --dot-lit-color: rgba(255, 255, 255, 0.62);
-  --dot-bloom-color: rgba(255, 255, 255, 0.12);
+  /* E o ganho desceu outra vez — de 0,62 para 0,4. A pegada de 124px já é
+     pequena, mas dentro dela os pontos ainda batiam na pergunta e no rótulo do
+     campo. Num cartaz seria escolha; num FORMULÁRIO, o texto atrás do qual eles
+     brilham é o que a pessoa precisa ler para responder. */
+  --dot-lit-color: rgba(255, 255, 255, 0.4);
+  --dot-bloom-color: rgba(255, 255, 255, 0.07);
 }
 
 /*
@@ -529,10 +540,21 @@ body {
   filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.85)) drop-shadow(0 0 16px rgba(0, 0, 0, 0.5));
 }
 
+/*
+ * A auréola do contorno, aberta a pedido do dono — três camadas em vez de duas.
+ *
+ * A ordem é a de sempre e ela importa: núcleo curto e forte para engordar o
+ * traço sem borrá-lo, uma média que é o brilho que se lê como brilho, e uma
+ * larga e fraca que não desenha nada sozinha — ela só põe luz no preto ao redor,
+ * que é o que faz o miolo do cartão parecer iluminado pelo sinal em vez de ter
+ * um risco branco por cima. Só a larga, e o traço se apaga dentro da própria
+ * névoa; só as curtas, e o brilho para na espessura do traço.
+ */
 .pulso-borda {
   animation-name: pulso-borda;
-  filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.95))
-    drop-shadow(0 0 22px rgba(255, 255, 255, 0.6));
+  filter: drop-shadow(0 0 7px rgba(255, 255, 255, 1))
+    drop-shadow(0 0 20px rgba(255, 255, 255, 0.85))
+    drop-shadow(0 0 44px rgba(255, 255, 255, 0.45));
 }
 
 @media (prefers-reduced-motion: reduce) {

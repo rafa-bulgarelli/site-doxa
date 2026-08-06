@@ -331,7 +331,11 @@ export function CampoVivo({
           onChange={(evento) => aoDigitar(evento.target.value)}
           onKeyDown={aoTeclar}
           onSelect={sincronizarCursor}
-          className="relative block w-full bg-transparent text-transparent caret-transparent outline-none placeholder:text-white/20"
+          /* O exemplo a 35% e não a 20%. Ele é o que diz o FORMATO esperado — o
+             telefone com DDD, o perfil com arroba —, e a 20% sobre preto ele
+             sumia justamente no campo vazio, que é o único momento em que
+             alguém o leria. */
+          className="relative block w-full bg-transparent text-transparent caret-transparent outline-none placeholder:text-white/35"
           style={{ fontSize: 'inherit' }}
         />
       </div>
