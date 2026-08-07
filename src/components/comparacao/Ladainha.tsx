@@ -13,6 +13,24 @@ import { ITENS, TEMPO, type Item } from './config';
 import { Icone } from './icones';
 
 /**
+ * ─── ONDE O PERCURSO COMEÇA, E O ERRO QUE ISSO CONSERTOU ─────────────────────
+ *
+ * `start start` e não `start end`: a soma começa quando o topo da seção encosta
+ * no topo da janela — que é o instante em que o painel escuro GRUDA e a lista
+ * fica inteira à vista.
+ *
+ * A primeira versão abria em `start end`, ou seja, quando a seção começava a
+ * entrar por baixo. Somava certo e não servia para nada: os 85% de tela que ela
+ * levava para acender acontecem enquanto a ladainha ainda está abaixo da dobra,
+ * e quando a pessoa finalmente olhava para a lista ela já estava toda acesa. A
+ * animação existia e ninguém via.
+ *
+ * O fim é 15% da altura da SEÇÃO, e a seção mede quase duas telas e meia (uma do
+ * painel escuro, 37,5% de vão, uma do painel claro). Quinze por cento dão cerca
+ * de um terço de tela de rolagem — que é, de propósito, o mesmo trecho em que o
+ * painel escuro fica sozinho no quadro antes de o claro começar a subir por cima
+ * dele. A conta acaba de ser somada exatamente quando a virada começa.
+ *
  * ─── A CONTA É SOMADA PELA ROLAGEM, E NÃO POR UM RELÓGIO ─────────────────────
  *
  * Pedido do dono, e ele troca a natureza da animação: os vinte e cinco itens
@@ -34,8 +52,8 @@ import { Icone } from './icones';
  * mesmo número durante toda a leitura. O que se move é a seção inteira, e é ela
  * que o componente recebe de fora.
  */
-const ABRE = 'start end';
-const FECHA = 'start 15%';
+const ABRE = 'start start';
+const FECHA = '15% start';
 
 /**
  * Quanto do percurso cada item leva para acender, e onde o último começa.
@@ -141,6 +159,7 @@ function Lamina({ item }: { item: Item }) {
 function Palavra({
   progresso,
   fatia,
+  parado,
   numero,
   nome,
   className,
@@ -149,15 +168,27 @@ function Palavra({
   progresso: MotionValue<number>;
   /** Onde no percurso esta palavra acende, de 0 a 1. */
   fatia: number;
+  /** A pessoa pediu menos movimento: a palavra nasce pronta. */
+  parado: boolean;
   numero?: string;
   nome: string;
   className: string;
   aoApontar: (evento: React.MouseEvent) => void;
 }) {
   const opacity = useTransform(progresso, [fatia, fatia + ACENDE], [0, 1]);
+  /* Seis pixels de subida junto com o fade. Sem eles a lista pisca para dentro
+     da tela; com eles, cada item CHEGA — e é o que faz vinte e cinco linhas
+     lerem como uma conta sendo escrita em vez de um texto que estava lá o tempo
+     todo com a luz apagada. Em `transform`, que não empurra o texto ao lado nem
+     obriga o navegador a refazer a justificação a cada quadro. */
+  const y = useTransform(progresso, [fatia, fatia + ACENDE], [6, 0]);
 
   return (
-    <motion.span style={{ opacity }} onMouseEnter={aoApontar} className={className}>
+    <motion.span
+      style={parado ? undefined : { opacity, y }}
+      onMouseEnter={aoApontar}
+      className={className}
+    >
       {numero != null && (
         <span className="mr-[0.45em] text-[0.6em] tabular-nums text-white/25">{numero}</span>
       )}
@@ -266,7 +297,8 @@ export function Ladainha({ secaoRef }: { secaoRef: RefObject<HTMLElement> }) {
             <Fragment key={item.nome}>
               <Palavra
                 progresso={scrollYProgress}
-                fatia={parado ? 0 : (i / ITENS.length) * ESPALHA}
+                parado={parado}
+                fatia={(i / ITENS.length) * ESPALHA}
                 numero={String(i + 1).padStart(2, '0')}
                 nome={item.nome}
                 aoApontar={apontar(item)}
@@ -311,7 +343,8 @@ export function Ladainha({ secaoRef }: { secaoRef: RefObject<HTMLElement> }) {
             parcela não fecha nada. */}
         <Palavra
           progresso={scrollYProgress}
-          fatia={parado ? 0 : ESPALHA}
+          parado={parado}
+          fatia={ESPALHA}
           nome={TEMPO.nome}
           aoApontar={apontar(TEMPO)}
           className={`mt-7 block w-fit border-t border-white/[0.12] pt-7 [word-spacing:normal] font-serif text-[2rem] leading-none text-[#F4F1E8] md:mt-9 md:pt-9 md:text-[3rem] ${
