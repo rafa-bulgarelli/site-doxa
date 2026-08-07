@@ -34,58 +34,83 @@ import { REELS, type Reel } from '../proof/reels';
  */
 
 /**
- * Quantos vídeos tocam ao mesmo tempo. Seis, que é o número de lugares do X.
+ * Quantos vídeos tocam ao mesmo tempo.
  *
- * O campo desenha o mosaico QUATRO vezes para que a volta do infinito seja
- * invisível, então há vinte e quatro molduras no documento e não seis. Este é o
- * teto de quantas delas estão TOCANDO — o resto é still, e a troca acontece
- * conforme o campo deriva. `rodape/Peca.tsx` explica a mecânica das vagas.
+ * Seis, e o número é do dono. Ele NÃO é mais "quantos lugares o desenho tem" —
+ * a grade uniforme tem trinta lugares por cópia e cento e vinte no documento,
+ * porque o campo desenha o mosaico quatro vezes para que a volta do infinito
+ * seja invisível. Seis é o teto de quantas dessas molduras estão TOCANDO; o
+ * resto é still, que é a mesma imagem repetida e custa quase nada. A troca
+ * acontece conforme o campo deriva, e `rodape/Peca.tsx` explica as vagas.
  */
 export const EXPOSTAS = 6;
 
-/** Onde uma peça senta na grade do X: coluna e linha, de 1 em diante. */
+/** Onde uma peça senta na grade: coluna e linha, de 1 em diante. */
 export interface Lugar {
   coluna: number;
   linha: number;
 }
 
 /**
- * ─── O X ─────────────────────────────────────────────────────────────────────
+ * ─── A GRADE UNIFORME, EM COLUNAS DESENCONTRADAS ─────────────────────────────
  *
- * Pedido do dono, e o desenho é uma grade de cinco colunas por três linhas com
- * seis peças nas diagonais:
+ * Pedido do dono, e substituiu o X de seis peças que morava aqui: três vídeos
+ * empilhados por coluna, sempre o mesmo vão entre eles, e a coluna seguinte
+ * DESCE meio passo — o vão inteiro — para que duas vizinhas nunca alinhem as
+ * bordas na mesma altura.
  *
- *     1 · · · 2
- *     · 3 · 4 ·
- *     5 · · · 6
+ *     █ · █ · █ ·        ( · = a mesma coluna, meio passo abaixo )
+ *     · █ · █ · █
+ *     █ · █ · █ ·
+ *     · █ · █ · █
  *
- * O MIOLO VAZIO é o motivo de o X ser melhor do que a grade cheia que estava
- * aqui: o fecho ("Você leu até o fim") mora exatamente no centro da tela, e
- * antes ele nascia por cima de um vídeo, com um véu de 65% pagando a conta de
- * separar os dois. No X, o texto ocupa o buraco que o desenho já deixa — os
- * vídeos passam a emoldurar o pedido em vez de disputar com ele.
+ * O deslocamento é `translateY` em `Peca.tsx`, e não margem: as linhas são
+ * `auto`, e uma margem no topo de uma peça esticaria a linha inteira — as
+ * outras nove colunas desceriam junto, que é exatamente o contrário do desenho.
  *
- * As posições são dadas em `gridColumn`/`gridRow` e não com células vazias de
- * enfeite: oito divs vazias por cópia seriam trinta e duas no documento só para
- * empurrar as outras. As colunas têm largura FIXA (e não `auto`) justamente
- * porque disso: sem conteúdo, uma coluna `auto` mede zero e o X desmorona para
- * o canto esquerdo.
+ * ─── POR QUE DEZ COLUNAS, E POR QUE UM NÚMERO PAR ────────────────────────────
+ *
+ * Três exigências se cruzam neste número, e ele é a menor coisa que satisfaz as
+ * três:
+ *
+ *  1. PAR, senão a emenda aparece. O bloco se repete lado a lado, e o
+ *     desencontro só continua na cópia seguinte se a última coluna do bloco for
+ *     descida e a primeira da próxima não for. Com número ímpar, duas colunas
+ *     na mesma altura se encostam na emenda e o padrão denuncia onde ele
+ *     recomeça.
+ *
+ *  2. LARGO o bastante para cobrir a janela. A volta do infinito acontece a um
+ *     bloco de distância, então um bloco mais estreito que a tela deixa uma
+ *     faixa vazia entrar em cena no fim da deriva. Dez colunas de 11rem com vão
+ *     de 50px dão 2260px de bloco — e o mosaico de seis peças que estava aqui
+ *     media 1248px numa janela de 1507, com a falha já presente e disfarçada
+ *     pelo vazio do próprio X.
+ *
+ *  3. NÃO múltiplo de três, que é quantos clientes existem. Os reels são
+ *     distribuídos linha a linha; com nove ou doze colunas, cada linha
+ *     recomeçaria no mesmo arquivo e as colunas sairiam todas idênticas. Dez
+ *     deixa resto um, então cada linha entra deslocada de um cliente e o mesmo
+ *     rosto nunca cai ao lado nem em cima de si mesmo.
  */
-const LUGARES: readonly Lugar[] = [
-  { coluna: 1, linha: 1 },
-  { coluna: 5, linha: 1 },
-  { coluna: 2, linha: 2 },
-  { coluna: 4, linha: 2 },
-  { coluna: 1, linha: 3 },
-  { coluna: 5, linha: 3 },
-];
+const COLUNAS = 10;
+const LINHAS = 3;
+
+const LUGARES: readonly Lugar[] = Array.from({ length: LINHAS }, (_, linha) =>
+  Array.from({ length: COLUNAS }, (_, coluna) => ({ coluna: coluna + 1, linha: linha + 1 })),
+).flat();
 
 /**
- * As peças do X: cada lugar com o reel que o ocupa.
+ * As peças: cada lugar com o reel que o ocupa.
  *
- * A volta pelo resto (`% REELS.length`) é o que garante que dois vizinhos nunca
- * sejam o mesmo arquivo: com três clientes e seis lugares, a sequência anda
- * sempre um passo à frente, e cada braço do X carrega um cliente diferente.
+ * A ordem é LINHA a linha, e é ela que faz a distribuição funcionar. A volta
+ * pelo resto (`% REELS.length`) anda um passo a cada peça, então dois vizinhos
+ * de lado nunca são o mesmo arquivo; e como uma linha tem dez peças e três não
+ * divide dez, a linha de baixo começa um cliente adiante — o que resolve o
+ * vizinho de cima e de baixo pela mesma conta.
+ *
+ * PENDENTE-DONO segue valendo: são os três clientes reais repetidos, como a
+ * parede de prova faz. A repetição é quantos retângulos se desenha, e nunca uma
+ * afirmação de quantos casos existem.
  */
 export const PECAS: readonly { lugar: Lugar; reel: Reel }[] = LUGARES.map(
   (lugar, indice) => ({ lugar, reel: REELS[indice % REELS.length] }),

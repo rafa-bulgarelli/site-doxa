@@ -148,11 +148,25 @@ export function Peca({ reel, lugar, palco, ativo }: PecaProps) {
     <div
       ref={cascaRef}
       /* A largura vem da COLUNA (`w-full`) e não de um número aqui: as colunas
-         do X são fixas justamente para que os lugares vazios do desenho tenham
-         medida, e uma peça mais larga que a coluna dela empurraria a diagonal
-         para fora do lugar. A altura é o formato do arquivo — 9:16, que é como
-         um reel é publicado. */
-      style={{ gridColumn: lugar.coluna, gridRow: lugar.linha }}
+         têm largura fixa, e é quem desenha a grade que a escolhe. A altura é o
+         formato do arquivo — 9:16, que é como um reel é publicado.
+
+         ─── O MEIO PASSO DAS COLUNAS PARES ──────────────────────────────────
+
+         `translateY` e não margem: as linhas da grade são `auto`, e uma margem
+         empurraria a LINHA inteira para baixo — as outras nove colunas
+         desceriam junto e não haveria desencontro nenhum. Transform desloca o
+         que se pinta sem tocar no que se mede.
+
+         A distância vem de `--desloca`, escrita na grade em `Rodape.tsx`: ela é
+         o mesmo número do vão entre as peças, e muda no telefone. Um valor
+         escrito aqui não teria como acompanhar o breakpoint — `style` não tem
+         media query. */
+      style={{
+        gridColumn: lugar.coluna,
+        gridRow: lugar.linha,
+        transform: lugar.coluna % 2 === 0 ? 'translateY(var(--desloca))' : undefined,
+      }}
       className="relative aspect-[9/16] w-full overflow-hidden rounded-xl border border-white/[0.14] bg-doxa-raised"
     >
       <img

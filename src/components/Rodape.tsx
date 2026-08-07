@@ -126,17 +126,33 @@ export function Rodape() {
           <div aria-hidden className="absolute inset-0 overflow-hidden">
             <ArrastoInfinito
               ativo={revelado}
-              /* A grade do X: cinco colunas de largura FIXA por três linhas, com
-                 as seis peças nas diagonais (`rodape/config.ts` desenha o
-                 padrão). Fixa e não `auto` porque metade das células é vazia —
-                 uma coluna `auto` sem conteúdo mede zero, e o X desabaria para
-                 a esquerda.
+              /* A grade uniforme: dez colunas de largura FIXA por três linhas,
+                 todas ocupadas, com as colunas pares descendo meio passo
+                 (`rodape/config.ts` explica o desenho e o número dez).
 
-                 O vão HORIZONTAL é o dobro do vertical, e é ele que espalha o
-                 desenho: com vãos iguais, as seis peças formam um bloco
-                 compacto no meio da tela; abertas na largura, elas viram os
-                 quatro braços de um X com o pedido no miolo. */
-              className="grid grid-cols-[repeat(5,4.5rem)] grid-rows-[repeat(3,auto)] gap-x-6 gap-y-4 p-8 md:grid-cols-[repeat(5,8rem)] md:gap-x-32 md:gap-y-8 md:p-12"
+                 ─── O RECUO É METADE DO VÃO, e isso não é gosto ─────────────
+
+                 É a condição para o infinito não ter emenda. O bloco se repete
+                 lado a lado e um em cima do outro; para o ritmo atravessar a
+                 junção, a altura do bloco tem de ser um múltiplo exato do passo
+                 (peça + vão), e o mesmo na largura. Com recuo igual a meio vão,
+                 o bloco mede exatamente `linhas × passo` — meio vão em cima,
+                 meio embaixo, e a soma dos dois na emenda dá um vão inteiro,
+                 idêntico aos de dentro. Com `p-8` e `gap-y-4`, como estava
+                 aqui, a emenda tinha 64px onde as peças de dentro tinham 32.
+
+                 ─── E O BLOCO TEM DE SER MAIOR QUE A JANELA ────────────────
+
+                 2260 × 1088 no desktop. A volta do infinito acontece a um bloco
+                 de distância: mais estreito que a tela, e o fim da deriva traz
+                 uma faixa vazia para dentro do quadro. O mosaico anterior media
+                 1248 × 843 numa janela de 1507 × 851 — a falha já estava aqui,
+                 escondida pelo vazio que o próprio X desenhava.
+
+                 `--desloca` é o meio passo das colunas pares, e vale o mesmo
+                 que o vão. Mora aqui, e não na peça, porque muda com o
+                 breakpoint e `style` não tem media query. */
+              className="grid grid-cols-[repeat(10,8rem)] grid-rows-[repeat(3,auto)] gap-[24px] p-[12px] [--desloca:24px] md:grid-cols-[repeat(10,11rem)] md:gap-[50px] md:p-[25px] md:[--desloca:50px]"
             >
               {PECAS.map(({ lugar, reel }, indice) => (
                 <Peca key={indice} reel={reel} lugar={lugar} palco={palco} ativo={revelado} />

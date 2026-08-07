@@ -210,11 +210,20 @@ export function ArrastoInfinito({ children, className = '', ativo = true }: Arra
   return (
     <motion.div
       ref={gradeRef}
-      /* `w-fit h-fit` porque o bloco tem de ter o tamanho do CONTEÚDO, e não o
-         do pai: é a largura dele que dá a metade onde a volta acontece. Numa
-         caixa esticada pelo pai, a conta do infinito seria feita sobre a tela e
-         não sobre o mosaico. */
-      className={`grid h-fit w-fit grid-cols-2 will-change-transform ${
+      /* `w-max h-max`, e a diferença para o `w-fit` que estava aqui é o bug
+         inteiro: `fit-content` é `min(max-content, disponível)`, e o pai deste
+         bloco é um `absolute inset-0` — ou seja, a tela. Assim que o mosaico
+         ficou mais largo do que a janela, a caixa parou de medir o conteúdo e
+         passou a medir o VIEWPORT: a 1920px, cada cópia devia ter 2260 e tinha
+         960. Duas consequências, as duas invisíveis enquanto o desenho era um X
+         esparso: as colunas de largura fixa transbordavam da célula e as cópias
+         se pintavam por cima umas das outras, e a metade que o infinito usa
+         para dar a volta passou a ser metade da TELA em vez de metade do bloco
+         — a volta acontecia no lugar errado, e o campo saltava.
+
+         `max-content` não tem cláusula de disponível: mede o conteúdo e pronto,
+         que é a única coisa de que a conta do infinito precisa. */
+      className={`grid h-max w-max grid-cols-2 will-change-transform ${
         desktop ? 'cursor-grab active:cursor-grabbing' : ''
       }`}
       style={{ x, y }}
