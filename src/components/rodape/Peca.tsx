@@ -205,13 +205,15 @@ export function Peca({ reel, lugar, palco, ativo }: PecaProps) {
 
       {/* ─── O QUE APAGA A PEÇA ────────────────────────────────────────────
        *
-       * Preto sólido a 50%, número e cor do dono. Ele já morou uma camada
-       * acima, como uma folha só estendida sobre o campo inteiro, e desceu
-       * para cá quando o palco virou cinza: lá em cima ele cobria o VAZIO da
-       * grade junto com as peças, e preto a 50% sobre o vazio levava o palco
-       * de #181818 para #0C0C0C — o rodapé voltava a ser preto pela porta dos
-       * fundos. Aqui embaixo cada moldura carrega o seu próprio preto e o
-       * vazio entre elas fica sendo o palco, intacto.
+       * Preto sólido a 65%, número e cor do dono (entrou em 50 e subiu depois
+       * de ele ver na tela). Ele já morou uma camada acima, como uma folha só
+       * estendida sobre o campo inteiro, e desceu para cá quando o palco virou
+       * cinza: lá em cima ele cobria o VAZIO da grade junto com as peças, e
+       * preto sobre o vazio levava o palco para perto do #0C0C0C — o rodapé
+       * voltava a ser preto pela porta dos fundos. Aqui embaixo cada moldura
+       * carrega o seu próprio preto e o vazio entre elas fica sendo o palco,
+       * intacto — e é por isso que este número pode subir à vontade sem
+       * clarear nem escurecer um pixel do fundo.
        *
        * Preto e não a cor do palco: cinza por cima MISTURA, e misturar levanta
        * o preto da cena junto — é isso que o olho lê como névoa, e foi o que
@@ -223,7 +225,7 @@ export function Peca({ reel, lugar, palco, ativo }: PecaProps) {
        * apagado ele viraria a coisa mais acesa do campo — catorze etiquetas
        * brancas flutuando na frente do fecho.
        */}
-      <div className="pointer-events-none absolute inset-0 bg-black/50" />
+      <div className="pointer-events-none absolute inset-0 bg-black/65" />
     </div>
   );
 }

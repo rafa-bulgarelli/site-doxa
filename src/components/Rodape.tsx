@@ -99,7 +99,7 @@ const FECHO_A_VISTA = 0.55;
  * ─── COMO O PEDIDO SOBREVIVE AO BRINQUEDO ────────────────────────────────────
  *
  *  1. O campo NÃO rouba a rolagem — nenhum `wheel` global, nunca.
- *  2. Cada peça nasce meio apagada, atrás do próprio preto a 50% (o porquê de
+ *  2. Cada peça nasce apagada, atrás do próprio preto a 65% (o porquê de
  *     ele morar na peça e não numa folha sobre o campo está em `rodape/Peca.tsx`):
  *     o que está aceso na tela é o pedido, e o mosaico é a textura em volta dele.
  *  3. O botão é a única coisa clicável ali dentro: a camada do fecho é
