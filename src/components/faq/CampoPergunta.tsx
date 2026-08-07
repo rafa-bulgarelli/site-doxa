@@ -66,6 +66,14 @@ const FECHADO = 58;
  * de nada embaixo dele. Derivado, ele não tem como ficar para trás de novo.
  */
 const RESPIRO = 6;
+
+/**
+ * O raio da casca, em número — é o `rounded-3xl` das classes lá embaixo.
+ *
+ * Escrito aqui porque o botão precisa DELE para acompanhar a borda, e não por
+ * gosto de constante: os dois mudam juntos, e a linha existe para dizer isso.
+ */
+const RAIO = 24;
 /** A altura da área de texto: onde ela começa e onde para de crescer. */
 const MINIMA = 68;
 const MAXIMA = 160;
@@ -568,19 +576,34 @@ export function CampoPergunta({
           onMouseDown={(evento) => evento.preventDefault()}
           onClick={aberto ? enviar : abrir}
           aria-label={aberto ? 'Enviar a pergunta' : 'Escrever uma pergunta'}
-          className="absolute z-[10] flex items-center justify-center rounded-full bg-[#F4F1E8] text-[#0B0B0B] transition-transform duration-300 hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black motion-reduce:transition-none motion-reduce:hover:scale-100"
-          /* Tamanho e posição CALCULADOS da altura da pastilha, a pedido do
-             dono: o botão ocupa a altura do campo inteira menos um respiro de
-             cada lado. Em classe do Tailwind isto seria `h-9 w-9 top-1.5`, três
-             números que precisam ser reconferidos toda vez que o campo muda de
-             altura — e foi por não terem sido que o botão ficou pequeno no meio
-             de uma caixa alta. */
+          className="absolute z-[10] flex items-center justify-center bg-[#F4F1E8] text-[#0B0B0B] transition-transform duration-300 hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black motion-reduce:transition-none motion-reduce:hover:scale-100"
+          /* Tamanho, posição e RAIO calculados da caixa, a pedido do dono. Em
+             classe do Tailwind isto seria `h-9 w-9 top-1.5 rounded-full`,
+             números que precisam ser reconferidos toda vez que o campo muda —
+             e foi por não terem sido que o botão ficou pequeno no meio de uma
+             caixa alta.
+
+             ─── O RAIO É CONCÊNTRICO, e é isso que faz ele ACOMPANHAR ───────
+
+             Deixou de ser círculo: `RAIO - RESPIRO`, que é a regra de dois
+             cantos encaixados. Um canto interno afastado do externo por uma
+             distância `d` só corre paralelo a ele se o raio dele for o de fora
+             MENOS `d` — 24 menos 6 dão 18. Com qualquer outro número as duas
+             curvas divergem no meio do arco, e o vão entre elas engorda ou
+             afina; é o que fazia o círculo parecer um objeto sobreposto à caixa
+             em vez de uma peça encaixada nela.
+
+             Uniforme nos quatro cantos, e não só no de cima: aberto, a caixa
+             cresce e o botão fica no topo, longe do canto de baixo. Um raio
+             menor embaixo só apareceria nesse estado, e como uma assimetria sem
+             causa visível. */
           style={{
             transitionTimingFunction: MOLA_CSS,
             top: RESPIRO,
             right: RESPIRO,
             height: FECHADO - RESPIRO * 2,
             width: FECHADO - RESPIRO * 2,
+            borderRadius: RAIO - RESPIRO,
           }}
         >
           {/* A seta cresce junto: 16px dentro de um disco de 36 ocupavam 44% da
