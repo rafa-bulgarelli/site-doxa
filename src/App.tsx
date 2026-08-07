@@ -1,5 +1,6 @@
 import { Suspense, lazy, useEffect } from 'react';
 import { Hero } from './components/Hero';
+import { Rolador } from './components/ui/Rolador';
 
 /**
  * Tudo abaixo da primeira dobra sai do pacote inicial.
@@ -136,6 +137,13 @@ export default function App() {
       <Suspense fallback={<Vao />}>
         <Rodape />
       </Suspense>
+
+      {/* A barra de rolagem, nossa. Fora do `<main>` e depois do rodapé: ela
+          flutua sobre a página inteira, e é a única coisa do site que precisa
+          ficar acima das duas camadas do reveal. NÃO é `lazy` — ela desenha na
+          primeira dobra, e um pedaço separado só para ela chegaria depois da
+          primeira rolagem, que é justamente quando ela deveria aparecer. */}
+      <Rolador />
     </>
   );
 }

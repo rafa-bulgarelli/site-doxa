@@ -133,71 +133,134 @@ body {
 /*
  * ─── A BARRA DE ROLAGEM, NOSSA ───────────────────────────────────────────────
  *
- * Pedido do dono: a régua que o navegador desenha na direita, na língua do
- * site. Ela é a única peça da tela que ainda vinha do sistema operacional — uma
- * lasca cinza-claro de macOS numa página que é preta de ponta a ponta.
+ * A régua da direita, na língua do site. Ela era a única peça da tela que ainda
+ * vinha do sistema operacional — uma lasca cinza-claro de macOS numa página
+ * preta de ponta a ponta —, virou uma barra nativa repintada, e agora é vidro
+ * de verdade, desenhado por `components/ui/Rolador.tsx`.
  *
- * ─── O QUE ELA CUSTA, porque não é de graça ─────────────────────────────────
+ * ─── POR QUE A NATIVA NÃO SERVIU ─────────────────────────────────────────────
  *
- * No macOS a barra é FLUTUANTE por padrão: ela paira sobre o conteúdo e some
- * quando ninguém está rolando. Assim que uma regra de `::-webkit-scrollbar`
- * existe, o navegador desiste da barra flutuante e passa a reservar a largura
- * dela — a página fica 10px mais estreita, para sempre. Não há como ter as duas
- * coisas, e o desenho próprio foi a escolha do dono. Dez pixels, e não os
- * quinze do padrão, é o que torna essa conta pequena.
+ * `::-webkit-scrollbar-thumb` aceita cor, canto e borda, e nada além:
+ * `backdrop-filter` não se aplica a ele em navegador nenhum. E sem desfocar o
+ * que está atrás não existe vidro — existe um branco translúcido com borda
+ * clara, que é uma imitação, e a diferença aparece exatamente onde a barra
+ * passa por cima de um vídeo do rodapé.
  *
- * ─── O DESENHO ───────────────────────────────────────────────────────────────
+ * Trocar por uma barra própria também devolveu à página os dez pixels de
+ * largura que a versão nativa custava: no macOS a barra é FLUTUANTE por padrão,
+ * e a primeira regra de `::-webkit-scrollbar` faz o navegador desistir do
+ * flutuante e reservar a coluna dela para sempre. Escondê-la traz o flutuante
+ * de volta — agora desenhado por nós.
  *
- * O trilho é transparente: pintá-lo desenharia uma faixa vertical na borda da
- * janela, e a página passaria a ter uma moldura que ela não tem. O que se vê é
- * o fundo da própria seção por baixo — inclusive a troca de preto para cinza
- * quando o rodapé é revelado, que a barra acompanha de graça.
- *
- * O polegar é branco a 14%, que é a mesma tinta das bordas dos cartões do site
- * — a régua não é um objeto novo, é a mesma linha fina que já separa as coisas
- * aqui. Sob a mão vai a 32% e continua sem cor nenhuma: é uma superfície de
- * arrasto, e um destaque colorido ali competiria com o conteúdo pela atenção.
- *
- * A borda transparente com `background-clip: content-box` é o truque que dá
- * folga ao polegar sem estreitar a área de clique: os 3px de cada lado são
- * borda (invisível, mas clicável) e o pigmento só pinta o miolo. Sem isso, um
- * polegar de 4px de largura seria bonito e impossível de pegar com o mouse.
- *
- * O Firefox não tem esses pseudo-elementos e usa as duas propriedades padrão
- * logo abaixo. Ele só aceita cor SÓLIDA no polegar, então lá vai o cinza que o
- * branco a 14% produz sobre o preto da página — a mesma barra, calculada em vez
- * de composta.
+ * Só a barra do DOCUMENTO é escondida. As de dentro da página (o campo do FAQ é
+ * a única hoje) continuam sendo as do navegador: elas rolam conteúdo dentro de
+ * uma caixa, e uma barra flutuante de vidro dentro de um campo de texto seria
+ * um enfeite no lugar de um controle.
  */
-::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
-}
-
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-::-webkit-scrollbar-thumb {
-  background-color: rgba(255, 255, 255, 0.14);
-  border: 3px solid transparent;
-  background-clip: content-box;
-  border-radius: 999px;
-  transition: background-color 200ms ease;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background-color: rgba(255, 255, 255, 0.32);
-}
-
-/* Onde os dois eixos se cruzam. Sem isto o navegador desenha ali um quadradinho
-   cinza do sistema — a única peça que sobreviveria ao resto do desenho. */
-::-webkit-scrollbar-corner {
-  background: transparent;
-}
-
 html {
-  scrollbar-width: thin;
-  scrollbar-color: #242424 transparent;
+  scrollbar-width: none;
+}
+
+html::-webkit-scrollbar {
+  display: none;
+}
+
+/*
+ * ─── O VIDRO ─────────────────────────────────────────────────────────────────
+ *
+ * O polegar é uma cápsula de 16px de largura clicável com 6px de vidro pintado
+ * dentro dela — a área de pegar é quase três vezes o que se vê. Uma barra de
+ * seis pixels é bonita e impossível de acertar com o mouse; o resto da cápsula
+ * é transparente e só existe para a mão.
+ *
+ * O vidro é feito de quatro camadas, e nenhuma é decoração:
+ *
+ *  1. `backdrop-filter` com blur E saturação. O blur é o vidro; a saturação é o
+ *     que o torna LÍQUIDO — vidro real concentra a cor do que atravessa, e sem
+ *     ela a barra passando sobre um vídeo do rodapé fica cinza, que é
+ *     exatamente a aparência de plástico fosco.
+ *  2. Um degradê branco de cima para baixo, muito fraco: é a luz do ambiente
+ *     batendo na peça. Chapado, o objeto lê como adesivo.
+ *  3. Um `inset` claro na borda de cima e um escuro na de baixo. São os dois
+ *     que dão ESPESSURA — sem eles o vidro é uma mancha, e com eles é uma peça
+ *     com quina.
+ *  4. Uma sombra por fora, curta. Ela separa a barra do que está atrás quando o
+ *     fundo é claro, que é o caso toda vez que ela cruza um still do mosaico.
+ *
+ * Em repouso ele fica a 55% de opacidade: presente, mas não pedindo nada. Rolar
+ * acende (`.rolador-aceso`), a mão em cima engorda o vidro de 6 para 10 pixels,
+ * e o arrasto (`.rolador-preso`) segura os dois estados enquanto durar — sem
+ * isso, sair da cápsula com o botão apertado apagaria a barra na mão da pessoa.
+ */
+.rolador {
+  position: fixed;
+  top: 0;
+  right: 4px;
+  z-index: 60;
+  width: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: grab;
+  opacity: 0.55;
+  transition: opacity 260ms cubic-bezier(0.16, 1, 0.3, 1);
+  /* Sem isto, o arrasto vira seleção de texto da página inteira assim que o
+     cursor sai da cápsula. */
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: none;
+}
+
+.rolador::before {
+  content: '';
+  width: 6px;
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.28), rgba(255, 255, 255, 0.12));
+  backdrop-filter: blur(10px) saturate(180%);
+  -webkit-backdrop-filter: blur(10px) saturate(180%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.5),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.28),
+    0 4px 14px rgba(0, 0, 0, 0.35);
+  transition:
+    width 260ms cubic-bezier(0.16, 1, 0.3, 1),
+    background 260ms ease;
+}
+
+.rolador-aceso {
+  opacity: 0.85;
+}
+
+.rolador:hover,
+.rolador-preso {
+  opacity: 1;
+}
+
+.rolador:hover::before,
+.rolador-preso::before {
+  width: 10px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.42), rgba(255, 255, 255, 0.2));
+}
+
+.rolador-preso {
+  cursor: grabbing;
+}
+
+/* No telefone não existe cursor para acender nada, e o polegar da mão cobre a
+   barra inteira no instante em que ela seria útil. A rolagem por toque já tem o
+   indicador do próprio sistema. */
+@media (hover: none) {
+  .rolador {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rolador,
+  .rolador::before {
+    transition: none;
+  }
 }
 
 /* Connector curves draw themselves in. `pathLength` from framer-motion can't be
