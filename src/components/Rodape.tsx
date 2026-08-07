@@ -245,12 +245,34 @@ export function Rodape() {
               animate={noFecho ? { opacity: 1, y: 0 } : undefined}
               transition={{ duration: 0.7, ease: EASE }}
             >
-              <h2 className="font-serif text-[2.6rem] leading-[0.95] tracking-[-0.03em] text-[#F4F1E8] md:text-[4.4rem]">
+              {/* ─── AS DUAS LINHAS, AS DUAS ACESAS ────────────────────────
+               *
+               * A segunda morava em `text-white/45`, e a hierarquia que isso
+               * comprava não sobreviveu à mudança de fundo: cinza a 45% sobre
+               * preto era um sussurro legível, sobre o palco cinza com o
+               * mosaico atrás virou a única linha da tela que a pessoa tem de
+               * forçar a vista para ler — e ela é justamente a que diz o que
+               * fazer. As duas ficam no creme da marca, que é o branco desta
+               * página.
+               *
+               * `texto-aceso` nas duas, o glow FORTE do sistema, a pedido do
+               * dono. É a mesma classe do "você" da comparação, e aqui ela
+               * ganha uma função além do destaque: as letras passam a emitir
+               * luz sobre a clareira, o que separa o texto do campo mesmo no
+               * instante em que um quadro claro atravessa a borda do halo.
+               */}
+              <h2 className="texto-aceso font-serif text-[2.6rem] leading-[0.95] tracking-[-0.03em] text-[#F4F1E8] md:text-[4.4rem]">
                 {FECHO.titulo}
-                <span className="block text-white/45">{FECHO.linha}</span>
+                <span className="block">{FECHO.linha}</span>
               </h2>
 
-              <p className="mx-auto mt-5 max-w-md text-[15px] text-white/50">{FECHO.publico}</p>
+              {/* O subtítulo subiu de 50% para 85% de branco e de 15 para 17
+                  pixels. No preto ele era um cinza discreto; sobre o palco ele
+                  tinha sumido, e é a linha que diz para QUEM a oferta é —
+                  apagada, o fecho passa a falar com ninguém em particular. */}
+              <p className="mx-auto mt-5 max-w-lg text-[16px] text-white/85 md:text-[17px]">
+                {FECHO.publico}
+              </p>
 
               {/* O único ponto clicável do campo. `pointer-events-auto` devolve
                   o clique a ele e a mais nada: em volta, a mão continua

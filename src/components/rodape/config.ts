@@ -148,17 +148,22 @@ export const PECAS: readonly { lugar: Lugar; reel: Reel }[] = LUGARES.map(
  * segmentação que já existia — as duas plateias numa frase só, porque quem tem
  * um negócio e quem atende vários chegam ao mesmo formulário.
  *
- * O botão foi o outro ajuste. "Falar com a gente" descreve uma conversa, e
- * conversa é custo; "Bora começar" descreve o começo do trabalho, que é o que a
- * pessoa quer comprar. O rótulo de NAVEGAÇÃO lá embaixo continua sendo "falar
- * com a gente" de propósito: na barra de serviço o que se procura é um contato,
- * não uma chamada.
+ * ─── O BOTÃO, e o limite do "divertido" ──────────────────────────────────────
+ *
+ * Ele foi a "Bora começar" e voltou, por ordem do dono, que leu na tela e disse
+ * que não é profissional. Ele tem razão, e a lição é sobre ONDE cada registro
+ * cabe: o título pode ter graça porque é uma observação sobre quem lê, e graça
+ * ali soa como alguém falando. O botão não é uma frase, é o rótulo de um
+ * compromisso — e gíria no rótulo de um compromisso lê como leviandade
+ * justamente no instante em que a pessoa está decidindo confiar dinheiro.
+ *
+ * "Entrar em contato" diz o que acontece ao clicar, e não mais que isso.
  */
 export const FECHO = {
   titulo: 'Ninguém rola até aqui por acaso.',
   linha: `Falta ${TROCA_DEPOIS.toLowerCase().replace(/\.$/, '')}.`,
   publico: 'Tem um negócio? Atende vários? A porta é a mesma.',
-  acao: 'Bora começar',
+  acao: 'Entrar em contato',
   /** Onde o pedido mora — o mesmo destino do escape do FAQ. */
   destino: '#pedido',
 };
