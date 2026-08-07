@@ -1,5 +1,5 @@
 import { useCallback, useRef, useState } from 'react';
-import { useInView } from 'framer-motion';
+import { motion, useInView, useReducedMotion } from 'framer-motion';
 import { Pause, Play } from 'lucide-react';
 import { useIsDesktop } from '../hooks/useIsDesktop';
 import {
@@ -16,6 +16,39 @@ import {
  * settling into place rather than sliding there.
  */
 const EASE_CLASS = 'ease-[cubic-bezier(.45,0,0,1)]';
+
+/**
+ * ─── A ENTRADA DA SEÇÃO ──────────────────────────────────────────────────────
+ *
+ * Pedido do dono: a seção inteira animada na chegada, com "efeito borracha".
+ *
+ * A borracha é uma MOLA de verdade e não uma curva com overshoot desenhado à
+ * mão: o que dá a sensação de peso é a desaceleração ser calculada a partir de
+ * massa e atrito, e não interpolada. `damping` 15 contra `stiffness` 110 deixa o
+ * painel passar um fio além do lugar e voltar uma vez só — duas voltas seriam um
+ * card de borracha, o que é outra coisa (e cansa na segunda visita à página).
+ *
+ * O que ela move é SÓ transform. Nada aqui toca `flex-grow`, `border-color` ou
+ * `box-shadow`, que são as três propriedades com que a fileira já conta a sua
+ * própria história — o passo que tem a vez cresce, acende a borda e levanta do
+ * preto, em 600ms de CSS. Duas gramáticas de animação no mesmo elemento, se
+ * disputassem as mesmas propriedades, brigariam a cada quadro.
+ */
+const MOLA = { type: 'spring', stiffness: 110, damping: 15, mass: 0.9 } as const;
+
+/** A curva do site para o que é fade puro, onde mola não faz sentido. */
+const EASE = [0.16, 1, 0.3, 1] as const;
+
+/**
+ * O intervalo entre um painel e o seguinte, em segundos.
+ *
+ * Cem milissegundos é o bastante para o olho ler três chegadas em vez de uma
+ * fileira aparecendo — e curto o bastante para o terceiro não estar ainda
+ * entrando quando a pessoa já está lendo o primeiro. O escalonamento vale para o
+ * MOVIMENTO e não para o fade: os três clareiam juntos, e é isso que impede a
+ * entrada de virar uma sequência de três eventos separados.
+ */
+const PASSO_A_PASSO = 0.1;
 
 interface Step {
   /** Two digits, set beside the name the way the reference numbers its steps. */
@@ -83,6 +116,8 @@ function StepCard({
   /** Wide layout: the row is off screen or stopped. */
   rowPaused,
   hovered,
+  /** Onde o card está na fileira. Só o escalonamento da entrada lê isto. */
+  ordem,
   onEnter,
   onLeave,
   onFinish,
@@ -94,6 +129,7 @@ function StepCard({
   turnState: ArtState;
   rowPaused: boolean;
   hovered: boolean;
+  ordem: number;
   onEnter: () => void;
   onLeave: () => void;
   onFinish: () => void;
@@ -106,15 +142,73 @@ function StepCard({
    */
   const inView = useInView(ref, { amount: 0.35 });
 
+  /**
+   * A CHEGADA, e por que ela é um observador separado do de cima.
+   *
+   * `once: true`: a entrada acontece uma vez na vida do card. O `inView` ao lado
+   * é o contrário disso de propósito — ele precisa relatar a saída para a
+   * animação de dentro pausar —, e reaproveitá-lo aqui faria os três painéis
+   * refazerem a entrada a cada rolagem para cima e para baixo. O que impressiona
+   * na primeira vez irrita na terceira.
+   *
+   * Um quinto do card, e não o terço do outro: a entrada tem de disparar ANTES
+   * de a pessoa estar lendo o painel, senão ela vê o card já parado e a animação
+   * aconteceu para ninguém.
+   */
+  const entrou = useInView(ref, { amount: 0.2, once: true });
+  const parado = useReducedMotion() === true;
+
   // Stacked, every card is open: there is nothing to retract into, and dimming
   // the card you scrolled to would be dimming the only one on screen.
   const open = isDesktop ? hasTurn : true;
   const state: ArtState = isDesktop ? turnState : inView ? 'running' : 'idle';
   const paused = isDesktop ? rowPaused : stopped || !inView;
 
+  /* O atraso de cada painel. Fora da mola, e não dentro dela, porque ele vale
+     só para a chegada — depois disso `y` e `scale` não se mexem mais, e um
+     atraso que sobrasse aqui não teria o que atrasar. */
+  const atraso = ordem * PASSO_A_PASSO;
+
   return (
-    <div
+    <motion.div
       ref={ref}
+      /* ─── A ENTRADA, E O QUE ELA NÃO PODE TOCAR ───────────────────────────
+       *
+       * A opacidade saiu das CLASSES e veio para cá, e essa é a única mudança
+       * de mecanismo: o card já usava `opacity` para dizer se tem a vez (100%)
+       * ou se está esperando (70%), e duas fontes escrevendo a mesma
+       * propriedade — a classe e o framer — dariam um painel que nunca chega ao
+       * valor de nenhuma das duas. Aqui ela é uma só, e o valor de estado
+       * continua idêntico ao que era.
+       *
+       * O resto da história da fileira ficou onde estava: `flex-grow`,
+       * `border-color` e `box-shadow` seguem em transição CSS, e nada nesta
+       * animação encosta neles.
+       *
+       * As transições são POR PROPRIEDADE, e é isso que faz o escalonamento
+       * funcionar sem estragar a troca de vez:
+       *
+       *  - `y` e `scale` são a chegada, em mola, com o atraso do lugar na
+       *    fileira. Depois de assentados não se movem de novo.
+       *  - `opacity` é fade puro, SEM atraso — na chegada porque os três
+       *    clareando juntos leem como uma seção aparecendo, e depois dela
+       *    porque é a mesma propriedade que anuncia a troca de vez, e um
+       *    atraso ali faria o terceiro card demorar 200ms para acender ao
+       *    receber o turno.
+       */
+      initial={parado ? false : { opacity: 0, y: 56, scale: 0.94 }}
+      animate={
+        parado
+          ? { opacity: open ? 1 : 0.7 }
+          : entrou
+            ? { opacity: open ? 1 : 0.7, y: 0, scale: 1 }
+            : { opacity: 0, y: 56, scale: 0.94 }
+      }
+      transition={{
+        y: { ...MOLA, delay: atraso },
+        scale: { ...MOLA, delay: atraso },
+        opacity: { duration: 0.6, ease: EASE },
+      }}
       // Focus counts as hover: a keyboard tab through the row has to open the
       // panels too, or the artwork inside them never plays for anyone who is
       // not using a mouse. Both are wide-layout only — stacked, the scroll
@@ -130,10 +224,10 @@ function StepCard({
       // up from 45% — far enough down to be clearly waiting, but they are still
       // the argument, and at 45% they were reading as switched off rather than
       // as next.
-      className={`group relative flex min-w-0 flex-col justify-between overflow-hidden rounded-3xl border bg-doxa-surface p-6 pb-8 transition-[flex-grow,opacity,border-color,box-shadow] duration-[600ms] md:p-8 md:pb-10 ${EASE_CLASS} focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white/40 ${
+      className={`group relative flex min-w-0 flex-col justify-between overflow-hidden rounded-3xl border bg-doxa-surface p-6 pb-8 transition-[flex-grow,border-color,box-shadow] duration-[600ms] md:p-8 md:pb-10 ${EASE_CLASS} focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white/40 ${
         open
-          ? 'border-white/[0.22] opacity-100 shadow-[0_40px_100px_-40px_rgba(0,0,0,0.9),0_0_60px_-30px_rgba(255,255,255,0.35)]'
-          : 'border-white/[0.11] opacity-70'
+          ? 'border-white/[0.22] shadow-[0_40px_100px_-40px_rgba(0,0,0,0.9),0_0_60px_-30px_rgba(255,255,255,0.35)]'
+          : 'border-white/[0.11]'
       }`}
       // Wide layout only, and that is not a nicety. In a column the container
       // has no height to distribute, so a `flex-basis: 0` would leave every
@@ -142,12 +236,23 @@ function StepCard({
     >
       <div className="dot-grid pointer-events-none absolute inset-0" />
 
-      <div className="relative flex items-baseline gap-3">
+      {/* O título e o rodapé do card chegam DEPOIS da moldura, e por pouco: um
+          sexto de segundo atrás dela. É a diferença entre um painel que aparece
+          com tudo dentro, como um decalque, e um painel que chega e então se
+          preenche. Deslocamento curto (14px) de propósito — o movimento grande
+          é o do card, e repeti-lo aqui dentro faria a peça inteira parecer
+          solta. */}
+      <motion.div
+        className="relative flex items-baseline gap-3"
+        initial={parado ? false : { opacity: 0, y: 14 }}
+        animate={parado ? undefined : entrou ? { opacity: 1, y: 0 } : { opacity: 0, y: 14 }}
+        transition={{ duration: 0.55, ease: EASE, delay: atraso + 0.16 }}
+      >
         <span className="font-serif text-4xl leading-none text-white/40 md:text-5xl">
           {step.number}
         </span>
         <span className="font-serif text-4xl leading-none text-white md:text-5xl">{step.name}</span>
-      </div>
+      </motion.div>
 
       <div className="relative my-8 flex flex-1 items-center">
         <step.Art
@@ -161,13 +266,18 @@ function StepCard({
         />
       </div>
 
-      <div className="relative">
+      <motion.div
+        className="relative"
+        initial={parado ? false : { opacity: 0, y: 14 }}
+        animate={parado ? undefined : entrou ? { opacity: 1, y: 0 } : { opacity: 0, y: 14 }}
+        transition={{ duration: 0.55, ease: EASE, delay: atraso + 0.24 }}
+      >
         <p className="text-lg font-semibold tracking-tight text-white md:text-xl">
           {step.headline}
         </p>
         <p className="mt-2 max-w-md text-sm text-white/55">{step.body}</p>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 }
 
@@ -229,6 +339,18 @@ export function HowItWorks() {
   const inView = useInView(rowRef, { amount: 0.15 });
 
   /**
+   * O cabeçalho tem o seu próprio observador, e com `once`.
+   *
+   * Metade dele à vista já é a seção chegando — é um bloco baixo, e esperar por
+   * mais faria o título entrar quando a pessoa já o tivesse lido. `once` porque
+   * uma entrada que se refaz a cada passagem deixa de ser entrada e vira um
+   * elemento inquieto no meio da página.
+   */
+  const cabecalhoRef = useRef<HTMLDivElement>(null);
+  const noCabecalho = useInView(cabecalhoRef, { amount: 0.5, once: true });
+  const parado = useReducedMotion() === true;
+
+  /**
    * Pausing freezes; it does not reset. No card is unmounted and no phase is
    * cleared, so scrolling away and back resumes on the step the row stopped on
    * rather than starting the pass over — which is what the owner asked for, and
@@ -269,25 +391,59 @@ export function HowItWorks() {
           edge to edge and the cards stopped reading as objects laid on top of
           it. Here the black between the panels is doing work by staying empty. */}
       <div className="relative mx-auto w-full max-w-screen-2xl">
-        <div className="flex flex-wrap items-end justify-between gap-x-6 gap-y-4">
+        {/* O cabeçalho chega antes da fileira, e em mola como ela — é a mesma
+            física, para as duas coisas lerem como partes de um mesmo objeto
+            entrando. O título vem de mais longe (28px) que o subtítulo (18px) e
+            que o botão: numa entrada, quanto mais longe uma peça vem, mais
+            importante ela parece, e aqui a ordem de importância é essa mesma. */}
+        <div
+          ref={cabecalhoRef}
+          className="flex flex-wrap items-end justify-between gap-x-6 gap-y-4"
+        >
           <div className="min-w-0">
-            <h2 className="font-serif text-4xl font-normal leading-[1.1] tracking-[-0.02em] text-white md:text-5xl">
+            <motion.h2
+              className="font-serif text-4xl font-normal leading-[1.1] tracking-[-0.02em] text-white md:text-5xl"
+              initial={parado ? false : { opacity: 0, y: 28 }}
+              animate={parado ? undefined : noCabecalho ? { opacity: 1, y: 0 } : undefined}
+              transition={{ ...MOLA, opacity: { duration: 0.7, ease: EASE } }}
+            >
               Como funciona.
-            </h2>
-            <p className="mt-4 max-w-xl text-sm text-white/60 md:text-base">
+            </motion.h2>
+            <motion.p
+              className="mt-4 max-w-xl text-sm text-white/60 md:text-base"
+              initial={parado ? false : { opacity: 0, y: 18 }}
+              animate={parado ? undefined : noCabecalho ? { opacity: 1, y: 0 } : undefined}
+              transition={{
+                ...MOLA,
+                delay: 0.08,
+                opacity: { duration: 0.7, ease: EASE, delay: 0.08 },
+              }}
+            >
               Três passos, e só o primeiro pede o seu tempo.
-            </p>
+            </motion.p>
           </div>
 
           {/* Only the visitor's own stop is offered here. Being off screen also
               pauses the row, but that is not a state anyone chose, and a button
               that flipped to "Retomar" on its own as you scrolled past would be
               reporting something the visitor did not do. */}
-          <button
+          <motion.button
             type="button"
             onClick={() => setStoppedByVisitor((current) => !current)}
             aria-pressed={stoppedByVisitor}
             className="flex shrink-0 items-center gap-2 rounded-full border border-white/[0.12] bg-white/[0.04] px-4 py-2 text-[13px] text-white/60 transition-colors hover:border-white/25 hover:text-white focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white/40"
+            initial={parado ? false : { opacity: 0, y: 12 }}
+            animate={parado ? undefined : noCabecalho ? { opacity: 1, y: 0 } : undefined}
+            transition={{
+              ...MOLA,
+              delay: 0.16,
+              opacity: { duration: 0.7, ease: EASE, delay: 0.16 },
+            }}
+            /* A mola do toque, e não a do site inteiro: aqui ela é resposta à
+               mão e tem de ser curta. Cresce sob o ponteiro e afunda no clique,
+               que é o mesmo gesto dos atalhos do FAQ. */
+            whileHover={parado ? undefined : { scale: 1.04 }}
+            whileTap={parado ? undefined : { scale: 0.96 }}
           >
             {stoppedByVisitor ? (
               <Play className="h-3.5 w-3.5" strokeWidth={2} />
@@ -295,7 +451,7 @@ export function HowItWorks() {
               <Pause className="h-3.5 w-3.5" strokeWidth={2} />
             )}
             {stoppedByVisitor ? 'Retomar' : 'Pausar'}
-          </button>
+          </motion.button>
         </div>
 
         {/* No handler on the way out of the row: the turn stays where the
@@ -316,6 +472,7 @@ export function HowItWorks() {
               }
               rowPaused={paused}
               hovered={hoveredIndex === index}
+              ordem={index}
               onEnter={() => {
                 setHoveredIndex(index);
                 activate(index);
