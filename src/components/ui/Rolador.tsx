@@ -26,6 +26,25 @@ const ESTICAO = 0.45;
 /** Onde a leitura da seção acontece: um terço abaixo do topo da janela. */
 const LINHA_DE_LEITURA = 0.3;
 
+/**
+ * ─── A ILHA ──────────────────────────────────────────────────────────────────
+ *
+ * A altura do painel aberto, em pixels, e o tempo que a mão precisa ficar parada
+ * sobre a barra para ele abrir.
+ *
+ * A espera é a peça mais importante das duas, e não é enfeite: sem ela, a ilha
+ * abriria no instante em que o ponteiro encostasse na cápsula — e como a cápsula
+ * é também a alça de arrastar, ninguém conseguiria mais arrastar coisa nenhuma.
+ * Trezentos e cinquenta milissegundos separam "passei por aqui" de "estou
+ * interessado nisto", e qualquer `pointerdown` antes disso cancela a abertura e
+ * vira arrasto.
+ */
+const ILHA_ALTURA = 188;
+const ILHA_ESPERA = 350;
+
+/** Onde o botão leva. É a mesma âncora do fecho do rodapé e do escape do FAQ. */
+const DESTINO = 'pedido';
+
 interface Secao {
   nome: string;
   /** Distância do topo da página, em pixels. */
@@ -98,6 +117,13 @@ export function Rolador() {
 
   const [secoes, setSecoes] = useState<Secao[]>([]);
   const [atual, setAtual] = useState<string | null>(null);
+  const [aberta, setAberta] = useState(false);
+
+  /* A abertura é lida dentro do efeito, que roda uma vez só. Em dependência, o
+     efeito inteiro — ouvintes, observador, medidas — seria desmontado e
+     remontado a cada abrir e fechar da ilha. */
+  const abertaRef = useRef(false);
+  abertaRef.current = aberta;
 
   useEffect(() => {
     const polegar = polegarRef.current;
@@ -174,9 +200,30 @@ export function Rolador() {
       const altura = Math.max(MINIMO, pista * (janela / total));
       const andar = pista - altura;
       const progresso = Math.min(1, Math.max(0, window.scrollY / percorrivel));
+      const topo = MARGEM + progresso * andar;
 
-      polegar.style.height = `${altura}px`;
-      polegar.style.transform = `translateY(${MARGEM + progresso * andar}px)`;
+      /* ─── ABERTA, A ILHA DEIXA DE MEDIR A PÁGINA ──────────────────────────
+       *
+       * Ela nasce CENTRADA no polegar — é dali que o painel cresce, e é o que
+       * faz a abertura parecer a mesma peça inchando em vez de um cartão novo
+       * aparecendo do lado. E é presa dentro da janela, porque o polegar mora
+       * no topo no começo da página e no pé no fim: sem o limite, metade do
+       * painel abriria para fora da tela justamente nos dois lugares onde ele
+       * tem mais chance de ser aberto.
+       *
+       * A altura vira a do painel e para de acompanhar a proporção da página.
+       * Aberta, a barra não está mais dizendo "você está aqui" pelo tamanho —
+       * ela está mostrando um atalho, e as marcas ao lado continuam sendo a
+       * régua. */
+      if (abertaRef.current) {
+        const centro = topo + altura / 2 - ILHA_ALTURA / 2;
+        const preso = Math.min(Math.max(centro, MARGEM), janela - ILHA_ALTURA - MARGEM);
+        polegar.style.height = `${ILHA_ALTURA}px`;
+        polegar.style.transform = `translateY(${preso}px)`;
+      } else {
+        polegar.style.height = `${altura}px`;
+        polegar.style.transform = `translateY(${topo}px)`;
+      }
 
       /* As marcas moram numa camada própria e são posicionadas em `calc`, com o
          andar e o meio-polegar entregues como variáveis. É o que permite a
@@ -200,7 +247,10 @@ export function Rolador() {
        */
       const agora = performance.now();
       const dt = agora - ultimoT;
-      if (dt > 0) {
+      // Aberta, ela não estica: o esticão é a borracha de uma RÉGUA andando
+      // depressa, e um painel de texto que se deforma ao rolar é outra coisa —
+      // é um cartaz tremendo.
+      if (dt > 0 && !abertaRef.current) {
         const velocidade = Math.abs(window.scrollY - ultimoY) / dt;
         const estica = 1 + Math.min(ESTICAO, velocidade / 10);
         polegar.style.setProperty('--estica', estica.toFixed(3));
@@ -265,7 +315,44 @@ export function Rolador() {
     let mouseNoInicio = 0;
     let rolagemNoInicio = 0;
 
+    /*
+     * ─── A ILHA ABRE POR PERMANÊNCIA, NÃO POR TOQUE ────────────────────────
+     *
+     * O relógio é o que faz a barra continuar sendo duas coisas ao mesmo tempo.
+     * A cápsula é a alça de arrastar E a porta do painel; abrindo no primeiro
+     * pixel de hover, ela deixaria de ser alça — ninguém consegue agarrar uma
+     * coisa que vira outra coisa quando a mão chega perto.
+     *
+     * Então: a mão pousa e nada acontece; fica, e o painel abre. Um
+     * `pointerdown` no meio da espera cancela a abertura e vira arrasto, que é
+     * a resolução certa do conflito — quem apertou já disse o que queria.
+     */
+    let relogioIlha: number | undefined;
+
+    const abrirIlha = () => {
+      window.clearTimeout(relogioIlha);
+      if (arrastando || abertaRef.current) return;
+      relogioIlha = window.setTimeout(() => {
+        if (arrastando) return;
+        abertaRef.current = true;
+        setAberta(true);
+        desenhar();
+      }, ILHA_ESPERA);
+    };
+
+    const fecharIlha = () => {
+      window.clearTimeout(relogioIlha);
+      if (!abertaRef.current) return;
+      abertaRef.current = false;
+      setAberta(false);
+      desenhar();
+    };
+
     const aoPegar = (evento: PointerEvent) => {
+      window.clearTimeout(relogioIlha);
+      // Aberta, a cápsula é um painel com um botão dentro. Arrastar um painel
+      // pelo texto dele levaria a página junto no primeiro clique errado.
+      if (abertaRef.current) return;
       arrastando = true;
       mouseNoInicio = evento.clientY;
       rolagemNoInicio = window.scrollY;
@@ -318,6 +405,8 @@ export function Rolador() {
     polegar.addEventListener('pointermove', aoArrastar);
     polegar.addEventListener('pointerup', aoSoltar);
     polegar.addEventListener('pointercancel', aoSoltar);
+    polegar.addEventListener('pointerenter', abrirIlha);
+    polegar.addEventListener('pointerleave', fecharIlha);
     medirSecoes();
     desenhar();
 
@@ -325,6 +414,7 @@ export function Rolador() {
       window.cancelAnimationFrame(quadro);
       window.clearTimeout(relogioBrilho);
       window.clearTimeout(relogioEsticao);
+      window.clearTimeout(relogioIlha);
       olho.disconnect();
       window.removeEventListener('scroll', aoRolar);
       window.removeEventListener('resize', desenhar);
@@ -332,9 +422,20 @@ export function Rolador() {
       polegar.removeEventListener('pointermove', aoArrastar);
       polegar.removeEventListener('pointerup', aoSoltar);
       polegar.removeEventListener('pointercancel', aoSoltar);
+      polegar.removeEventListener('pointerenter', abrirIlha);
+      polegar.removeEventListener('pointerleave', fecharIlha);
       doc.style.scrollBehavior = '';
     };
   }, []);
+
+  /* O atalho. `scrollIntoView` e não `location.hash`: escrever o fragmento na
+     barra de endereço deixaria `#pedido` colado ali, e o próximo recarregamento
+     abriria a página no formulário — que é exatamente o defeito que `main.tsx`
+     acabou de consertar. */
+  const irParaOPedido = () => {
+    setAberta(false);
+    document.getElementById(DESTINO)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  };
 
   /* `aria-hidden` nas duas camadas, e sem papel de `scrollbar`: esta barra não
      acrescenta nada a quem não a vê. A rolagem por teclado é do navegador e não
@@ -352,8 +453,42 @@ export function Rolador() {
         ))}
       </div>
 
-      <div ref={polegarRef} aria-hidden className="rolador">
+      <div ref={polegarRef} aria-hidden className={`rolador${aberta ? ' rolador-ilha' : ''}`}>
+        {/* O rótulo de fora só existe enquanto a ilha está fechada: aberta, o
+            nome da seção é a primeira linha DENTRO dela, e duas etiquetas
+            dizendo a mesma coisa a dois centímetros uma da outra é o tipo de
+            redundância que faz uma interface parecer não terminada. */}
         <span className="rolador-rotulo">{atual}</span>
+
+        {/*
+         * ─── O QUE A ILHA MOSTRA ──────────────────────────────────────────
+         *
+         * Três linhas, e a ordem delas é um argumento: ONDE a pessoa está, o
+         * quanto ainda falta, e a saída. É a mesma sequência de um player —
+         * posição, duração, controle —, que é a metáfora que esta barra já
+         * escolheu.
+         *
+         * O atalho existe porque a página é longa de propósito: ela argumenta
+         * em seis seções, e quem já decidiu no meio do caminho não deveria ter
+         * de rolar por mais três para chegar ao formulário. Este botão é a
+         * porta de quem já decidiu — e é por isso que ele mora escondido atrás
+         * de um gesto, e não numa barra fixa no alto da tela: quem ainda está
+         * lendo não precisa dele na frente.
+         *
+         * PENDENTE-DONO: a copy e o rótulo do botão são a sugestão do dono
+         * ("me leve para a ação"), num registro mais solto que o "Entrar em
+         * contato" do rodapé. A diferença é proposital e vale conferir na tela:
+         * o botão do fecho é O compromisso da página e por isso é sóbrio; este
+         * é um atalho que a pessoa descobre sozinha, e um easter egg com voz de
+         * formulário perde a graça de ser um.
+         */}
+        <div className="rolador-ilha-corpo">
+          <span className="rolador-ilha-secao">{atual ?? '—'}</span>
+          <p className="rolador-ilha-copy">Já decidiu? Não precisa ler o resto.</p>
+          <button type="button" className="rolador-ilha-botao" onClick={irParaOPedido}>
+            Me leve para a ação
+          </button>
+        </div>
       </div>
     </>
   );

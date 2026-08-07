@@ -367,6 +367,166 @@ html::-webkit-scrollbar {
   translate: 0 0;
 }
 
+/*
+ * ─── A ILHA ──────────────────────────────────────────────────────────────────
+ *
+ * A cápsula, com a mão parada em cima, incha e vira um painel: a mesma peça, com
+ * conteúdo dentro. Pedido do dono, com a referência na mão — a ilha lateral que
+ * alguns utilitários de macOS colam na borda da tela.
+ *
+ * O que faz a coisa funcionar é ser a MESMA peça. Nada aqui aparece do lado da
+ * barra: o que existia como um traço de vidro de 6px cresce para 232, ganha
+ * altura, e o conteúdo nasce dentro. Um cartão que abrisse ao lado seria um
+ * segundo objeto, e a graça da referência é justamente não haver segundo objeto.
+ *
+ * Por isso a largura vive na CÁPSULA e não num filho, e por isso o vidro é o
+ * `::before` de sempre esticado a 100% — o material não muda, só as medidas.
+ *
+ * A curva com overshoot (`.34,1.56,.64,1`) é o que dá o "pop" da abertura. Em
+ * `ease-out` puro o painel infla e para, o que lê como uma caixa sendo
+ * redimensionada; com o passo além, lê como algo que se abriu.
+ */
+.rolador-ilha {
+  width: 232px;
+  right: 12px;
+  cursor: default;
+  opacity: 1;
+}
+
+.rolador-ilha::before {
+  width: 100%;
+  border-radius: 22px;
+  /* Mais denso que a barra: aqui dentro tem TEXTO, e um vidro a 28% deixaria o
+     mosaico do rodapé e a parede de prova passarem por trás das letras. */
+  background: linear-gradient(180deg, rgba(28, 28, 30, 0.82), rgba(18, 18, 20, 0.88));
+  backdrop-filter: blur(26px) saturate(180%);
+  -webkit-backdrop-filter: blur(26px) saturate(180%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.14),
+    0 24px 60px rgba(0, 0, 0, 0.55);
+  transform: none;
+}
+
+/*
+ * As transições da abertura, e uma armadilha que custou um bug inteiro:
+ * `transform` NÃO entra na lista da cápsula.
+ *
+ * A posição vertical da barra é um `translateY` reescrito a cada quadro de
+ * rolagem. Com `transform` em transição aqui, cada quadro viraria uma animação
+ * de 380ms começando — e a barra andaria sempre atrás da página, com um atraso
+ * elástico, exatamente como se ela estivesse quebrada. O `transform` que PODE
+ * ser animado é o do `::before`, que é o esticão, e ele já mora lá.
+ */
+.rolador {
+  transition:
+    width 420ms cubic-bezier(0.34, 1.56, 0.64, 1),
+    height 420ms cubic-bezier(0.34, 1.56, 0.64, 1),
+    opacity 260ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.rolador::before {
+  transition:
+    width 420ms cubic-bezier(0.34, 1.56, 0.64, 1),
+    border-radius 420ms cubic-bezier(0.34, 1.56, 0.64, 1),
+    background 300ms ease,
+    box-shadow 300ms ease,
+    transform 380ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/*
+ * O conteúdo entra DEPOIS da caixa, e é o detalhe que separa a referência de uma
+ * imitação dela: na ilha do sistema, a moldura abre e o conteúdo aparece dentro
+ * já aberta. Nascendo junto, o texto seria esticado pela animação da caixa e o
+ * olho leria um cartaz sendo desenrolado.
+ *
+ * `visibility` junto de `opacity`, e não só opacity: um botão a zero de opacidade
+ * continua clicável, e um botão invisível na frente da borda direita da tela é
+ * uma armadilha para o clique de quem só queria a barra de rolagem.
+ */
+.rolador-ilha-corpo {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 10px;
+  padding: 20px 18px;
+  text-align: left;
+  opacity: 0;
+  visibility: hidden;
+  translate: 0 6px;
+  transition:
+    opacity 200ms ease,
+    translate 260ms cubic-bezier(0.16, 1, 0.3, 1),
+    visibility 0s linear 260ms;
+}
+
+.rolador-ilha .rolador-ilha-corpo {
+  opacity: 1;
+  visibility: visible;
+  translate: 0 0;
+  transition:
+    opacity 260ms ease 160ms,
+    translate 380ms cubic-bezier(0.34, 1.56, 0.64, 1) 160ms,
+    visibility 0s linear 160ms;
+}
+
+/* A seção atual, em versalete e miúda: é a legenda de posição do player, não um
+   título. Ela repete o que a marca acesa ao lado já diz — de propósito, porque
+   aberta a ilha cobre a coluna das marcas. */
+.rolador-ilha-secao {
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.rolador-ilha-copy {
+  font-family: 'Instrument Serif', serif;
+  font-size: 21px;
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+  color: #f4f1e8;
+}
+
+/* O botão herda a gramática dos outros do site: pílula, borda de um fio, fundo
+   translúcido que acende sob a mão. O que ele NÃO tem é a mola de escala do
+   `MotionButton` — dentro de uma caixa que acabou de inflar, uma segunda coisa
+   crescendo no clique é movimento demais no mesmo palmo de tela. */
+.rolador-ilha-botao {
+  margin-top: 2px;
+  width: 100%;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.08);
+  padding: 9px 12px;
+  font-size: 12.5px;
+  color: rgba(255, 255, 255, 0.92);
+  cursor: pointer;
+  transition:
+    background-color 200ms ease,
+    border-color 200ms ease,
+    color 200ms ease;
+}
+
+.rolador-ilha-botao:hover {
+  background: #f4f1e8;
+  border-color: #f4f1e8;
+  color: #0b0b0b;
+}
+
+.rolador-ilha-botao:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.6);
+  outline-offset: 2px;
+}
+
+/* Aberta, o rótulo flutuante sai de cena: o nome da seção passou a ser a
+   primeira linha de dentro. */
+.rolador-ilha .rolador-rotulo {
+  opacity: 0;
+  translate: 8px 0;
+}
+
 /* No telefone não existe cursor para acender nada, e o polegar da mão cobre a
    barra inteira no instante em que ela seria útil. A rolagem por toque já tem o
    indicador do próprio sistema. */
@@ -387,12 +547,25 @@ html::-webkit-scrollbar {
   .rolador::before,
   .rolador-marca,
   .rolador-marcas,
-  .rolador-rotulo {
+  .rolador-rotulo,
+  .rolador-ilha-corpo,
+  .rolador-ilha-botao {
     transition: none;
   }
 
   .rolador::before {
     transform: none;
+  }
+
+  /* Sem transição, `visibility` precisa acompanhar na hora — o atraso que
+     escondia o corpo depois do fade não tem mais o fade para esperar, e o
+     conteúdo ficaria clicável um quarto de segundo depois de invisível. */
+  .rolador-ilha-corpo {
+    visibility: hidden;
+  }
+
+  .rolador-ilha .rolador-ilha-corpo {
+    visibility: visible;
   }
 }
 
