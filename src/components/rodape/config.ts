@@ -56,8 +56,8 @@ export interface Lugar {
  *
  * Pedido do dono, e substituiu o X de seis peças que morava aqui: três vídeos
  * empilhados por coluna, sempre o mesmo vão entre eles, e a coluna seguinte
- * DESCE meio passo — o vão inteiro — para que duas vizinhas nunca alinhem as
- * bordas na mesma altura.
+ * DESCE — 200px no desktop, que é o dobro do vão e perto de meio passo — para
+ * que duas vizinhas nunca alinhem as bordas na mesma altura.
  *
  *     █ · █ · █ ·        ( · = a mesma coluna, meio passo abaixo )
  *     · █ · █ · █
@@ -82,7 +82,7 @@ export interface Lugar {
  *  2. LARGO o bastante para cobrir a janela. A volta do infinito acontece a um
  *     bloco de distância, então um bloco mais estreito que a tela deixa uma
  *     faixa vazia entrar em cena no fim da deriva. Dez colunas de 11rem com vão
- *     de 50px dão 2260px de bloco — e o mosaico de seis peças que estava aqui
+ *     de 100px dão 2760px de bloco — e o mosaico de seis peças que estava aqui
  *     media 1248px numa janela de 1507, com a falha já presente e disfarçada
  *     pelo vazio do próprio X.
  *
@@ -127,17 +127,38 @@ export const PECAS: readonly { lugar: Lugar; reel: Reel }[] = LUGARES.map(
 /**
  * O fecho: a última coisa que a página fala.
  *
- * Não promete nada de novo — descreve o que já aconteceu ("você leu até o fim")
- * e o que falta, que é a mesma troca do "como funciona", importada. As duas
- * plateias numa frase só, a pedido do dono: quem tem um negócio e quem atende
- * vários chegam ao mesmo formulário, então não são dois caminhos, são duas
- * maneiras de dizer a mesma oferta.
+ * ─── O QUE MUDOU, E POR QUÊ ──────────────────────────────────────────────────
+ *
+ * Era "Você leu até o fim. / O que falta é uma foto e um áudio." O dono chamou
+ * de crua, e ela era: um relatório do que a pessoa acabou de fazer, entregue no
+ * lugar da página onde ela está mais perto de agir. Rolar até o rodapé não é
+ * notícia para quem rolou.
+ *
+ * O que substitui faz o trabalho contrário — em vez de descrever o gesto,
+ * DEVOLVE o gesto como argumento: ninguém desce uma página inteira por engano,
+ * e dizer isso em voz alta é a coisa mais barata que existe para transformar o
+ * tempo já investido em razão para continuar. É o mesmo movimento do "Falta uma
+ * coisa: você" da comparação, no fim da linha.
+ *
+ * ─── E O QUE NÃO MUDOU ───────────────────────────────────────────────────────
+ *
+ * Divertido não é permissão para prometer. Nenhuma linha aqui afirma prazo,
+ * preço, resultado ou número: a primeira fala do gesto de quem lê, a segunda é
+ * a MESMA troca do "como funciona", importada e não reescrita, e a terceira é a
+ * segmentação que já existia — as duas plateias numa frase só, porque quem tem
+ * um negócio e quem atende vários chegam ao mesmo formulário.
+ *
+ * O botão foi o outro ajuste. "Falar com a gente" descreve uma conversa, e
+ * conversa é custo; "Bora começar" descreve o começo do trabalho, que é o que a
+ * pessoa quer comprar. O rótulo de NAVEGAÇÃO lá embaixo continua sendo "falar
+ * com a gente" de propósito: na barra de serviço o que se procura é um contato,
+ * não uma chamada.
  */
 export const FECHO = {
-  titulo: 'Você leu até o fim.',
-  linha: `O que falta é ${TROCA_DEPOIS.toLowerCase().replace(/\.$/, '')}.`,
-  publico: 'Para quem tem um negócio, e para quem atende vários.',
-  acao: 'Falar com a gente',
+  titulo: 'Ninguém rola até aqui por acaso.',
+  linha: `Falta ${TROCA_DEPOIS.toLowerCase().replace(/\.$/, '')}.`,
+  publico: 'Tem um negócio? Atende vários? A porta é a mesma.',
+  acao: 'Bora começar',
   /** Onde o pedido mora — o mesmo destino do escape do FAQ. */
   destino: '#pedido',
 };
