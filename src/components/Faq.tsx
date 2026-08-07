@@ -597,7 +597,19 @@ export function Faq() {
                * o convite cai para a linha de baixo sozinho, que é o pior caso
                * aceitável (é exatamente onde ele morava antes).
                */}
-              <div className="mt-5 flex flex-wrap items-baseline gap-x-5 gap-y-1">
+              {/* `gap-y-4` e não `gap-y-1`, a pedido do dono.
+               *
+               * O vão vertical só existe quando o convite NÃO cabe ao lado do
+               * título e cai para a linha de baixo — e era aí que os dois
+               * colavam. Quatro pixels de vão entre duas serifas de 70 e de 36
+               * não separam nada: sem espaço, o convite lê como a segunda linha
+               * do próprio título, e a página fica com uma pergunta de duas
+               * linhas em vez de uma pergunta e um convite.
+               *
+               * O vão horizontal continua sendo o de sempre: lado a lado eles
+               * estão na MESMA linha de base, e ali a proximidade é o que faz a
+               * frase menor ler como resposta à maior. */}
+              <div className="mt-5 flex flex-wrap items-baseline gap-x-5 gap-y-4">
                 <h2 className="font-serif text-[2.9rem] leading-[0.95] tracking-[-0.03em] text-[#F4F1E8] md:text-[4.4rem]">
                   {ABERTURA.titulo}
                 </h2>
@@ -632,7 +644,12 @@ export function Faq() {
                   cinza porque é a alternativa, e a alternativa não disputa com
                   a porta principal — quem já sabe o que quer perguntar não
                   precisa nem ler isto. */}
-              <p className="mt-4 max-w-lg text-[17px] leading-snug text-white/40 md:text-[19px]">
+              {/* E este desce junto: com o convite mais solto acima, um vão de
+                  dezesseis pixels aqui embaixo faria a alternativa apagada
+                  parecer mais próxima do convite do que o convite está do
+                  título — invertendo a hierarquia que os dois vãos existem para
+                  declarar. */}
+              <p className="mt-6 max-w-lg text-[17px] leading-snug text-white/40 md:text-[19px]">
                 {ABERTURA.limite}
               </p>
             </motion.div>
