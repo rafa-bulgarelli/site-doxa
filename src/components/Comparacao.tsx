@@ -13,7 +13,7 @@ import { DotGridSpotlight } from './hero/DotGridSpotlight';
 import { BordaViva } from './comparacao/BordaViva';
 import { FioConvite } from './comparacao/FioConvite';
 import { Formulario } from './comparacao/Formulario';
-import { Ladainha } from './comparacao/Ladainha';
+import { FATIA_FECHO, Ladainha, useContagem } from './comparacao/Ladainha';
 import { ProvaRotativa } from './comparacao/ProvaRotativa';
 import { useIsDesktop } from '../hooks/useIsDesktop';
 import {
@@ -28,7 +28,6 @@ import {
   PARADO,
   PERGUNTA,
   SEM_GARANTIA,
-  TOTAL_ITENS,
   TROCA_ANTES,
   TROCA_DEPOIS,
 } from './comparacao/config';
@@ -202,6 +201,18 @@ export function Comparacao() {
 
   /** O envelope da seção, emprestado à ladainha para ela medir a rolagem. */
   const secaoRef = useRef<HTMLElement>(null);
+
+  /*
+   * A régua da contagem, uma só para a lista e para a frase que a fecha.
+   *
+   * As duas são irmãs aqui dentro e precisam do MESMO percurso — dois
+   * `useScroll` com os mesmos limites dariam o mesmo número hoje e divergiriam
+   * no dia em que alguém ajustasse um deles, com a frase final entrando no meio
+   * da lista. `Ladainha.tsx` guarda os limites e o porquê deles.
+   */
+  const contagem = useContagem(secaoRef);
+  const fechoOpacity = useTransform(contagem, [FATIA_FECHO, 1], [0, 1]);
+  const fechoY = useTransform(contagem, [FATIA_FECHO, 1], [10, 0]);
   const giro = useTransform(scrollYProgress, [0, 1], [GIRO, 0]);
 
   return (
@@ -264,25 +275,28 @@ export function Comparacao() {
 
               O resto da tela fica vazio de propósito: o painel claro entra
               girado por baixo e come o terço inferior. */}
-          {/* O cabeçalho da fatura. Devolve a contagem sem precisar de um bloco
-              só para ela, e é o que faz o bloco abaixo ler como documento em vez
-              de como um texto grande. */}
+          {/* O cabeçalho da fatura, e é o que faz o bloco abaixo ler como
+              documento em vez de como um texto grande.
+
+              O "25 itens" que ficava na ponta direita saiu, por ordem do dono, e
+              a contagem não faz falta: ela era um TOTAL antecipado, e agora que
+              a lista se escreve conforme a pessoa rola, dizer de antemão quantas
+              linhas vêm é entregar o fim do argumento no começo dele. Quem quer
+              o número conta as linhas — e contá-las é exatamente o efeito que a
+              seção quer. */}
           <div
             className={`${RESPIRO} flex items-baseline justify-between gap-6 border-t border-white/[0.09] pt-7 md:pt-10`}
           >
             <span className="text-[12px] tracking-[0.06em] text-white/35">{FATURA}</span>
-            <span className="text-[11px] tabular-nums tracking-[0.14em] text-white/35">
-              {TOTAL_ITENS} itens
-            </span>
           </div>
 
           <div className={RESPIRO}>
-            {/* A seção inteira é o alvo da rolagem da ladainha, e é ela que
-                precisa ser passada: o painel onde a lista mora é `sticky`, e um
-                elemento grudado não se move em relação à janela — apontar o
-                `useScroll` para ele devolveria um progresso travado no mesmo
-                número durante toda a leitura. */}
-            <Ladainha secaoRef={secaoRef} />
+            {/* A lista recebe a régua pronta: o painel onde ela mora é `sticky`,
+                e um elemento grudado não se move em relação à janela — um
+                `useScroll` apontado para ele devolveria um progresso travado no
+                mesmo número durante toda a leitura. Por isso o alvo é a seção, e
+                por isso a medida é feita aqui em cima. */}
+            <Ladainha progresso={contagem} />
           </div>
 
           {/* O soco, em texto puro.
@@ -296,10 +310,21 @@ export function Comparacao() {
               creme fechado na que prepara, branco com brilho na que bate. A
               primeira estava em cinza 40% e lia como rodapé de uma frase que é
               o clímax da coluna. */}
-          <p className={`${RESPIRO} font-serif text-3xl leading-[1.1] tracking-[-0.02em] md:text-[3.6rem]`}>
+          {/* O soco entra na ÚLTIMA fatia do percurso, depois de os vinte e
+              cinco itens e o total já estarem na tela. A ordem é o argumento:
+              primeiro a conta fecha, e só então a frase diz que nada daquilo
+              garante nada. Chegando antes, ela bate no vazio.
+
+              Sobe dez pixels e não seis como as palavras da lista — ela é a
+              frase mais alta da coluna, e um deslocamento igual ao de um item de
+              fatura a faria chegar como mais uma linha. */}
+          <motion.p
+            style={parado ? undefined : { opacity: fechoOpacity, y: fechoY }}
+            className={`${RESPIRO} font-serif text-3xl leading-[1.1] tracking-[-0.02em] md:text-[3.6rem]`}
+          >
             <span className="text-[#F4F1E8]/60">{SEM_GARANTIA[0]}</span>{' '}
             <span className="texto-aceso text-white">{SEM_GARANTIA[1]}</span>
-          </p>
+          </motion.p>
         </div>
       </div>
 

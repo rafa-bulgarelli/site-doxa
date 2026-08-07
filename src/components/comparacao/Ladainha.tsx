@@ -56,6 +56,19 @@ const ABRE = 'start start';
 const FECHA = '15% start';
 
 /**
+ * O percurso da contagem, medido na SEÇÃO e entregue a quem precisar dele.
+ *
+ * Mora aqui, com a documentação do que ele significa, mas é chamado de fora: a
+ * lista e a frase que a fecha são irmãs no `Comparacao`, e as duas precisam da
+ * MESMA régua. Dois `useScroll` com os mesmos limites dariam o mesmo número hoje
+ * e divergiriam no dia em que alguém ajustasse um deles — e o sintoma seria a
+ * frase final entrando no meio da lista.
+ */
+export function useContagem(secaoRef: RefObject<HTMLElement>) {
+  return useScroll({ target: secaoRef, offset: [ABRE, FECHA] }).scrollYProgress;
+}
+
+/**
  * Quanto do percurso cada item leva para acender, e onde o último começa.
  *
  * Os itens são distribuídos nos primeiros 85% do percurso e cada um acende ao
@@ -65,8 +78,22 @@ const FECHA = '15% start';
  * meio caminho, que é o que faz a conta parecer escrita à mão em vez de
  * carimbada.
  */
-const ESPALHA = 0.85;
+const ESPALHA = 0.68;
 const ACENDE = 0.15;
+
+/**
+ * Onde entram as duas linhas que FECHAM a conta, depois dos vinte e cinco itens.
+ *
+ * O total ("meses") em 72%, a frase da garantia em 85%, e a ordem entre eles é o
+ * argumento: primeiro a soma acaba, depois o tempo que ela custa, e só então a
+ * frase que diz que nada disso garante nada. Invertido, o soco chega antes de a
+ * conta estar somada e bate no vazio.
+ *
+ * O fecho mora em `Comparacao.tsx` — é um parágrafo irmão desta lista, fora do
+ * componente —, e por isso a fatia dele é exportada em vez de aplicada aqui.
+ */
+const FATIA_TOTAL = 0.72;
+export const FATIA_FECHO = 0.85;
 
 /** Tamanho da lâmina que segue o ponteiro, em pixels. */
 const LAMINA = { w: 236, h: 322 };
@@ -209,18 +236,12 @@ function Palavra({
  * a mão. Só no desktop: no telefone não há ponteiro para seguir, e uma imagem
  * presa ao dedo em cima do texto seria uma imagem tapando o texto.
  */
-export function Ladainha({ secaoRef }: { secaoRef: RefObject<HTMLElement> }) {
+export function Ladainha({ progresso }: { progresso: MotionValue<number> }) {
   const ref = useRef<HTMLParagraphElement>(null);
   const isDesktop = useIsDesktop();
   const parado = useReducedMotion() === true;
   const podeSeguir = isDesktop && !parado;
 
-  /* O percurso: da hora em que a seção toca o pé da janela até o topo dela
-     estar quase encostado no alto. É pouco mais de uma tela de rolagem para
-     somar vinte e cinco itens — o bastante para a soma ser vista acontecendo, e
-     curto o bastante para a lista estar inteira na tela quando o painel gruda e
-     a pessoa vai de fato ler. */
-  const { scrollYProgress } = useScroll({ target: secaoRef, offset: [ABRE, FECHA] });
 
   const [apontado, setApontado] = useState<Item | null>(null);
   const [aEsquerda, setAEsquerda] = useState(false);
@@ -296,7 +317,7 @@ export function Ladainha({ secaoRef }: { secaoRef: RefObject<HTMLElement> }) {
             // terminando onde queriam.
             <Fragment key={item.nome}>
               <Palavra
-                progresso={scrollYProgress}
+                progresso={progresso}
                 parado={parado}
                 fatia={(i / ITENS.length) * ESPALHA}
                 numero={String(i + 1).padStart(2, '0')}
@@ -342,9 +363,9 @@ export function Ladainha({ secaoRef }: { secaoRef: RefObject<HTMLElement> }) {
             linha que fecha a soma, e uma soma que se fecha antes da última
             parcela não fecha nada. */}
         <Palavra
-          progresso={scrollYProgress}
+          progresso={progresso}
           parado={parado}
-          fatia={ESPALHA}
+          fatia={FATIA_TOTAL}
           nome={TEMPO.nome}
           aoApontar={apontar(TEMPO)}
           className={`mt-7 block w-fit border-t border-white/[0.12] pt-7 [word-spacing:normal] font-serif text-[2rem] leading-none text-[#F4F1E8] md:mt-9 md:pt-9 md:text-[3rem] ${

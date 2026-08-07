@@ -110,9 +110,6 @@ export const CUSTO_UNIDADE = '/mês';
  */
 export const FATURA = 'Para fazer sozinho, você precisa de';
 
-/** Quantos itens a conta tem, contados e nunca escritos à mão. */
-export const TOTAL_ITENS = ITENS.length;
-
 /**
  * As duas falas dos dois painéis.
  *
