@@ -71,6 +71,25 @@ const ILHA_ESPERA = 220;
 /** Onde a leitura da seção acontece: um terço abaixo do topo da janela. */
 const LINHA_DE_LEITURA = 0.3;
 
+/**
+ * Quanto o ponteiro pode estar longe da peça e ainda contar como em cima dela.
+ *
+ * Vinte e seis pixels. Dormindo, a barra tem dezesseis de largura — sem folga,
+ * abri-la seria um exercício de mira, e a referência que o dono trouxe reage à
+ * APROXIMAÇÃO e não ao toque exato. Do lado direito não há folga a dar: a peça
+ * já encosta na borda da janela.
+ */
+const FOLGA = 26;
+
+/**
+ * A faixa da direita em que vale a pena medir a peça, em pixels.
+ *
+ * A ilha aberta mede 236 e mora a 6 da borda; com a folga, nada além de 300
+ * pixels da direita pode estar em cima dela. Fora dessa faixa a resposta é "não"
+ * sem medir nada.
+ */
+const ALCANCE = 300;
+
 /** Onde o botão leva. É a mesma âncora do fecho do rodapé e do escape do FAQ. */
 const DESTINO = 'pedido';
 
@@ -134,13 +153,23 @@ export function Rolador() {
   const [acordada, setAcordada] = useState(false);
   const [aberta, setAberta] = useState(false);
 
-  /* Os dois estados são lidos DENTRO do efeito, que roda uma vez só. Em
-     dependência, o efeito inteiro — ouvintes, observador, medidas — seria
-     desmontado e remontado a cada abrir e fechar. */
+  /*
+   * ─── OS REFS SÃO A FONTE DA VERDADE, E O ESTADO É A CÓPIA ────────────────
+   *
+   * O efeito roda uma vez só — em dependência, ouvintes, observador e medidas
+   * seriam desmontados e remontados a cada abrir e fechar —, então ele precisa
+   * ler os dois estados por `ref`.
+   *
+   * O que NÃO pode existir é a sincronia no sentido contrário. Estas duas linhas
+   * já foram `acordadaRef.current = acordada` no corpo do componente, e isso é
+   * um bug esperando a hora: os refs são escritos por relógios (a abertura, o
+   * sono) que rodam FORA do ciclo do React, e qualquer re-render disparado por
+   * outra coisa no meio do caminho devolvia ao ref o valor antigo do estado —
+   * apagando uma decisão que já tinha sido tomada. O `setState` existe aqui só
+   * para trocar as classes; quem manda é o ref.
+   */
   const acordadaRef = useRef(false);
   const abertaRef = useRef(false);
-  acordadaRef.current = acordada;
-  abertaRef.current = aberta;
 
   useEffect(() => {
     const barra = barraRef.current;
@@ -351,7 +380,6 @@ export function Rolador() {
        oito pixels seria a mesma animação sem o passo do meio — que é justamente
        o que a referência mostra. */
     const abrirIlha = () => {
-      sobre = true;
       avaliarSono();
       window.clearTimeout(relogioIlha);
       if (arrastando || abertaRef.current) return;
@@ -364,7 +392,6 @@ export function Rolador() {
     };
 
     const fecharIlha = () => {
-      sobre = false;
       window.clearTimeout(relogioIlha);
       if (abertaRef.current) {
         abertaRef.current = false;
@@ -375,6 +402,57 @@ export function Rolador() {
       // continuar acordada.
       avaliarSono();
       desenhar();
+    };
+
+    /*
+     * ─── A APROXIMAÇÃO, MEDIDA EM COORDENADAS E NÃO EM `pointerenter` ────────
+     *
+     * Este é o conserto do defeito que o dono viu: passado o formulário, o hover
+     * simplesmente parava de abrir a ilha.
+     *
+     * `pointerenter` e `pointerleave` são eventos de FRONTEIRA — o navegador só
+     * os dispara quando o ponteiro cruza a borda do elemento, e ele decide isso
+     * pelo que está no topo naquele pixel. Numa peça que muda de tamanho três
+     * vezes, que anda a cada quadro de rolagem e que atravessa uma página com
+     * camadas próprias em cada seção, é fácil o par entrar/sair se desencontrar:
+     * basta um `leave` disparar sem o `enter` correspondente e a peça fica com a
+     * mão marcada como "fora" para sempre — que é exatamente o sintoma, um hover
+     * que deixa de funcionar a partir de um certo ponto da página e não volta.
+     *
+     * Aqui a pergunta passa a ser aritmética, respondida a cada movimento do
+     * ponteiro: o cursor está dentro do retângulo da peça, com folga? Não há
+     * fronteira para perder, não há evento para se desencontrar, e o estado é
+     * recalculado do zero a cada movimento — se algum quadro der a resposta
+     * errada, o próximo conserta.
+     *
+     * De quebra, é o que a referência faz: a ilha do sistema reage à APROXIMAÇÃO
+     * do ponteiro, e não ao toque exato na peça. A folga é o que torna uma barra
+     * de oito pixels alcançável sem mira.
+     */
+    const aoMover = (evento: PointerEvent) => {
+      // Arrastando, a mão já disse o que queria: o cursor sai da peça na
+      // primeira sacudida, e deixar isto rodar fecharia a ilha e mexeria no
+      // sono no meio de um gesto que tem dono.
+      if (arrastando) return;
+
+      let perto = false;
+      /* O teste barato primeiro. Este ouvinte roda a cada movimento do ponteiro
+         na PÁGINA INTEIRA, e `getBoundingClientRect` obriga o navegador a
+         calcular layout — pago em todo movimento do mouse, seria um custo
+         constante para responder "não" noventa e cinco por cento das vezes.
+         Quem está longe da borda direita nem chega a medir a peça. */
+      if (evento.clientX >= window.innerWidth - ALCANCE) {
+        const caixa = barra.getBoundingClientRect();
+        perto =
+          evento.clientX >= caixa.left - FOLGA &&
+          evento.clientY >= caixa.top - FOLGA &&
+          evento.clientY <= caixa.bottom + FOLGA;
+      }
+
+      if (perto === sobre) return;
+      sobre = perto;
+      if (perto) abrirIlha();
+      else fecharIlha();
     };
 
     const aoPegar = (evento: PointerEvent) => {
@@ -434,8 +512,7 @@ export function Rolador() {
     barra.addEventListener('pointermove', aoArrastar);
     barra.addEventListener('pointerup', aoSoltar);
     barra.addEventListener('pointercancel', aoSoltar);
-    barra.addEventListener('pointerenter', abrirIlha);
-    barra.addEventListener('pointerleave', fecharIlha);
+    window.addEventListener('pointermove', aoMover, { passive: true });
     medirSecoes();
     desenhar();
 
@@ -452,8 +529,7 @@ export function Rolador() {
       barra.removeEventListener('pointermove', aoArrastar);
       barra.removeEventListener('pointerup', aoSoltar);
       barra.removeEventListener('pointercancel', aoSoltar);
-      barra.removeEventListener('pointerenter', abrirIlha);
-      barra.removeEventListener('pointerleave', fecharIlha);
+      window.removeEventListener('pointermove', aoMover);
       doc.style.scrollBehavior = '';
     };
   }, []);
