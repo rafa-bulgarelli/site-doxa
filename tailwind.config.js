@@ -16,10 +16,15 @@ export default {
           // The footer's stage, asked for by the owner: the last screen is a
           // dark GREY, not the black of the page above it. It reads as a
           // different surface — which is exactly what the footer is, since the
-          // page slides off it rather than ending into it. Light enough to be
-          // told apart from #000 on a phone in daylight, dark enough that the
-          // mosaic behind the veil still has somewhere to glow.
-          stage: '#1A1A1A',
+          // page slides off it rather than ending into it.
+          //
+          // #1A1A1A was the first try and the owner still read it as black. It
+          // wasn't: it was 10% lightness against a 0% page. But the mosaic sits
+          // between them, and next to a lit video frame a near-black grey has
+          // nothing to be measured against. #242424 clears that — it is the
+          // lightest the stage gets before the footer stops feeling like the
+          // bottom of the page and starts feeling like a card on top of it.
+          stage: '#242424',
         },
       },
       fontFamily: {

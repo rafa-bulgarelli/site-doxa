@@ -211,8 +211,24 @@ export function Rodape() {
                 um véu preto sobre um fundo cinza devolveria o rodapé ao preto
                 por dentro, e os esfumaçados desenhariam duas faixas escuras
                 onde deveriam desenhar o próprio fundo. A cor mora uma vez, no
-                `bg-doxa-stage` do footer, e estes três a repetem. */}
-            <div className="pointer-events-none absolute inset-0 bg-doxa-stage/65" />
+                `bg-doxa-stage` do footer, e estes três a repetem.
+
+                ─── O DESFOQUE, e por que ele só apareceu agora ───────────────
+
+                Pedido do dono, e ele nasceu da troca de cor. Um véu PRETO a 65%
+                apaga o que está atrás dele escurecendo — e escurecer é o que
+                empurra uma imagem para o fundo. O véu cinza, com a mesma
+                opacidade, não escurece: ele LAVA. Os mesmos vídeos, atrás da
+                mesma densidade de véu, voltaram para a frente do pedido.
+
+                O que devolve a profundidade sem devolver o preto é tirar o
+                FOCO: um vídeo desfocado é textura, e textura não disputa com
+                texto por mais claro que esteja. `backdrop-blur` e não `filter`
+                no campo, de propósito — o filtro moraria no mesmo elemento em
+                que o framer escreve `transform` a cada quadro, e o navegador
+                teria de refazer o borrão a cada passo da deriva. Aqui a camada
+                que borra está PARADA; o que se mexe é o conteúdo por baixo. */}
+            <div className="pointer-events-none absolute inset-0 bg-doxa-stage/70 backdrop-blur-[7px]" />
             <div className="pointer-events-none absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-doxa-stage to-transparent" />
             <div className="pointer-events-none absolute inset-x-0 bottom-0 h-36 bg-gradient-to-t from-doxa-stage to-transparent" />
           </div>
