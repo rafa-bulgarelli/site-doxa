@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { ArrowDown } from 'lucide-react';
 
 /** Folga do polegar contra o topo e o pé da janela, em pixels. */
 const MARGEM = 10;
@@ -39,7 +40,7 @@ const LINHA_DE_LEITURA = 0.3;
  * interessado nisto", e qualquer `pointerdown` antes disso cancela a abertura e
  * vira arrasto.
  */
-const ILHA_ALTURA = 188;
+const ILHA_ALTURA = 176;
 const ILHA_ESPERA = 350;
 
 /** Onde o botão leva. É a mesma âncora do fecho do rodapé e do escape do FAQ. */
@@ -463,32 +464,41 @@ export function Rolador() {
         {/*
          * ─── O QUE A ILHA MOSTRA ──────────────────────────────────────────
          *
-         * Três linhas, e a ordem delas é um argumento: ONDE a pessoa está, o
-         * quanto ainda falta, e a saída. É a mesma sequência de um player —
-         * posição, duração, controle —, que é a metáfora que esta barra já
-         * escolheu.
+         * O arranjo é o da referência que o dono trouxe, e ele é o mesmo nas
+         * três fotos: um CONTROLE REDONDO em cima, texto miúdo embaixo, dentro
+         * de uma pílula preta e estreita. Nas fotos o redondo é o relógio, o
+         * brilho da tela, o play; aqui é a única ação que esta barra tem para
+         * oferecer.
+         *
+         * O botão engloba o círculo E o texto, de propósito. Visualmente eles
+         * são duas coisas, como na foto; para a mão são uma só — numa pílula de
+         * noventa e seis pixels, um alvo de clique que só vale o círculo faz a
+         * pessoa errar e fechar a ilha sem querer, porque o ponteiro saiu da
+         * cápsula tentando acertar.
          *
          * O atalho existe porque a página é longa de propósito: ela argumenta
          * em seis seções, e quem já decidiu no meio do caminho não deveria ter
-         * de rolar por mais três para chegar ao formulário. Este botão é a
-         * porta de quem já decidiu — e é por isso que ele mora escondido atrás
-         * de um gesto, e não numa barra fixa no alto da tela: quem ainda está
-         * lendo não precisa dele na frente.
+         * de rolar por mais três para chegar ao formulário. E mora escondido
+         * atrás de um gesto, e não numa barra fixa no alto da tela: quem ainda
+         * está lendo não precisa dele na frente.
          *
-         * PENDENTE-DONO: a copy e o rótulo do botão são a sugestão do dono
-         * ("me leve para a ação"), num registro mais solto que o "Entrar em
-         * contato" do rodapé. A diferença é proposital e vale conferir na tela:
-         * o botão do fecho é O compromisso da página e por isso é sóbrio; este
-         * é um atalho que a pessoa descobre sozinha, e um easter egg com voz de
-         * formulário perde a graça de ser um.
+         * PENDENTE-DONO: o texto é a sugestão do dono ("me leve para a ação"),
+         * num registro mais solto que o "Entrar em contato" do rodapé. A
+         * diferença é proposital: o botão do fecho é O compromisso da página e
+         * por isso é sóbrio; este é um atalho que a pessoa descobre sozinha, e
+         * um easter egg com voz de formulário perde a graça de ser um.
          */}
-        <div className="rolador-ilha-corpo">
-          <span className="rolador-ilha-secao">{atual ?? '—'}</span>
-          <p className="rolador-ilha-copy">Já decidiu? Não precisa ler o resto.</p>
-          <button type="button" className="rolador-ilha-botao" onClick={irParaOPedido}>
-            Me leve para a ação
-          </button>
-        </div>
+        <button
+          type="button"
+          className="rolador-ilha-corpo"
+          onClick={irParaOPedido}
+          tabIndex={-1}
+        >
+          <span className="rolador-ilha-seta">
+            <ArrowDown className="h-5 w-5" strokeWidth={2.25} aria-hidden />
+          </span>
+          <span className="rolador-ilha-copy">Me leve para a ação</span>
+        </button>
       </div>
     </>
   );

@@ -387,23 +387,39 @@ html::-webkit-scrollbar {
  * redimensionada; com o passo além, lê como algo que se abriu.
  */
 .rolador-ilha {
-  width: 232px;
+  width: 96px;
   right: 12px;
-  cursor: default;
+  cursor: pointer;
   opacity: 1;
 }
 
+/*
+ * A pílula, como nas fotos: ESTREITA, ALTA, PRETA e com o canto valendo a
+ * metade da largura — o formato que faz o objeto parecer uma peça de hardware
+ * colada na borda da tela, e não uma janela.
+ *
+ * Preto CHAPADO, e é aqui que a referência e este site discordam por um motivo
+ * que não dava para ignorar: nas fotos a pílula vive sobre o papel de parede do
+ * sistema, quase sempre claro, e o preto sólido basta para recortá-la. A nossa
+ * abre sobre uma página que já é preta — chapada e sem mais nada, ela
+ * desapareceria por completo em quatro das seis seções.
+ *
+ * O que a devolve ao mundo são as duas linhas mais baratas que existem: um fio
+ * de branco a 10% no contorno e uma sombra funda por baixo. Nenhuma das duas
+ * muda a leitura de "pílula preta"; as duas juntas garantem que ela EXISTA
+ * sobre preto. O desfoque de fundo continua, agora só como profundidade — sobre
+ * o mosaico do rodapé é ele que impede o vídeo de aparecer por trás do texto.
+ */
 .rolador-ilha::before {
   width: 100%;
-  border-radius: 22px;
-  /* Mais denso que a barra: aqui dentro tem TEXTO, e um vidro a 28% deixaria o
-     mosaico do rodapé e a parede de prova passarem por trás das letras. */
-  background: linear-gradient(180deg, rgba(28, 28, 30, 0.82), rgba(18, 18, 20, 0.88));
-  backdrop-filter: blur(26px) saturate(180%);
-  -webkit-backdrop-filter: blur(26px) saturate(180%);
+  border-radius: 48px;
+  background: rgba(9, 9, 10, 0.92);
+  backdrop-filter: blur(26px) saturate(160%);
+  -webkit-backdrop-filter: blur(26px) saturate(160%);
   box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.1),
     inset 0 1px 0 rgba(255, 255, 255, 0.14),
-    0 24px 60px rgba(0, 0, 0, 0.55);
+    0 24px 60px rgba(0, 0, 0, 0.6);
   transform: none;
 }
 
@@ -448,10 +464,14 @@ html::-webkit-scrollbar {
   inset: 0;
   display: flex;
   flex-direction: column;
+  align-items: center;
   justify-content: center;
-  gap: 10px;
-  padding: 20px 18px;
-  text-align: left;
+  gap: 14px;
+  padding: 18px 12px;
+  text-align: center;
+  background: none;
+  border: 0;
+  cursor: pointer;
   opacity: 0;
   visibility: hidden;
   translate: 0 6px;
@@ -471,53 +491,55 @@ html::-webkit-scrollbar {
     visibility 0s linear 160ms;
 }
 
-/* A seção atual, em versalete e miúda: é a legenda de posição do player, não um
-   título. Ela repete o que a marca acesa ao lado já diz — de propósito, porque
-   aberta a ilha cobre a coluna das marcas. */
-.rolador-ilha-secao {
-  font-size: 10px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.45);
-}
-
-.rolador-ilha-copy {
-  font-family: 'Instrument Serif', serif;
-  font-size: 21px;
-  line-height: 1.05;
-  letter-spacing: -0.01em;
-  color: #f4f1e8;
-}
-
-/* O botão herda a gramática dos outros do site: pílula, borda de um fio, fundo
-   translúcido que acende sob a mão. O que ele NÃO tem é a mola de escala do
-   `MotionButton` — dentro de uma caixa que acabou de inflar, uma segunda coisa
-   crescendo no clique é movimento demais no mesmo palmo de tela. */
-.rolador-ilha-botao {
-  margin-top: 2px;
-  width: 100%;
+/*
+ * O disco branco do topo — o lugar que nas fotos é o relógio, o brilho, o play.
+ *
+ * Branco cheio e não translúcido: nas três fotos o elemento redondo é a única
+ * coisa OPACA dentro da pílula, e é isso que o faz ler como o controle dela em
+ * vez de um ícone decorativo. É também o mesmo disco do `MotionButton` do site,
+ * na mesma medida — o botão que leva a este mesmo formulário duas telas abaixo.
+ */
+.rolador-ilha-seta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
   border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  background: rgba(255, 255, 255, 0.08);
-  padding: 9px 12px;
-  font-size: 12.5px;
-  color: rgba(255, 255, 255, 0.92);
-  cursor: pointer;
-  transition:
-    background-color 200ms ease,
-    border-color 200ms ease,
-    color 200ms ease;
-}
-
-.rolador-ilha-botao:hover {
-  background: #f4f1e8;
-  border-color: #f4f1e8;
+  background: #ffffff;
   color: #0b0b0b;
+  flex-shrink: 0;
+  transition:
+    transform 260ms cubic-bezier(0.34, 1.56, 0.64, 1),
+    background-color 200ms ease;
 }
 
-.rolador-ilha-botao:focus-visible {
+/* A seta desce um fio sob a mão, na direção para onde ela leva. É a única
+   animação de dentro da ilha: a caixa já fez a entrada, e um segundo objeto
+   crescendo no mesmo palmo de tela seria movimento demais. */
+.rolador-ilha-corpo:hover .rolador-ilha-seta {
+  transform: translateY(3px);
+}
+
+/* O texto miúdo do pé, como o "10:47 AM" das fotos. Três linhas curtas, e por
+   isso a quebra é livre: numa pílula de 96px, uma linha que não quebrasse
+   sairia pelos dois lados. */
+.rolador-ilha-copy {
+  font-size: 11.5px;
+  line-height: 1.25;
+  letter-spacing: 0.005em;
+  color: rgba(255, 255, 255, 0.72);
+  transition: color 200ms ease;
+}
+
+.rolador-ilha-corpo:hover .rolador-ilha-copy {
+  color: #ffffff;
+}
+
+.rolador-ilha-corpo:focus-visible {
   outline: 2px solid rgba(255, 255, 255, 0.6);
-  outline-offset: 2px;
+  outline-offset: -4px;
+  border-radius: 48px;
 }
 
 /* Aberta, o rótulo flutuante sai de cena: o nome da seção passou a ser a
@@ -549,11 +571,13 @@ html::-webkit-scrollbar {
   .rolador-marcas,
   .rolador-rotulo,
   .rolador-ilha-corpo,
-  .rolador-ilha-botao {
+  .rolador-ilha-seta,
+  .rolador-ilha-copy {
     transition: none;
   }
 
-  .rolador::before {
+  .rolador::before,
+  .rolador-ilha-corpo:hover .rolador-ilha-seta {
     transform: none;
   }
 
