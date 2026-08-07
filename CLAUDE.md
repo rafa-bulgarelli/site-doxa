@@ -74,6 +74,13 @@ raciocínio). Detalhes e trade-off em `.claude/TOWER-ROLES.md`.
   - **A escala de opacidade do Tailwind vai de 5 em 5.** `bg-x/78` não gera regra nenhuma
     — a classe não existe e o elemento fica sem fundo, de novo em silêncio. Fora da
     escala, só na forma `bg-x/[0.78]`.
+  - **Página "rolando sozinha" depois de carregar = um `focus()` na montagem.** As seções
+    são `lazy` em `App.tsx`, então uma delas monta depois do primeiro desenho; um
+    `useEffect` que foca um campo ao montar faz o navegador rolar até esse campo, e o
+    site desce sozinho segundos após o load. Nenhuma linha manda rolar — procure por
+    `.focus(`, não por `scrollTo`. Guarde a intenção com o valor ANTERIOR num ref (uma
+    bandeira "já montou" não sobrevive ao `StrictMode`, que roda o efeito duas vezes) e
+    passe `{ preventScroll: true }`.
 
 ## Baseline de sessão
 

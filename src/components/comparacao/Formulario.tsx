@@ -159,10 +159,35 @@ export function Formulario({ cartaoRef }: { cartaoRef: RefObject<HTMLDivElement>
 
   const atual = PASSOS[passo];
 
-  // O foco segue o passo. Sem isto, cada avanço obriga a pessoa a clicar no
-  // campo antes de digitar — três cliques a mais num formulário de três campos.
+  /*
+   * O foco segue o passo — mas SÓ quando o passo muda de verdade.
+   *
+   * Sem o foco automático, cada avanço obriga a pessoa a clicar no campo antes
+   * de digitar: três cliques a mais num formulário de três campos. Com ele
+   * rodando também na MONTAGEM, o preço era muito maior, e foi o dono quem
+   * encontrou: recarregar a página no topo e ver o site descer sozinho até o
+   * fim da comparação, segundos depois de carregar.
+   *
+   * A cadeia é esta, e nenhum pedaço dela é visível de dentro deste arquivo: as
+   * seções são `lazy` em `App.tsx`, então o pedaço da comparação chega DEPOIS
+   * do primeiro desenho; ao chegar, este efeito rodava uma vez com `passo` 0 e
+   * focava o campo; e focar um elemento fora da tela faz o navegador rolar até
+   * ele. Nenhuma linha do site mandava rolar — foi um `focus()` que rolou.
+   *
+   * A guarda é o passo ANTERIOR num ref, e não uma bandeira de "já montou":
+   * `StrictMode` roda cada efeito duas vezes no desenvolvimento, e uma bandeira
+   * ligada na primeira passagem deixaria a segunda focar assim mesmo — o bug
+   * sobreviveria exatamente onde ele é testado.
+   *
+   * `preventScroll` fica de cinto de segurança para os avanços seguintes: aí o
+   * formulário já está na tela e sob a mão da pessoa, e não há motivo para o
+   * navegador reposicionar nada.
+   */
+  const passoAnterior = useRef(passo);
   useEffect(() => {
-    if (atual != null) campoRef.current?.focus();
+    if (passoAnterior.current === passo) return;
+    passoAnterior.current = passo;
+    if (atual != null) campoRef.current?.focus({ preventScroll: true });
   }, [passo, atual]);
 
   const avancar = () => {
