@@ -27,17 +27,23 @@ import { Icone } from './icones';
  * trezentos pixels de rolagem entram quase juntos, e o que se lê é uma lista
  * aparecendo, não uma conta sendo somada.
  *
- * Agora começa em `start 30%`: a seção já ocupa setenta por cento da tela, o que
- * basta para a lista estar visível, e ainda sobram trinta por cento de janela
- * até o topo grudar. Some-se o trecho grudado até `16%` da altura da seção e o
- * percurso quase dobra — cerca de dois terços de tela para as vinte e cinco
+ * A terceira tentou ganhar tempo abrindo ANTES do grude, em `start 30%`, com a
+ * seção ocupando setenta por cento da tela. Funcionava, e o dono recusou por um
+ * motivo que é dele decidir: a conta só deve começar a ser somada quando a seção
+ * for a tela INTEIRA. Enquanto sobra página em volta, o painel ainda está
+ * chegando, e uma animação que começa durante a chegada compete com ela.
+ *
+ * Então a abertura volta a `start start` — o instante exato em que o topo da
+ * seção encosta no topo da janela e o painel escuro ocupa 100% da altura — e o
+ * tempo que a terceira versão ganhava no começo é recuperado no fim: de 16% para
+ * 20% da altura da seção, cerca de meia tela de rolagem para as vinte e cinco
  * linhas.
  *
- * O fim não pode ir muito além disso, e a razão é geométrica: a seção mede quase
- * duas telas e meia (uma do painel escuro, 37,5% de vão, uma do painel claro), e
- * o painel claro começa a subir por cima do escuro depois de 37,5% de tela. As
- * últimas linhas da coluna — o total e o soco — são as PRIMEIRAS que ele cobre.
- * Esticar o percurso mais um pouco faz o fecho acender debaixo do papel.
+ * E não muito além disso, por geometria: a seção mede quase duas telas e meia
+ * (uma do painel escuro, 37,5% de vão, uma do painel claro), e o painel claro
+ * começa a subir por cima do escuro depois de 37,5% de tela. As últimas linhas
+ * da coluna — o total e o soco — são as PRIMEIRAS que ele cobre. É por isso que
+ * as fatias abaixo terminam antes do fim do percurso, e não nele.
  *
  * ─── A CONTA É SOMADA PELA ROLAGEM, E NÃO POR UM RELÓGIO ─────────────────────
  *
@@ -60,8 +66,8 @@ import { Icone } from './icones';
  * mesmo número durante toda a leitura. O que se move é a seção inteira, e é ela
  * que o componente recebe de fora.
  */
-const ABRE = 'start 30%';
-const FECHA = '16% start';
+const ABRE = 'start start';
+const FECHA = '20% start';
 
 /**
  * O percurso da contagem, medido na SEÇÃO e entregue a quem precisar dele.
@@ -86,22 +92,26 @@ export function useContagem(secaoRef: RefObject<HTMLElement>) {
  * meio caminho, que é o que faz a conta parecer escrita à mão em vez de
  * carimbada.
  */
-const ESPALHA = 0.68;
+const ESPALHA = 0.6;
 const ACENDE = 0.15;
 
 /**
  * Onde entram as duas linhas que FECHAM a conta, depois dos vinte e cinco itens.
  *
- * O total ("meses") em 72%, a frase da garantia em 85%, e a ordem entre eles é o
+ * O total ("meses") em 66%, a frase da garantia em 77%, e a ordem entre eles é o
  * argumento: primeiro a soma acaba, depois o tempo que ela custa, e só então a
  * frase que diz que nada disso garante nada. Invertido, o soco chega antes de a
  * conta estar somada e bate no vazio.
  *
+ * As duas terminam ANTES do fim do percurso — o soco fecha em 92% —, e a folga
+ * que sobra é de propósito: é o painel claro subindo, e ele cobre o pé da coluna
+ * primeiro. Uma frase que acende debaixo do papel não acende para ninguém.
+ *
  * O fecho mora em `Comparacao.tsx` — é um parágrafo irmão desta lista, fora do
  * componente —, e por isso a fatia dele é exportada em vez de aplicada aqui.
  */
-const FATIA_TOTAL = 0.72;
-export const FATIA_FECHO = 0.85;
+const FATIA_TOTAL = 0.66;
+export const FATIA_FECHO = 0.77;
 
 /** Tamanho da lâmina que segue o ponteiro, em pixels. */
 const LAMINA = { w: 236, h: 322 };
