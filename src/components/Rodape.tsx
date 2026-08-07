@@ -213,20 +213,31 @@ export function Rodape() {
                 onde deveriam desenhar o próprio fundo. A cor mora uma vez, no
                 `bg-doxa-stage` do footer, e estes três a repetem.
 
-                ─── SEM DESFOQUE, e a densidade é 65 ─────────────────────────
+                ─── SEM DESFOQUE, E A DENSIDADE É 80 ─────────────────────────
 
                 Houve um `backdrop-blur` aqui por uma rodada, e o dono mandou
                 tirar assim que viu: o mosaico é a coisa que a página vende, e
                 um vídeo borrado não é mais a prova de nada — é papel de parede.
                 Fica a regra que o teste deixou, porque ela vale para o próximo
                 que quiser "acalmar" este campo: o que apaga o mosaico aqui é a
-                DENSIDADE do véu, e nada além dela. Foco não se negocia.
+                DENSIDADE deste véu, e nada além dela. Foco não se negocia.
 
-                Sessenta e cinco por cento é o número que já era, e continua
-                sendo o ponto: acima disso o campo vira uma textura cinza sem
-                assunto, abaixo ele começa a disputar leitura com o fecho, que
-                é a única coisa que precisa ser lida nesta tela. */}
-            <div className="pointer-events-none absolute inset-0 bg-doxa-stage/65" />
+                Oitenta, e o número subiu de 65 porque a conta mudou junto com
+                a cor. O véu preto de antes apagava ESCURECENDO, e escurecer
+                some com o brilho da imagem inteira; o cinza mistura, e
+                misturar preserva o contraste do quadro — o mesmo 65% que
+                deixava o mosaico quieto no preto o devolvia para a frente do
+                fecho no cinza. A 80 o vídeo ainda se lê como vídeo em
+                movimento e já não disputa com o texto do meio da tela, que é a
+                única coisa que precisa ser lida aqui.
+
+                E oitenta e não setenta e oito por um motivo bobo que vale
+                escrever: a escala de opacidade do Tailwind vai de cinco em
+                cinco, e `/78` não gera regra NENHUMA — a classe simplesmente
+                não existe, o véu fica sem cor e o mosaico volta a força total.
+                Qualquer número fora da escala aqui precisa da forma
+                `bg-doxa-stage/[0.78]`. */}
+            <div className="pointer-events-none absolute inset-0 bg-doxa-stage/80" />
             <div className="pointer-events-none absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-doxa-stage to-transparent" />
             <div className="pointer-events-none absolute inset-x-0 bottom-0 h-36 bg-gradient-to-t from-doxa-stage to-transparent" />
           </div>

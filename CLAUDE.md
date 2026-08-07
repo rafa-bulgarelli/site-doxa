@@ -60,8 +60,20 @@ raciocínio). Detalhes e trade-off em `.claude/TOWER-ROLES.md`.
 - **Package manager / test runner / build:** _(a definir — confirmar no `package.json`
   antes de rodar qualquer comando; não assumir npm)_
 - **Deploy:** _(a definir)_
-- **Armadilhas:** _(a preencher quando aparecerem — cada uma que custou tempo vira linha
-  aqui)_
+- **Armadilhas:**
+  - **`tailwind.config.js` NÃO tem hot-reload.** O dev server (`vite --port 5199`) carrega
+    o config uma vez, no boot, e o cache de `require` do Node o mantém: editar o config
+    com o server no ar faz o Tailwind recompilar SEM as mudanças, e classes de token novo
+    (`bg-doxa-stage`, `from-doxa-stage`) simplesmente não são geradas. O sintoma é
+    silencioso e engana — a classe está no HTML, não há erro no console, e o elemento
+    fica **sem** aquele estilo (fundo transparente, véu invisível). Arquivos de conteúdo
+    (`.tsx`, `index.css`) recarregam normalmente, então metade da mudança aparece e a
+    outra não. **Depois de mexer no config, reinicie o dev server** e confirme com
+    `curl -s localhost:5199/src/index.css | grep <a-classe-nova>`. Custou três rodadas de
+    revisão do dono achando que o código estava errado.
+  - **A escala de opacidade do Tailwind vai de 5 em 5.** `bg-x/78` não gera regra nenhuma
+    — a classe não existe e o elemento fica sem fundo, de novo em silêncio. Fora da
+    escala, só na forma `bg-x/[0.78]`.
 
 ## Baseline de sessão
 
