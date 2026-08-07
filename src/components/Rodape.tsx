@@ -213,22 +213,20 @@ export function Rodape() {
                 onde deveriam desenhar o próprio fundo. A cor mora uma vez, no
                 `bg-doxa-stage` do footer, e estes três a repetem.
 
-                ─── O DESFOQUE, e por que ele só apareceu agora ───────────────
+                ─── SEM DESFOQUE, e a densidade é 65 ─────────────────────────
 
-                Pedido do dono, e ele nasceu da troca de cor. Um véu PRETO a 65%
-                apaga o que está atrás dele escurecendo — e escurecer é o que
-                empurra uma imagem para o fundo. O véu cinza, com a mesma
-                opacidade, não escurece: ele LAVA. Os mesmos vídeos, atrás da
-                mesma densidade de véu, voltaram para a frente do pedido.
+                Houve um `backdrop-blur` aqui por uma rodada, e o dono mandou
+                tirar assim que viu: o mosaico é a coisa que a página vende, e
+                um vídeo borrado não é mais a prova de nada — é papel de parede.
+                Fica a regra que o teste deixou, porque ela vale para o próximo
+                que quiser "acalmar" este campo: o que apaga o mosaico aqui é a
+                DENSIDADE do véu, e nada além dela. Foco não se negocia.
 
-                O que devolve a profundidade sem devolver o preto é tirar o
-                FOCO: um vídeo desfocado é textura, e textura não disputa com
-                texto por mais claro que esteja. `backdrop-blur` e não `filter`
-                no campo, de propósito — o filtro moraria no mesmo elemento em
-                que o framer escreve `transform` a cada quadro, e o navegador
-                teria de refazer o borrão a cada passo da deriva. Aqui a camada
-                que borra está PARADA; o que se mexe é o conteúdo por baixo. */}
-            <div className="pointer-events-none absolute inset-0 bg-doxa-stage/70 backdrop-blur-[7px]" />
+                Sessenta e cinco por cento é o número que já era, e continua
+                sendo o ponto: acima disso o campo vira uma textura cinza sem
+                assunto, abaixo ele começa a disputar leitura com o fecho, que
+                é a única coisa que precisa ser lida nesta tela. */}
+            <div className="pointer-events-none absolute inset-0 bg-doxa-stage/65" />
             <div className="pointer-events-none absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-doxa-stage to-transparent" />
             <div className="pointer-events-none absolute inset-x-0 bottom-0 h-36 bg-gradient-to-t from-doxa-stage to-transparent" />
           </div>
