@@ -18,13 +18,15 @@ export default {
           // different surface — which is exactly what the footer is, since the
           // page slides off it rather than ending into it.
           //
-          // #1A1A1A was the first try and the owner still read it as black. It
-          // wasn't: it was 10% lightness against a 0% page. But the mosaic sits
-          // between them, and next to a lit video frame a near-black grey has
-          // nothing to be measured against. #242424 clears that — it is the
-          // lightest the stage gets before the footer stops feeling like the
-          // bottom of the page and starts feeling like a card on top of it.
-          stage: '#242424',
+          // The value took three rounds to settle, and only one of them was
+          // about taste: the first two never reached the screen at all, because
+          // editing this file with the dev server running silently drops the
+          // token (see CLAUDE.md — the config has no hot reload). #242424 was
+          // the first one the owner actually saw, and he asked for one step
+          // darker. #1E1E1E is that step: still unmistakably grey against the
+          // #000 page sliding off it, and far enough from #141414 that the
+          // mosaic tiles keep reading as objects on a surface.
+          stage: '#1E1E1E',
         },
       },
       fontFamily: {

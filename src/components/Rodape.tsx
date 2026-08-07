@@ -235,8 +235,10 @@ export function Rodape() {
                 escrever: a escala de opacidade do Tailwind vai de cinco em
                 cinco, e `/78` não gera regra NENHUMA — a classe simplesmente
                 não existe, o véu fica sem cor e o mosaico volta a força total.
-                Qualquer número fora da escala aqui precisa da forma
-                `bg-doxa-stage/[0.78]`. */}
+                Fora da escala, só na forma de colchetes (`/` mais `[0.78]`) —
+                escrita partida aqui de propósito, porque o Tailwind varre o
+                arquivo INTEIRO, comentário incluído, e a versão colada viraria
+                uma regra CSS de verdade no bundle sem ninguém usá-la. */}
             <div className="pointer-events-none absolute inset-0 bg-doxa-stage/80" />
             <div className="pointer-events-none absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-doxa-stage to-transparent" />
             <div className="pointer-events-none absolute inset-x-0 bottom-0 h-36 bg-gradient-to-t from-doxa-stage to-transparent" />
