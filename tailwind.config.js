@@ -18,18 +18,21 @@ export default {
           // different surface — which is exactly what the footer is, since the
           // page slides off it rather than ending into it.
           //
-          // Walked down one step at a time with the owner at the screen:
-          // #242424 → #1E1E1E → #181818, each one his call after seeing the
-          // one before. (The two tries before #242424 never reached the screen
-          // at all — editing this file with the dev server running silently
-          // drops the token. See CLAUDE.md; the config has no hot reload.)
+          // Walked down six levels at a time with the owner at the screen:
+          // #242424 → #1E1E1E → #181818 → #121212, each one his call after
+          // seeing the one before. (The two tries before #242424 never reached
+          // the screen at all — editing this file with the dev server running
+          // silently drops the token. See CLAUDE.md; the config has no hot
+          // reload.)
           //
-          // #181818 sits four levels from the #141414 of the tiles, so the
-          // empty grid no longer frames each video as an object resting on a
-          // lighter surface. That is fine while every tile carries an image,
-          // and it is the floor: one step further and the stage is the page's
-          // own black, which is the thing the owner asked to get away from.
-          stage: '#181818',
+          // #181818 was called the floor here, on the grounds that the stage
+          // must stay lighter than the #141414 behind each tile. That argument
+          // died when the black that dims the mosaic moved INTO the tile: the
+          // tiles now carry an image under 50% black, so they sit far below
+          // any stage value, and #141414 is only what shows before an image
+          // decodes. #121212 keeps a dark-grey surface — visibly not the #000
+          // the page slides off — with the whole page's contrast unchanged.
+          stage: '#121212',
         },
       },
       fontFamily: {
