@@ -130,6 +130,76 @@ body {
   background-color: #000000;
 }
 
+/*
+ * ─── A BARRA DE ROLAGEM, NOSSA ───────────────────────────────────────────────
+ *
+ * Pedido do dono: a régua que o navegador desenha na direita, na língua do
+ * site. Ela é a única peça da tela que ainda vinha do sistema operacional — uma
+ * lasca cinza-claro de macOS numa página que é preta de ponta a ponta.
+ *
+ * ─── O QUE ELA CUSTA, porque não é de graça ─────────────────────────────────
+ *
+ * No macOS a barra é FLUTUANTE por padrão: ela paira sobre o conteúdo e some
+ * quando ninguém está rolando. Assim que uma regra de `::-webkit-scrollbar`
+ * existe, o navegador desiste da barra flutuante e passa a reservar a largura
+ * dela — a página fica 10px mais estreita, para sempre. Não há como ter as duas
+ * coisas, e o desenho próprio foi a escolha do dono. Dez pixels, e não os
+ * quinze do padrão, é o que torna essa conta pequena.
+ *
+ * ─── O DESENHO ───────────────────────────────────────────────────────────────
+ *
+ * O trilho é transparente: pintá-lo desenharia uma faixa vertical na borda da
+ * janela, e a página passaria a ter uma moldura que ela não tem. O que se vê é
+ * o fundo da própria seção por baixo — inclusive a troca de preto para cinza
+ * quando o rodapé é revelado, que a barra acompanha de graça.
+ *
+ * O polegar é branco a 14%, que é a mesma tinta das bordas dos cartões do site
+ * — a régua não é um objeto novo, é a mesma linha fina que já separa as coisas
+ * aqui. Sob a mão vai a 32% e continua sem cor nenhuma: é uma superfície de
+ * arrasto, e um destaque colorido ali competiria com o conteúdo pela atenção.
+ *
+ * A borda transparente com `background-clip: content-box` é o truque que dá
+ * folga ao polegar sem estreitar a área de clique: os 3px de cada lado são
+ * borda (invisível, mas clicável) e o pigmento só pinta o miolo. Sem isso, um
+ * polegar de 4px de largura seria bonito e impossível de pegar com o mouse.
+ *
+ * O Firefox não tem esses pseudo-elementos e usa as duas propriedades padrão
+ * logo abaixo. Ele só aceita cor SÓLIDA no polegar, então lá vai o cinza que o
+ * branco a 14% produz sobre o preto da página — a mesma barra, calculada em vez
+ * de composta.
+ */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.14);
+  border: 3px solid transparent;
+  background-clip: content-box;
+  border-radius: 999px;
+  transition: background-color 200ms ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(255, 255, 255, 0.32);
+}
+
+/* Onde os dois eixos se cruzam. Sem isto o navegador desenha ali um quadradinho
+   cinza do sistema — a única peça que sobreviveria ao resto do desenho. */
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+html {
+  scrollbar-width: thin;
+  scrollbar-color: #242424 transparent;
+}
+
 /* Connector curves draw themselves in. `pathLength` from framer-motion can't be
    used here: it emits a dasharray in viewBox units, which smears once the
    viewBox is measured in pixels. A plain dash animation is exact. */
