@@ -1,37 +1,8 @@
 import { Fragment, useRef, useState } from 'react';
 import { AnimatePresence, motion, useInView, useReducedMotion, useSpring } from 'framer-motion';
-import {
-  Aperture,
-  AtSign,
-  BarChart3,
-  Building2,
-  CalendarDays,
-  Camera,
-  Circle,
-  Frame,
-  HardDrive,
-  Hourglass,
-  ImageIcon,
-  KeyRound,
-  Lightbulb,
-  Megaphone,
-  Mic,
-  MonitorPlay,
-  Move,
-  Music,
-  PenLine,
-  Scissors,
-  Subtitles,
-  Target,
-  Timer,
-  Users,
-  Video,
-  Wallet,
-  Wrench,
-  type LucideIcon,
-} from 'lucide-react';
 import { useIsDesktop } from '../../hooks/useIsDesktop';
 import { ITENS, TEMPO, type Item } from './config';
+import { Icone } from './icones';
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
@@ -73,51 +44,6 @@ const AFASTA = 28;
 const PERSEGUE = { stiffness: 220, damping: 26, mass: 0.6 };
 
 /**
- * Os ícones usados, e SÓ eles.
- *
- * Nomeados um a um de propósito. A primeira versão fazia `import * as icones` e
- * resolvia pelo nome em tempo de execução: elegante de escrever e catastrófico
- * de entregar — o bundle saltou de 104 para 239 quilobytes comprimidos, porque
- * um namespace inteiro impede o tree-shaking e as mil e quinhentas ilustrações
- * da `lucide` foram junto. Vinte e sete importações explícitas custam vinte e
- * sete ícones.
- */
-const CATALOGO: Record<string, LucideIcon> = {
-  Aperture,
-  AtSign,
-  BarChart3,
-  Building2,
-  CalendarDays,
-  Camera,
-  Frame,
-  HardDrive,
-  Hourglass,
-  ImageIcon,
-  KeyRound,
-  Lightbulb,
-  Megaphone,
-  Mic,
-  MonitorPlay,
-  Move,
-  Music,
-  PenLine,
-  Scissors,
-  Subtitles,
-  Target,
-  Timer,
-  Users,
-  Video,
-  Wallet,
-  Wrench,
-};
-
-/** Resolve o ícone pelo nome do `config`, com um genérico se o nome não existir. */
-function Icone({ nome }: { nome: string }) {
-  const Desenho = CATALOGO[nome] ?? Circle;
-  return <Desenho className="h-16 w-16" strokeWidth={1.25} />;
-}
-
-/**
  * A lâmina: o que aparece sob o ponteiro quando um item é apontado.
  *
  * PENDENTE-DONO: hoje é ícone sobre cor, porque não existem vinte e cinco fotos
@@ -154,7 +80,7 @@ function Lamina({ item }: { item: Item }) {
       >
         {item.imagem == null ? (
           <span className="text-[#0B0B0B]/80">
-            <Icone nome={item.icone} />
+            <Icone nome={item.icone} className="h-16 w-16" />
           </span>
         ) : (
           <img src={item.imagem} alt="" aria-hidden className="h-full w-full object-cover" />

@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import type { Reel } from '../proof/reels';
-import type { Lugar } from './config';
+import { estiloDoLugar, type Lugar } from './config';
 
 /** Quanto uma peça sem vaga espera antes de tentar de novo, em milissegundos. */
 const ESPERA_VAGA = 1200;
@@ -151,22 +151,10 @@ export function Peca({ reel, lugar, palco, ativo }: PecaProps) {
          têm largura fixa, e é quem desenha a grade que a escolhe. A altura é o
          formato do arquivo — 9:16, que é como um reel é publicado.
 
-         ─── O MEIO PASSO DAS COLUNAS PARES ──────────────────────────────────
-
-         `translateY` e não margem: as linhas da grade são `auto`, e uma margem
-         empurraria a LINHA inteira para baixo — as outras nove colunas
-         desceriam junto e não haveria desencontro nenhum. Transform desloca o
-         que se pinta sem tocar no que se mede.
-
-         A distância vem de `--desloca`, escrita na grade em `Rodape.tsx`: ela é
-         o mesmo número do vão entre as peças, e muda no telefone. Um valor
-         escrito aqui não teria como acompanhar o breakpoint — `style` não tem
-         media query. */
-      style={{
-        gridColumn: lugar.coluna,
-        gridRow: lugar.linha,
-        transform: lugar.coluna % 2 === 0 ? 'translateY(var(--desloca))' : undefined,
-      }}
+         A célula e o meio passo das colunas pares vêm de `estiloDoLugar`, que é
+         a mesma função que o cartão de custo usa: as duas peças TÊM de sentar
+         na grade do mesmo jeito, senão o ritmo do mosaico quebra. */
+      style={estiloDoLugar(lugar)}
       className="relative aspect-[9/16] w-full overflow-hidden rounded-xl border border-white/[0.14] bg-doxa-raised"
     >
       <img

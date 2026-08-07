@@ -3,6 +3,7 @@ import { motion, useInView, useReducedMotion } from 'framer-motion';
 import wordmarkUrl from '../../brand/doxa-wordmark-white.png';
 import { useIsDesktop } from '../hooks/useIsDesktop';
 import { ArrastoInfinito } from './rodape/ArrastoInfinito';
+import { Custo } from './rodape/Custo';
 import { Peca, usePalco } from './rodape/Peca';
 import { ATALHOS, EXPOSTAS, FECHO, PECAS } from './rodape/config';
 import { MotionButton } from './ui/MotionButton';
@@ -76,15 +77,32 @@ const FECHO_A_VISTA = 0.55;
  * COISA que ela vende, em movimento, em vez de com uma repetição das frases que
  * a pessoa leu duas telas acima.
  *
- * Catorze peças: seis tocando no máximo, oito esperando a vez como still.
- * `rodape/Peca.tsx` explica por que o vídeo é um recurso com teto — em resumo,
- * o infinito desenha o mosaico quatro vezes, e cinquenta e seis vídeos seriam
- * um rodapé que derruba a aba.
+ * Trinta lugares por cópia, cento e vinte no documento, e no máximo SEIS
+ * tocando. `rodape/Peca.tsx` explica por que o vídeo é um recurso com teto — em
+ * resumo, o infinito desenha o mosaico quatro vezes, e cento e vinte vídeos
+ * seriam um rodapé que derruba a aba. O resto é still, que é a mesma imagem
+ * repetida e custa quase nada.
  *
- * E o espaçamento ficou UNIFORME, a pedido: o desencontro dos pares existia
- * para quebrar a leitura de tabela que catorze textos de alturas diferentes
- * formavam. Catorze retângulos idênticos não têm esse problema, e o mesmo
- * desencontro neles lê como grade desalinhada.
+ * ─── E UM EM CADA QUATRO NÃO É VÍDEO ─────────────────────────────────────────
+ *
+ * Também pedido do dono: no lugar de algumas imagens, a comparação de não ter a
+ * Doxa. Esses lugares carregam uma das contratações que ela substitui — o video
+ * maker, o roteirista, a agência —, com a cor que o item já tem na ladainha da
+ * comparação. O campo passa a alternar o que a página ENTREGA com o que ela
+ * SUBSTITUI, que são as duas metades da mesma troca.
+ *
+ * O número de cada cartão ainda não existe, e não foi inventado: ver
+ * `CUSTO_POR_ITEM` em `comparacao/config.ts`. Sem a linha do item, o cartão
+ * aparece com o nome e sem preço.
+ *
+ * ─── O DESENCONTRO VOLTOU, e agora ele tem razão de ser ─────────────────────
+ *
+ * Ele já existiu aqui e foi removido: com catorze textos de alturas diferentes,
+ * o desencontro servia para quebrar a leitura de tabela, e em retângulos
+ * idênticos ele lia como grade desalinhada. O que mudou é a densidade — trinta
+ * peças coladas em dez colunas formam linhas horizontais fortes, e são elas que
+ * fazem o campo parecer uma planilha. Meio passo nas colunas pares quebra a
+ * linha sem desalinhar nada, porque agora TODAS as pares descem o mesmo tanto.
  *
  * ─── COMO O PEDIDO SOBREVIVE AO BRINQUEDO ────────────────────────────────────
  *
@@ -154,9 +172,22 @@ export function Rodape() {
                  breakpoint e `style` não tem media query. */
               className="grid grid-cols-[repeat(10,8rem)] grid-rows-[repeat(3,auto)] gap-[24px] p-[12px] [--desloca:24px] md:grid-cols-[repeat(10,11rem)] md:gap-[50px] md:p-[25px] md:[--desloca:50px]"
             >
-              {PECAS.map(({ lugar, reel }, indice) => (
-                <Peca key={indice} reel={reel} lugar={lugar} palco={palco} ativo={revelado} />
-              ))}
+              {/* Vídeo ou cartão de custo, na mesma célula e com a mesma
+                  moldura. O que a página entrega ao lado do que ela substitui —
+                  `rodape/config.ts` escolhe quais lugares são de cada tipo. */}
+              {PECAS.map((peca, indice) =>
+                peca.tipo === 'reel' ? (
+                  <Peca
+                    key={indice}
+                    reel={peca.reel}
+                    lugar={peca.lugar}
+                    palco={palco}
+                    ativo={revelado}
+                  />
+                ) : (
+                  <Custo key={indice} item={peca.item} custo={peca.custo} lugar={peca.lugar} />
+                ),
+              )}
             </ArrastoInfinito>
 
             {/* O véu, e os dois esfumaçados. O véu tira o mosaico da frente do
