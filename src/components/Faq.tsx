@@ -611,13 +611,13 @@ export function Faq() {
                  * anterior. Trinta e seis é o maior corpo que mantém as duas
                  * coisas: mede 223 e sobra folga de 32.
                  *
-                 * `texto-aceso-cor` e não `texto-aceso-fraco`: o dono pediu um
-                 * passo mais forte e COLORIDO, com a cor do campo logo abaixo —
-                 * e é o mesmo rosa e o mesmo azul do clarão do `.anel-siri`,
-                 * para a frase e a caixa lerem como uma luz só. Continua abaixo
-                 * do `texto-aceso` do rótulo "FAQ", que é o forte: duas coisas
-                 * brilhando igual não são duas ênfases, são nenhuma. */}
-                <p className="texto-aceso-cor font-serif text-[24px] leading-none tracking-[-0.02em] text-[#F4F1E8] md:text-[36px]">
+                 * `texto-aceso-rgb`: o dono pediu colorido e depois pediu RGB,
+                 * e o brilho passeia pelas seis cores de `faq/cores.ts` — as
+                 * mesmas que giram no anel do campo logo abaixo, na mesma
+                 * ordem, para a frase e a caixa lerem como uma luz só. Bem mais
+                 * devagar que o anel (9s contra 2,4s): o anel responde à mão, e
+                 * esta frase está sempre na tela. */}
+                <p className="texto-aceso-rgb font-serif text-[24px] leading-none tracking-[-0.02em] text-[#F4F1E8] md:text-[36px]">
                   {ABERTURA.dica}
                 </p>
               </div>

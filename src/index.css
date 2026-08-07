@@ -795,31 +795,90 @@ body {
 }
 
 /*
- * ─── O MESMO BRILHO, COM A COR DO CAMPO ──────────────────────────────────────
+ * ─── O BRILHO RGB DO CONVITE ─────────────────────────────────────────────────
  *
- * Para o convite do FAQ ("Pergunte o que quiser."), a pedido do dono: um passo
- * mais forte que o fraco, e COLORIDO como o campo que ele manda usar.
+ * Para "Pergunte o que quiser.", a pedido do dono, e em duas voltas: primeiro
+ * um brilho colorido parado, no rosa e no azul do campo; depois RGB, que é o
+ * que está aqui — o halo passeia pelas SEIS cores de `faq/cores.ts`, as mesmas
+ * que giram no anel da caixa logo abaixo.
  *
- * As duas cores são, ao pixel, as do clarão distante do `.anel-siri` lá embaixo
- * — o rosa e o azul das pontas do arco de `faq/cores.ts`. É essa repetição que
- * faz a frase e a caixa lerem como a MESMA luz: o convite é o rótulo do campo,
- * e um brilho de outra cor a dois centímetros dele leria como um segundo objeto
- * aceso disputando atenção.
+ * É por isso que ele é uma animação e não um degradê: um `text-shadow` não tem
+ * como ser multicolorido ao mesmo tempo (o halo de uma letra é uma cor só por
+ * camada). O arco-íris, então, acontece no TEMPO em vez de no espaço, e é
+ * exatamente o que o anel já faz girando — as duas coisas percorrem a mesma
+ * lista, na mesma ordem, e leem como um objeto aceso só.
  *
- * O núcleo continua branco, e é ele que segura a legibilidade. Um halo colorido
- * sem núcleo tinge a própria letra, e texto tingido em serifa de 36px sobre
- * preto lê como impressão desalinhada — não como algo que emite luz. Branco
- * curto por dentro, cor larga por fora: a letra fica creme, o entorno é que
- * ganha temperatura.
+ * Duas camadas coloridas fora de fase, nunca uma: em cada instante o halo médio
+ * está numa cor e o largo já está na SEGUINTE, que é o que o conic-gradient do
+ * anel mostra lado a lado. Com uma camada só, a frase piscaria de cor em cor
+ * como um led.
+ *
+ * Nove segundos para a volta inteira, contra 2,4s do anel. De propósito: o anel
+ * responde à mão e a troca rápida é a resposta; a frase está sempre ali, e na
+ * cadência do anel ela viraria um enfeite piscando ao lado do título.
+ *
+ * O núcleo BRANCO é fixo, e é ele que segura a legibilidade. Um halo colorido
+ * sem núcleo tinge a própria letra, e serifa de 36px tingida sobre escuro lê
+ * como impressão desalinhada — não como algo que emite luz.
  *
  * A exceção monocromática que isto abre está declarada em `faq/cores.ts`, junto
  * com as outras duas.
  */
-.texto-aceso-cor {
-  text-shadow:
-    0 0 10px rgba(255, 255, 255, 0.26),
-    0 0 26px rgba(222, 92, 126, 0.3),
-    0 0 46px rgba(90, 160, 224, 0.26);
+@keyframes texto-rgb {
+  0%,
+  100% {
+    text-shadow:
+      0 0 10px rgba(255, 255, 255, 0.26),
+      0 0 26px rgba(242, 166, 90, 0.38),
+      0 0 46px rgba(232, 115, 90, 0.3);
+  }
+  16.67% {
+    text-shadow:
+      0 0 10px rgba(255, 255, 255, 0.26),
+      0 0 26px rgba(232, 115, 90, 0.38),
+      0 0 46px rgba(222, 92, 126, 0.3);
+  }
+  33.33% {
+    text-shadow:
+      0 0 10px rgba(255, 255, 255, 0.26),
+      0 0 26px rgba(222, 92, 126, 0.38),
+      0 0 46px rgba(155, 123, 224, 0.3);
+  }
+  50% {
+    text-shadow:
+      0 0 10px rgba(255, 255, 255, 0.26),
+      0 0 26px rgba(155, 123, 224, 0.38),
+      0 0 46px rgba(90, 160, 224, 0.3);
+  }
+  66.67% {
+    text-shadow:
+      0 0 10px rgba(255, 255, 255, 0.26),
+      0 0 26px rgba(90, 160, 224, 0.38),
+      0 0 46px rgba(79, 201, 168, 0.3);
+  }
+  83.33% {
+    text-shadow:
+      0 0 10px rgba(255, 255, 255, 0.26),
+      0 0 26px rgba(79, 201, 168, 0.38),
+      0 0 46px rgba(242, 166, 90, 0.3);
+  }
+}
+
+.texto-aceso-rgb {
+  animation: texto-rgb 9s linear infinite;
+}
+
+/* Sem a volta, o brilho fica no par do campo — o rosa e o azul do clarão do
+   `.anel-siri`. A cor continua acesa porque ela é o pedido; o que para é o
+   passeio, que é o que a preferência pede para parar. */
+@media (prefers-reduced-motion: reduce) {
+  .texto-aceso-rgb {
+    animation: none;
+    text-shadow:
+      0 0 10px rgba(255, 255, 255, 0.26),
+      0 0 26px rgba(222, 92, 126, 0.3),
+      0 0 46px rgba(90, 160, 224, 0.26);
+  }
 }
 
 /*
