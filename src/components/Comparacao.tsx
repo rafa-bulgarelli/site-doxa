@@ -199,13 +199,20 @@ export function Comparacao() {
     target: claroRef,
     offset: ['start end', 'start 25%'],
   });
+
+  /** O envelope da seção, emprestado à ladainha para ela medir a rolagem. */
+  const secaoRef = useRef<HTMLElement>(null);
   const giro = useTransform(scrollYProgress, [0, 1], [GIRO, 0]);
 
   return (
     // `overflow-x-clip` e não `overflow-hidden`: `hidden` cria um contexto de
     // rolagem e o `sticky` do painel escuro para de grudar. `clip` corta o canto
     // que o painel girado joga para fora sem criar contexto nenhum.
-    <section data-secao="Quanto custa" className="relative overflow-x-clip bg-doxa-bg">
+    <section
+      ref={secaoRef}
+      data-secao="Quanto custa"
+      className="relative overflow-x-clip bg-doxa-bg"
+    >
       {/* ── Painel escuro: a pergunta e a conta. */}
       <div
         ref={escuroRef}
@@ -270,7 +277,12 @@ export function Comparacao() {
           </div>
 
           <div className={RESPIRO}>
-            <Ladainha />
+            {/* A seção inteira é o alvo da rolagem da ladainha, e é ela que
+                precisa ser passada: o painel onde a lista mora é `sticky`, e um
+                elemento grudado não se move em relação à janela — apontar o
+                `useScroll` para ele devolveria um progresso travado no mesmo
+                número durante toda a leitura. */}
+            <Ladainha secaoRef={secaoRef} />
           </div>
 
           {/* O soco, em texto puro.

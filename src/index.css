@@ -172,6 +172,19 @@ html::-webkit-scrollbar {
  * do que se vê, porque uma barra que se vê com oito pixels se acerta com muito
  * mais dificuldade do que isso.
  */
+/*
+ * ─── A BORDA DIREITA NÃO SE MEXE, E ISSO É UM BUG CONSERTADO ─────────────────
+ *
+ * `right` é o MESMO nos três estados, e tem de continuar sendo. Ele já valeu 6,
+ * 10 e 12 — um por forma —, e o resultado era a ilha piscando sem parar em vez
+ * de abrir: cada estado recuava a borda direita alguns pixels, então um ponteiro
+ * pousado na faixa mais à direita da barra ficava FORA da caixa nova. Isso
+ * dispara `pointerleave`, que fecha; fechada, a caixa volta a alcançar o
+ * ponteiro e dispara `pointerenter`, que abre. Trinta vezes por segundo.
+ *
+ * Com o `right` fixo, cada forma CONTÉM a anterior — as três crescem só para a
+ * esquerda, e o ponteiro que entrou nunca sai por culpa da própria animação.
+ */
 .rolador {
   position: fixed;
   top: 0;
@@ -192,7 +205,6 @@ html::-webkit-scrollbar {
   transition:
     width 460ms cubic-bezier(0.34, 1.4, 0.64, 1),
     height 460ms cubic-bezier(0.34, 1.4, 0.64, 1),
-    right 460ms cubic-bezier(0.34, 1.4, 0.64, 1),
     opacity 260ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -257,7 +269,6 @@ html::-webkit-scrollbar {
  */
 .rolador-viva {
   width: 34px;
-  right: 10px;
   cursor: grab;
 }
 
@@ -372,7 +383,6 @@ html::-webkit-scrollbar {
  */
 .rolador-ilha {
   width: 236px;
-  right: 12px;
   cursor: default;
   opacity: 1;
 }

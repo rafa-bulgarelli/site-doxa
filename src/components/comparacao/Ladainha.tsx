@@ -1,20 +1,54 @@
-import { Fragment, useRef, useState } from 'react';
-import { AnimatePresence, motion, useInView, useReducedMotion, useSpring } from 'framer-motion';
+import { Fragment, useRef, useState, type RefObject } from 'react';
+import {
+  AnimatePresence,
+  motion,
+  useReducedMotion,
+  useScroll,
+  useSpring,
+  useTransform,
+  type MotionValue,
+} from 'framer-motion';
 import { useIsDesktop } from '../../hooks/useIsDesktop';
 import { ITENS, TEMPO, type Item } from './config';
 import { Icone } from './icones';
 
-const EASE = [0.16, 1, 0.3, 1] as const;
+/**
+ * ─── A CONTA É SOMADA PELA ROLAGEM, E NÃO POR UM RELÓGIO ─────────────────────
+ *
+ * Pedido do dono, e ele troca a natureza da animação: os vinte e cinco itens
+ * entravam em cascata de tempo assim que a seção aparecia — um relógio de
+ * trinta e cinco milésimos por item, correndo sozinho — e agora entram
+ * conforme a página anda. Quem rola devagar vê a fatura sendo somada devagar;
+ * quem para, a conta para com ele.
+ *
+ * O que se ganha é a coisa que o argumento desta seção precisa: o acúmulo deixa
+ * de ser uma animação que a pessoa ASSISTE e passa a ser uma que ela CAUSA. É
+ * ela quem está somando, e o tamanho da lista vira consequência de continuar
+ * descendo.
+ *
+ * ─── POR QUE O ALVO É A SEÇÃO, E NÃO ESTE PARÁGRAFO ──────────────────────────
+ *
+ * A ladainha mora dentro do painel escuro, que é `sticky`. Um elemento grudado
+ * NÃO se move em relação à janela enquanto gruda — o retângulo dele fica parado
+ * no topo, e `useScroll` apontado para ele devolveria um progresso travado no
+ * mesmo número durante toda a leitura. O que se move é a seção inteira, e é ela
+ * que o componente recebe de fora.
+ */
+const ABRE = 'start end';
+const FECHA = 'start 15%';
 
 /**
- * De quanto em quanto tempo entra o próximo item, em segundos.
+ * Quanto do percurso cada item leva para acender, e onde o último começa.
  *
- * Vinte e cinco itens a trinta e cinco milésimos dão pouco menos de um segundo:
- * rápido o bastante para ninguém esperar, lento o bastante para a conta parecer
- * que está sendo somada na frente da pessoa. É a diferença entre uma lista que
- * aparece e uma lista que se ACUMULA — e o acúmulo é o argumento inteiro.
+ * Os itens são distribuídos nos primeiros 85% do percurso e cada um acende ao
+ * longo de 15% dele. As duas janelas se SOBREPÕEM de propósito: com fatias
+ * disjuntas, um item só começaria a aparecer depois de o anterior estar cheio, e
+ * a lista subiria em degraus. Sobrepostas, há sempre três ou quatro palavras a
+ * meio caminho, que é o que faz a conta parecer escrita à mão em vez de
+ * carimbada.
  */
-const CASCATA = 0.035;
+const ESPALHA = 0.85;
+const ACENDE = 0.15;
 
 /** Tamanho da lâmina que segue o ponteiro, em pixels. */
 const LAMINA = { w: 236, h: 322 };
@@ -91,6 +125,48 @@ function Lamina({ item }: { item: Item }) {
 }
 
 /**
+ * Uma palavra da fatura, com a própria fatia do percurso.
+ *
+ * Componente, e não um pedaço de JSX dentro do `map`, porque cada item precisa
+ * do SEU `useTransform` — e hook nenhum pode nascer dentro de um laço: a ordem
+ * das chamadas mudaria junto com o tamanho da lista, que é exatamente o que as
+ * regras dos hooks proíbem. Com um componente por item, cada um tem a sua lista
+ * de hooks, estável e do tamanho um.
+ *
+ * A opacidade vai em `style` e a COR continua em classe. As duas convivem no
+ * mesmo elemento porque são propriedades diferentes: a rolagem escreve o quanto
+ * a palavra existe, o ponteiro escreve o quanto ela está acesa, e nenhuma das
+ * duas apaga a outra.
+ */
+function Palavra({
+  progresso,
+  fatia,
+  numero,
+  nome,
+  className,
+  aoApontar,
+}: {
+  progresso: MotionValue<number>;
+  /** Onde no percurso esta palavra acende, de 0 a 1. */
+  fatia: number;
+  numero?: string;
+  nome: string;
+  className: string;
+  aoApontar: (evento: React.MouseEvent) => void;
+}) {
+  const opacity = useTransform(progresso, [fatia, fatia + ACENDE], [0, 1]);
+
+  return (
+    <motion.span style={{ opacity }} onMouseEnter={aoApontar} className={className}>
+      {numero != null && (
+        <span className="mr-[0.45em] text-[0.6em] tabular-nums text-white/25">{numero}</span>
+      )}
+      {nome}
+    </motion.span>
+  );
+}
+
+/**
  * A conta do jeito antigo, escrita como uma ladainha — e ilustrada no ponteiro.
  *
  * Corrida e em corpo grande, com o artigo na frente de cada item: uma coisa
@@ -102,12 +178,18 @@ function Lamina({ item }: { item: Item }) {
  * a mão. Só no desktop: no telefone não há ponteiro para seguir, e uma imagem
  * presa ao dedo em cima do texto seria uma imagem tapando o texto.
  */
-export function Ladainha() {
+export function Ladainha({ secaoRef }: { secaoRef: RefObject<HTMLElement> }) {
   const ref = useRef<HTMLParagraphElement>(null);
-  const naTela = useInView(ref, { amount: 0.2, once: true });
   const isDesktop = useIsDesktop();
   const parado = useReducedMotion() === true;
   const podeSeguir = isDesktop && !parado;
+
+  /* O percurso: da hora em que a seção toca o pé da janela até o topo dela
+     estar quase encostado no alto. É pouco mais de uma tela de rolagem para
+     somar vinte e cinco itens — o bastante para a soma ser vista acontecendo, e
+     curto o bastante para a lista estar inteira na tela quando o painel gruda e
+     a pessoa vai de fato ler. */
+  const { scrollYProgress } = useScroll({ target: secaoRef, offset: [ABRE, FECHA] });
 
   const [apontado, setApontado] = useState<Item | null>(null);
   const [aEsquerda, setAEsquerda] = useState(false);
@@ -175,7 +257,6 @@ export function Ladainha() {
         className="relative z-10 text-justify text-[17px] leading-[1.75] text-white/45 [word-spacing:0.55em] md:text-[1.4rem] md:[word-spacing:0.7em] lg:text-[1.55rem] lg:leading-[1.75] lg:[word-spacing:0.75em]"
       >
         {ITENS.map((item, i) => {
-          const atraso = i * CASCATA;
           const aceso = apontado === item;
           return (
             // O espaço é um nó de texto de verdade, e não uma margem: a
@@ -183,22 +264,16 @@ export function Ladainha() {
             // não é espaço nenhum. Com `mr-[0.35em]` as linhas continuavam
             // terminando onde queriam.
             <Fragment key={item.nome}>
-            <motion.span
-              initial={{ opacity: 0 }}
-              animate={naTela ? { opacity: 1 } : undefined}
-              transition={{ duration: 0.5, ease: EASE, delay: atraso }}
-              onMouseEnter={apontar(item)}
-              className={`inline-block whitespace-nowrap [word-spacing:normal] transition-colors duration-300 ${
-                podeSeguir ? 'cursor-default' : ''
-              } ${
-                aceso ? 'text-white' : apontado == null ? 'text-white/45' : 'text-white/20'
-              }`}
-            >
-              <span className="mr-[0.45em] text-[0.6em] tabular-nums text-white/25">
-                {String(i + 1).padStart(2, '0')}
-              </span>
-              {item.nome}
-            </motion.span>{' '}
+              <Palavra
+                progresso={scrollYProgress}
+                fatia={parado ? 0 : (i / ITENS.length) * ESPALHA}
+                numero={String(i + 1).padStart(2, '0')}
+                nome={item.nome}
+                aoApontar={apontar(item)}
+                className={`inline-block whitespace-nowrap [word-spacing:normal] transition-colors duration-300 ${
+                  podeSeguir ? 'cursor-default' : ''
+                } ${aceso ? 'text-white' : apontado == null ? 'text-white/45' : 'text-white/20'}`}
+              />{' '}
             </Fragment>
           );
         })}
@@ -231,17 +306,18 @@ export function Ladainha() {
             caixa de largura inteira, a lâmina apareceria com o ponteiro a mil
             pixels da palavra, em qualquer ponto vazio da linha. Daí o
             `w-fit`. */}
-        <motion.span
-          initial={{ opacity: 0 }}
-          animate={naTela ? { opacity: 1 } : undefined}
-          transition={{ duration: 0.6, ease: EASE, delay: ITENS.length * CASCATA + 0.2 }}
-          onMouseEnter={apontar(TEMPO)}
+        {/* O total acende DEPOIS do último item, na ponta do percurso: ele é a
+            linha que fecha a soma, e uma soma que se fecha antes da última
+            parcela não fecha nada. */}
+        <Palavra
+          progresso={scrollYProgress}
+          fatia={parado ? 0 : ESPALHA}
+          nome={TEMPO.nome}
+          aoApontar={apontar(TEMPO)}
           className={`mt-7 block w-fit border-t border-white/[0.12] pt-7 [word-spacing:normal] font-serif text-[2rem] leading-none text-[#F4F1E8] md:mt-9 md:pt-9 md:text-[3rem] ${
             podeSeguir ? 'cursor-default' : ''
           }`}
-        >
-          {TEMPO.nome}
-        </motion.span>
+        />
       </p>
 
       {/* Fora do parágrafo e `fixed`: presa ao fluxo, a lâmina seria recortada
