@@ -18,15 +18,18 @@ export default {
           // different surface — which is exactly what the footer is, since the
           // page slides off it rather than ending into it.
           //
-          // The value took three rounds to settle, and only one of them was
-          // about taste: the first two never reached the screen at all, because
-          // editing this file with the dev server running silently drops the
-          // token (see CLAUDE.md — the config has no hot reload). #242424 was
-          // the first one the owner actually saw, and he asked for one step
-          // darker. #1E1E1E is that step: still unmistakably grey against the
-          // #000 page sliding off it, and far enough from #141414 that the
-          // mosaic tiles keep reading as objects on a surface.
-          stage: '#1E1E1E',
+          // Walked down one step at a time with the owner at the screen:
+          // #242424 → #1E1E1E → #181818, each one his call after seeing the
+          // one before. (The two tries before #242424 never reached the screen
+          // at all — editing this file with the dev server running silently
+          // drops the token. See CLAUDE.md; the config has no hot reload.)
+          //
+          // #181818 sits four levels from the #141414 of the tiles, so the
+          // empty grid no longer frames each video as an object resting on a
+          // lighter surface. That is fine while every tile carries an image,
+          // and it is the floor: one step further and the stage is the page's
+          // own black, which is the thing the owner asked to get away from.
+          stage: '#181818',
         },
       },
       fontFamily: {
