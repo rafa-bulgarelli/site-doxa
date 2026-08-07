@@ -34,16 +34,27 @@ import { Icone } from './icones';
  * chegando, e uma animação que começa durante a chegada compete com ela.
  *
  * Então a abertura volta a `start start` — o instante exato em que o topo da
- * seção encosta no topo da janela e o painel escuro ocupa 100% da altura — e o
- * tempo que a terceira versão ganhava no começo é recuperado no fim: de 16% para
- * 20% da altura da seção, cerca de meia tela de rolagem para as vinte e cinco
- * linhas.
+ * seção encosta no topo da janela e o painel escuro ocupa 100% da altura.
  *
- * E não muito além disso, por geometria: a seção mede quase duas telas e meia
- * (uma do painel escuro, 37,5% de vão, uma do painel claro), e o painel claro
- * começa a subir por cima do escuro depois de 37,5% de tela. As últimas linhas
- * da coluna — o total e o soco — são as PRIMEIRAS que ele cobre. É por isso que
- * as fatias abaixo terminam antes do fim do percurso, e não nele.
+ * ─── E O FIM PRECISOU DE ESPAÇO NOVO ─────────────────────────────────────────
+ *
+ * O dono pediu dois terços a mais de rolagem, e o número sozinho não daria: o
+ * fim do percurso tinha um teto geométrico. O painel claro sobe por cima do
+ * escuro assim que o vão entre os dois passa, e as últimas linhas da coluna — o
+ * total e o soco — são as PRIMEIRAS que ele cobre. Esticar só este número faria
+ * o fecho acender debaixo do papel.
+ *
+ * O que abriu espaço foi o vão da seção, em `Comparacao.tsx`, que passou de
+ * 37,5% para 100% de tela. Isso muda a seção inteira e é uma decisão que valia
+ * ser tomada: aquele vão foi cortado um dia porque "o que sobrava de rolagem
+ * parada antes da virada era espera, não leitura" — e era verdade, quando a
+ * ladainha já estava escrita ao chegar. Agora ela se ESCREVE ali, e o mesmo
+ * trecho deixou de ser espera.
+ *
+ * Com a seção em três telas, `26%` dão cerca de oitenta por cento de tela de
+ * rolagem para as vinte e cinco linhas — os dois terços a mais que ele pediu —,
+ * e o soco ainda fecha antes de o papel começar a subir. É por isso que as
+ * fatias abaixo terminam antes do fim do percurso, e não nele.
  *
  * ─── A CONTA É SOMADA PELA ROLAGEM, E NÃO POR UM RELÓGIO ─────────────────────
  *
@@ -67,7 +78,7 @@ import { Icone } from './icones';
  * que o componente recebe de fora.
  */
 const ABRE = 'start start';
-const FECHA = '20% start';
+const FECHA = '26% start';
 
 /**
  * O percurso da contagem, medido na SEÇÃO e entregue a quem precisar dele.
@@ -221,6 +232,25 @@ function Palavra({
   aoApontar: (evento: React.MouseEvent) => void;
 }) {
   const opacity = useTransform(progresso, [fatia, fatia + ACENDE], [0, 1]);
+  /*
+   * ─── O QUE NÃO SE VÊ NÃO SE APONTA ───────────────────────────────────────
+   *
+   * O dono viu a lâmina aparecendo sobre um item que ainda estava invisível: a
+   * palavra tinha `opacity: 0` e continuava recebendo o ponteiro, porque
+   * opacidade zero não tira nada do caminho do mouse — só apaga o pixel.
+   *
+   * Aqui o próprio valor que apaga a palavra também fecha a porta dela. Em
+   * `pointerEvents` derivado da opacidade, e não numa condição dentro do
+   * handler: a condição resolveria o sintoma (a lâmina não abriria) e deixaria
+   * o resto — o cursor viraria ponteiro sobre o nada, a palavra invisível
+   * continuaria capturando o `mouseleave` das vizinhas, e o item de baixo, que
+   * está visível, não receberia o hover que era para ser dele.
+   *
+   * O corte é em 60% e não em zero: entre 0 e 60 a palavra é um fantasma
+   * chegando, e apontar um fantasma acende a lâmina de uma coisa que a pessoa
+   * ainda não consegue ler.
+   */
+  const eventos = useTransform(opacity, (v) => (v > 0.6 ? 'auto' : 'none'));
   /* Seis pixels de subida junto com o fade. Sem eles a lista pisca para dentro
      da tela; com eles, cada item CHEGA — e é o que faz vinte e cinco linhas
      lerem como uma conta sendo escrita em vez de um texto que estava lá o tempo
@@ -230,7 +260,7 @@ function Palavra({
 
   return (
     <motion.span
-      style={parado ? undefined : { opacity, y }}
+      style={parado ? undefined : { opacity, y, pointerEvents: eventos }}
       onMouseEnter={aoApontar}
       className={className}
     >

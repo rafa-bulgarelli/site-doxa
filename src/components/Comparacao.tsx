@@ -323,23 +323,31 @@ export function Comparacao() {
         </div>
       </div>
 
-      {/* Fôlego para o painel escuro. Sem isto, o claro começa a subir no
-          primeiro pixel de rolagem — o topo dele já está encostado no fim da
-          tela quando a seção chega — e a ladainha some antes de alguém ler. São
-          quase meia tela em que o preto fica parado e legível, e só depois a
-          carta começa a virar.
-
-          Era sessenta centésimos e o dono cortou vinte por cento: o painel
-          escuro já se lê de uma vez, e o que sobrava de rolagem parada antes da
-          virada era espera, não leitura.
-
-          O valor é calibrado pelo que se VÊ, não pelo que ele mede. O painel
-          claro gira em torno do canto inferior esquerdo, e trinta graus baixam a
-          aresta de cima dele em cerca de doze centésimos da altura da tela — um
-          deslocamento que se soma a este vão e adianta a primeira aparição.
-          37,5vh menos esse desconto dão os 450 pixels que o dono pediu numa
-          tela de 940, e ficam proporcionais em qualquer outra altura. */}
-      <div className="h-[37.5vh]" aria-hidden />
+      {/* ── O FÔLEGO DO PAINEL ESCURO, e por que ele DOBROU ─────────────────
+       *
+       * Sem este vão, o claro começa a subir no primeiro pixel de rolagem — o
+       * topo dele já está encostado no fim da tela quando a seção chega — e a
+       * ladainha some antes de alguém ler.
+       *
+       * O número já foi 60% de tela, foi cortado para 37,5% e agora vai a 100%,
+       * e as três decisões são a mesma discussão em três momentos: quanto tempo
+       * o preto fica parado antes de a carta virar.
+       *
+       * O corte para 37,5% tinha um argumento que era verdadeiro na época — "o
+       * painel escuro já se lê de uma vez, e o que sobra de rolagem parada antes
+       * da virada é espera, não leitura". Ele valia porque a ladainha estava
+       * inteira escrita quando a seção chegava: parar ali era esperar por nada.
+       *
+       * O que mudou foi a lista passar a se ESCREVER com a rolagem. O mesmo
+       * trecho deixou de ser espera e virou o lugar onde a conta é somada — e o
+       * dono pediu dois terços a mais dela. Uma tela cheia é o que dá esse
+       * espaço com o soco ainda fechando antes de o papel aparecer.
+       *
+       * A calibragem antiga continua valendo como aviso para quem for mexer: o
+       * painel claro gira em torno do canto inferior esquerdo, e trinta graus
+       * baixam a aresta de cima dele em cerca de doze centésimos da altura da
+       * tela. O papel aparece um pouco ANTES do que este número sugere. */}
+      <div className="h-screen" aria-hidden />
 
       {/* ── Painel claro: o convite. Sobe girado, assenta, e para. */}
       <motion.div
