@@ -121,7 +121,13 @@ export function Rodape() {
           vista é, ao pixel, a fração do rodapé que foi revelada. */}
       <div ref={marcoRef} aria-hidden className="h-[100svh]" />
 
-      <footer className="fixed inset-x-0 bottom-0 z-0 flex h-[100svh] flex-col bg-black">
+      {/* CINZA ESCURO, e não o preto da página — pedido do dono.
+          O rodapé é a única superfície do site que não é `doxa-bg`, e a
+          diferença é o que faz a revelação LER: o `<main>` é preto e desliza
+          para fora da frente de uma superfície mais clara, então o que se vê
+          não é a página acabando, é uma folha sendo levantada de cima de outra.
+          Em preto sobre preto essa transição existia e não aparecia. */}
+      <footer className="fixed inset-x-0 bottom-0 z-0 flex h-[100svh] flex-col bg-doxa-stage">
         <div className="relative min-h-0 flex-1">
           {/* ─── O CAMPO ────────────────────────────────────────────────────
            *
@@ -134,49 +140,81 @@ export function Rodape() {
            * de contato invisível para quem lê a página com os ouvidos.
            */}
           <div aria-hidden className="absolute inset-0 overflow-hidden">
-            <ArrastoInfinito
-              ativo={revelado}
-              /* A grade uniforme: dez colunas de largura FIXA por três linhas,
-                 todas ocupadas, com as colunas pares descendo meio passo
-                 (`rodape/config.ts` explica o desenho e o número dez).
+            {/* ─── A SANGRIA DO TOPO, que vale exatamente o deslocamento ────
+             *
+             * O campo começa acima da janela, e a altura que ele sobe é a
+             * mesma que as colunas pares descem. É a contrapartida obrigatória
+             * do desencontro: uma coluna empurrada para baixo abre, no topo do
+             * bloco, uma faixa vazia da altura do empurrão — e quando a deriva
+             * traz a borda de cima do bloco para dentro do quadro, essa faixa
+             * é um buraco preto numa coluna sim, outra não.
+             *
+             * Dentro do bloco o problema não existe: a cópia de cima projeta
+             * para baixo exatamente o que falta no topo da cópia debaixo. Só a
+             * PRIMEIRA borda fica descoberta, e subir o campo pelo tamanho do
+             * empurrão a tira de cena. A borda de baixo nunca aparece — a
+             * volta do infinito acontece a uma cópia de distância, e o bloco
+             * tem duas.
+             *
+             * Com 50px de deslocamento a falha cabia debaixo do esfumaçado do
+             * topo e passava despercebida. Com 200px, não cabe mais.
+             */}
+            <div className="absolute inset-x-0 bottom-0 top-[-100px] md:top-[-200px]">
+              <ArrastoInfinito
+                ativo={revelado}
+                /* A grade uniforme: dez colunas de largura FIXA por três
+                   linhas, todas ocupadas, com as colunas pares descendo
+                   (`rodape/config.ts` explica o desenho e o número dez).
 
-                 ─── O RECUO É METADE DO VÃO, e isso não é gosto ─────────────
+                   ─── O RECUO É METADE DO VÃO, e isso não é gosto ───────────
 
-                 É a condição para o infinito não ter emenda. O bloco se repete
-                 lado a lado e um em cima do outro; para o ritmo atravessar a
-                 junção, a altura do bloco tem de ser um múltiplo exato do passo
-                 (peça + vão), e o mesmo na largura. Com recuo igual a meio vão,
-                 o bloco mede exatamente `linhas × passo` — meio vão em cima,
-                 meio embaixo, e a soma dos dois na emenda dá um vão inteiro,
-                 idêntico aos de dentro. Com `p-8` e `gap-y-4`, como estava
-                 aqui, a emenda tinha 64px onde as peças de dentro tinham 32.
+                   É a condição para o infinito não ter emenda. O bloco se
+                   repete lado a lado e um em cima do outro; para o ritmo
+                   atravessar a junção, a altura do bloco tem de ser um múltiplo
+                   exato do passo (peça + vão), e o mesmo na largura. Com recuo
+                   igual a meio vão, o bloco mede exatamente `linhas × passo` —
+                   meio vão em cima, meio embaixo, e a soma dos dois na emenda
+                   dá um vão inteiro, idêntico aos de dentro. Com `p-8` e
+                   `gap-y-4`, como estava aqui, a emenda tinha 64px onde as
+                   peças de dentro tinham 32.
 
-                 ─── E O BLOCO TEM DE SER MAIOR QUE A JANELA ────────────────
+                   ─── E O BLOCO TEM DE SER MAIOR QUE A JANELA ───────────────
 
-                 2260 × 1088 no desktop. A volta do infinito acontece a um bloco
-                 de distância: mais estreito que a tela, e o fim da deriva traz
-                 uma faixa vazia para dentro do quadro. O mosaico anterior media
-                 1248 × 843 numa janela de 1507 × 851 — a falha já estava aqui,
-                 escondida pelo vazio que o próprio X desenhava.
+                   2760 × 1239 no desktop. A volta do infinito acontece a um
+                   bloco de distância: mais estreito que a tela, e o fim da
+                   deriva traz uma faixa vazia para dentro do quadro. O mosaico
+                   anterior media 1248 × 843 numa janela de 1507 × 851 — a
+                   falha já estava aqui, escondida pelo vazio que o próprio X
+                   desenhava. O vão de 100px, a pedido do dono, só aumenta a
+                   folga: o bloco cresceu junto.
 
-                 `--desloca` é o meio passo das colunas pares, e vale o mesmo
-                 que o vão. Mora aqui, e não na peça, porque muda com o
-                 breakpoint e `style` não tem media query. */
-              className="grid grid-cols-[repeat(10,8rem)] grid-rows-[repeat(3,auto)] gap-[24px] p-[12px] [--desloca:24px] md:grid-cols-[repeat(10,11rem)] md:gap-[50px] md:p-[25px] md:[--desloca:50px]"
-            >
-              {PECAS.map(({ lugar, reel }, indice) => (
-                <Peca key={indice} reel={reel} lugar={lugar} palco={palco} ativo={revelado} />
-              ))}
-            </ArrastoInfinito>
+                   `--desloca` é o quanto as colunas pares descem, e agora vale
+                   o DOBRO do vão a pedido do dono — perto de meio passo
+                   (413px no desktop), que é a distância em que o desencontro é
+                   máximo. Mora aqui, e não na peça, porque muda com o
+                   breakpoint e `style` não tem media query. */
+                className="grid grid-cols-[repeat(10,8rem)] grid-rows-[repeat(3,auto)] gap-[50px] p-[25px] [--desloca:100px] md:grid-cols-[repeat(10,11rem)] md:gap-[100px] md:p-[50px] md:[--desloca:200px]"
+              >
+                {PECAS.map(({ lugar, reel }, indice) => (
+                  <Peca key={indice} reel={reel} lugar={lugar} palco={palco} ativo={revelado} />
+                ))}
+              </ArrastoInfinito>
+            </div>
 
             {/* O véu, e os dois esfumaçados. O véu tira o mosaico da frente do
                 pedido — mais denso do que era, porque agora o que está atrás
                 dele tem imagem e movimento em vez de texto cinza. Os
-                esfumaçados dissolvem o campo no preto em cima e na barra de
-                serviço embaixo, para ele não ter borda dura. */}
-            <div className="pointer-events-none absolute inset-0 bg-black/65" />
-            <div className="pointer-events-none absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-black to-transparent" />
-            <div className="pointer-events-none absolute inset-x-0 bottom-0 h-36 bg-gradient-to-t from-black to-transparent" />
+                esfumaçados dissolvem o campo em cima e na barra de serviço
+                embaixo, para ele não ter borda dura.
+
+                Os três são da cor do PALCO e não pretos, e isso não é detalhe:
+                um véu preto sobre um fundo cinza devolveria o rodapé ao preto
+                por dentro, e os esfumaçados desenhariam duas faixas escuras
+                onde deveriam desenhar o próprio fundo. A cor mora uma vez, no
+                `bg-doxa-stage` do footer, e estes três a repetem. */}
+            <div className="pointer-events-none absolute inset-0 bg-doxa-stage/65" />
+            <div className="pointer-events-none absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-doxa-stage to-transparent" />
+            <div className="pointer-events-none absolute inset-x-0 bottom-0 h-36 bg-gradient-to-t from-doxa-stage to-transparent" />
           </div>
 
           {/* ─── O FECHO ─────────────────────────────────────────────────── */}

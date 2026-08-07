@@ -158,10 +158,10 @@ export function Peca({ reel, lugar, palco, ativo }: PecaProps) {
          desceriam junto e não haveria desencontro nenhum. Transform desloca o
          que se pinta sem tocar no que se mede.
 
-         A distância vem de `--desloca`, escrita na grade em `Rodape.tsx`: ela é
-         o mesmo número do vão entre as peças, e muda no telefone. Um valor
-         escrito aqui não teria como acompanhar o breakpoint — `style` não tem
-         media query. */
+         A distância vem de `--desloca`, escrita na grade em `Rodape.tsx`, e no
+         desktop ela vale 200px — o dobro do vão, a pedido do dono, que é perto
+         de meio passo. Um valor escrito aqui não teria como acompanhar o
+         breakpoint, e ele muda no telefone: `style` não tem media query. */
       style={{
         gridColumn: lugar.coluna,
         gridRow: lugar.linha,

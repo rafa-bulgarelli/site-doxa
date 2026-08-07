@@ -13,6 +13,13 @@ export default {
           raised: '#141414',
           line: '#1F1F1F',
           muted: '#6B6B6B',
+          // The footer's stage, asked for by the owner: the last screen is a
+          // dark GREY, not the black of the page above it. It reads as a
+          // different surface — which is exactly what the footer is, since the
+          // page slides off it rather than ending into it. Light enough to be
+          // told apart from #000 on a phone in daylight, dark enough that the
+          // mosaic behind the veil still has somewhere to glow.
+          stage: '#1A1A1A',
         },
       },
       fontFamily: {
