@@ -134,28 +134,23 @@ body {
  * ─── A BARRA DE ROLAGEM, NOSSA ───────────────────────────────────────────────
  *
  * A régua da direita, na língua do site. Ela era a única peça da tela que ainda
- * vinha do sistema operacional — uma lasca cinza-claro de macOS numa página
- * preta de ponta a ponta —, virou uma barra nativa repintada, e agora é vidro
- * de verdade, desenhado por `components/ui/Rolador.tsx`.
+ * vinha do sistema operacional, virou uma barra nativa repintada, passou por uma
+ * fase de vidro líquido com marcas de seção — e o dono cortou as duas coisas.
+ * Ficou uma só, que é a que ele queria desde a referência: a ILHA.
  *
- * ─── POR QUE A NATIVA NÃO SERVIU ─────────────────────────────────────────────
+ * ─── O QUE FOI CORTADO, E POR QUE O CORTE ESTÁ CERTO ─────────────────────────
  *
- * `::-webkit-scrollbar-thumb` aceita cor, canto e borda, e nada além:
- * `backdrop-filter` não se aplica a ele em navegador nenhum. E sem desfocar o
- * que está atrás não existe vidro — existe um branco translúcido com borda
- * clara, que é uma imitação, e a diferença aparece exatamente onde a barra
- * passa por cima de um vídeo do rodapé.
- *
- * Trocar por uma barra própria também devolveu à página os dez pixels de
- * largura que a versão nativa custava: no macOS a barra é FLUTUANTE por padrão,
- * e a primeira regra de `::-webkit-scrollbar` faz o navegador desistir do
- * flutuante e reservar a coluna dela para sempre. Escondê-la traz o flutuante
- * de volta — agora desenhado por nós.
+ * Saiu o vidro: a ilha da referência é PRETA e opaca, e um objeto que deixa a
+ * página aparecer por dentro é o oposto de uma peça de hardware colada na borda
+ * da tela. Saíram os capítulos: eram uma segunda interface na mesma coluna, e
+ * duas coisas disputando dezesseis pixels de largura é uma a mais. O que a régua
+ * precisava dizer — onde a pessoa está — a ilha diz melhor aberta, com nome e
+ * porcentagem, do que seis traços diziam fechados.
  *
  * Só a barra do DOCUMENTO é escondida. As de dentro da página (o campo do FAQ é
  * a única hoje) continuam sendo as do navegador: elas rolam conteúdo dentro de
- * uma caixa, e uma barra flutuante de vidro dentro de um campo de texto seria
- * um enfeite no lugar de um controle.
+ * uma caixa, e uma ilha dentro de um campo de texto seria um enfeite no lugar de
+ * um controle.
  */
 html {
   scrollbar-width: none;
@@ -166,86 +161,75 @@ html::-webkit-scrollbar {
 }
 
 /*
- * ─── O VIDRO ─────────────────────────────────────────────────────────────────
+ * ─── ESTADO 1: DORMINDO ──────────────────────────────────────────────────────
  *
- * O polegar é uma cápsula de 16px de largura clicável com 6px de vidro pintado
- * dentro dela — a área de pegar é quase três vezes o que se vê. Uma barra de
- * seis pixels é bonita e impossível de acertar com o mouse; o resto da cápsula
- * é transparente e só existe para a mão.
+ * No topo da página ela é uma barra de rolagem e nada mais — cinza, fina,
+ * discreta, a primeira imagem da referência. Quem acabou de chegar não tem o que
+ * fazer com ela, e um objeto preto chamando atenção na borda antes de a pessoa
+ * ter rolado um pixel é ruído no lugar mais caro da tela.
  *
- * O vidro é feito de quatro camadas, e nenhuma é decoração:
- *
- *  1. `backdrop-filter` com blur E saturação. O blur é o vidro; a saturação é o
- *     que o torna LÍQUIDO — vidro real concentra a cor do que atravessa, e sem
- *     ela a barra passando sobre um vídeo do rodapé fica cinza, que é
- *     exatamente a aparência de plástico fosco.
- *  2. Um degradê branco de cima para baixo, muito fraco: é a luz do ambiente
- *     batendo na peça. Chapado, o objeto lê como adesivo.
- *  3. Um `inset` claro na borda de cima e um escuro na de baixo. São os dois
- *     que dão ESPESSURA — sem eles o vidro é uma mancha, e com eles é uma peça
- *     com quina.
- *  4. Uma sombra por fora, curta. Ela separa a barra do que está atrás quando o
- *     fundo é claro, que é o caso toda vez que ela cruza um still do mosaico.
- *
- * Em repouso ele fica a 55% de opacidade: presente, mas não pedindo nada. Rolar
- * acende (`.rolador-aceso`), a mão em cima engorda o vidro de 6 para 10 pixels,
- * e o arrasto (`.rolador-preso`) segura os dois estados enquanto durar — sem
- * isso, sair da cápsula com o botão apertado apagaria a barra na mão da pessoa.
+ * A cápsula clicável tem 16px e o traço pintado tem 8: a área de pegar é o dobro
+ * do que se vê, porque uma barra que se vê com oito pixels se acerta com muito
+ * mais dificuldade do que isso.
  */
 .rolador {
   position: fixed;
   top: 0;
-  right: 4px;
+  right: 6px;
   z-index: 60;
   width: 16px;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   cursor: grab;
-  opacity: 0.55;
-  transition: opacity 260ms cubic-bezier(0.16, 1, 0.3, 1);
+  opacity: 0.62;
   /* Sem isto, o arrasto vira seleção de texto da página inteira assim que o
      cursor sai da cápsula. */
   user-select: none;
   -webkit-user-select: none;
   touch-action: none;
+  transition:
+    width 460ms cubic-bezier(0.34, 1.4, 0.64, 1),
+    height 460ms cubic-bezier(0.34, 1.4, 0.64, 1),
+    right 460ms cubic-bezier(0.34, 1.4, 0.64, 1),
+    opacity 260ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 /*
- * O vidro, e o ESTICÃO.
+ * O corpo pintado, e o ESTICÃO.
  *
  * `--estica` é escrita pelo componente a cada quadro de rolagem e vale 1 quando
- * a página está parada. O polegar cresce no eixo em que anda e encolhe no outro
- * na mesma proporção — `1 / var(--estica)` —, que é como borracha se comporta e
- * é o que separa "a peça esticou" de "a peça ficou maior".
+ * a página está parada. A peça cresce no eixo em que anda e encolhe no outro na
+ * mesma proporção — `1 / var(--estica)` —, que é como borracha se comporta e é o
+ * que separa "esticou" de "ficou maior". A curva de volta passa de 1 e retorna:
+ * é o "boing" da chegada.
  *
- * A curva de volta passa de 1 e retorna (`.34,1.56,.64,1`): é o "boing" da
- * chegada, e é a única curva do site com overshoot escrito à mão em vez de mola
- * calculada — aqui não há framer, e um `transition` é tudo o que existe. A ida
- * usa a mesma curva e não se nota, porque na ida o valor está sendo reescrito a
- * cada quadro e a transição nunca chega a terminar.
+ * ─── A ARMADILHA QUE CUSTOU UM BUG INTEIRO ───────────────────────────────────
+ *
+ * `transform` só pode ser animado AQUI, no `::before`, e nunca na cápsula. A
+ * posição vertical da barra é um `translateY` reescrito a cada quadro de
+ * rolagem; com `transform` em transição na cápsula, cada quadro viraria uma
+ * animação de 400ms começando — e a barra andaria sempre atrás da página, com um
+ * atraso elástico, exatamente como se estivesse quebrada.
  */
 .rolador::before {
   content: '';
-  width: 6px;
+  width: 8px;
   height: 100%;
   border-radius: 999px;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.28), rgba(255, 255, 255, 0.12));
-  backdrop-filter: blur(10px) saturate(180%);
-  -webkit-backdrop-filter: blur(10px) saturate(180%);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.5),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.28),
-    0 4px 14px rgba(0, 0, 0, 0.35);
+  background: rgba(255, 255, 255, 0.28);
   transform: scaleY(var(--estica, 1)) scaleX(calc(1 / var(--estica, 1)));
   transition:
-    width 260ms cubic-bezier(0.16, 1, 0.3, 1),
-    background 260ms ease,
+    width 460ms cubic-bezier(0.34, 1.4, 0.64, 1),
+    border-radius 460ms cubic-bezier(0.34, 1.4, 0.64, 1),
+    background-color 340ms ease,
+    box-shadow 340ms ease,
     transform 380ms cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .rolador-aceso {
-  opacity: 0.85;
+  opacity: 0.95;
 }
 
 .rolador:hover,
@@ -253,225 +237,57 @@ html::-webkit-scrollbar {
   opacity: 1;
 }
 
-.rolador:hover::before,
-.rolador-preso::before {
-  width: 10px;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.42), rgba(255, 255, 255, 0.2));
-}
-
 .rolador-preso {
   cursor: grabbing;
 }
 
 /*
- * ─── OS CAPÍTULOS ────────────────────────────────────────────────────────────
+ * ─── ESTADO 2: ACORDADA ──────────────────────────────────────────────────────
  *
- * Um traço por seção, na mesma coluna do polegar. Eles dizem que a página tem
- * PARTES antes de a pessoa ter rolado por elas — que é o trabalho que a barra de
- * um player faz e a de um navegador nunca fez.
+ * Noventa pixels de rolagem depois, a barra vira a pílula preta com o disco e a
+ * porcentagem — a segunda imagem da referência. O gatilho é a rolagem porque é
+ * ela que dá sentido ao objeto: uma régua de leitura só é útil depois que existe
+ * leitura para medir. Voltando ao topo, ela dorme de novo.
  *
- * Traço e não ponto: um ponto de 3px lê como sujeira na tela, e um traço curto
- * lê como marcação. Alinhados pelo lado direito e crescendo para a esquerda
- * quando acendem, para o movimento acontecer longe da borda da janela.
- *
- * A camada é `pointer-events: none` inteira. As marcas são referência, não
- * botão: o dono escolheu o scrub sem snap, e um capítulo clicável no meio de um
- * scrub é a interação da outra proposta, não desta.
+ * Preto sobre uma página preta precisa de contorno, e é o único ponto em que
+ * este componente discorda da referência: nas fotos a ilha vive sobre o papel de
+ * parede do sistema, quase sempre claro, e o preto chapado basta para recortá-la.
+ * Aqui, sem o fio de branco a 14% e a sombra, ela sumiria em quatro das seis
+ * seções.
  */
-.rolador-marcas {
-  position: fixed;
-  top: 0;
-  right: 4px;
-  z-index: 59;
-  width: 16px;
-  height: 100%;
-  pointer-events: none;
-  opacity: 0.45;
-  transition: opacity 260ms cubic-bezier(0.16, 1, 0.3, 1);
+.rolador-viva {
+  width: 46px;
+  right: 10px;
+  cursor: grab;
 }
 
-.rolador-marcas.rolador-aceso {
-  opacity: 1;
-}
-
-.rolador-marca {
-  position: absolute;
-  right: 5px;
-  width: 6px;
-  height: 1px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.3);
-  /* O `top` que o componente escreve é o CENTRO da marca. Sem isto, cada traço
-     ficaria meio pixel abaixo do lugar e a régua inteira sairia de registro com
-     o polegar. */
-  transform: translateY(-50%);
-  transition:
-    width 300ms cubic-bezier(0.16, 1, 0.3, 1),
-    background-color 300ms ease;
-}
-
-/* A seção que está sendo lida. Mais larga e mais acesa — e é só isso: uma marca
-   colorida aqui seria a segunda exceção cromática do site, aberta por um
-   indicador de rolagem, que é o objeto menos importante da página. */
-.rolador-marca-aqui {
-  width: 12px;
-  background: rgba(255, 255, 255, 0.85);
-}
-
-/*
- * ─── O RÓTULO ────────────────────────────────────────────────────────────────
- *
- * O nome da seção, à esquerda do polegar e preso a ele — por ser filho da
- * cápsula, ele acompanha a posição de graça, sem uma segunda conta que possa
- * sair de fase com a primeira.
- *
- * Aparece com a mão em cima e durante o arrasto, e em mais nenhum momento: é a
- * resposta à pergunta "onde eu paro se soltar aqui", e uma etiqueta permanente
- * flutuando na borda direita seria um segundo elemento de interface disputando
- * com o conteúdo o tempo todo.
- *
- * Em vidro como o polegar, pela mesma razão de sempre: ele passa por cima de
- * seis seções de fundos diferentes, e qualquer cor fixa erra em pelo menos uma.
- */
-.rolador-rotulo {
-  position: absolute;
-  right: 100%;
-  top: 50%;
-  margin-right: 10px;
-  transform: translateY(-50%);
-  white-space: nowrap;
-  font-size: 12px;
-  letter-spacing: 0.01em;
-  color: rgba(255, 255, 255, 0.92);
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(14px) saturate(180%);
-  -webkit-backdrop-filter: blur(14px) saturate(180%);
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  border-radius: 999px;
-  padding: 5px 11px;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
-  opacity: 0;
-  /* Ele nasce um pouco à direita e desliza para o lugar. Oito pixels: o
-     bastante para a chegada ser um gesto, pouco o bastante para não parecer que
-     a etiqueta veio de fora da tela. */
-  translate: 8px 0;
-  transition:
-    opacity 220ms cubic-bezier(0.16, 1, 0.3, 1),
-    translate 220ms cubic-bezier(0.16, 1, 0.3, 1);
-  pointer-events: none;
-}
-
-.rolador:hover .rolador-rotulo,
-.rolador-preso .rolador-rotulo {
-  opacity: 1;
-  translate: 0 0;
-}
-
-/*
- * ─── A ILHA ──────────────────────────────────────────────────────────────────
- *
- * A cápsula, com a mão parada em cima, incha e vira um painel: a mesma peça, com
- * conteúdo dentro. Pedido do dono, com a referência na mão — a ilha lateral que
- * alguns utilitários de macOS colam na borda da tela.
- *
- * O que faz a coisa funcionar é ser a MESMA peça. Nada aqui aparece do lado da
- * barra: o que existia como um traço de vidro de 6px cresce para 232, ganha
- * altura, e o conteúdo nasce dentro. Um cartão que abrisse ao lado seria um
- * segundo objeto, e a graça da referência é justamente não haver segundo objeto.
- *
- * Por isso a largura vive na CÁPSULA e não num filho, e por isso o vidro é o
- * `::before` de sempre esticado a 100% — o material não muda, só as medidas.
- *
- * A curva com overshoot (`.34,1.56,.64,1`) é o que dá o "pop" da abertura. Em
- * `ease-out` puro o painel infla e para, o que lê como uma caixa sendo
- * redimensionada; com o passo além, lê como algo que se abriu.
- */
-.rolador-ilha {
-  width: 96px;
-  right: 12px;
-  cursor: pointer;
-  opacity: 1;
-}
-
-/*
- * A pílula, como nas fotos: ESTREITA, ALTA, PRETA e com o canto valendo a
- * metade da largura — o formato que faz o objeto parecer uma peça de hardware
- * colada na borda da tela, e não uma janela.
- *
- * Preto CHAPADO, e é aqui que a referência e este site discordam por um motivo
- * que não dava para ignorar: nas fotos a pílula vive sobre o papel de parede do
- * sistema, quase sempre claro, e o preto sólido basta para recortá-la. A nossa
- * abre sobre uma página que já é preta — chapada e sem mais nada, ela
- * desapareceria por completo em quatro das seis seções.
- *
- * O que a devolve ao mundo são as duas linhas mais baratas que existem: um fio
- * de branco a 10% no contorno e uma sombra funda por baixo. Nenhuma das duas
- * muda a leitura de "pílula preta"; as duas juntas garantem que ela EXISTA
- * sobre preto. O desfoque de fundo continua, agora só como profundidade — sobre
- * o mosaico do rodapé é ele que impede o vídeo de aparecer por trás do texto.
- */
-.rolador-ilha::before {
+.rolador-viva::before {
   width: 100%;
-  border-radius: 48px;
-  background: rgba(9, 9, 10, 0.92);
-  backdrop-filter: blur(26px) saturate(160%);
-  -webkit-backdrop-filter: blur(26px) saturate(160%);
+  background: #08080a;
   box-shadow:
-    inset 0 0 0 1px rgba(255, 255, 255, 0.1),
-    inset 0 1px 0 rgba(255, 255, 255, 0.14),
-    0 24px 60px rgba(0, 0, 0, 0.6);
+    inset 0 0 0 1px rgba(255, 255, 255, 0.14),
+    0 14px 34px rgba(0, 0, 0, 0.55);
+  /* Acordada ela não estica: a pílula tem conteúdo dentro, e um bloco com texto
+     que se deforma ao rolar é um cartaz tremendo. */
   transform: none;
 }
 
 /*
- * As transições da abertura, e uma armadilha que custou um bug inteiro:
- * `transform` NÃO entra na lista da cápsula.
- *
- * A posição vertical da barra é um `translateY` reescrito a cada quadro de
- * rolagem. Com `transform` em transição aqui, cada quadro viraria uma animação
- * de 380ms começando — e a barra andaria sempre atrás da página, com um atraso
- * elástico, exatamente como se ela estivesse quebrada. O `transform` que PODE
- * ser animado é o do `::before`, que é o esticão, e ele já mora lá.
- */
-.rolador {
-  transition:
-    width 420ms cubic-bezier(0.34, 1.56, 0.64, 1),
-    height 420ms cubic-bezier(0.34, 1.56, 0.64, 1),
-    opacity 260ms cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.rolador::before {
-  transition:
-    width 420ms cubic-bezier(0.34, 1.56, 0.64, 1),
-    border-radius 420ms cubic-bezier(0.34, 1.56, 0.64, 1),
-    background 300ms ease,
-    box-shadow 300ms ease,
-    transform 380ms cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-/*
- * O conteúdo entra DEPOIS da caixa, e é o detalhe que separa a referência de uma
- * imitação dela: na ilha do sistema, a moldura abre e o conteúdo aparece dentro
- * já aberta. Nascendo junto, o texto seria esticado pela animação da caixa e o
- * olho leria um cartaz sendo desenrolado.
+ * O conteúdo entra DEPOIS da caixa, nos dois estados, e é o detalhe que separa a
+ * referência de uma imitação dela: na ilha do sistema a moldura abre e o
+ * conteúdo aparece dentro dela já aberta. Nascendo junto, ele seria esticado
+ * pela animação da caixa e o olho leria um cartaz sendo desenrolado.
  *
  * `visibility` junto de `opacity`, e não só opacity: um botão a zero de opacidade
  * continua clicável, e um botão invisível na frente da borda direita da tela é
  * uma armadilha para o clique de quem só queria a barra de rolagem.
  */
+.rolador-viva-corpo,
 .rolador-ilha-corpo {
   position: absolute;
   inset: 0;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 14px;
-  padding: 18px 12px;
-  text-align: center;
-  background: none;
-  border: 0;
-  cursor: pointer;
   opacity: 0;
   visibility: hidden;
   translate: 0 6px;
@@ -481,113 +297,246 @@ html::-webkit-scrollbar {
     visibility 0s linear 260ms;
 }
 
+.rolador-viva .rolador-viva-corpo,
 .rolador-ilha .rolador-ilha-corpo {
   opacity: 1;
   visibility: visible;
   translate: 0 0;
   transition:
-    opacity 260ms ease 160ms,
-    translate 380ms cubic-bezier(0.34, 1.56, 0.64, 1) 160ms,
-    visibility 0s linear 160ms;
+    opacity 260ms ease 200ms,
+    translate 420ms cubic-bezier(0.34, 1.4, 0.64, 1) 200ms,
+    visibility 0s linear 200ms;
 }
 
-/*
- * O disco branco do topo — o lugar que nas fotos é o relógio, o brilho, o play.
+/* Aberta, o corpo do estado de passagem sai de cena na hora: os dois ocupam o
+   mesmo lugar, e meio quadro com os dois visíveis é o conteúdo do painel
+   nascendo por cima de um disco que ainda não sumiu. */
+.rolador-ilha .rolador-viva-corpo {
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 120ms ease,
+    visibility 0s linear 120ms;
+}
+
+/* ─── O miolo do estado acordado: o disco e a porcentagem ──────────────────
  *
- * Branco cheio e não translúcido: nas três fotos o elemento redondo é a única
- * coisa OPACA dentro da pílula, e é isso que o faz ler como o controle dela em
- * vez de um ícone decorativo. É também o mesmo disco do `MotionButton` do site,
- * na mesma medida — o botão que leva a este mesmo formulário duas telas abaixo.
+ * Dois elementos e nada mais — é um estado de passagem, e tudo o que ele precisa
+ * dizer é "isto aqui é um objeto, e você está nesta altura da página". O disco
+ * branco é o mesmo do `MotionButton` do site, encolhido: quem o reconhece já
+ * sabe, antes de abrir, que ali dentro tem um caminho para o formulário.
  */
-.rolador-ilha-seta {
+.rolador-viva-corpo {
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 6px 12px;
+}
+
+.rolador-viva-disco {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 44px;
-  height: 44px;
+  width: 34px;
+  height: 34px;
   border-radius: 999px;
   background: #ffffff;
   color: #0b0b0b;
   flex-shrink: 0;
+}
+
+.rolador-viva-pct {
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  color: rgba(255, 255, 255, 0.75);
+  font-variant-numeric: tabular-nums;
+}
+
+/*
+ * ─── ESTADO 3: ABERTA ────────────────────────────────────────────────────────
+ *
+ * A mesma peça inchando, no formato da foto do player. Nada aparece AO LADO da
+ * barra: a pílula de 46 pixels cresce para 208 e o conteúdo troca dentro dela.
+ * Um cartão abrindo ao lado seria um segundo objeto, e a graça do original é não
+ * haver segundo objeto.
+ *
+ * O canto deixa de ser pílula e vira 28px: é o que muda a leitura de "cápsula"
+ * para "painel", e é a mesma mudança que a referência faz entre as duas fotos.
+ */
+.rolador-ilha {
+  width: 208px;
+  right: 12px;
+  cursor: default;
+  opacity: 1;
+}
+
+.rolador-ilha::before {
+  width: 100%;
+  border-radius: 28px;
+  background: #060607;
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    0 28px 70px rgba(0, 0, 0, 0.65);
+  transform: none;
+}
+
+.rolador-ilha-corpo {
+  gap: 11px;
+  padding: 13px;
+}
+
+/*
+ * A CAPA — o quadrado claro onde a referência põe a arte do disco.
+ *
+ * O nosso disco é a página: o quadrado carrega o quanto dela já foi lido, em
+ * serifa, na cor do papel do site. É a peça que faz o painel valer a pena
+ * existir — sem ela, a ilha seria um botão dentro de uma caixa preta; com ela, é
+ * um objeto que RESPONDE, porque o número muda enquanto a pessoa rola.
+ */
+.rolador-capa {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 1;
+  width: 100%;
+  border-radius: 16px;
+  background: #f4f1e8;
+  color: #0b0b0b;
+  font-family: 'Instrument Serif', serif;
+  font-size: 46px;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Título e subtítulo, como o "Pink + White / Frank Ocean" da foto: a seção em
+   branco cheio, o que o número significa em cinza. */
+.rolador-ilha-secao {
+  display: block;
+  font-size: 13.5px;
+  line-height: 1.15;
+  color: #ffffff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.rolador-ilha-copy {
+  display: block;
+  margin-top: 1px;
+  font-size: 11.5px;
+  line-height: 1.15;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+/* A barra de progresso do player, que aqui é literal: o quanto da página foi
+   rolado, o mesmo número da capa em forma de traço. */
+.rolador-trilha {
+  display: block;
+  height: 3px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.16);
+  overflow: hidden;
+}
+
+.rolador-progresso {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: #ffffff;
+}
+
+/*
+ * O controle. Onde a referência põe voltar / pausar / avançar, esta ilha põe a
+ * única ação que tem para oferecer — e ela ocupa a linha inteira, porque uma
+ * ação sozinha centralizada num espaço de três lê como as outras duas terem
+ * quebrado.
+ */
+.rolador-ilha-botao {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  width: 100%;
+  margin-top: auto;
+  padding: 5px 12px 5px 5px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.92);
+  font-size: 12px;
+  text-align: left;
+  cursor: pointer;
   transition:
-    transform 260ms cubic-bezier(0.34, 1.56, 0.64, 1),
-    background-color 200ms ease;
+    background-color 200ms ease,
+    border-color 200ms ease;
+}
+
+.rolador-ilha-botao:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.24);
+}
+
+.rolador-ilha-botao:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.6);
+  outline-offset: 2px;
+}
+
+.rolador-ilha-seta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  background: #ffffff;
+  color: #0b0b0b;
+  flex-shrink: 0;
+  transition: transform 260ms cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 /* A seta desce um fio sob a mão, na direção para onde ela leva. É a única
    animação de dentro da ilha: a caixa já fez a entrada, e um segundo objeto
    crescendo no mesmo palmo de tela seria movimento demais. */
-.rolador-ilha-corpo:hover .rolador-ilha-seta {
+.rolador-ilha-botao:hover .rolador-ilha-seta {
   transform: translateY(3px);
 }
 
-/* O texto miúdo do pé, como o "10:47 AM" das fotos. Três linhas curtas, e por
-   isso a quebra é livre: numa pílula de 96px, uma linha que não quebrasse
-   sairia pelos dois lados. */
-.rolador-ilha-copy {
-  font-size: 11.5px;
-  line-height: 1.25;
-  letter-spacing: 0.005em;
-  color: rgba(255, 255, 255, 0.72);
-  transition: color 200ms ease;
-}
-
-.rolador-ilha-corpo:hover .rolador-ilha-copy {
-  color: #ffffff;
-}
-
-.rolador-ilha-corpo:focus-visible {
-  outline: 2px solid rgba(255, 255, 255, 0.6);
-  outline-offset: -4px;
-  border-radius: 48px;
-}
-
-/* Aberta, o rótulo flutuante sai de cena: o nome da seção passou a ser a
-   primeira linha de dentro. */
-.rolador-ilha .rolador-rotulo {
-  opacity: 0;
-  translate: 8px 0;
-}
-
-/* No telefone não existe cursor para acender nada, e o polegar da mão cobre a
+/* No telefone não existe cursor para abrir nada, e o polegar da mão cobre a
    barra inteira no instante em que ela seria útil. A rolagem por toque já tem o
    indicador do próprio sistema. */
 @media (hover: none) {
-  .rolador,
-  .rolador-marcas {
+  .rolador {
     display: none;
   }
 }
 
 /* O esticão é a única coisa aqui que se move sem ninguém pedir, e é justamente
-   o que a preferência manda desligar — a régua continua inteira, com as marcas
-   e o rótulo, apenas sem deformar. `--estica` é neutralizada no elemento, e não
-   no componente: o JavaScript pode continuar escrevendo o valor que quiser, que
-   o CSS não o usa mais. */
+   o que a preferência manda desligar — a ilha continua inteira, apenas sem
+   deformar e sem inflar com overshoot. */
 @media (prefers-reduced-motion: reduce) {
   .rolador,
   .rolador::before,
-  .rolador-marca,
-  .rolador-marcas,
-  .rolador-rotulo,
+  .rolador-viva-corpo,
   .rolador-ilha-corpo,
-  .rolador-ilha-seta,
-  .rolador-ilha-copy {
+  .rolador-ilha-botao,
+  .rolador-ilha-seta {
     transition: none;
   }
 
   .rolador::before,
-  .rolador-ilha-corpo:hover .rolador-ilha-seta {
+  .rolador-ilha-botao:hover .rolador-ilha-seta {
     transform: none;
   }
 
   /* Sem transição, `visibility` precisa acompanhar na hora — o atraso que
      escondia o corpo depois do fade não tem mais o fade para esperar, e o
      conteúdo ficaria clicável um quarto de segundo depois de invisível. */
+  .rolador-viva-corpo,
   .rolador-ilha-corpo {
     visibility: hidden;
   }
 
+  .rolador-viva .rolador-viva-corpo,
   .rolador-ilha .rolador-ilha-corpo {
     visibility: visible;
   }
