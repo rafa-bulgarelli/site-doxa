@@ -915,6 +915,7 @@ export function ProofWall() {
   return (
     <section
       ref={sectionRef}
+      data-secao="Prova"
       className="relative bg-doxa-bg"
       // Sized by the content: every card gets the same share of scroll, plus
       // the run-up and the hold at the end. Adding files lengthens the section

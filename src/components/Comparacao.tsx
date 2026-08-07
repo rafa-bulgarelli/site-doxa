@@ -205,7 +205,7 @@ export function Comparacao() {
     // `overflow-x-clip` e não `overflow-hidden`: `hidden` cria um contexto de
     // rolagem e o `sticky` do painel escuro para de grudar. `clip` corta o canto
     // que o painel girado joga para fora sem criar contexto nenhum.
-    <section className="relative overflow-x-clip bg-doxa-bg">
+    <section data-secao="Quanto custa" className="relative overflow-x-clip bg-doxa-bg">
       {/* ── Painel escuro: a pergunta e a conta. */}
       <div
         ref={escuroRef}

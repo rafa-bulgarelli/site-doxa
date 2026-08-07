@@ -384,7 +384,7 @@ export function HowItWorks() {
   }, []);
 
   return (
-    <section className="relative bg-doxa-bg px-5 py-16 md:px-10 md:py-24">
+    <section data-secao="Como funciona" className="relative bg-doxa-bg px-5 py-16 md:px-10 md:py-24">
       {/* No grid behind the row, on the owner's call. The panels carry their own
           — that is what tells a card apart from the black around it — and a
           second field behind them flattened the difference: the texture ran

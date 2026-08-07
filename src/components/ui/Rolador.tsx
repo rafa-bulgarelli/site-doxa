@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 /** Folga do polegar contra o topo e o pé da janela, em pixels. */
 const MARGEM = 10;
@@ -9,63 +9,147 @@ const MINIMO = 44;
 /** Quanto a barra continua acesa depois do último quadro de rolagem, em ms. */
 const BRILHO = 900;
 
+/** Quanto o polegar espera parado antes de desinchar, em ms. */
+const DESINCHA = 90;
+
 /**
- * ─── O ROLADOR ───────────────────────────────────────────────────────────────
+ * O teto do esticão, e por que ele existe.
  *
- * A barra de rolagem da página, desenhada por nós, a pedido do dono: vidro
- * líquido, sem trilho, e viva.
+ * Quarenta e cinco por cento a mais de altura. Sem teto, uma rolada de trackpad
+ * a três mil pixels por segundo esticaria o polegar até a altura da janela — e
+ * um traço de vidro cobrindo a tela inteira não lê como velocidade, lê como
+ * defeito. Este número é o ponto em que a deformação ainda é reconhecível como
+ * a MESMA peça, andando depressa.
+ */
+const ESTICAO = 0.45;
+
+/** Onde a leitura da seção acontece: um terço abaixo do topo da janela. */
+const LINHA_DE_LEITURA = 0.3;
+
+interface Secao {
+  nome: string;
+  /** Distância do topo da página, em pixels. */
+  topo: number;
+  /** A mesma posição, como fração do que dá para rolar. */
+  fracao: number;
+}
+
+/**
+ * A posição de um elemento na PÁGINA, somada pela cadeia de `offsetTop`.
  *
- * ─── POR QUE ELA NÃO É MAIS A NATIVA ─────────────────────────────────────────
+ * E não `getBoundingClientRect`, pelo mesmo motivo que `Faq.tsx` já documenta: o
+ * painel claro da comparação sobe GIRADO e só assenta perto do fim da rolagem, e
+ * o rect enxerga a caixa girada — a marca dessa seção andaria a cada quadro do
+ * giro. `offsetTop` é posição de layout, e transform não a toca.
+ */
+function topoNaPagina(el: HTMLElement): number {
+  let y = 0;
+  for (let n: HTMLElement | null = el; n; n = n.offsetParent as HTMLElement | null) y += n.offsetTop;
+  return y;
+}
+
+/**
+ * ─── O ROLADOR: A LINHA DO TEMPO DA PÁGINA ───────────────────────────────────
  *
- * A barra do navegador aceita cor, canto e borda — e nada além. `backdrop-filter`
- * não se aplica a `::-webkit-scrollbar-thumb` em navegador nenhum, e sem ele não
- * existe vidro: o que faz um objeto parecer vidro é ele DESFOCAR o que está
- * atrás, e a barra nativa não tem "atrás". Um branco translúcido com borda clara
- * é uma imitação de vidro, e a diferença aparece exatamente onde ela passa por
- * cima de um vídeo do rodapé.
+ * A barra de rolagem, desenhada por nós, no formato que o dono escolheu entre
+ * quatro: o scrub de um player de vídeo.
  *
- * E ela paga a conta que a nativa cobrava: com uma barra própria, a do sistema é
- * escondida, a página recupera os 10px de largura que a customização anterior
- * reservava para sempre, e o "sem trilho" do pedido vira o estado natural — não
- * há o que esconder, porque só existe o polegar.
+ * A metáfora não é enfeite — é a coisa que esta página VENDE. Um site que existe
+ * para dizer "a gente entrega vídeo pronto" e cuja régua de leitura funciona
+ * como a régua de um player está dizendo a mesma frase duas vezes, uma delas sem
+ * texto. É também o que justifica cada peça daqui:
  *
- * ─── O QUE ELA NÃO FAZ ───────────────────────────────────────────────────────
+ *  - as MARCAS são os capítulos de um vídeo, e dizem que a página tem partes
+ *    antes de a pessoa ter rolado por elas;
+ *  - o RÓTULO sob a mão é o que um player mostra enquanto se arrasta a cabeça de
+ *    leitura, e responde "onde eu vou parar se soltar aqui";
+ *  - o ESTICÃO é a única parte que não vem do player e sim do site: é a mesma
+ *    borracha da entrada do "Como funciona", aplicada à velocidade da rolagem.
+ *
+ * ─── O QUE ELA CONTINUA NÃO FAZENDO ──────────────────────────────────────────
  *
  * Não toca na rolagem. Nenhum ouvinte de roda, nenhum `preventDefault`, nenhuma
- * rolagem simulada: a roda, o teclado, o trackpad e o `#âncora` continuam sendo
- * do navegador, e esta barra só LÊ `scrollY` para se posicionar. A única coisa
- * que ela escreve é quando a pessoa arrasta o polegar — que é a função dele.
+ * inércia caseira: a roda, o teclado e o trackpad seguem sendo do navegador, e
+ * esta barra só LÊ `scrollY` — só escreve quando a pessoa arrasta o polegar, que
+ * é a função dele. Uma barra própria que anima a rolagem por conta é o defeito
+ * clássico deste componente: o site ganha uma inércia que o resto do sistema não
+ * tem, e quem usa trackpad sente na primeira rolada.
  *
- * Uma barra própria que anima a rolagem por conta ("smooth scroll" caseiro) é o
- * defeito clássico deste componente: o site fica com uma inércia que o resto do
- * sistema operacional não tem, e quem usa trackpad sente na hora.
+ * E não faz SNAP. O dono escolheu "soltar = mola, sem snap forçado", e é a
+ * escolha certa: um scrub que se recusa a parar entre dois capítulos é um
+ * controle que discute com quem o está usando.
  *
- * ─── POR QUE NÃO HÁ ESTADO REACT AQUI ────────────────────────────────────────
+ * ─── POR QUE QUASE NADA AQUI É ESTADO REACT ──────────────────────────────────
  *
- * A posição é escrita direto no `style` do elemento, por `ref`. Em estado, cada
- * quadro de rolagem seria um `setState` — sessenta re-renders por segundo de um
- * componente que a página inteira contém, para mover um retângulo de seis
+ * A posição, a altura e o esticão vão direto no `style` por `ref`. Em estado,
+ * cada quadro de rolagem seria um `setState` do componente que a página inteira
+ * contém — sessenta re-renders por segundo para mover um retângulo de seis
  * pixels. O React não precisa saber onde está a barra; o navegador precisa.
  *
- * `requestAnimationFrame` para não escrever duas vezes no mesmo quadro: o evento
- * de rolagem dispara mais vezes do que a tela desenha.
+ * Estado só para as duas coisas que MUDAM DE VERDADE e raramente: a lista de
+ * seções (que só muda quando um pedaço `lazy` chega) e o nome da seção atual
+ * (que muda cinco vezes numa leitura inteira).
  */
 export function Rolador() {
   const polegarRef = useRef<HTMLDivElement>(null);
+  const marcasRef = useRef<HTMLDivElement>(null);
+  const secoesRef = useRef<Secao[]>([]);
+  const nomeRef = useRef<string | null>(null);
+
+  const [secoes, setSecoes] = useState<Secao[]>([]);
+  const [atual, setAtual] = useState<string | null>(null);
 
   useEffect(() => {
     const polegar = polegarRef.current;
-    if (polegar == null) return;
+    const marcas = marcasRef.current;
+    if (polegar == null || marcas == null) return;
 
     const doc = document.documentElement;
     let quadro = 0;
-    let relogio: number | undefined;
+    let relogioBrilho: number | undefined;
+    let relogioEsticao: number | undefined;
+    let ultimoY = window.scrollY;
+    let ultimoT = performance.now();
 
-    /* A conta inteira, num lugar só. Ela roda a cada quadro de rolagem e a cada
-       mudança de tamanho — e é de propósito que nada dela seja guardado entre
-       uma chamada e outra: a altura do documento muda quando uma seção `lazy`
-       chega, quando o FAQ abre uma resposta e quando o telefone gira, e um
-       valor medido uma vez estaria errado em todos esses momentos. */
+    /*
+     * As marcas, lidas do DOM.
+     *
+     * A fonte é `data-secao` em cada `<section>`, e não uma lista escrita aqui:
+     * uma lista neste arquivo seria uma segunda verdade sobre quais seções a
+     * página tem, e ela envelheceria na primeira seção nova — com o sintoma
+     * mais chato possível, que é uma régua mentindo baixinho.
+     *
+     * Relida a cada mudança de altura porque as seções são `lazy`: no primeiro
+     * quadro só existe o hero, e as outras cinco chegam depois.
+     */
+    const medirSecoes = () => {
+      const janela = window.innerHeight;
+      const percorrivel = doc.scrollHeight - janela;
+      if (percorrivel <= 1) return;
+
+      const lidas: Secao[] = Array.from(
+        document.querySelectorAll<HTMLElement>('[data-secao]'),
+      ).map((el) => {
+        const topo = topoNaPagina(el);
+        return {
+          nome: el.dataset.secao ?? '',
+          topo,
+          fracao: Math.min(1, Math.max(0, topo / percorrivel)),
+        };
+      });
+
+      secoesRef.current = lidas;
+      // Só re-renderiza quando a régua mudou de verdade. Sem esta comparação, o
+      // `ResizeObserver` reagiria a cada pixel de altura da página com um
+      // re-render da lista inteira.
+      setSecoes((antigas) =>
+        antigas.length === lidas.length &&
+        antigas.every((a, i) => a.nome === lidas[i]?.nome && a.fracao === lidas[i]?.fracao)
+          ? antigas
+          : lidas,
+      );
+    };
+
     const desenhar = () => {
       quadro = 0;
       const janela = window.innerHeight;
@@ -75,14 +159,16 @@ export function Rolador() {
       /* Página que cabe na tela não tem barra. `display` e não `opacity`: um
          elemento invisível na frente da borda direita ainda pega o clique.
 
-         E `flex` de volta, não `block`: a cápsula centra o vidro por flexbox, e
-         `block` deixaria o `::before` como caixa inline — largura e altura
-         viram sugestões ignoradas, e o vidro some. */
+         E `flex`, não `block`: a cápsula centra o vidro por flexbox, e `block`
+         deixaria o `::before` como caixa inline — largura e altura viram
+         sugestões ignoradas, e o vidro some. */
       if (percorrivel <= 1) {
         polegar.style.display = 'none';
+        marcas.style.display = 'none';
         return;
       }
       polegar.style.display = 'flex';
+      marcas.style.display = 'block';
 
       const pista = janela - MARGEM * 2;
       const altura = Math.max(MINIMO, pista * (janela / total));
@@ -91,17 +177,69 @@ export function Rolador() {
 
       polegar.style.height = `${altura}px`;
       polegar.style.transform = `translateY(${MARGEM + progresso * andar}px)`;
+
+      /* As marcas moram numa camada própria e são posicionadas em `calc`, com o
+         andar e o meio-polegar entregues como variáveis. É o que permite a
+         régua inteira acompanhar uma mudança de altura da janela sem re-render:
+         o React já escreveu a fração de cada marca no `top` dela, e aqui só se
+         atualizam os dois números que essa conta consome. */
+      marcas.style.setProperty('--andar', `${andar}px`);
+      marcas.style.setProperty('--meio', `${altura / 2}px`);
+
+      /* ─── O ESTICÃO ────────────────────────────────────────────────────────
+       *
+       * Velocidade em pixels por milissegundo, medida entre dois quadros. O
+       * polegar cresce no eixo em que anda e encolhe no outro na mesma
+       * proporção: é assim que borracha se comporta, e é o que separa "a peça
+       * esticou" de "a peça ficou maior". A conta do encolhimento é feita no
+       * CSS a partir desta mesma variável, para os dois nunca saírem de fase.
+       *
+       * Só a IDA estica. Desinchar é trabalho da transição elástica lá do CSS,
+       * e é ela que dá o "boing" de chegada — por isso o relógio abaixo devolve
+       * o valor a 1 assim que a rolagem para, em vez de interpolar aqui.
+       */
+      const agora = performance.now();
+      const dt = agora - ultimoT;
+      if (dt > 0) {
+        const velocidade = Math.abs(window.scrollY - ultimoY) / dt;
+        const estica = 1 + Math.min(ESTICAO, velocidade / 10);
+        polegar.style.setProperty('--estica', estica.toFixed(3));
+        ultimoY = window.scrollY;
+        ultimoT = agora;
+        window.clearTimeout(relogioEsticao);
+        relogioEsticao = window.setTimeout(
+          () => polegar.style.setProperty('--estica', '1'),
+          DESINCHA,
+        );
+      }
+
+      /* Qual seção está sendo lida. A linha de leitura fica um terço abaixo do
+         topo da janela, e não no topo: com a leitura no topo, a seção "muda" no
+         instante em que a anterior ainda ocupa dois terços da tela — o rótulo
+         diria uma coisa e o olho estaria vendo outra. */
+      const linha = window.scrollY + janela * LINHA_DE_LEITURA;
+      let nome: string | null = null;
+      for (const secao of secoesRef.current) {
+        if (secao.topo <= linha) nome = secao.nome;
+      }
+      if (nome !== nomeRef.current) {
+        nomeRef.current = nome;
+        setAtual(nome);
+      }
     };
 
-    /* A barra acende enquanto a página anda e se apaga sozinha depois. É o
-       "interativo" do pedido, e também o que a mantém discreta: parada, ela é
-       uma lasca de vidro; em movimento, ela é a régua que diz onde a pessoa
-       está. A classe some por CSS, não por desmontagem — o polegar precisa
-       continuar no lugar para o hover reacender. */
+    /* A barra acende enquanto a página anda e se apaga sozinha depois. É o que
+       a mantém discreta: parada, é uma lasca de vidro; em movimento, é a régua
+       que diz onde a pessoa está. A classe some por CSS, não por desmontagem —
+       o polegar precisa continuar no lugar para o hover reacender. */
     const acender = () => {
       polegar.classList.add('rolador-aceso');
-      window.clearTimeout(relogio);
-      relogio = window.setTimeout(() => polegar.classList.remove('rolador-aceso'), BRILHO);
+      marcas.classList.add('rolador-aceso');
+      window.clearTimeout(relogioBrilho);
+      relogioBrilho = window.setTimeout(() => {
+        polegar.classList.remove('rolador-aceso');
+        marcas.classList.remove('rolador-aceso');
+      }, BRILHO);
     };
 
     const aoRolar = () => {
@@ -110,7 +248,7 @@ export function Rolador() {
     };
 
     /*
-     * O ARRASTO.
+     * O ARRASTO — a cabeça de leitura.
      *
      * `setPointerCapture` e não ouvintes no documento: com a captura, o ponteiro
      * continua entregando os eventos a este elemento mesmo quando o cursor sai
@@ -120,7 +258,7 @@ export function Rolador() {
      * `scroll-behavior: smooth` é desligado durante o arrasto e devolvido no
      * fim. O site inteiro rola macio, e isso é bom para um clique em âncora e
      * péssimo aqui: cada pixel de arrasto viraria uma animação começando, e a
-     * barra andaria atrás da mão com um atraso elástico. Devolver no fim é
+     * página andaria atrás da mão com um atraso elástico. Devolver no fim é
      * obrigatório, senão o primeiro arrasto tira o macio do site para sempre.
      */
     let arrastando = false;
@@ -133,6 +271,7 @@ export function Rolador() {
       rolagemNoInicio = window.scrollY;
       polegar.setPointerCapture(evento.pointerId);
       polegar.classList.add('rolador-preso');
+      marcas.classList.add('rolador-aceso');
       doc.style.scrollBehavior = 'auto';
       evento.preventDefault();
     };
@@ -164,9 +303,13 @@ export function Rolador() {
     /* `ResizeObserver` no `<html>`, e não um ouvinte de `resize` da janela: o
        que muda a altura do documento quase nunca é a janela mudando de tamanho.
        É uma seção `lazy` chegando, uma resposta do FAQ abrindo, uma imagem
-       decodificando. Com `resize` só, a barra ficaria do tamanho errado até a
-       pessoa rolar de novo. */
-    const olho = new ResizeObserver(() => desenhar());
+       decodificando. Com `resize` só, a régua ficaria errada até a pessoa rolar
+       de novo — e as marcas apontariam para o lugar errado, que é pior do que
+       não ter marca nenhuma. */
+    const olho = new ResizeObserver(() => {
+      medirSecoes();
+      desenhar();
+    });
     olho.observe(doc);
 
     window.addEventListener('scroll', aoRolar, { passive: true });
@@ -175,11 +318,13 @@ export function Rolador() {
     polegar.addEventListener('pointermove', aoArrastar);
     polegar.addEventListener('pointerup', aoSoltar);
     polegar.addEventListener('pointercancel', aoSoltar);
+    medirSecoes();
     desenhar();
 
     return () => {
       window.cancelAnimationFrame(quadro);
-      window.clearTimeout(relogio);
+      window.clearTimeout(relogioBrilho);
+      window.clearTimeout(relogioEsticao);
       olho.disconnect();
       window.removeEventListener('scroll', aoRolar);
       window.removeEventListener('resize', desenhar);
@@ -191,9 +336,25 @@ export function Rolador() {
     };
   }, []);
 
-  /* `aria-hidden` e sem papel de `scrollbar`: esta barra não acrescenta nada a
-     quem não a vê. A rolagem por teclado é do navegador e não passa por aqui, e
-     anunciar um "controle deslizante" que não responde a seta nenhuma seria
-     prometer uma interação que não existe. */
-  return <div ref={polegarRef} aria-hidden className="rolador" />;
+  /* `aria-hidden` nas duas camadas, e sem papel de `scrollbar`: esta barra não
+     acrescenta nada a quem não a vê. A rolagem por teclado é do navegador e não
+     passa por aqui, e anunciar um "controle deslizante" que não responde a seta
+     nenhuma seria prometer uma interação que não existe. */
+  return (
+    <>
+      <div ref={marcasRef} aria-hidden className="rolador-marcas">
+        {secoes.map((secao) => (
+          <span
+            key={secao.nome}
+            className={`rolador-marca${secao.nome === atual ? ' rolador-marca-aqui' : ''}`}
+            style={{ top: `calc(${MARGEM}px + var(--andar, 0px) * ${secao.fracao} + var(--meio, 0px))` }}
+          />
+        ))}
+      </div>
+
+      <div ref={polegarRef} aria-hidden className="rolador">
+        <span className="rolador-rotulo">{atual}</span>
+      </div>
+    </>
+  );
 }

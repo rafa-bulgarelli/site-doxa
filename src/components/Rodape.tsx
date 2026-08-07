@@ -120,7 +120,11 @@ export function Rodape() {
           sem fundo nenhum — o que se vê atravessando ele é o rodapé fixo lá
           atrás. É também o que o `useInView` observa: a fração dele que está à
           vista é, ao pixel, a fração do rodapé que foi revelada. */}
-      <div ref={marcoRef} aria-hidden className="h-[100svh]" />
+      {/* `data-secao` no MARCO e não no `<footer>`: o rodapé é `fixed` e mora
+          fora do fluxo, então o `offsetTop` dele não diz nada sobre rolagem. O
+          marco é o trecho que se rola para revelá-lo — para a régua da direita,
+          ele É a última parte da página. */}
+      <div ref={marcoRef} aria-hidden data-secao="Contato" className="h-[100svh]" />
 
       {/* CINZA ESCURO, e não o preto da página — pedido do dono.
           O rodapé é a única superfície do site que não é `doxa-bg`, e a

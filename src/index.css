@@ -211,6 +211,20 @@ html::-webkit-scrollbar {
   touch-action: none;
 }
 
+/*
+ * O vidro, e o ESTICÃO.
+ *
+ * `--estica` é escrita pelo componente a cada quadro de rolagem e vale 1 quando
+ * a página está parada. O polegar cresce no eixo em que anda e encolhe no outro
+ * na mesma proporção — `1 / var(--estica)` —, que é como borracha se comporta e
+ * é o que separa "a peça esticou" de "a peça ficou maior".
+ *
+ * A curva de volta passa de 1 e retorna (`.34,1.56,.64,1`): é o "boing" da
+ * chegada, e é a única curva do site com overshoot escrito à mão em vez de mola
+ * calculada — aqui não há framer, e um `transition` é tudo o que existe. A ida
+ * usa a mesma curva e não se nota, porque na ida o valor está sendo reescrito a
+ * cada quadro e a transição nunca chega a terminar.
+ */
 .rolador::before {
   content: '';
   width: 6px;
@@ -223,9 +237,11 @@ html::-webkit-scrollbar {
     inset 0 1px 0 rgba(255, 255, 255, 0.5),
     inset 0 -1px 0 rgba(0, 0, 0, 0.28),
     0 4px 14px rgba(0, 0, 0, 0.35);
+  transform: scaleY(var(--estica, 1)) scaleX(calc(1 / var(--estica, 1)));
   transition:
     width 260ms cubic-bezier(0.16, 1, 0.3, 1),
-    background 260ms ease;
+    background 260ms ease,
+    transform 380ms cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .rolador-aceso {
@@ -247,19 +263,136 @@ html::-webkit-scrollbar {
   cursor: grabbing;
 }
 
+/*
+ * ─── OS CAPÍTULOS ────────────────────────────────────────────────────────────
+ *
+ * Um traço por seção, na mesma coluna do polegar. Eles dizem que a página tem
+ * PARTES antes de a pessoa ter rolado por elas — que é o trabalho que a barra de
+ * um player faz e a de um navegador nunca fez.
+ *
+ * Traço e não ponto: um ponto de 3px lê como sujeira na tela, e um traço curto
+ * lê como marcação. Alinhados pelo lado direito e crescendo para a esquerda
+ * quando acendem, para o movimento acontecer longe da borda da janela.
+ *
+ * A camada é `pointer-events: none` inteira. As marcas são referência, não
+ * botão: o dono escolheu o scrub sem snap, e um capítulo clicável no meio de um
+ * scrub é a interação da outra proposta, não desta.
+ */
+.rolador-marcas {
+  position: fixed;
+  top: 0;
+  right: 4px;
+  z-index: 59;
+  width: 16px;
+  height: 100%;
+  pointer-events: none;
+  opacity: 0.45;
+  transition: opacity 260ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.rolador-marcas.rolador-aceso {
+  opacity: 1;
+}
+
+.rolador-marca {
+  position: absolute;
+  right: 5px;
+  width: 6px;
+  height: 1px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.3);
+  /* O `top` que o componente escreve é o CENTRO da marca. Sem isto, cada traço
+     ficaria meio pixel abaixo do lugar e a régua inteira sairia de registro com
+     o polegar. */
+  transform: translateY(-50%);
+  transition:
+    width 300ms cubic-bezier(0.16, 1, 0.3, 1),
+    background-color 300ms ease;
+}
+
+/* A seção que está sendo lida. Mais larga e mais acesa — e é só isso: uma marca
+   colorida aqui seria a segunda exceção cromática do site, aberta por um
+   indicador de rolagem, que é o objeto menos importante da página. */
+.rolador-marca-aqui {
+  width: 12px;
+  background: rgba(255, 255, 255, 0.85);
+}
+
+/*
+ * ─── O RÓTULO ────────────────────────────────────────────────────────────────
+ *
+ * O nome da seção, à esquerda do polegar e preso a ele — por ser filho da
+ * cápsula, ele acompanha a posição de graça, sem uma segunda conta que possa
+ * sair de fase com a primeira.
+ *
+ * Aparece com a mão em cima e durante o arrasto, e em mais nenhum momento: é a
+ * resposta à pergunta "onde eu paro se soltar aqui", e uma etiqueta permanente
+ * flutuando na borda direita seria um segundo elemento de interface disputando
+ * com o conteúdo o tempo todo.
+ *
+ * Em vidro como o polegar, pela mesma razão de sempre: ele passa por cima de
+ * seis seções de fundos diferentes, e qualquer cor fixa erra em pelo menos uma.
+ */
+.rolador-rotulo {
+  position: absolute;
+  right: 100%;
+  top: 50%;
+  margin-right: 10px;
+  transform: translateY(-50%);
+  white-space: nowrap;
+  font-size: 12px;
+  letter-spacing: 0.01em;
+  color: rgba(255, 255, 255, 0.92);
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(14px) saturate(180%);
+  -webkit-backdrop-filter: blur(14px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 999px;
+  padding: 5px 11px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+  opacity: 0;
+  /* Ele nasce um pouco à direita e desliza para o lugar. Oito pixels: o
+     bastante para a chegada ser um gesto, pouco o bastante para não parecer que
+     a etiqueta veio de fora da tela. */
+  translate: 8px 0;
+  transition:
+    opacity 220ms cubic-bezier(0.16, 1, 0.3, 1),
+    translate 220ms cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
+}
+
+.rolador:hover .rolador-rotulo,
+.rolador-preso .rolador-rotulo {
+  opacity: 1;
+  translate: 0 0;
+}
+
 /* No telefone não existe cursor para acender nada, e o polegar da mão cobre a
    barra inteira no instante em que ela seria útil. A rolagem por toque já tem o
    indicador do próprio sistema. */
 @media (hover: none) {
-  .rolador {
+  .rolador,
+  .rolador-marcas {
     display: none;
   }
 }
 
+/* O esticão é a única coisa aqui que se move sem ninguém pedir, e é justamente
+   o que a preferência manda desligar — a régua continua inteira, com as marcas
+   e o rótulo, apenas sem deformar. `--estica` é neutralizada no elemento, e não
+   no componente: o JavaScript pode continuar escrevendo o valor que quiser, que
+   o CSS não o usa mais. */
 @media (prefers-reduced-motion: reduce) {
   .rolador,
-  .rolador::before {
+  .rolador::before,
+  .rolador-marca,
+  .rolador-marcas,
+  .rolador-rotulo {
     transition: none;
+  }
+
+  .rolador::before {
+    transform: none;
   }
 }
 

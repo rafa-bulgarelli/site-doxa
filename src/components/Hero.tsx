@@ -68,6 +68,7 @@ export function Hero() {
   return (
     <section
       ref={sectionRef}
+      data-secao="Início"
       className="relative flex min-h-dvh flex-col overflow-hidden bg-doxa-bg"
     >
       <div className="dot-grid pointer-events-none absolute inset-0" />

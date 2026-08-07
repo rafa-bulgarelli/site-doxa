@@ -412,6 +412,7 @@ export function Faq() {
     <section
       ref={secaoRef}
       id="faq"
+      data-secao="Perguntas"
       /* ─── A SEÇÃO TEM ALTURA PRÓPRIA, e o conteúdo mora no TOPO dela ───────
        *
        * Fechada, esta seção era um rótulo, um título e uma pastilha de 48
