@@ -168,24 +168,31 @@ export const ABERTURA = {
   rotulo: 'FAQ',
   titulo: 'O que você quer saber?',
   /*
-   * O CONVITE e o LIMITE, e são duas linhas porque são duas coisas.
+   * O CONVITE e o ATALHO, e são duas linhas porque são dois caminhos.
    *
    * O convite voltou a pedido do dono, e ele estava certo sobre o que faltava:
    * a seção tinha um campo de escrever e uma frase que só falava do que ele NÃO
    * faz. Ninguém digita numa caixa que se apresenta pelo teto.
    *
-   * O limite fica, e nunca sai daqui: "pergunte o que quiser" sozinho prometia
-   * um chat que responde tudo, e este campo responde seis coisas escritas à
-   * mão. Juntos, os dois dizem a verdade inteira — pergunte o que quiser, e o
-   * que não estiver aqui vira uma conversa com alguém, que é o que a página
-   * existe para conseguir. É por isso que eles são renderizados em pesos
-   * diferentes: o convite é o que se lê, o limite é o que se confere.
+   * A segunda linha era o LIMITE ("Seis respostas estão aqui. A sétima é com o
+   * consultor.") e o dono a trocou pelo atalho. As duas linhas agora são as
+   * duas maneiras de usar o campo — escrever, ou tocar numa dúvida pronta —, e
+   * quem não quer formular nada descobre que não precisa.
    *
-   * O "Seis" acompanha `DUVIDAS` logo acima: a sétima resposta escrita torna
-   * essa frase falsa, e ela muda no mesmo commit.
+   * O que se perdeu com a troca, e onde ele foi parar: o teto continua
+   * verdadeiro, e não está mais escrito. Quem cobre a conta são duas coisas que
+   * já existiam — o campo passa o tempo todo escrevendo sozinho as SEIS
+   * perguntas que ele sabe responder, então o repertório se anuncia sem ser
+   * declarado; e uma pergunta fora dele cai em `SEM_RESPOSTA`, que é o desvio
+   * para o consultor. A promessa não ficou maior do que a entrega; ela ficou
+   * implícita.
+   *
+   * Os atalhos moram DENTRO da caixa e só aparecem quando ela abre. A frase é,
+   * portanto, o que revela que eles existem — sem ela, ninguém clica num campo
+   * para descobrir uma gaveta.
    */
   dica: 'Pergunte o que quiser.',
-  limite: 'Seis respostas estão aqui. A sétima é com o consultor.',
+  limite: 'Ou comece por uma das dúvidas que todo mundo tem.',
   exemplo: 'Escreva a sua pergunta…',
 };
 

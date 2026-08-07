@@ -266,7 +266,11 @@ const CLIENTES = '1.500';
  */
 const SCALE_CLAIMS = [
   { value: '1 milhão', label: 'de views somadas, ou seu dinheiro de volta' },
-  { value: '60 vídeos', label: 'em 90 dias, de uma foto e um áudio' },
+  /* "virais" entrou a pedido do dono, e é a única palavra desta seção que NÃO
+     está no hero (lá são "60 conteúdos · 90 dias"). Fica registrado porque a
+     nota acima diz que estas são as palavras exatas do hero: agora são as
+     palavras do hero mais uma, e a diferença é uma escolha e não um descuido. */
+  { value: '60 vídeos virais', label: 'em 90 dias, de uma foto e um áudio' },
 ];
 
 /**
@@ -715,9 +719,13 @@ function ClosingCard({ onEnter, ...placement }: TrackPlacement & { onEnter: () =
           card reading as strange: a header, a headline and a button each
           hanging in space with nothing holding them to anything. */}
       <div className="relative flex h-full flex-col items-center p-4 text-center lg:p-6">
-        <div className="flex w-full flex-col items-center gap-2 font-ui lg:gap-2.5">
+        {/* O vão entre o arroba e os números é maior do que o ritmo do cartão, a
+            pedido do dono: são duas coisas de natureza diferente — quem postou
+            e o que o post fez —, e coladas no mesmo passo do resto elas liam
+            como uma linha só de cabeçalho. */}
+        <div className="flex w-full flex-col items-center gap-3 font-ui lg:gap-4">
           <span className="flex items-center gap-1 text-[12px] font-semibold text-white/70">
-            @seuperfil
+            @suaempresa
             <Verified />
           </span>
           {/* The five figures, at nearly twice a reel's size. The followers come
@@ -760,7 +768,7 @@ function ClosingCard({ onEnter, ...placement }: TrackPlacement & { onEnter: () =
             gaps come out equal without either being a number that has to be
             re-tuned when the card or the type changes. */}
         <p className="my-auto whitespace-nowrap font-serif text-[34px] leading-none tracking-[-0.03em] text-white lg:text-[58px]">
-          O próximo é o seu.
+          E a próxima é a sua.
         </p>
 
         <MotionButton label="Quero viralizar" href="/empresas" />

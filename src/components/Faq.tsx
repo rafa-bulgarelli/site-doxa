@@ -558,20 +558,42 @@ export function Faq() {
                   duas são a última pergunta e a última frase da página, e uma
                   seção com a altura das outras pedia um título com o peso dos
                   outros. */}
-              <h2 className="mt-5 font-serif text-[2.9rem] leading-[0.95] tracking-[-0.03em] text-[#F4F1E8] md:text-[4.4rem]">
-                {ABERTURA.titulo}
-              </h2>
-              {/* O convite ACESO, o limite apagado atrás dele.
-                  Numa linha só e no mesmo cinza, as duas frases pesavam igual e
-                  o que sobrava na tela era o teto ("seis"), não a permissão
-                  ("pergunte") — que é a única das duas capaz de fazer alguém
-                  digitar. Em creme cheio e no corpo do texto do site, o convite
-                  vira a segunda coisa que se lê depois do título; o limite
-                  continua ali, do tamanho de uma nota de rodapé, para quem for
-                  conferir se a promessa é grande demais. */}
-              <p className="mt-4 max-w-lg text-[17px] leading-snug md:text-[19px]">
-                <span className="text-[#F4F1E8]">{ABERTURA.dica}</span>{' '}
-                <span className="text-white/40">{ABERTURA.limite}</span>
+              {/* ─── O CONVITE AO LADO DO TÍTULO, a pedido do dono ────────────
+               *
+               * Embaixo, ele era a terceira linha de um bloco de três e lia
+               * como legenda. Na mesma linha do título, ele é a resposta à
+               * pergunta que o título faz — "o que você quer saber?" /
+               * "pergunte o que quiser" — e a seção passa a abrir com um
+               * diálogo em vez de com um cabeçalho.
+               *
+               * `items-baseline` e não `items-center`: são dois tamanhos de
+               * letra muito diferentes (70px contra 19), e centralizados pela
+               * caixa o texto pequeno flutuaria no meio da altura do grande.
+               * Pela base, os dois se apoiam na mesma linha, que é como
+               * conviveriam numa página impressa.
+               *
+               * `flex-wrap` porque cabe, mas não em toda tela: o título mede
+               * 493px e o convite 183 numa coluna de 768 — folga de 92. Aberta
+               * a coluna de respostas, ou num monitor menor, a conta aperta e
+               * o convite cai para a linha de baixo sozinho, que é o pior caso
+               * aceitável (é exatamente onde ele morava antes).
+               */}
+              <div className="mt-5 flex flex-wrap items-baseline gap-x-5 gap-y-1">
+                <h2 className="font-serif text-[2.9rem] leading-[0.95] tracking-[-0.03em] text-[#F4F1E8] md:text-[4.4rem]">
+                  {ABERTURA.titulo}
+                </h2>
+                <p className="text-[17px] leading-snug text-[#F4F1E8] md:text-[19px]">
+                  {ABERTURA.dica}
+                </p>
+              </div>
+              {/* O SEGUNDO CAMINHO, apagado.
+                  O convite subiu para a linha do título e esta linha ficou com
+                  o que ele não diz: que não é obrigatório formular nada. Em
+                  cinza porque é a alternativa, e a alternativa não disputa com
+                  a porta principal — quem já sabe o que quer perguntar não
+                  precisa nem ler isto. */}
+              <p className="mt-4 max-w-lg text-[17px] leading-snug text-white/40 md:text-[19px]">
+                {ABERTURA.limite}
               </p>
             </motion.div>
 
