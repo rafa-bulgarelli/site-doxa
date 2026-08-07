@@ -230,6 +230,14 @@ export function Rodape() {
             <div className="pointer-events-none absolute inset-x-0 bottom-0 h-36 bg-gradient-to-t from-doxa-stage to-transparent" />
           </div>
 
+          {/* A CLAREIRA: o fundo próprio do fecho, aberto no meio do campo.
+              Cor do palco em cheio no centro e transparente muito antes das
+              bordas — `index.css` explica as três medidas. Mora FORA da camada
+              do mosaico e antes do fecho: dentro dela, os esfumaçados de topo e
+              base passariam por cima da clareira; depois do fecho, ela cobriria
+              o texto que veio abrir. */}
+          <div aria-hidden className="clareira pointer-events-none absolute inset-0" />
+
           {/* ─── O FECHO ─────────────────────────────────────────────────── */}
           <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center px-5 text-center">
             <motion.div

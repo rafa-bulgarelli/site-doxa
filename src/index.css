@@ -895,6 +895,45 @@ body {
     0 0 40px rgba(11, 11, 11, 0.16);
 }
 
+/*
+ * ─── A CLAREIRA DO FECHO ─────────────────────────────────────────────────────
+ *
+ * Pedido do dono, e o que ele resolve dá para ver numa captura: com o mosaico
+ * derivando, mais cedo ou mais tarde UM quadro claro passa exatamente atrás de
+ * "Falta uma foto e um áudio" e do botão. Nenhuma densidade de preto na peça
+ * conserta isso, porque o problema não é o brilho médio do campo — é que o
+ * fundo do texto MUDA enquanto a pessoa lê. Um contraste que só funciona em
+ * alguns instantes do ciclo é um contraste que não existe.
+ *
+ * Então o miolo da tela ganha um fundo próprio: a cor do palco em cheio no
+ * centro, morrendo para transparente muito antes das bordas. Onde o texto está,
+ * o fundo é sempre `doxa-stage`, qualquer que seja o quadro que passe por trás;
+ * na periferia o mosaico continua inteiro, e é ele que faz o rodapé.
+ *
+ * As três medidas, e o que cada uma paga:
+ *
+ *  - ELIPSE e não círculo, 55% por 45%: o bloco do fecho é largo e baixo (duas
+ *    linhas de serifa grande, um parágrafo e um botão). Um círculo que cobrisse
+ *    as pontas do título apagaria meia tela na vertical.
+ *  - CHEIO até 32% do raio, e não só no ponto central: é o que garante fundo
+ *    sólido debaixo das letras em vez de um degradê subindo por dentro delas.
+ *  - MORRENDO só em 100%: a transição ocupa dois terços do raio. Fade curto
+ *    desenha uma borda — e uma mancha de contorno visível no meio da tela é
+ *    pior do que o problema que ela veio resolver.
+ *
+ * `theme()` e não a cor escrita à mão: este gradiente TEM de ser a mesma cor do
+ * palco, e ela já mudou quatro vezes num dia. Escrita aqui, a quinta mudança
+ * deixaria uma mancha de outro cinza no meio do rodapé.
+ */
+.clareira {
+  background: radial-gradient(
+    ellipse 55% 45% at 50% 50%,
+    theme('colors.doxa.stage') 0%,
+    theme('colors.doxa.stage') 32%,
+    theme('colors.doxa.stage / 0%') 100%
+  );
+}
+
 /* The brand allows no chromatic accent, so "highlight" has to be light itself:
    a soft grey bloom lifting the centre of the hero off the black. */
 .hero-glow {
