@@ -55,6 +55,17 @@ const CRESCE = 'height 150ms ease-out';
  * cena, e é por isso que crescer aqui não mexe no campo em uso.
  */
 const FECHADO = 58;
+
+/**
+ * O respiro entre o botão e a borda da caixa.
+ *
+ * É o único número que decide o tamanho do botão, e é de propósito: o botão
+ * mede a altura do campo MENOS dois respiros, calculado e não escrito. Foi
+ * exatamente essa a falha que o dono viu — `FECHADO` subiu de 48 para 58 e o
+ * botão continuou com os 36px que fechavam a conta antiga, sobrando dez pixels
+ * de nada embaixo dele. Derivado, ele não tem como ficar para trás de novo.
+ */
+const RESPIRO = 6;
 /** A altura da área de texto: onde ela começa e onde para de crescer. */
 const MINIMA = 68;
 const MAXIMA = 160;
@@ -557,10 +568,25 @@ export function CampoPergunta({
           onMouseDown={(evento) => evento.preventDefault()}
           onClick={aberto ? enviar : abrir}
           aria-label={aberto ? 'Enviar a pergunta' : 'Escrever uma pergunta'}
-          className="absolute right-1.5 top-1.5 z-[10] flex h-9 w-9 items-center justify-center rounded-full bg-[#F4F1E8] text-[#0B0B0B] transition-transform duration-300 hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black motion-reduce:transition-none motion-reduce:hover:scale-100"
-          style={{ transitionTimingFunction: MOLA_CSS }}
+          className="absolute z-[10] flex items-center justify-center rounded-full bg-[#F4F1E8] text-[#0B0B0B] transition-transform duration-300 hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black motion-reduce:transition-none motion-reduce:hover:scale-100"
+          /* Tamanho e posição CALCULADOS da altura da pastilha, a pedido do
+             dono: o botão ocupa a altura do campo inteira menos um respiro de
+             cada lado. Em classe do Tailwind isto seria `h-9 w-9 top-1.5`, três
+             números que precisam ser reconferidos toda vez que o campo muda de
+             altura — e foi por não terem sido que o botão ficou pequeno no meio
+             de uma caixa alta. */
+          style={{
+            transitionTimingFunction: MOLA_CSS,
+            top: RESPIRO,
+            right: RESPIRO,
+            height: FECHADO - RESPIRO * 2,
+            width: FECHADO - RESPIRO * 2,
+          }}
         >
-          <ArrowUp className="h-4 w-4" strokeWidth={2.2} />
+          {/* A seta cresce junto: 16px dentro de um disco de 36 ocupavam 44% da
+              largura dele, e os mesmos 16 num disco de 46 cairiam para 35% — a
+              mesma seta, opticamente mais fraca. */}
+          <ArrowUp className="h-5 w-5" strokeWidth={2.2} />
         </button>
       </div>
 

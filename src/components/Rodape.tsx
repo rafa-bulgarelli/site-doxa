@@ -3,7 +3,6 @@ import { motion, useInView, useReducedMotion } from 'framer-motion';
 import wordmarkUrl from '../../brand/doxa-wordmark-white.png';
 import { useIsDesktop } from '../hooks/useIsDesktop';
 import { ArrastoInfinito } from './rodape/ArrastoInfinito';
-import { Custo } from './rodape/Custo';
 import { Peca, usePalco } from './rodape/Peca';
 import { ATALHOS, EXPOSTAS, FECHO, PECAS } from './rodape/config';
 import { MotionButton } from './ui/MotionButton';
@@ -83,17 +82,10 @@ const FECHO_A_VISTA = 0.55;
  * seriam um rodapé que derruba a aba. O resto é still, que é a mesma imagem
  * repetida e custa quase nada.
  *
- * ─── E UM EM CADA QUATRO NÃO É VÍDEO ─────────────────────────────────────────
- *
- * Também pedido do dono: no lugar de algumas imagens, a comparação de não ter a
- * Doxa. Esses lugares carregam uma das contratações que ela substitui — o video
- * maker, o roteirista, a agência —, com a cor que o item já tem na ladainha da
- * comparação. O campo passa a alternar o que a página ENTREGA com o que ela
- * SUBSTITUI, que são as duas metades da mesma troca.
- *
- * O número de cada cartão ainda não existe, e não foi inventado: ver
- * `CUSTO_POR_ITEM` em `comparacao/config.ts`. Sem a linha do item, o cartão
- * aparece com o nome e sem preço.
+ * E é SÓ vídeo. Um em cada quatro lugares já foi cartão de custo, a pedido do
+ * dono, e ele mandou tirar depois de ver na tela — `rodape/config.ts` guarda o
+ * porquê. Em resumo: o argumento do que a Doxa substitui já foi feito duas
+ * seções antes, inteiro; aqui o trabalho é mostrar a coisa entregue.
  *
  * ─── O DESENCONTRO VOLTOU, e agora ele tem razão de ser ─────────────────────
  *
@@ -172,22 +164,9 @@ export function Rodape() {
                  breakpoint e `style` não tem media query. */
               className="grid grid-cols-[repeat(10,8rem)] grid-rows-[repeat(3,auto)] gap-[24px] p-[12px] [--desloca:24px] md:grid-cols-[repeat(10,11rem)] md:gap-[50px] md:p-[25px] md:[--desloca:50px]"
             >
-              {/* Vídeo ou cartão de custo, na mesma célula e com a mesma
-                  moldura. O que a página entrega ao lado do que ela substitui —
-                  `rodape/config.ts` escolhe quais lugares são de cada tipo. */}
-              {PECAS.map((peca, indice) =>
-                peca.tipo === 'reel' ? (
-                  <Peca
-                    key={indice}
-                    reel={peca.reel}
-                    lugar={peca.lugar}
-                    palco={palco}
-                    ativo={revelado}
-                  />
-                ) : (
-                  <Custo key={indice} item={peca.item} custo={peca.custo} lugar={peca.lugar} />
-                ),
-              )}
+              {PECAS.map(({ lugar, reel }, indice) => (
+                <Peca key={indice} reel={reel} lugar={lugar} palco={palco} ativo={revelado} />
+              ))}
             </ArrastoInfinito>
 
             {/* O véu, e os dois esfumaçados. O véu tira o mosaico da frente do

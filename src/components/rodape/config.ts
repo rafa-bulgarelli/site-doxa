@@ -1,5 +1,4 @@
-import type { CSSProperties } from 'react';
-import { CUSTO_POR_ITEM, ITENS, TROCA_DEPOIS, type Item } from '../comparacao/config';
+import { TROCA_DEPOIS } from '../comparacao/config';
 import { REELS, type Reel } from '../proof/reels';
 
 /*
@@ -27,10 +26,10 @@ import { REELS, type Reel } from '../proof/reels';
  * entregar, em movimento, em vez de com uma repetição das frases que a pessoa
  * acabou de ler duas telas acima.
  *
- * PENDENTE-DONO: as seis peças são os três reels reais repetidos, exatamente
- * como a parede de prova faz em `proof/reels.ts` e pela mesma razão — a
- * repetição é quantos retângulos se desenha, e nunca uma afirmação de quantos
- * casos existem. Quando os arquivos que faltam entrarem em `REELS`, a
+ * PENDENTE-DONO: as trinta peças da grade são os três reels reais repetidos,
+ * exatamente como a parede de prova faz em `proof/reels.ts` e pela mesma razão
+ * — a repetição é quantos retângulos se desenha, e nunca uma afirmação de
+ * quantos casos existem. Quando os arquivos que faltam entrarem em `REELS`, a
  * repetição para sozinha e não há nada para desfazer aqui.
  */
 
@@ -50,31 +49,6 @@ export const EXPOSTAS = 6;
 export interface Lugar {
   coluna: number;
   linha: number;
-}
-
-/**
- * O `style` que põe uma peça no lugar dela, e que desce as colunas pares.
- *
- * Mora aqui porque agora tem dois usuários — a moldura de vídeo e o cartão de
- * custo —, e as duas TÊM de concordar: o ritmo do mosaico depende de todas as
- * peças ocuparem a mesma célula do mesmo jeito. Duas cópias desta regra é como
- * uma coluna desce meio passo e a outra não.
- *
- * `translateY` e não margem: as linhas da grade são `auto`, e uma margem
- * empurraria a LINHA inteira para baixo — as outras nove colunas desceriam
- * junto e não haveria desencontro nenhum. Transform desloca o que se pinta sem
- * tocar no que se mede.
- *
- * A distância vem de `--desloca`, escrita na grade em `Rodape.tsx`: ela é o
- * mesmo número do vão entre as peças, e muda no telefone. Um valor escrito aqui
- * não teria como acompanhar o breakpoint — `style` não tem media query.
- */
-export function estiloDoLugar({ coluna, linha }: Lugar): CSSProperties {
-  return {
-    gridColumn: coluna,
-    gridRow: linha,
-    transform: coluna % 2 === 0 ? 'translateY(var(--desloca))' : undefined,
-  };
 }
 
 /**
@@ -126,76 +100,29 @@ const LUGARES: readonly Lugar[] = Array.from({ length: LINHAS }, (_, linha) =>
 ).flat();
 
 /**
- * ─── OS CARTÕES DE CUSTO ENTRE OS VÍDEOS ─────────────────────────────────────
+ * As peças: cada lugar com o reel que o ocupa. SÓ VÍDEO.
  *
- * Pedido do dono: no lugar de algumas imagens, a comparação de não ter a Doxa.
- * O rodapé passa a alternar o que a página entrega (o reel publicado) com o que
- * ela substitui (a contratação que faria aquilo à mão) — e essa é a única razão
- * de os dois caberem no mesmo mosaico: são as duas metades da mesma troca.
+ * Um em cada quatro lugares já foi cartão de custo — o video maker, o
+ * roteirista, a agência —, e o dono mandou tirar depois de ver na tela. Fica a
+ * razão pela qual a ideia era boa e mesmo assim não era: o cartão diz o que a
+ * Doxa substitui, e é um argumento que a página inteira já fez duas seções
+ * antes, com a lista completa e com a conta somando na frente da pessoa. Aqui
+ * embaixo, o trabalho é outro — quem chegou ao rodapé já leu o argumento, e o
+ * que falta é ver a coisa entregue.
  *
- * OS OITO, e não os vinte e cinco. Um cartão a cada quatro peças é o que
- * mantém o campo sendo um mural de vídeo com argumentos dentro, em vez de uma
- * tabela de preços com vídeo de enfeite. E são estes oito porque são os que se
- * pagam TODO MÊS: a câmera, as lentes e o tripé se compram uma vez, e um custo
- * único numa peça que diz "/mês" seria mentira de forma, não de número.
+ * A distribuição é LINHA a linha, e é essa ordem que faz a conta funcionar. A
+ * volta pelo resto (`% REELS.length`) anda um passo a cada peça, então dois
+ * vizinhos de lado nunca são o mesmo arquivo; e como uma linha tem dez peças e
+ * três não divide dez, a linha de baixo começa um cliente adiante — o que
+ * resolve o vizinho de cima e de baixo pela mesma conta.
  *
- * A seleção é por NOME e não por índice: mexer na ordem da lista da comparação
- * não pode trocar quais itens aparecem aqui. Um nome que deixe de existir lá
- * simplesmente perde o cartão, sem quebrar nada.
+ * PENDENTE-DONO: são os três clientes reais repetidos, como a parede de prova
+ * faz. A repetição é quantos retângulos se desenha, e nunca uma afirmação de
+ * quantos casos existem.
  */
-const NO_MOSAICO: readonly string[] = [
-  'Um video maker.',
-  'Um roteirista.',
-  'Um editor de vídeo.',
-  'Um social media.',
-  'Um diretor de criação.',
-  'Uma agência.',
-  'Um gestor de tráfego.',
-  'Verba de tráfego pago.',
-];
-
-const CUSTOS: readonly Item[] = NO_MOSAICO.map((nome) =>
-  ITENS.find((item) => item.nome === nome),
-).filter((item): item is Item => item != null);
-
-/** Onde cai um cartão em vez de um vídeo. */
-const ehCartao = ({ coluna, linha }: Lugar) => (coluna + linha) % 4 === 0;
-
-/** Uma peça do mosaico: ou um reel publicado, ou o custo de fazer aquilo à mão. */
-export type Peca =
-  | { tipo: 'reel'; lugar: Lugar; reel: Reel }
-  | { tipo: 'custo'; lugar: Lugar; item: Item; custo: number | null };
-
-/**
- * As peças: cada lugar com o que o ocupa.
- *
- * Os REELS são distribuídos LINHA a linha, e é essa ordem que faz a conta
- * funcionar. A volta pelo resto (`% REELS.length`) anda um passo a cada peça,
- * então dois vizinhos de lado nunca são o mesmo arquivo; e como uma linha tem
- * dez peças e três não divide dez, a linha de baixo começa um cliente adiante —
- * o que resolve o vizinho de cima e de baixo pela mesma conta. Os lugares que
- * viram cartão não consomem a vez de ninguém: o índice continua correndo sobre
- * TODOS os lugares, então a defasagem entre linhas se mantém.
- *
- * O `custo` é `null` enquanto o dono não preencher `CUSTO_POR_ITEM` — o cartão
- * existe, com o nome do item, e sem número. Ver a nota lá, em
- * `comparacao/config.ts`: um preço inventado aqui é uma afirmação sobre o custo
- * de outra empresa publicada no fim da página.
- *
- * PENDENTE-DONO segue valendo para os reels: são os três clientes reais
- * repetidos, como a parede de prova faz. A repetição é quantos retângulos se
- * desenha, e nunca uma afirmação de quantos casos existem.
- */
-const CARTOES: readonly Lugar[] = LUGARES.filter(ehCartao);
-
-export const PECAS: readonly Peca[] = LUGARES.map((lugar, indice) => {
-  const vez = CARTOES.indexOf(lugar);
-  if (vez < 0 || CUSTOS.length === 0) {
-    return { tipo: 'reel', lugar, reel: REELS[indice % REELS.length] } as const;
-  }
-  const item = CUSTOS[vez % CUSTOS.length];
-  return { tipo: 'custo', lugar, item, custo: CUSTO_POR_ITEM[item.nome] ?? null } as const;
-});
+export const PECAS: readonly { lugar: Lugar; reel: Reel }[] = LUGARES.map(
+  (lugar, indice) => ({ lugar, reel: REELS[indice % REELS.length] }),
+);
 
 /**
  * O fecho: a última coisa que a página fala.

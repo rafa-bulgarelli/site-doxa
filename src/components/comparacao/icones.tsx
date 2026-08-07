@@ -39,10 +39,13 @@ import {
  * da `lucide` foram junto. Vinte e sete importações explícitas custam vinte e
  * sete ícones.
  *
- * O catálogo mora AQUI, e não na `Ladainha` onde nasceu, porque agora tem dois
- * leitores: a ladainha da comparação e os cartões de custo do rodapé. Duas
- * cópias da mesma tabela é como um item ganha ícone numa seção e um círculo
- * genérico na outra.
+ * O catálogo mora AQUI, e não na `Ladainha` onde nasceu, e hoje tem um leitor
+ * só. Ele saiu de lá quando os cartões de custo do rodapé precisaram dos mesmos
+ * ícones, e ficou depois que eles foram removidos: uma tabela de vinte e seis
+ * importações é dado, não desenho, e a `Ladainha` já é um componente grande o
+ * bastante sem ela. Se um segundo leitor voltar a existir, ele acha o catálogo
+ * aqui em vez de fazer a segunda cópia — que é como um item ganha ícone numa
+ * seção e um círculo genérico na outra.
  */
 const CATALOGO: Record<string, LucideIcon> = {
   Aperture,

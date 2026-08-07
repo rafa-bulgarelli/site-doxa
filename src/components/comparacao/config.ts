@@ -101,33 +101,6 @@ export const CUSTO_ATE = 10500;
 export const CUSTO_UNIDADE = '/mês';
 
 /**
- * ─── O CUSTO DE CADA ITEM, UM A UM ───────────────────────────────────────────
- *
- * PENDENTE-DONO, e a tabela está VAZIA de propósito. O dono pediu a comparação
- * item a item no mosaico do rodapé, e este é o número que falta: existe o total
- * (`CUSTO_DE` a `CUSTO_ATE`) e existe a lista de 25 itens, mas nenhum item tem
- * preço próprio em lugar nenhum do repositório.
- *
- * Nada é inventado aqui, e dividir o total por 25 seria inventar com uma conta
- * na frente — daria R$ 320 por linha, o que diria que um video maker e um
- * cartão de memória custam a mesma coisa. Um preço errado no rodapé é uma
- * afirmação sobre o custo de outra empresa, publicada no último objeto da
- * página e no lugar onde ela é lida por quem já decidiu.
- *
- * Como preencher: uma linha por item, a chave sendo o `nome` EXATO da lista
- * acima (com o ponto final), o valor em reais por mês.
- *
- *     export const CUSTO_POR_ITEM: Readonly<Record<string, number>> = {
- *       'Um video maker.': 4000,
- *       'Um roteirista.': 2500,
- *     };
- *
- * Enquanto uma linha não existir, o cartão daquele item aparece no mosaico com
- * o nome e sem número — que é verdade incompleta, e nunca verdade errada.
- */
-export const CUSTO_POR_ITEM: Readonly<Record<string, number>> = {};
-
-/**
  * O rótulo do bloco da lista, e o que ele faz pela seção.
  *
  * A seção JÁ é uma conta; dar a ela a forma de uma é o que tira o painel do
