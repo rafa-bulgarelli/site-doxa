@@ -1249,89 +1249,128 @@ html::-webkit-scrollbar {
 }
 
 /*
- * ─── O BRILHO RGB DO CONVITE ─────────────────────────────────────────────────
+ * ─── A LUZ DA SIRI, NO TEXTO ─────────────────────────────────────────────────
  *
- * Para "Pergunte o que quiser.", a pedido do dono, e em duas voltas: primeiro
- * um brilho colorido parado, no rosa e no azul do campo; depois RGB, que é o
- * que está aqui — o halo passeia pelas SEIS cores de `faq/cores.ts`, as mesmas
- * que giram no anel da caixa logo abaixo.
+ * Para o convite do FAQ ("Pergunte o que quiser."), e é a terceira volta do
+ * mesmo pedido: primeiro um brilho colorido parado, depois RGB — que virou um
+ * halo trocando de cor no TEMPO —, e agora o que o dono queria desde o começo,
+ * dito com o objeto na mão: igual ao campo logo abaixo.
  *
- * É por isso que ele é uma animação e não um degradê: um `text-shadow` não tem
- * como ser multicolorido ao mesmo tempo (o halo de uma letra é uma cor só por
- * camada). O arco-íris, então, acontece no TEMPO em vez de no espaço, e é
- * exatamente o que o anel já faz girando — as duas coisas percorrem a mesma
- * lista, na mesma ordem, e leem como um objeto aceso só.
+ * A diferença entre as duas versões é o que separa uma imitação da coisa. O
+ * campo usa um `conic-gradient` girando: as seis cores estão na tela AO MESMO
+ * TEMPO, cada uma num lado da caixa, e o que roda é a posição delas. O halo
+ * anterior tinha uma cor de cada vez e trocava — o que o olho lê como uma luz
+ * mudando de cor, e não como luz colorida.
  *
- * Duas camadas coloridas fora de fase, nunca uma: em cada instante o halo médio
- * está numa cor e o largo já está na SEGUINTE, que é o que o conic-gradient do
- * anel mostra lado a lado. Com uma camada só, a frase piscaria de cor em cor
- * como um led.
+ * Um `text-shadow` não aceita gradiente, mas aceita QUANTAS SOMBRAS SE QUISER.
+ * Então o cônico é remontado com seis: uma por cor, cada uma deslocada cinco
+ * pixels numa direção do hexágono, todas com o mesmo borrão. Somadas em volta
+ * das letras, elas desenham o mesmo arco que o anel desenha em volta do campo —
+ * âmbar em cima, coral e rosa à direita, violeta embaixo, azul e verde-água à
+ * esquerda.
  *
- * Nove segundos para a volta inteira, contra 2,4s do anel. De propósito: o anel
- * responde à mão e a troca rápida é a resposta; a frase está sempre ali, e na
- * cadência do anel ela viraria um enfeite piscando ao lado do título.
+ * E a volta é o giro: a cada parada dos keyframes, cada cor assume a posição da
+ * vizinha. Seis paradas fecham o círculo, e o que se vê é o mesmo arco girando —
+ * não um piscar.
  *
- * O núcleo BRANCO é fixo, e é ele que segura a legibilidade. Um halo colorido
- * sem núcleo tinge a própria letra, e serifa de 36px tingida sobre escuro lê
- * como impressão desalinhada — não como algo que emite luz.
+ * Cinco pixels de deslocamento contra catorze de borrão, e a proporção é o
+ * ponto: com o borrão três vezes maior que o afastamento, as seis sombras se
+ * fundem numa luz só, colorida por regiões. Afastadas mais, virariam seis
+ * fantasmas legíveis da mesma palavra.
+ *
+ * Quatro segundos e oito contra os 2,4 do anel: o anel responde à mão e a troca
+ * rápida é a resposta; esta frase está sempre na tela, e na cadência do anel ela
+ * viraria um enfeite piscando ao lado do título.
+ *
+ * O núcleo BRANCO fica, e é ele que segura a legibilidade. Um halo colorido sem
+ * núcleo tinge a própria letra, e serifa de 36px tingida sobre escuro lê como
+ * impressão desalinhada — não como algo que emite luz.
  *
  * A exceção monocromática que isto abre está declarada em `faq/cores.ts`, junto
  * com as outras duas.
  */
-@keyframes texto-rgb {
+@keyframes texto-siri {
   0%,
   100% {
     text-shadow:
-      0 0 10px rgba(255, 255, 255, 0.26),
-      0 0 26px rgba(242, 166, 90, 0.38),
-      0 0 46px rgba(232, 115, 90, 0.3);
+      0 0 10px rgba(255, 255, 255, 0.28),
+      0 -5.0px 14px rgba(242, 166, 90, 0.5),
+      4.3px -2.5px 14px rgba(232, 115, 90, 0.5),
+      4.3px 2.5px 14px rgba(222, 92, 126, 0.5),
+      0 5.0px 14px rgba(155, 123, 224, 0.5),
+      -4.3px 2.5px 14px rgba(90, 160, 224, 0.5),
+      -4.3px -2.5px 14px rgba(79, 201, 168, 0.5);
   }
   16.67% {
     text-shadow:
-      0 0 10px rgba(255, 255, 255, 0.26),
-      0 0 26px rgba(232, 115, 90, 0.38),
-      0 0 46px rgba(222, 92, 126, 0.3);
+      0 0 10px rgba(255, 255, 255, 0.28),
+      0 -5.0px 14px rgba(232, 115, 90, 0.5),
+      4.3px -2.5px 14px rgba(222, 92, 126, 0.5),
+      4.3px 2.5px 14px rgba(155, 123, 224, 0.5),
+      0 5.0px 14px rgba(90, 160, 224, 0.5),
+      -4.3px 2.5px 14px rgba(79, 201, 168, 0.5),
+      -4.3px -2.5px 14px rgba(242, 166, 90, 0.5);
   }
   33.33% {
     text-shadow:
-      0 0 10px rgba(255, 255, 255, 0.26),
-      0 0 26px rgba(222, 92, 126, 0.38),
-      0 0 46px rgba(155, 123, 224, 0.3);
+      0 0 10px rgba(255, 255, 255, 0.28),
+      0 -5.0px 14px rgba(222, 92, 126, 0.5),
+      4.3px -2.5px 14px rgba(155, 123, 224, 0.5),
+      4.3px 2.5px 14px rgba(90, 160, 224, 0.5),
+      0 5.0px 14px rgba(79, 201, 168, 0.5),
+      -4.3px 2.5px 14px rgba(242, 166, 90, 0.5),
+      -4.3px -2.5px 14px rgba(232, 115, 90, 0.5);
   }
-  50% {
+  50.0% {
     text-shadow:
-      0 0 10px rgba(255, 255, 255, 0.26),
-      0 0 26px rgba(155, 123, 224, 0.38),
-      0 0 46px rgba(90, 160, 224, 0.3);
+      0 0 10px rgba(255, 255, 255, 0.28),
+      0 -5.0px 14px rgba(155, 123, 224, 0.5),
+      4.3px -2.5px 14px rgba(90, 160, 224, 0.5),
+      4.3px 2.5px 14px rgba(79, 201, 168, 0.5),
+      0 5.0px 14px rgba(242, 166, 90, 0.5),
+      -4.3px 2.5px 14px rgba(232, 115, 90, 0.5),
+      -4.3px -2.5px 14px rgba(222, 92, 126, 0.5);
   }
   66.67% {
     text-shadow:
-      0 0 10px rgba(255, 255, 255, 0.26),
-      0 0 26px rgba(90, 160, 224, 0.38),
-      0 0 46px rgba(79, 201, 168, 0.3);
+      0 0 10px rgba(255, 255, 255, 0.28),
+      0 -5.0px 14px rgba(90, 160, 224, 0.5),
+      4.3px -2.5px 14px rgba(79, 201, 168, 0.5),
+      4.3px 2.5px 14px rgba(242, 166, 90, 0.5),
+      0 5.0px 14px rgba(232, 115, 90, 0.5),
+      -4.3px 2.5px 14px rgba(222, 92, 126, 0.5),
+      -4.3px -2.5px 14px rgba(155, 123, 224, 0.5);
   }
   83.33% {
     text-shadow:
-      0 0 10px rgba(255, 255, 255, 0.26),
-      0 0 26px rgba(79, 201, 168, 0.38),
-      0 0 46px rgba(242, 166, 90, 0.3);
+      0 0 10px rgba(255, 255, 255, 0.28),
+      0 -5.0px 14px rgba(79, 201, 168, 0.5),
+      4.3px -2.5px 14px rgba(242, 166, 90, 0.5),
+      4.3px 2.5px 14px rgba(232, 115, 90, 0.5),
+      0 5.0px 14px rgba(222, 92, 126, 0.5),
+      -4.3px 2.5px 14px rgba(155, 123, 224, 0.5),
+      -4.3px -2.5px 14px rgba(90, 160, 224, 0.5);
   }
 }
 
-.texto-aceso-rgb {
-  animation: texto-rgb 9s linear infinite;
+.texto-aceso-siri {
+  animation: texto-siri 4.8s linear infinite;
 }
 
-/* Sem a volta, o brilho fica no par do campo — o rosa e o azul do clarão do
-   `.anel-siri`. A cor continua acesa porque ela é o pedido; o que para é o
-   passeio, que é o que a preferência pede para parar. */
+/* Sem a volta, o arco fica parado — e continua sendo um arco, com as seis cores
+   nos seis lados. A cor é o pedido; o que a preferência manda desligar é o
+   giro. */
 @media (prefers-reduced-motion: reduce) {
-  .texto-aceso-rgb {
+  .texto-aceso-siri {
     animation: none;
     text-shadow:
-      0 0 10px rgba(255, 255, 255, 0.26),
-      0 0 26px rgba(222, 92, 126, 0.3),
-      0 0 46px rgba(90, 160, 224, 0.26);
+      0 0 10px rgba(255, 255, 255, 0.28),
+      0 -5px 14px rgba(242, 166, 90, 0.5),
+      4.3px -2.5px 14px rgba(232, 115, 90, 0.5),
+      4.3px 2.5px 14px rgba(222, 92, 126, 0.5),
+      0 5px 14px rgba(155, 123, 224, 0.5),
+      -4.3px 2.5px 14px rgba(90, 160, 224, 0.5),
+      -4.3px -2.5px 14px rgba(79, 201, 168, 0.5);
   }
 }
 

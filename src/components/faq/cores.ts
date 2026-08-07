@@ -12,14 +12,15 @@
  *   1. os pontos que marcam quantas respostas já foram lidas;
  *   2. o anel que acende na borda do campo sob a mão;
  *   3. o brilho do convite "Pergunte o que quiser.", que é o rótulo do campo —
- *      `.texto-aceso-rgb`, em `index.css`.
+ *      `.texto-aceso-siri`, em `index.css`.
  *
  * O terceiro não IMPORTA daqui, e é a única trinca do arranjo: como ele é um
  * `text-shadow`, as seis cores estão escritas à mão nos keyframes, do mesmo
  * jeito que o clarão do `.anel-siri` logo abaixo dele já estava — e na MESMA
- * ordem desta lista, porque o brilho percorre no tempo o arco que o anel
- * percorre girando. Recolher a exceção é apagar este arquivo, seguir os erros
- * do compilador e varrer `texto-aceso-rgb` no CSS.
+ * ordem desta lista, porque as seis sombras do halo remontam, em volta das
+ * letras, o mesmo arco que o cônico do anel desenha em volta do campo. Recolher
+ * a exceção é apagar este arquivo, seguir os erros do compilador e varrer
+ * `texto-aceso-siri` no CSS.
  *
  * Estar num arquivo próprio é o que mantém a exceção auditável: para devolver a
  * seção ao monocromático, apaga-se este arquivo e o compilador aponta os três
