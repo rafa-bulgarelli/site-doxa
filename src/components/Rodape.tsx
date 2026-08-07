@@ -99,7 +99,7 @@ const FECHO_A_VISTA = 0.55;
  * ─── COMO O PEDIDO SOBREVIVE AO BRINQUEDO ────────────────────────────────────
  *
  *  1. O campo NÃO rouba a rolagem — nenhum `wheel` global, nunca.
- *  2. Cada peça nasce apagada, atrás do próprio preto a 60% (o porquê de
+ *  2. Cada peça nasce apagada, atrás do próprio preto a 50% (o porquê de
  *     ele morar na peça e não numa folha sobre o campo está em `rodape/Peca.tsx`):
  *     o que está aceso na tela é o pedido, e o mosaico é a textura em volta dele.
  *  3. O botão é a única coisa clicável ali dentro: a camada do fecho é
@@ -265,7 +265,19 @@ export function Rodape() {
                * luz sobre a clareira, o que separa o texto do campo mesmo no
                * instante em que um quadro claro atravessa a borda do halo.
                */}
-              <h2 className="texto-aceso font-serif text-[2.6rem] leading-[0.95] tracking-[-0.03em] text-[#F4F1E8] md:text-[4.4rem]">
+              {/* `leading-[1.08]` e não `0.95`, a pedido do dono.
+               *
+               * Entrelinha abaixo de 1 é o ajuste certo para uma manchete de uma
+               * linha só, onde ela aperta as palavras e faz o bloco ler como um
+               * objeto. Aqui são DUAS linhas de serifa grande, e a mesma conta
+               * vira outra coisa: a perna do "g" de "Ninguém" quase encosta no
+               * "F" de "Falta", e as duas frases — que são um argumento e a sua
+               * consequência — leem como um parágrafo espremido.
+               *
+               * Um oito acima de um é o que devolve o ar sem separá-las: elas
+               * continuam sendo um bloco, mas com uma respiração entre a
+               * afirmação e o que falta. */}
+              <h2 className="texto-aceso font-serif text-[2.6rem] leading-[1.08] tracking-[-0.03em] text-[#F4F1E8] md:text-[4.4rem]">
                 {FECHO.titulo}
                 <span className="block">{FECHO.linha}</span>
               </h2>

@@ -19,20 +19,26 @@ export default {
           // page slides off it rather than ending into it.
           //
           // Walked down six levels at a time with the owner at the screen:
-          // #242424 → #1E1E1E → #181818 → #121212, each one his call after
-          // seeing the one before. (The two tries before #242424 never reached
+          // #242424 → #1E1E1E → #181818 → #121212 → #0E0E0E, each one his call
+          // after seeing the one before. This is the floor: two more steps and
+          // it is the page's own #000, which is the thing he asked to get away
+          // from in the first place. (The two tries before #242424 never reached
           // the screen at all — editing this file with the dev server running
           // silently drops the token. See CLAUDE.md; the config has no hot
           // reload.)
           //
-          // #181818 was called the floor here, on the grounds that the stage
-          // must stay lighter than the #141414 behind each tile. That argument
-          // died when the black that dims the mosaic moved INTO the tile: the
-          // tiles now carry an image under 50% black, so they sit far below
-          // any stage value, and #141414 is only what shows before an image
-          // decodes. #121212 keeps a dark-grey surface — visibly not the #000
-          // the page slides off — with the whole page's contrast unchanged.
-          stage: '#121212',
+          // #181818 was once called the floor here, on the grounds that the
+          // stage must stay lighter than the #141414 behind each tile. That
+          // argument died when the black that dims the mosaic moved INTO the
+          // tile: the tiles carry an image under their own black now, so they
+          // sit far below any stage value, and #141414 is only what shows in
+          // the instant before an image decodes.
+          //
+          // The stage and that per-tile black are two dials on the same
+          // picture, and they move together: this step down to #0E0E0E came
+          // with the tile black going from 60% back to 50%, because a darker
+          // floor under the same veil was dimming each video twice.
+          stage: '#0E0E0E',
         },
       },
       fontFamily: {

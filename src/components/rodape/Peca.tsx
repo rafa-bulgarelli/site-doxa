@@ -205,8 +205,11 @@ export function Peca({ reel, lugar, palco, ativo }: PecaProps) {
 
       {/* ─── O QUE APAGA A PEÇA ────────────────────────────────────────────
        *
-       * Preto sólido a 60%, número e cor do dono — assentado na tela por ele,
-       * indo a 50, subindo a 65 e parando no meio. Ele já morou uma camada
+       * Preto sólido a 50%, número e cor do dono — assentado na tela por ele,
+       * que foi a 50, subiu a 65, parou em 60 e voltou aos 50 quando o palco
+       * escureceu. As duas coisas andam juntas e é por isso que ele voltou: com
+       * o fundo mais escuro, o mesmo preto por cima da peça apagava o vídeo duas
+       * vezes. Ele já morou uma camada
        * acima, como uma folha só estendida sobre o campo inteiro, e desceu
        * para cá quando o palco virou cinza: lá em cima ele cobria o VAZIO da
        * grade junto com as peças, e
@@ -226,7 +229,7 @@ export function Peca({ reel, lugar, palco, ativo }: PecaProps) {
        * apagado ele viraria a coisa mais acesa do campo — catorze etiquetas
        * brancas flutuando na frente do fecho.
        */}
-      <div className="pointer-events-none absolute inset-0 bg-black/60" />
+      <div className="pointer-events-none absolute inset-0 bg-black/50" />
     </div>
   );
 }

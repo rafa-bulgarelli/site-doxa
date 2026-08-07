@@ -1421,21 +1421,26 @@ html::-webkit-scrollbar {
  *  - ELIPSE e não círculo, 55% por 45%: o bloco do fecho é largo e baixo (duas
  *    linhas de serifa grande, um parágrafo e um botão). Um círculo que cobrisse
  *    as pontas do título apagaria meia tela na vertical.
- *  - CHEIO até 32% do raio, e não só no ponto central: é o que garante fundo
+ *  - CHEIO até 40% do raio, e não só no ponto central: é o que garante fundo
  *    sólido debaixo das letras em vez de um degradê subindo por dentro delas.
+ *    Era 32%, e subiu junto com o palco escurecendo e o véu de cada peça
+ *    afrouxando para 50%: com o mosaico mais presente atrás do texto, o miolo
+ *    da clareira precisa de mais raio antes de começar a desaparecer.
  *  - MORRENDO só em 100%: a transição ocupa dois terços do raio. Fade curto
  *    desenha uma borda — e uma mancha de contorno visível no meio da tela é
  *    pior do que o problema que ela veio resolver.
  *
  * `theme()` e não a cor escrita à mão: este gradiente TEM de ser a mesma cor do
- * palco, e ela já mudou quatro vezes num dia. Escrita aqui, a quinta mudança
- * deixaria uma mancha de outro cinza no meio do rodapé.
+ * palco, e ela já mudou cinco vezes. Escrita aqui, a sexta mudança deixaria uma
+ * mancha de outro cinza no meio do rodapé — e o pedido do dono que veio junto
+ * desta última ("ajuste o gradiente para a nova cor de fundo") não teria sido
+ * uma linha de comentário, teria sido um bug.
  */
 .clareira {
   background: radial-gradient(
     ellipse 55% 45% at 50% 50%,
     theme('colors.doxa.stage') 0%,
-    theme('colors.doxa.stage') 32%,
+    theme('colors.doxa.stage') 40%,
     theme('colors.doxa.stage / 0%') 100%
   );
 }
