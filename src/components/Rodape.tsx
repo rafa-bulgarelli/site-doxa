@@ -99,8 +99,9 @@ const FECHO_A_VISTA = 0.55;
  * ─── COMO O PEDIDO SOBREVIVE AO BRINQUEDO ────────────────────────────────────
  *
  *  1. O campo NÃO rouba a rolagem — nenhum `wheel` global, nunca.
- *  2. Ele nasce atrás de um véu preto: o que está aceso na tela é o pedido, e o
- *     mosaico é a textura em volta dele.
+ *  2. Cada peça nasce meio apagada, atrás do próprio preto a 50% (o porquê de
+ *     ele morar na peça e não numa folha sobre o campo está em `rodape/Peca.tsx`):
+ *     o que está aceso na tela é o pedido, e o mosaico é a textura em volta dele.
  *  3. O botão é a única coisa clicável ali dentro: a camada do fecho é
  *     `pointer-events-none` inteira, com o botão reabrindo o clique só para si
  *     — assim o arrasto continua funcionando POR BAIXO do texto.
@@ -201,48 +202,30 @@ export function Rodape() {
               </ArrastoInfinito>
             </div>
 
-            {/* O véu, e os dois esfumaçados. O véu tira o mosaico da frente do
-                pedido — mais denso do que era, porque agora o que está atrás
-                dele tem imagem e movimento em vez de texto cinza. Os
-                esfumaçados dissolvem o campo em cima e na barra de serviço
-                embaixo, para ele não ter borda dura.
-
-                Os três são da cor do PALCO e não pretos, e isso não é detalhe:
-                um véu preto sobre um fundo cinza devolveria o rodapé ao preto
-                por dentro, e os esfumaçados desenhariam duas faixas escuras
-                onde deveriam desenhar o próprio fundo. A cor mora uma vez, no
-                `bg-doxa-stage` do footer, e estes três a repetem.
-
-                ─── SEM DESFOQUE, E A DENSIDADE É 70 ─────────────────────────
-
-                Houve um `backdrop-blur` aqui por uma rodada, e o dono mandou
-                tirar assim que viu: o mosaico é a coisa que a página vende, e
-                um vídeo borrado não é mais a prova de nada — é papel de parede.
-                Fica a regra que o teste deixou, porque ela vale para o próximo
-                que quiser "acalmar" este campo: o que apaga o mosaico aqui é a
-                DENSIDADE deste véu, e nada além dela. Foco não se negocia.
-
-                Setenta, e a faixa útil é estreita — 65 embaixo, 80 em cima,
-                as duas pontas testadas na tela pelo dono. O que aperta a faixa
-                é a cor: véu PRETO apagava escurecendo, e escurecer só tira
-                brilho; véu CINZA mistura, e misturar levanta o preto do quadro
-                junto, o que o olho lê como NÉVOA. Por isso 65 devolvia o
-                mosaico para a frente do fecho e 80 embaçava — é a mesma
-                mistura, medida a mais ou a menos.
-
-                Setenta é o meio: o vídeo ainda tem preto onde a cena tem
-                preto, e continua atrás do texto do meio da tela, que é a única
-                coisa que precisa ser lida aqui.
-
-                E oitenta e não setenta e oito por um motivo bobo que vale
-                escrever: a escala de opacidade do Tailwind vai de cinco em
-                cinco, e `/78` não gera regra NENHUMA — a classe simplesmente
-                não existe, o véu fica sem cor e o mosaico volta a força total.
-                Fora da escala, só na forma de colchetes (`/` mais `[0.78]`) —
-                escrita partida aqui de propósito, porque o Tailwind varre o
-                arquivo INTEIRO, comentário incluído, e a versão colada viraria
-                uma regra CSS de verdade no bundle sem ninguém usá-la. */}
-            <div className="pointer-events-none absolute inset-0 bg-doxa-stage/70" />
+            {/* ─── OS DOIS ESFUMAÇADOS. E ONDE FOI PARAR O VÉU ───────────────
+             *
+             * Eles dissolvem o campo em cima e na barra de serviço embaixo,
+             * para ele não ter borda dura, e são da cor do PALCO e não pretos:
+             * em preto, desenhariam duas faixas escuras justamente onde deviam
+             * desenhar o próprio fundo. A cor mora uma vez, no `bg-doxa-stage`
+             * do footer, e estes dois a repetem.
+             *
+             * O VÉU que morava aqui — uma folha só, cobrindo o campo inteiro —
+             * não existe mais, e a razão é a ordem do pedido do dono: palco
+             * CINZA, e o que apaga o vídeo em PRETO sólido a 50%. Os dois não
+             * cabem na mesma folha. Uma camada estendida sobre o campo cobre o
+             * vazio da grade junto com as peças, e preto a 50% sobre o vazio
+             * levaria o palco de #181818 para #0C0C0C — devolvendo ao rodapé
+             * exatamente o preto de que ele acabou de sair.
+             *
+             * Então o que apaga desceu para DENTRO da peça, em `rodape/Peca.tsx`:
+             * cada moldura carrega o seu próprio preto, e o vazio entre elas
+             * fica sendo o palco, sem nada por cima. É também a diferença que
+             * as últimas rodadas custaram a achar — véu cinza MISTURA, e
+             * misturar levanta o preto da cena, que é o que o olho lê como
+             * névoa; preto sobre a peça só tira brilho, e o quadro continua
+             * tendo preto onde a cena tem preto.
+             */}
             <div className="pointer-events-none absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-doxa-stage to-transparent" />
             <div className="pointer-events-none absolute inset-x-0 bottom-0 h-36 bg-gradient-to-t from-doxa-stage to-transparent" />
           </div>

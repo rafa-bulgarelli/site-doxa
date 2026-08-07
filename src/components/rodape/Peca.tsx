@@ -202,6 +202,28 @@ export function Peca({ reel, lugar, palco, ativo }: PecaProps) {
           {reel.handle}
         </span>
       </div>
+
+      {/* ─── O QUE APAGA A PEÇA ────────────────────────────────────────────
+       *
+       * Preto sólido a 50%, número e cor do dono. Ele já morou uma camada
+       * acima, como uma folha só estendida sobre o campo inteiro, e desceu
+       * para cá quando o palco virou cinza: lá em cima ele cobria o VAZIO da
+       * grade junto com as peças, e preto a 50% sobre o vazio levava o palco
+       * de #181818 para #0C0C0C — o rodapé voltava a ser preto pela porta dos
+       * fundos. Aqui embaixo cada moldura carrega o seu próprio preto e o
+       * vazio entre elas fica sendo o palco, intacto.
+       *
+       * Preto e não a cor do palco: cinza por cima MISTURA, e misturar levanta
+       * o preto da cena junto — é isso que o olho lê como névoa, e foi o que
+       * custou três rodadas de ajuste na densidade. Preto só tira brilho, e o
+       * quadro continua tendo preto onde a cena tem preto.
+       *
+       * Por ÚLTIMO entre os filhos, portanto também sobre o arroba: o arroba
+       * é o que torna a peça verificável, mas em brilho cheio sobre um vídeo
+       * apagado ele viraria a coisa mais acesa do campo — catorze etiquetas
+       * brancas flutuando na frente do fecho.
+       */}
+      <div className="pointer-events-none absolute inset-0 bg-black/50" />
     </div>
   );
 }
