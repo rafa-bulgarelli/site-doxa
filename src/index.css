@@ -795,6 +795,34 @@ body {
 }
 
 /*
+ * ─── O MESMO BRILHO, COM A COR DO CAMPO ──────────────────────────────────────
+ *
+ * Para o convite do FAQ ("Pergunte o que quiser."), a pedido do dono: um passo
+ * mais forte que o fraco, e COLORIDO como o campo que ele manda usar.
+ *
+ * As duas cores são, ao pixel, as do clarão distante do `.anel-siri` lá embaixo
+ * — o rosa e o azul das pontas do arco de `faq/cores.ts`. É essa repetição que
+ * faz a frase e a caixa lerem como a MESMA luz: o convite é o rótulo do campo,
+ * e um brilho de outra cor a dois centímetros dele leria como um segundo objeto
+ * aceso disputando atenção.
+ *
+ * O núcleo continua branco, e é ele que segura a legibilidade. Um halo colorido
+ * sem núcleo tinge a própria letra, e texto tingido em serifa de 36px sobre
+ * preto lê como impressão desalinhada — não como algo que emite luz. Branco
+ * curto por dentro, cor larga por fora: a letra fica creme, o entorno é que
+ * ganha temperatura.
+ *
+ * A exceção monocromática que isto abre está declarada em `faq/cores.ts`, junto
+ * com as outras duas.
+ */
+.texto-aceso-cor {
+  text-shadow:
+    0 0 10px rgba(255, 255, 255, 0.26),
+    0 0 26px rgba(222, 92, 126, 0.3),
+    0 0 46px rgba(90, 160, 224, 0.26);
+}
+
+/*
  * E o mesmo gesto em tinta, para o papel.
  *
  * Um "glow preto" não ilumina: ele ADENSA. Sobre creme, a sombra escura em volta
