@@ -1249,128 +1249,119 @@ html::-webkit-scrollbar {
 }
 
 /*
- * ─── A LUZ DA SIRI, NO TEXTO ─────────────────────────────────────────────────
+ * ─── A LUZ DA SIRI, NA PRÓPRIA LETRA ─────────────────────────────────────────
  *
- * Para o convite do FAQ ("Pergunte o que quiser."), e é a terceira volta do
- * mesmo pedido: primeiro um brilho colorido parado, depois RGB — que virou um
- * halo trocando de cor no TEMPO —, e agora o que o dono queria desde o começo,
- * dito com o objeto na mão: igual ao campo logo abaixo.
+ * Quarta e última volta do pedido do convite do FAQ ("Pergunte o que quiser."),
+ * e a que mudou de ideia: o dono olhou o halo colorido e decidiu que a COR devia
+ * estar na tipografia, com o brilho de acompanhante em vez de protagonista.
  *
- * A diferença entre as duas versões é o que separa uma imitação da coisa. O
- * campo usa um `conic-gradient` girando: as seis cores estão na tela AO MESMO
- * TEMPO, cada uma num lado da caixa, e o que roda é a posição delas. O halo
- * anterior tinha uma cor de cada vez e trocava — o que o olho lê como uma luz
- * mudando de cor, e não como luz colorida.
+ * ─── COMO A LETRA FICA PINTADA ───────────────────────────────────────────────
  *
- * Um `text-shadow` não aceita gradiente, mas aceita QUANTAS SOMBRAS SE QUISER.
- * Então o cônico é remontado com seis: uma por cor, cada uma deslocada cinco
- * pixels numa direção do hexágono, todas com o mesmo borrão. Somadas em volta
- * das letras, elas desenham o mesmo arco que o anel desenha em volta do campo —
- * âmbar em cima, coral e rosa à direita, violeta embaixo, azul e verde-água à
- * esquerda.
+ * `background-clip: text` recorta o fundo do elemento na forma dos glifos, e o
+ * preenchimento vira transparente para deixá-lo aparecer. O fundo é uma fita
+ * horizontal com as seis cores de `faq/cores.ts` e a primeira REPETIDA no fim —
+ * sem essa repetição, o fim da fita encontra o começo numa emenda dura, e o que
+ * corre pelas letras é um corte visível dando voltas.
  *
- * E a volta é o giro: a cada parada dos keyframes, cada cor assume a posição da
- * vizinha. Seis paradas fecham o círculo, e o que se vê é o mesmo arco girando —
- * não um piscar.
+ * A fita tem o dobro da largura da caixa e o que anda é a POSIÇÃO dela. Um
+ * `conic-gradient` seria a cópia literal do anel do campo, e é a escolha errada
+ * aqui: o cone tem um centro, e numa linha de texto larga as letras da ponta
+ * ficariam todas da mesma cor enquanto a emenda do cone atravessaria o meio da
+ * frase. Numa fita horizontal cada letra tem a sua cor, e elas correm.
  *
- * Cinco pixels de deslocamento contra catorze de borrão, e a proporção é o
- * ponto: com o borrão três vezes maior que o afastamento, as seis sombras se
- * fundem numa luz só, colorida por regiões. Afastadas mais, virariam seis
- * fantasmas legíveis da mesma palavra.
+ * ─── E POR QUE O BRILHO SAIU DO `text-shadow` ────────────────────────────────
  *
- * Quatro segundos e oito contra os 2,4 do anel: o anel responde à mão e a troca
+ * Ordem de pintura: o fundo vem primeiro, as sombras de texto depois, o glifo
+ * por último. Com o glifo transparente, um `text-shadow` seria desenhado POR
+ * CIMA do gradiente recortado — o borrão colorido cobriria justamente a letra
+ * pintada que ele deveria acompanhar.
+ *
+ * `filter: drop-shadow` opera sobre o que já foi renderizado, e o que já foi
+ * renderizado aqui é a letra colorida: o brilho sai dela e mantém a forma dos
+ * glifos. A ressalva que o `.texto-aceso` documenta — drop-shadow desenha halo
+ * retangular — vale para uma caixa com fundo opaco; este elemento é só texto, e
+ * fora dos glifos ele é transparente.
+ *
+ * Duas camadas: um branco curto que engorda a letra e uma colorida larga que
+ * sangra no escuro. A colorida troca junto com a fita, então o brilho é sempre a
+ * cor que está passando — é o que amarra as duas coisas numa só.
+ *
+ * Seis segundos, contra os 2,4 do anel do campo: o anel responde à mão e a troca
  * rápida é a resposta; esta frase está sempre na tela, e na cadência do anel ela
- * viraria um enfeite piscando ao lado do título.
- *
- * O núcleo BRANCO fica, e é ele que segura a legibilidade. Um halo colorido sem
- * núcleo tinge a própria letra, e serifa de 36px tingida sobre escuro lê como
- * impressão desalinhada — não como algo que emite luz.
+ * viraria um letreiro.
  *
  * A exceção monocromática que isto abre está declarada em `faq/cores.ts`, junto
  * com as outras duas.
  */
 @keyframes texto-siri {
-  0%,
-  100% {
-    text-shadow:
-      0 0 10px rgba(255, 255, 255, 0.28),
-      0 -5.0px 14px rgba(242, 166, 90, 0.5),
-      4.3px -2.5px 14px rgba(232, 115, 90, 0.5),
-      4.3px 2.5px 14px rgba(222, 92, 126, 0.5),
-      0 5.0px 14px rgba(155, 123, 224, 0.5),
-      -4.3px 2.5px 14px rgba(90, 160, 224, 0.5),
-      -4.3px -2.5px 14px rgba(79, 201, 168, 0.5);
+  0% {
+    background-position: 0.0% 50%;
+    filter:
+      drop-shadow(0 0 9px rgba(255, 255, 255, 0.22))
+      drop-shadow(0 0 22px rgba(242, 166, 90, 0.45));
   }
   16.67% {
-    text-shadow:
-      0 0 10px rgba(255, 255, 255, 0.28),
-      0 -5.0px 14px rgba(232, 115, 90, 0.5),
-      4.3px -2.5px 14px rgba(222, 92, 126, 0.5),
-      4.3px 2.5px 14px rgba(155, 123, 224, 0.5),
-      0 5.0px 14px rgba(90, 160, 224, 0.5),
-      -4.3px 2.5px 14px rgba(79, 201, 168, 0.5),
-      -4.3px -2.5px 14px rgba(242, 166, 90, 0.5);
+    background-position: 33.33% 50%;
+    filter:
+      drop-shadow(0 0 9px rgba(255, 255, 255, 0.22))
+      drop-shadow(0 0 22px rgba(232, 115, 90, 0.45));
   }
   33.33% {
-    text-shadow:
-      0 0 10px rgba(255, 255, 255, 0.28),
-      0 -5.0px 14px rgba(222, 92, 126, 0.5),
-      4.3px -2.5px 14px rgba(155, 123, 224, 0.5),
-      4.3px 2.5px 14px rgba(90, 160, 224, 0.5),
-      0 5.0px 14px rgba(79, 201, 168, 0.5),
-      -4.3px 2.5px 14px rgba(242, 166, 90, 0.5),
-      -4.3px -2.5px 14px rgba(232, 115, 90, 0.5);
+    background-position: 66.67% 50%;
+    filter:
+      drop-shadow(0 0 9px rgba(255, 255, 255, 0.22))
+      drop-shadow(0 0 22px rgba(222, 92, 126, 0.45));
   }
   50.0% {
-    text-shadow:
-      0 0 10px rgba(255, 255, 255, 0.28),
-      0 -5.0px 14px rgba(155, 123, 224, 0.5),
-      4.3px -2.5px 14px rgba(90, 160, 224, 0.5),
-      4.3px 2.5px 14px rgba(79, 201, 168, 0.5),
-      0 5.0px 14px rgba(242, 166, 90, 0.5),
-      -4.3px 2.5px 14px rgba(232, 115, 90, 0.5),
-      -4.3px -2.5px 14px rgba(222, 92, 126, 0.5);
+    background-position: 100.0% 50%;
+    filter:
+      drop-shadow(0 0 9px rgba(255, 255, 255, 0.22))
+      drop-shadow(0 0 22px rgba(155, 123, 224, 0.45));
   }
   66.67% {
-    text-shadow:
-      0 0 10px rgba(255, 255, 255, 0.28),
-      0 -5.0px 14px rgba(90, 160, 224, 0.5),
-      4.3px -2.5px 14px rgba(79, 201, 168, 0.5),
-      4.3px 2.5px 14px rgba(242, 166, 90, 0.5),
-      0 5.0px 14px rgba(232, 115, 90, 0.5),
-      -4.3px 2.5px 14px rgba(222, 92, 126, 0.5),
-      -4.3px -2.5px 14px rgba(155, 123, 224, 0.5);
+    background-position: 133.33% 50%;
+    filter:
+      drop-shadow(0 0 9px rgba(255, 255, 255, 0.22))
+      drop-shadow(0 0 22px rgba(90, 160, 224, 0.45));
   }
   83.33% {
-    text-shadow:
-      0 0 10px rgba(255, 255, 255, 0.28),
-      0 -5.0px 14px rgba(79, 201, 168, 0.5),
-      4.3px -2.5px 14px rgba(242, 166, 90, 0.5),
-      4.3px 2.5px 14px rgba(232, 115, 90, 0.5),
-      0 5.0px 14px rgba(222, 92, 126, 0.5),
-      -4.3px 2.5px 14px rgba(155, 123, 224, 0.5),
-      -4.3px -2.5px 14px rgba(90, 160, 224, 0.5);
+    background-position: 166.67% 50%;
+    filter:
+      drop-shadow(0 0 9px rgba(255, 255, 255, 0.22))
+      drop-shadow(0 0 22px rgba(79, 201, 168, 0.45));
+  }
+  100% {
+    background-position: 200.0% 50%;
+    filter:
+      drop-shadow(0 0 9px rgba(255, 255, 255, 0.22))
+      drop-shadow(0 0 22px rgba(242, 166, 90, 0.45));
   }
 }
 
 .texto-aceso-siri {
-  animation: texto-siri 4.8s linear infinite;
+  background-image: linear-gradient(90deg, #F2A65A, #E8735A, #DE5C7E, #9B7BE0, #5AA0E0, #4FC9A8, #F2A65A);
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  /* Os dois, e não só um: `color` é o que o Firefox lê, e `-webkit-text-fill-color`
+     é o que ganha do `text-[#F4F1E8]` da classe do elemento sem depender de
+     ordem de cascata. A cor do Tailwind fica de rede — se `background-clip: text`
+     não existir no navegador, a frase aparece em creme em vez de sumir. */
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  animation: texto-siri 6s linear infinite;
 }
 
-/* Sem a volta, o arco fica parado — e continua sendo um arco, com as seis cores
-   nos seis lados. A cor é o pedido; o que a preferência manda desligar é o
-   giro. */
+/* Sem a corrida, a fita para no começo: a frase continua colorida da esquerda
+   para a direita, com o brilho parado no âmbar. O que a preferência manda
+   desligar é o movimento, não a cor. */
 @media (prefers-reduced-motion: reduce) {
   .texto-aceso-siri {
     animation: none;
-    text-shadow:
-      0 0 10px rgba(255, 255, 255, 0.28),
-      0 -5px 14px rgba(242, 166, 90, 0.5),
-      4.3px -2.5px 14px rgba(232, 115, 90, 0.5),
-      4.3px 2.5px 14px rgba(222, 92, 126, 0.5),
-      0 5px 14px rgba(155, 123, 224, 0.5),
-      -4.3px 2.5px 14px rgba(90, 160, 224, 0.5),
-      -4.3px -2.5px 14px rgba(79, 201, 168, 0.5);
+    background-position: 0% 50%;
+    filter:
+      drop-shadow(0 0 9px rgba(255, 255, 255, 0.22))
+      drop-shadow(0 0 22px rgba(242, 166, 90, 0.45));
   }
 }
 

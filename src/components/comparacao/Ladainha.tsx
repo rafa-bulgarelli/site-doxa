@@ -13,23 +13,31 @@ import { ITENS, TEMPO, type Item } from './config';
 import { Icone } from './icones';
 
 /**
- * ─── ONDE O PERCURSO COMEÇA, E O ERRO QUE ISSO CONSERTOU ─────────────────────
+ * ─── QUANTA ROLAGEM A CONTA CUSTA ────────────────────────────────────────────
  *
- * `start start` e não `start end`: a soma começa quando o topo da seção encosta
- * no topo da janela — que é o instante em que o painel escuro GRUDA e a lista
- * fica inteira à vista.
+ * Dois terços de tela, e o número já esteve errado nas duas pontas.
  *
- * A primeira versão abria em `start end`, ou seja, quando a seção começava a
- * entrar por baixo. Somava certo e não servia para nada: os 85% de tela que ela
- * levava para acender acontecem enquanto a ladainha ainda está abaixo da dobra,
- * e quando a pessoa finalmente olhava para a lista ela já estava toda acesa. A
- * animação existia e ninguém via.
+ * Na primeira versão o percurso abria em `start end` — quando a seção começava a
+ * entrar por baixo. Somava certo e não servia para nada: o trecho inteiro passa
+ * com a ladainha ainda abaixo da dobra, e quando a pessoa olhava para a lista
+ * ela já estava toda acesa. A animação existia e ninguém via.
  *
- * O fim é 15% da altura da SEÇÃO, e a seção mede quase duas telas e meia (uma do
- * painel escuro, 37,5% de vão, uma do painel claro). Quinze por cento dão cerca
- * de um terço de tela de rolagem — que é, de propósito, o mesmo trecho em que o
- * painel escuro fica sozinho no quadro antes de o claro começar a subir por cima
- * dele. A conta acaba de ser somada exatamente quando a virada começa.
+ * Na segunda abria em `start start`, com a lista à vista, mas terminava em um
+ * terço de tela — e o dono achou apressado, com razão: vinte e cinco itens em
+ * trezentos pixels de rolagem entram quase juntos, e o que se lê é uma lista
+ * aparecendo, não uma conta sendo somada.
+ *
+ * Agora começa em `start 30%`: a seção já ocupa setenta por cento da tela, o que
+ * basta para a lista estar visível, e ainda sobram trinta por cento de janela
+ * até o topo grudar. Some-se o trecho grudado até `16%` da altura da seção e o
+ * percurso quase dobra — cerca de dois terços de tela para as vinte e cinco
+ * linhas.
+ *
+ * O fim não pode ir muito além disso, e a razão é geométrica: a seção mede quase
+ * duas telas e meia (uma do painel escuro, 37,5% de vão, uma do painel claro), e
+ * o painel claro começa a subir por cima do escuro depois de 37,5% de tela. As
+ * últimas linhas da coluna — o total e o soco — são as PRIMEIRAS que ele cobre.
+ * Esticar o percurso mais um pouco faz o fecho acender debaixo do papel.
  *
  * ─── A CONTA É SOMADA PELA ROLAGEM, E NÃO POR UM RELÓGIO ─────────────────────
  *
@@ -52,8 +60,8 @@ import { Icone } from './icones';
  * mesmo número durante toda a leitura. O que se move é a seção inteira, e é ela
  * que o componente recebe de fora.
  */
-const ABRE = 'start start';
-const FECHA = '15% start';
+const ABRE = 'start 30%';
+const FECHA = '16% start';
 
 /**
  * O percurso da contagem, medido na SEÇÃO e entregue a quem precisar dele.

@@ -612,12 +612,16 @@ export function Faq() {
                  * anterior. Trinta e seis é o maior corpo que mantém as duas
                  * coisas: mede 223 e sobra folga de 32.
                  *
-                 * `texto-aceso-siri`: o dono pediu o MESMO brilho do campo
-                 * logo abaixo, e é isso que a classe faz — as seis cores de
-                 * `faq/cores.ts` ao mesmo tempo, uma em cada lado das letras,
-                 * girando, que é o cônico do anel remontado com seis sombras.
-                 * Duas voltas mais devagar que ele: o anel responde à mão, e
-                 * esta frase está sempre na tela. */}
+                 * `texto-aceso-siri`: a cor mora na LETRA, a pedido do dono,
+                 * com o brilho de acompanhante. Uma fita com as seis cores de
+                 * `faq/cores.ts` corre por dentro dos glifos, e o halo troca
+                 * junto — é sempre a cor que está passando. `index.css` explica
+                 * por que a fita é linear e não cônica como o anel do campo, e
+                 * por que o brilho é `drop-shadow` e não `text-shadow`.
+                 *
+                 * `text-[#F4F1E8]` fica de rede: se o navegador não recortar o
+                 * fundo na forma do texto, a frase aparece em creme em vez de
+                 * sumir. */}
                 <p className="texto-aceso-siri font-serif text-[24px] leading-none tracking-[-0.02em] text-[#F4F1E8] md:text-[36px]">
                   {ABERTURA.dica}
                 </p>

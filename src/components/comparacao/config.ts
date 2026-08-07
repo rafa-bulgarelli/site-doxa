@@ -101,16 +101,6 @@ export const CUSTO_ATE = 10500;
 export const CUSTO_UNIDADE = '/mês';
 
 /**
- * O rótulo do bloco da lista, e o que ele faz pela seção.
- *
- * A seção JÁ é uma conta; dar a ela a forma de uma é o que tira o painel do
- * genérico. Com este rótulo e com os itens numerados, o bloco deixa de ser "um
- * texto grande" e passa a ser um documento — e um documento é sério de um jeito
- * que uma frase solta não é.
- */
-export const FATURA = 'Para fazer sozinho, você precisa de';
-
-/**
  * As duas falas dos dois painéis.
  *
  * PENDENTE-DONO: reescrita minha da opção C do dono. "Quanto custa não ter

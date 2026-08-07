@@ -22,7 +22,6 @@ import {
   CUSTO_DE,
   CUSTO_UNIDADE,
   FALTA,
-  FATURA,
   GARANTIA,
   NO_AR,
   PARADO,
@@ -275,22 +274,18 @@ export function Comparacao() {
 
               O resto da tela fica vazio de propósito: o painel claro entra
               girado por baixo e come o terço inferior. */}
-          {/* O cabeçalho da fatura, e é o que faz o bloco abaixo ler como
-              documento em vez de como um texto grande.
+          {/* O CABEÇALHO DA FATURA saiu inteiro, em duas ordens do dono: o
+              "25 itens" primeiro, o rótulo "Para fazer sozinho, você precisa de"
+              depois. Sobrou o filete, que migrou para cá — e ele sozinho faz o
+              trabalho que os dois faziam.
 
-              O "25 itens" que ficava na ponta direita saiu, por ordem do dono, e
-              a contagem não faz falta: ela era um TOTAL antecipado, e agora que
-              a lista se escreve conforme a pessoa rola, dizer de antemão quantas
-              linhas vêm é entregar o fim do argumento no começo dele. Quem quer
-              o número conta as linhas — e contá-las é exatamente o efeito que a
-              seção quer. */}
-          <div
-            className={`${RESPIRO} flex items-baseline justify-between gap-6 border-t border-white/[0.09] pt-7 md:pt-10`}
-          >
-            <span className="text-[12px] tracking-[0.06em] text-white/35">{FATURA}</span>
-          </div>
-
-          <div className={RESPIRO}>
+              Vale registrar o que se perde e por que não faz falta. O rótulo
+              anunciava a lista, e a contagem antecipava o tamanho dela; as duas
+              coisas explicavam de antemão um bloco que agora se EXPLICA
+              sozinho, escrevendo-se conforme a pessoa rola. Um título em cima de
+              uma conta que está sendo somada na frente de quem lê é legenda de
+              museu — e o filete separa tão bem quanto, sem falar nada. */}
+          <div className={`${RESPIRO} border-t border-white/[0.09] pt-7 md:pt-10`}>
             {/* A lista recebe a régua pronta: o painel onde ela mora é `sticky`,
                 e um elemento grudado não se move em relação à janela — um
                 `useScroll` apontado para ele devolveria um progresso travado no
