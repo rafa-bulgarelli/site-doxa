@@ -9,6 +9,7 @@ import {
 } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { ArrowUp } from 'lucide-react';
+import { ExemploVivo } from './ExemploVivo';
 import { CORES } from './cores';
 
 /**
@@ -90,6 +91,20 @@ const ESCREVE = 42;
 const APAGA = 22;
 const LE = 1900;
 
+/**
+ * A pausa entre apagar a última letra e começar a próxima frase.
+ *
+ * Ela existe pela BORRACHA. As letras apagadas continuam no fluxo enquanto
+ * somem (é o que faz o cursor passar por cima delas em vez de o texto encolher),
+ * e sem esta pausa a frase nova começava a ser escrita por cima das que ainda
+ * estavam saindo — as duas se intercalavam e o texto dançava na virada.
+ *
+ * Um fio mais longa que a saída de `ExemploVivo` (160ms), que é o tempo exato
+ * de a última letra desaparecer. E o efeito colateral é bem-vindo: uma
+ * respiração entre uma pergunta e a seguinte, que antes não existia.
+ */
+const RESPIRA = 200;
+
 interface CampoPerguntaProps {
   valor: string;
   /** As frases que o campo escreve sozinho enquanto está fechado. */
@@ -153,8 +168,11 @@ function useExemploVivo(frases: readonly string[], ativo: boolean) {
       const id = window.setTimeout(() => setEscrito(escrito.slice(0, -2)), APAGA);
       return () => window.clearTimeout(id);
     }
-    setApagando(false);
-    setIndice((i) => i + 1);
+    const id = window.setTimeout(() => {
+      setApagando(false);
+      setIndice((i) => i + 1);
+    }, RESPIRA);
+    return () => window.clearTimeout(id);
   }, [ativo, frases, indice, escrito, apagando]);
 
   return escrito;
@@ -537,7 +555,11 @@ export function CampoPergunta({
           aria-hidden={aberto}
           tabIndex={aberto ? -1 : undefined}
           style={{ transition: parado ? 'none' : `opacity 300ms ease-out, transform 300ms ${MOLA_CSS}` }}
-          className={`absolute inset-x-0 top-0 z-[1] cursor-text px-5 pr-14 text-left text-[15px] leading-none text-white/40 outline-none ${
+          /* EM SERIFA, a pedido do dono, e um corpo acima dos 15px que tinha:
+             é a fonte dos títulos e a do campo do formulário, e a 15 pixels ela
+             fica apertada demais para o desenho da letra aparecer — que é a
+             única razão de trocar a fonte de um placeholder. */
+          className={`absolute inset-x-0 top-0 z-[1] cursor-text overflow-hidden px-5 pr-14 text-left font-serif text-[17px] leading-none text-white/40 outline-none md:text-[19px] ${
             aberto
               ? 'pointer-events-none translate-y-1 scale-105 opacity-0'
               : 'translate-y-0 scale-100 opacity-100'
@@ -547,10 +569,11 @@ export function CampoPergunta({
               depender de um `padding` que teria de ser recalculado à mão se a
               pastilha mudar de corpo. */}
           <span className="flex items-center" style={{ height: FECHADO }}>
-            <span className="truncate">
-              {parado ? exemplos[0] : exemplo}
-              {!parado && <span className="cursor-exemplo">|</span>}
-            </span>
+            {parado ? (
+              <span className="truncate">{exemplos[0]}</span>
+            ) : (
+              <ExemploVivo texto={exemplo} />
+            )}
           </span>
         </button>
 
