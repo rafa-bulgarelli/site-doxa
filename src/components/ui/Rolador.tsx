@@ -25,17 +25,24 @@ const ESTICAO = 0.45;
 /**
  * ─── OS TRÊS ESTADOS, E O QUE DISPARA CADA UM ────────────────────────────────
  *
- * DORMINDO. No topo da página ela é uma barra de rolagem e nada mais: cinza,
- * fina, discreta — a primeira foto da referência. Quem acabou de chegar não tem
- * nada para fazer com ela, e um objeto preto chamando atenção na borda antes de
- * a pessoa ter rolado um pixel é ruído no lugar mais caro da tela.
+ * DORMINDO. Em repouso ela é uma barra de rolagem e nada mais: cinza, fina,
+ * discreta — a primeira foto da referência. É a forma padrão, e é para ela que a
+ * peça sempre volta.
  *
- * ACORDADA. Noventa pixels de rolagem depois, ela vira a pílula preta com o
- * disco e a porcentagem — a segunda foto. O gatilho é a rolagem porque é ela que
- * dá sentido ao objeto: uma régua de leitura só é útil depois que há leitura
- * para medir. Voltando ao topo, ela dorme de novo.
+ * ACORDADA. Enquanto a página anda, ela vira a pílula preta com o disco e a
+ * porcentagem — a segunda foto.
  *
  * ABERTA. Com a mão parada em cima, incha no painel inteiro.
+ *
+ * ─── O QUE ACORDA, E O QUE FAZ DORMIR ────────────────────────────────────────
+ *
+ * O gatilho é o MOVIMENTO, e não a posição na página. Foi assim que o dono
+ * pediu, e é a regra certa: uma régua de leitura tem função enquanto a leitura
+ * anda; parada no meio da página, ela é um objeto preto ocupando a borda da tela
+ * sem nada para dizer. Rolou, acorda; parou por um segundo, volta a ser barra.
+ *
+ * O hover também segura acordada — senão a peça dormiria debaixo da mão de quem
+ * está justamente indo abri-la.
  *
  * A espera antes de abrir é o que mantém a barra sendo duas coisas ao mesmo
  * tempo: ela é a alça de arrastar E a porta do painel. Abrindo no primeiro pixel
@@ -43,9 +50,22 @@ const ESTICAO = 0.45;
  * quando a mão chega perto. Um `pointerdown` durante a espera cancela e vira
  * arrasto: quem apertou já disse o que queria.
  */
-const ACORDA = 90;
+const DORMIR = 1100;
 const VIVA_ALTURA = 148;
-const ILHA_ALTURA = 268;
+
+/**
+ * A altura do painel, e ela é uma CONTA e não um gosto.
+ *
+ * O botão estava saindo pela borda de baixo porque a soma do conteúdo passava da
+ * altura fixa. Somando o que a caixa precisa conter, com 236 de largura: 28 de
+ * recuo, 208 da capa (que é quadrada e ocupa a largura útil inteira), 37 dos
+ * dois textos, 3 da trilha, 46 do botão e 36 dos três vãos. Dá 358.
+ *
+ * Quem mexer em qualquer medida do painel refaz esta conta — ou o `min-height:
+ * 0` do CSS entra em ação, a capa encolhe para caber e deixa de ser quadrada,
+ * que é o sintoma de que este número ficou pequeno.
+ */
+const ILHA_ALTURA = 358;
 const ILHA_ESPERA = 220;
 
 /** Onde a leitura da seção acontece: um terço abaixo do topo da janela. */
@@ -171,32 +191,6 @@ export function Rolador() {
       const progresso = Math.min(1, Math.max(0, window.scrollY / percorrivel));
       const pista = janela - MARGEM * 2;
 
-      /* ─── ACORDAR E DORMIR, ANTES DE QUALQUER MEDIDA ──────────────────────
-       *
-       * A ordem importa e não é gosto: a altura da peça depende do estado, e
-       * decidindo o estado DEPOIS de medir, o quadro em que ela acorda ainda
-       * seria desenhado com a altura de dormindo. O ref é atualizado aqui na
-       * hora — o `setState` ao lado existe só para o React redesenhar o
-       * conteúdo, e chega um quadro atrasado sem que isso apareça.
-       *
-       * O limiar é pequeno de propósito: a transformação tem de acontecer
-       * enquanto a pessoa ainda está olhando para o alto da página, senão ela
-       * nunca vê a peça mudar — vê só um objeto preto que já estava ali.
-       */
-      const deveAcordar = window.scrollY > ACORDA;
-      if (deveAcordar !== acordadaRef.current) {
-        acordadaRef.current = deveAcordar;
-        setAcordada(deveAcordar);
-        // Dormindo de novo, a ilha não pode ficar aberta: ela some de baixo da
-        // mão, e um painel de duzentos pixels encolhendo para oito com o
-        // ponteiro dentro é a coisa mais desconcertante que esta barra pode
-        // fazer. Se a mão continuar ali, o `pointerenter` a reabre.
-        if (!deveAcordar && abertaRef.current) {
-          abertaRef.current = false;
-          setAberta(false);
-        }
-      }
-
       /* A altura é o estado. Dormindo, ela é proporcional — é uma barra de
          rolagem, e o tamanho dela diz quanto da página cabe na tela. Acordada e
          aberta, passa a ser fixa: a pílula tem conteúdo dentro, e uma caixa de
@@ -217,10 +211,16 @@ export function Rolador() {
          de ser aberto. */
       const topoDormindo = MARGEM + progresso * (pista - alturaDormindo);
       const centro = topoDormindo + alturaDormindo / 2 - altura / 2;
+      /* O teto pode ficar ABAIXO do piso numa janela mais baixa que o painel —
+         e aí o `Math.min` devolveria um valor negativo, jogando a ilha para fora
+         pelo topo. Encostar na margem é a resposta certa nesse caso: ela
+         transborda por baixo, que é onde há a barra de serviço do rodapé e não o
+         começo de uma leitura. */
+      const teto = Math.max(MARGEM, janela - altura - MARGEM);
       const topo =
         altura === alturaDormindo
           ? topoDormindo
-          : Math.min(Math.max(centro, MARGEM), janela - altura - MARGEM);
+          : Math.min(Math.max(centro, MARGEM), teto);
 
       barra.style.height = `${altura}px`;
       barra.style.transform = `translateY(${topo}px)`;
@@ -281,8 +281,49 @@ export function Rolador() {
       relogioBrilho = window.setTimeout(() => barra.classList.remove('rolador-aceso'), BRILHO);
     };
 
+    /*
+     * ─── O SONO ────────────────────────────────────────────────────────────
+     *
+     * Duas condições seguram a peça acordada, e nenhuma delas é posição: a
+     * página ter andado há pouco, e a mão estar em cima. A primeira é o pedido
+     * do dono — parou de descer, volta a ser barra de rolagem; a segunda existe
+     * porque sem ela a peça dormiria debaixo da mão de quem está indo abri-la,
+     * encolhendo de quarenta e seis pixels para oito com o ponteiro dentro.
+     *
+     * `avaliar` é chamada de todos os lados (rolagem, relógio, entrada e saída
+     * do ponteiro) em vez de cada um mexer no estado por conta. Com quatro
+     * donos escrevendo a mesma chave, é questão de tempo até dois discordarem —
+     * e o sintoma seria uma barra que fica presa acordada depois que a página
+     * parou, sem ninguém para desligá-la.
+     */
+    let rolouAgora = false;
+    let sobre = false;
+    let relogioSono: number | undefined;
+
+    const avaliarSono = () => {
+      const deve = rolouAgora || sobre || abertaRef.current;
+      if (deve === acordadaRef.current) return;
+      acordadaRef.current = deve;
+      setAcordada(deve);
+      // Dormindo, não há painel: ele é a terceira forma da mesma peça, e uma
+      // caixa de trezentos pixels pendurada numa barra de oito não é forma
+      // nenhuma.
+      if (!deve && abertaRef.current) {
+        abertaRef.current = false;
+        setAberta(false);
+      }
+      desenhar();
+    };
+
     const aoRolar = () => {
       acender();
+      rolouAgora = true;
+      avaliarSono();
+      window.clearTimeout(relogioSono);
+      relogioSono = window.setTimeout(() => {
+        rolouAgora = false;
+        avaliarSono();
+      }, DORMIR);
       if (quadro === 0) quadro = window.requestAnimationFrame(desenhar);
     };
 
@@ -305,7 +346,13 @@ export function Rolador() {
     let rolagemNoInicio = 0;
     let relogioIlha: number | undefined;
 
+    /* A mão chegando acorda na hora e agenda a abertura. Acordar primeiro não é
+       detalhe: a ilha cresce a partir da PÍLULA, e abrir direto de uma barra de
+       oito pixels seria a mesma animação sem o passo do meio — que é justamente
+       o que a referência mostra. */
     const abrirIlha = () => {
+      sobre = true;
+      avaliarSono();
       window.clearTimeout(relogioIlha);
       if (arrastando || abertaRef.current) return;
       relogioIlha = window.setTimeout(() => {
@@ -317,10 +364,16 @@ export function Rolador() {
     };
 
     const fecharIlha = () => {
+      sobre = false;
       window.clearTimeout(relogioIlha);
-      if (!abertaRef.current) return;
-      abertaRef.current = false;
-      setAberta(false);
+      if (abertaRef.current) {
+        abertaRef.current = false;
+        setAberta(false);
+      }
+      // Depois de fechar, e não antes: `avaliarSono` lê `abertaRef` para decidir,
+      // e chamada com o painel ainda aberto ela concluiria que a peça precisa
+      // continuar acordada.
+      avaliarSono();
       desenhar();
     };
 
@@ -391,6 +444,7 @@ export function Rolador() {
       window.clearTimeout(relogioBrilho);
       window.clearTimeout(relogioEsticao);
       window.clearTimeout(relogioIlha);
+      window.clearTimeout(relogioSono);
       olho.disconnect();
       window.removeEventListener('scroll', aoRolar);
       window.removeEventListener('resize', desenhar);

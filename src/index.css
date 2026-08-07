@@ -256,7 +256,7 @@ html::-webkit-scrollbar {
  * seções.
  */
 .rolador-viva {
-  width: 46px;
+  width: 34px;
   right: 10px;
   cursor: grab;
 }
@@ -329,25 +329,33 @@ html::-webkit-scrollbar {
 .rolador-viva-corpo {
   align-items: center;
   justify-content: space-between;
-  padding: 8px 6px 12px;
+  padding: 5px 4px 9px;
 }
 
+/* O disco vale a largura da pílula menos os cinco pixels de folga de cada lado.
+   Escrito assim, e não em número solto: quando o dono pedir a pílula mais fina
+   de novo, é um valor só que muda. */
 .rolador-viva-disco {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 34px;
-  height: 34px;
+  width: 24px;
+  height: 24px;
   border-radius: 999px;
   background: #ffffff;
   color: #0b0b0b;
   flex-shrink: 0;
 }
 
+.rolador-viva-disco svg {
+  width: 13px;
+  height: 13px;
+}
+
 .rolador-viva-pct {
-  font-size: 11px;
-  letter-spacing: 0.02em;
-  color: rgba(255, 255, 255, 0.75);
+  font-size: 9.5px;
+  letter-spacing: 0.01em;
+  color: rgba(255, 255, 255, 0.72);
   font-variant-numeric: tabular-nums;
 }
 
@@ -363,26 +371,46 @@ html::-webkit-scrollbar {
  * para "painel", e é a mesma mudança que a referência faz entre as duas fotos.
  */
 .rolador-ilha {
-  width: 208px;
+  width: 236px;
   right: 12px;
   cursor: default;
   opacity: 1;
 }
 
+/*
+ * CINZA e não preto, a pedido do dono — e o painel é a única forma das três em
+ * que isso vale. Fechada e acordada, a peça é um objeto pequeno sobre a página e
+ * o preto a separa dela; aberta, ela é uma SUPERFÍCIE com conteúdo em cima, e
+ * superfície preta sobre página preta não tem onde apoiar a capa clara nem os
+ * dois níveis de texto. O cinza dá o degrau que faltava.
+ */
 .rolador-ilha::before {
   width: 100%;
-  border-radius: 28px;
-  background: #060607;
+  border-radius: 30px;
+  background: #1c1c1e;
   box-shadow:
-    inset 0 0 0 1px rgba(255, 255, 255, 0.1),
-    inset 0 1px 0 rgba(255, 255, 255, 0.12),
-    0 28px 70px rgba(0, 0, 0, 0.65);
+    inset 0 0 0 1px rgba(255, 255, 255, 0.09),
+    inset 0 1px 0 rgba(255, 255, 255, 0.14),
+    0 30px 74px rgba(0, 0, 0, 0.7);
   transform: none;
 }
 
+/*
+ * ─── A CONTA QUE O BOTÃO PEDIU ───────────────────────────────────────────────
+ *
+ * O botão estava saindo pela borda de baixo, e não era erro de margem: a soma do
+ * conteúdo passava da altura fixa do painel. Uma capa quadrada de largura cheia
+ * já come 200 pixels, e sobravam 68 para dois textos, uma trilha e um botão.
+ *
+ * Agora a caixa é medida a partir do que ela precisa conter — 348 de altura para
+ * 236 de largura —, e o `min-height: 0` no corpo é o que impede a capa de voltar
+ * a empurrar: sem ele, um item flex se recusa a encolher abaixo do próprio
+ * conteúdo e é sempre o ÚLTIMO da coluna que é expulso.
+ */
 .rolador-ilha-corpo {
-  gap: 11px;
-  padding: 13px;
+  gap: 12px;
+  padding: 14px;
+  min-height: 0;
 }
 
 /*
@@ -397,13 +425,15 @@ html::-webkit-scrollbar {
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 1;
+  min-height: 0;
   aspect-ratio: 1;
   width: 100%;
-  border-radius: 16px;
+  border-radius: 18px;
   background: #f4f1e8;
   color: #0b0b0b;
   font-family: 'Instrument Serif', serif;
-  font-size: 46px;
+  font-size: 52px;
   line-height: 1;
   letter-spacing: -0.03em;
   font-variant-numeric: tabular-nums;
@@ -413,8 +443,9 @@ html::-webkit-scrollbar {
    branco cheio, o que o número significa em cinza. */
 .rolador-ilha-secao {
   display: block;
-  font-size: 13.5px;
-  line-height: 1.15;
+  font-size: 16px;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
   color: #ffffff;
   white-space: nowrap;
   overflow: hidden;
@@ -423,10 +454,10 @@ html::-webkit-scrollbar {
 
 .rolador-ilha-copy {
   display: block;
-  margin-top: 1px;
-  font-size: 11.5px;
-  line-height: 1.15;
-  color: rgba(255, 255, 255, 0.45);
+  margin-top: 2px;
+  font-size: 13px;
+  line-height: 1.2;
+  color: rgba(255, 255, 255, 0.5);
 }
 
 /* A barra de progresso do player, que aqui é literal: o quanto da página foi
@@ -455,15 +486,16 @@ html::-webkit-scrollbar {
 .rolador-ilha-botao {
   display: flex;
   align-items: center;
-  gap: 9px;
+  gap: 10px;
   width: 100%;
   margin-top: auto;
-  padding: 5px 12px 5px 5px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  flex-shrink: 0;
+  padding: 6px 14px 6px 6px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.06);
-  color: rgba(255, 255, 255, 0.92);
-  font-size: 12px;
+  background: rgba(255, 255, 255, 0.07);
+  color: #ffffff;
+  font-size: 13.5px;
   text-align: left;
   cursor: pointer;
   transition:
@@ -472,8 +504,8 @@ html::-webkit-scrollbar {
 }
 
 .rolador-ilha-botao:hover {
-  background: rgba(255, 255, 255, 0.12);
-  border-color: rgba(255, 255, 255, 0.24);
+  background: rgba(255, 255, 255, 0.14);
+  border-color: rgba(255, 255, 255, 0.28);
 }
 
 .rolador-ilha-botao:focus-visible {
@@ -485,8 +517,8 @@ html::-webkit-scrollbar {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 28px;
-  height: 28px;
+  width: 32px;
+  height: 32px;
   border-radius: 999px;
   background: #ffffff;
   color: #0b0b0b;
