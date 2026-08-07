@@ -45,8 +45,16 @@ const MOLA_CSS = `cubic-bezier(${MOLA.join(',')})`;
 const MORFO = `height 400ms ${MOLA_CSS}`;
 const CRESCE = 'height 150ms ease-out';
 
-/** A altura do campo fechado — a pastilha. */
-const FECHADO = 48;
+/**
+ * A altura do campo fechado — a pastilha.
+ *
+ * Cinquenta e oito, e os dez a mais são pedido do dono. Ela vale em dois
+ * lugares e nos dois é a mesma coisa: a altura da caixa enquanto fechada, e a
+ * altura da linha que centra a pergunta de exemplo dentro dela. Aberta, quem
+ * manda na altura é o texto (`alturaTexto + ACOES`) — esta constante sai de
+ * cena, e é por isso que crescer aqui não mexe no campo em uso.
+ */
+const FECHADO = 58;
 /** A altura da área de texto: onde ela começa e onde para de crescer. */
 const MINIMA = 68;
 const MAXIMA = 160;

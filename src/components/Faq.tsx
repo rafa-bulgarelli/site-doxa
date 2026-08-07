@@ -523,36 +523,54 @@ export function Faq() {
                   etiqueta e o põe na de nome próprio da seção. Em `texto-aceso`, o
                   brilho forte: no `fraco` ele sumia contra o preto, que foi
                   exatamente a reclamação. */}
+              {/* ─── TUDO NUMA LINHA: rótulo, régua, pontos ────────────────────
+               *
+               * Ordem pedida pelo dono, e ela é a de quem lê: o NOME da seção, o
+               * quanto dela já foi lido, e quais respostas foram. Empilhada, a
+               * régua era um segundo objeto começando outro bloco logo abaixo do
+               * rótulo; na mesma linha, os três viram um instrumento só — e o
+               * cabeçalho passa a ocupar uma linha em vez de duas, o que é o que
+               * aproxima o título do rótulo.
+               *
+               * O rótulo perdeu espaçamento (0.2em → 0.1em), também a pedido:
+               * ao lado de uma régua e de seis pontos, "F A Q" esparramado
+               * competia por largura com as duas coisas que informam. */}
               <span className="flex items-center gap-4">
-                <span className="texto-aceso font-serif text-[19px] uppercase leading-none tracking-[0.2em] text-[#F4F1E8]">
+                <span className="texto-aceso font-serif text-[19px] uppercase leading-none tracking-[0.1em] text-[#F4F1E8]">
                   {ABERTURA.rotulo}
                 </span>
+
+                {/* A régua: o mesmo progresso em forma de barra. Ela se estende
+                    uma vez quando a seção entra na tela e depois só é
+                    PREENCHIDA, a cada resposta lida — o gradiente por baixo é
+                    fixo em 13rem, então o que cresce revela as cores na ordem em
+                    que os pontos acendem, em vez de espremer as seis dentro do
+                    pedaço já ganho.
+
+                    `min-w-0` com `flex-1`: sem ele, um item flex não encolhe
+                    abaixo do próprio conteúdo, e num telefone a régua empurraria
+                    os pontos para fora da coluna em vez de ceder largura. */}
+                <motion.span
+                  aria-hidden
+                  className="block h-[3px] min-w-0 max-w-[13rem] flex-1 origin-left overflow-hidden rounded-full bg-white/[0.10]"
+                  initial={parado ? undefined : { scaleX: 0 }}
+                  animate={naTela ? { scaleX: 1 } : undefined}
+                  transition={{ duration: 0.7, ease: EASE, delay: 0.15 }}
+                >
+                  <motion.span
+                    className="block h-full rounded-full"
+                    style={{
+                      backgroundImage: `linear-gradient(90deg, ${CORES.join(', ')})`,
+                      backgroundSize: '13rem 100%',
+                    }}
+                    initial={false}
+                    animate={{ width: `${(cobertas / DUVIDAS.length) * 100}%` }}
+                    transition={parado ? { duration: 0 } : { duration: 0.55, ease: EASE }}
+                  />
+                </motion.span>
+
                 <Bolinhas pontos={lidas} parado={parado} />
               </span>
-
-              {/* A barra, que é o mesmo progresso em forma de régua. Ela se estende
-                  uma vez quando a seção entra na tela e depois só é PREENCHIDA, a
-                  cada resposta lida — o gradiente por baixo é fixo em 13rem, então
-                  o que cresce revela as cores na ordem em que os pontos acendem, em
-                  vez de espremer as seis dentro do pedaço já ganho. */}
-              <motion.div
-                aria-hidden
-                className="mt-3.5 h-[3px] w-full max-w-[13rem] origin-left overflow-hidden rounded-full bg-white/[0.10]"
-                initial={parado ? undefined : { scaleX: 0 }}
-                animate={naTela ? { scaleX: 1 } : undefined}
-                transition={{ duration: 0.7, ease: EASE, delay: 0.15 }}
-              >
-                <motion.div
-                  className="h-full rounded-full"
-                  style={{
-                    backgroundImage: `linear-gradient(90deg, ${CORES.join(', ')})`,
-                    backgroundSize: '13rem 100%',
-                  }}
-                  initial={false}
-                  animate={{ width: `${(cobertas / DUVIDAS.length) * 100}%` }}
-                  transition={parado ? { duration: 0 } : { duration: 0.55, ease: EASE }}
-                />
-              </motion.div>
 
               {/* No corpo do fecho do rodapé, e não mais um degrau abaixo: as
                   duas são a última pergunta e a última frase da página, e uma
@@ -582,7 +600,23 @@ export function Faq() {
                 <h2 className="font-serif text-[2.9rem] leading-[0.95] tracking-[-0.03em] text-[#F4F1E8] md:text-[4.4rem]">
                   {ABERTURA.titulo}
                 </h2>
-                <p className="text-[17px] leading-snug text-[#F4F1E8] md:text-[19px]">
+                {/* ─── EM SERIFA E ACESO, e por que NÃO no tamanho do título ──
+                 *
+                 * O dono pediu a serifa do título, o tamanho do título e um
+                 * glow. Os dois primeiros pedidos brigam entre si, e a medida
+                 * decide: na coluna fechada de 768px o título ocupa 493, sobram
+                 * 255 — e esta frase em serifa mede 480 nos 70px do título. No
+                 * tamanho pedido ela não caberia ao lado, e cairia para a linha
+                 * de baixo, que é exatamente de onde o dono a tirou no pedido
+                 * anterior. Trinta e seis é o maior corpo que mantém as duas
+                 * coisas: mede 223 e sobra folga de 32.
+                 *
+                 * `texto-aceso-fraco` e não `texto-aceso`: o forte é o do
+                 * rótulo "FAQ", e o próprio CSS registra o motivo de existirem
+                 * dois — duas coisas brilhando igual não são duas ênfases, são
+                 * nenhuma. Aqui o brilho acompanha o título sem disputar com
+                 * ele, que é o "elegante" do pedido. */}
+                <p className="texto-aceso-fraco font-serif text-[24px] leading-none tracking-[-0.02em] text-[#F4F1E8] md:text-[36px]">
                   {ABERTURA.dica}
                 </p>
               </div>
