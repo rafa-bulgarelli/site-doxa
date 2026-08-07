@@ -1,3 +1,4 @@
+import { HREF_FAQ, HREF_FORMS } from '../../ancoras';
 import { TROCA_DEPOIS } from '../comparacao/config';
 import { REELS, type Reel } from '../proof/reels';
 
@@ -165,18 +166,19 @@ export const FECHO = {
   publico: 'Tem um negócio? Atende vários? A porta é a mesma.',
   acao: 'Entrar em contato',
   /** Onde o pedido mora — o mesmo destino do escape do FAQ. */
-  destino: '#pedido',
+  destino: HREF_FORMS,
 };
 
 /**
  * Os links rápidos: âncoras que EXISTEM.
  *
- * Só entra aqui o que tem um `id` correspondente na página. Um rodapé cheio de
- * links que não levam a lugar nenhum é pior do que um rodapé curto — e este
- * repositório acabou de perder tempo com exatamente isso: `#pedido` era
- * apontado por dois botões e não existia em elemento nenhum.
+ * Um rodapé cheio de links que não levam a lugar nenhum é pior do que um rodapé
+ * curto — e este repositório já perdeu tempo com exatamente isso: `#pedido` era
+ * apontado por dois botões e não existia em elemento nenhum. Por isso os
+ * destinos vêm de `ancoras.ts`, onde a string mora ao lado do elemento que a
+ * carrega, em vez de serem escritos à mão aqui.
  */
 export const ATALHOS: readonly { rotulo: string; destino: string }[] = [
-  { rotulo: 'Perguntas', destino: '#faq' },
-  { rotulo: 'Falar com a gente', destino: '#pedido' },
+  { rotulo: 'Perguntas', destino: HREF_FAQ },
+  { rotulo: 'Falar com a gente', destino: HREF_FORMS },
 ];

@@ -21,6 +21,7 @@ import {
 import { WALL_REELS, WALL_REELS_MOBILE, type Reel } from './proof/reels';
 import { DotGridSpotlight } from './hero/DotGridSpotlight';
 import { MotionButton } from './ui/MotionButton';
+import { HREF_FORMS } from '../ancoras';
 import { useIsDesktop } from '../hooks/useIsDesktop';
 
 /**
@@ -771,7 +772,7 @@ function ClosingCard({ onEnter, ...placement }: TrackPlacement & { onEnter: () =
           E a próxima é a sua.
         </p>
 
-        <MotionButton label="Quero viralizar" href="/empresas" />
+        <MotionButton label="Quero viralizar" href={HREF_FORMS} />
       </div>
     </motion.div>
   );

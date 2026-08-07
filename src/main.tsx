@@ -16,8 +16,8 @@ import './index.css';
  *     `scrollRestoration = 'manual'` desliga isso e deixa a decisão com a
  *     página.
  *
- *  2. A ÂNCORA HERDADA. Clicar em "Perguntas" ou no botão de contato escreve
- *     `#faq` / `#pedido` na barra de endereço, e ali fica. O próximo reload não
+ *  2. A ÂNCORA HERDADA. Clicar em "Perguntas" ou em qualquer CTA escreve
+ *     `#faq` / `#forms` na barra de endereço, e ali fica. O próximo reload não
  *     abre a página: abre aquela seção. `replaceState` limpa o fragmento antes
  *     do primeiro render, sem entrada nova no histórico.
  *

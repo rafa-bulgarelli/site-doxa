@@ -8,6 +8,7 @@ import { encontra } from './faq/busca';
 import { ABERTURA, DUVIDAS, ESPERA, SEM_RESPOSTA, type Duvida } from './faq/config';
 import { CORES, SEM_COR, corDaDuvida } from './faq/cores';
 import { MotionButton } from './ui/MotionButton';
+import { ANCORA_FAQ, HREF_FORMS, ID_CARTAO_PEDIDO } from '../ancoras';
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
@@ -90,13 +91,6 @@ interface Troca {
 }
 
 /**
- * A âncora do formulário, que mora no painel claro da comparação
- * (`Comparacao.tsx`). Ela já é pública: os botões "Falar com o consultor" e o
- * fecho do rodapé saltam para cá. Aqui ela é lida, e nada mais.
- */
-const ANCORA_PEDIDO = 'pedido';
-
-/**
  * A posição de um elemento na PÁGINA, somada pela cadeia de `offsetTop`.
  *
  * E não `getBoundingClientRect`, que seria a leitura óbvia: o painel claro da
@@ -144,7 +138,7 @@ function useArDoPedido(secaoRef: RefObject<HTMLElement>): number | null {
     if (!secao) return;
 
     const medir = () => {
-      const pedido = document.getElementById(ANCORA_PEDIDO);
+      const pedido = document.getElementById(ID_CARTAO_PEDIDO);
       if (!pedido) return;
       const vao = topoNaPagina(secao) - (topoNaPagina(pedido) + pedido.offsetHeight);
       if (vao > 0) setAr(vao);
@@ -411,7 +405,7 @@ export function Faq() {
   return (
     <section
       ref={secaoRef}
-      id="faq"
+      id={ANCORA_FAQ}
       data-secao="Perguntas"
       /* ─── A SEÇÃO TEM ALTURA PRÓPRIA, e o conteúdo mora no TOPO dela ───────
        *
@@ -937,7 +931,7 @@ export function Faq() {
 
                       {troca.escape && (
                         <div className="mt-6">
-                          <MotionButton label={SEM_RESPOSTA.acao} href="#pedido" />
+                          <MotionButton label={SEM_RESPOSTA.acao} href={HREF_FORMS} />
                         </div>
                       )}
                     </div>

@@ -9,6 +9,7 @@ import {
   useTransform,
 } from 'framer-motion';
 import wordmarkUrl from '../../brand/doxa-wordmark-white.png';
+import { ANCORA_FORMS } from '../ancoras';
 import { DotGridSpotlight } from './hero/DotGridSpotlight';
 import { BordaViva } from './comparacao/BordaViva';
 import { FioConvite } from './comparacao/FioConvite';
@@ -349,6 +350,36 @@ export function Comparacao() {
        * tela. O papel aparece um pouco ANTES do que este número sugere. */}
       <div className="h-screen" aria-hidden />
 
+      {/* ─── `#forms`: A MARCA DO SALTO, e por que ela é uma caixa VAZIA ──────
+       *
+       * Este é o destino de toda CTA de conversão do site. Ele é um traço de
+       * altura zero encostado no topo do painel claro — e não o `id` do painel —
+       * porque o alvo de um salto precisa de uma caixa que o navegador consiga
+       * MEDIR na hora do clique.
+       *
+       * O painel tem `rotate`, e o salto de fragmento (como `scrollIntoView`)
+       * calcula o destino a partir do retângulo TRANSFORMADO do alvo, uma vez
+       * só, no instante em que é chamado. Nesse instante o painel está sempre
+       * girado: todo botão que aponta para cá mora ACIMA dele, e o giro só zera
+       * quando o papel já subiu quase até o topo da janela. O retângulo lido é o
+       * da caixa torta, a conta sai errada, e a rolagem suave ainda persegue um
+       * alvo que se endireita no caminho — a pessoa aterrissa no meio do papel.
+       *
+       * `transform` não mexe em LAYOUT. Esta caixa é estática, então o topo dela
+       * é o topo do painel em repouso — o mesmo número antes, durante e depois
+       * do giro. Sem altura, sem margem e sem pintura, ela não desloca nada: o
+       * que ela faz é dar ao navegador a coordenada certa.
+       *
+       * Alinhado por aqui, o painel de `min-h-screen` abre exatamente na borda
+       * de cima da janela e ocupa a tela inteira — a manchete, a garantia e o
+       * formulário na mesma tela. E o giro já terminou quando ela chega: ele
+       * zera com o topo do painel a um quarto da tela, que é ANTES deste ponto.
+       *
+       * `scroll-mt-0` é declarado de propósito: o dono pediu a seção ocupando
+       * 100% da tela, e qualquer recuo herdado aqui viraria uma faixa da seção
+       * anterior aparecendo em cima do papel. */}
+      <div id={ANCORA_FORMS} aria-hidden className="h-0 scroll-mt-0" />
+
       {/* ── Painel claro: o convite. Sobe girado, assenta, e para. */}
       <motion.div
         ref={claroRef}
@@ -593,15 +624,17 @@ export function Comparacao() {
               escreve. Se a pausa voltar um dia, ela volta inteira. Quem pede
               menos movimento continua atendido por `prefers-reduced-motion`,
               que desliga o sinal na raiz, no CSS. */}
-          {/* `id="pedido"` mora AQUI, no formulário, e não na seção inteira.
+          {/* O `id="pedido"` que morava nesta coluna SAIU, e ele era um id
+              DUPLICADO: o cartão do formulário declara o mesmo, e num documento
+              com dois iguais só o primeiro existe para
+              `getElementById`/`#hash`. Quem ganhava era esta coluna, e a medida
+              do FAQ — que pede o pé do CARTÃO — vinha da caixa errada por
+              acidente (mesmo valor hoje, porque a coluna só contém o cartão;
+              errado no dia em que ela contiver outra coisa).
 
-              Ele estava faltando: o "Falar com o consultor" do FAQ e agora o
-              fecho do rodapé apontam os dois para `#pedido`, e nenhum elemento
-              da página tinha esse id — os dois botões não levavam a lugar
-              nenhum. Na seção, o salto pararia no topo dela e a pessoa ainda
-              teria de procurar o formulário no meio de uma tabela de custos;
-              no formulário, ela cai no campo que veio preencher. */}
-          <div id="pedido" className="relative flex flex-col scroll-mt-24 lg:items-end">
+              O destino dos botões é `#forms`, o painel inteiro, marcado lá em
+              cima. O `scroll-mt-24` foi junto: ninguém mais salta para aqui. */}
+          <div className="relative flex flex-col lg:items-end">
             <Formulario cartaoRef={cartaoRef} />
           </div>
         </div>

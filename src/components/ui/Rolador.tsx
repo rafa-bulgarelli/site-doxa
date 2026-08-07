@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { ArrowDown } from 'lucide-react';
+import { ANCORA_FORMS } from '../../ancoras';
 
 /** Folga da barra contra o topo e o pé da janela, em pixels. */
 const MARGEM = 10;
@@ -90,8 +91,8 @@ const FOLGA = 26;
  */
 const ALCANCE = 300;
 
-/** Onde o botão leva. É a mesma âncora do fecho do rodapé e do escape do FAQ. */
-const DESTINO = 'pedido';
+/** Onde o botão leva. É a mesma âncora de toda CTA da página. */
+const DESTINO = ANCORA_FORMS;
 
 /**
  * A posição de um elemento na PÁGINA, somada pela cadeia de `offsetTop`.
@@ -535,13 +536,19 @@ export function Rolador() {
   }, []);
 
   /* O atalho. `scrollIntoView` e não `location.hash`: escrever o fragmento na
-     barra de endereço deixaria `#pedido` colado ali, e o próximo recarregamento
+     barra de endereço deixaria `#forms` colado ali, e o próximo recarregamento
      abriria a página no formulário — que é exatamente o defeito que `main.tsx`
-     consertou. */
+     consertou.
+
+     `block: 'start'` e não `'center'`: a marca do salto tem altura zero
+     (`Comparacao.tsx` explica por quê), e centrar um ponto o deixaria no meio da
+     janela — meia tela do painel anterior por cima do papel. Alinhado pelo
+     topo, o painel claro ocupa a tela inteira, que é o mesmo pouso do clique em
+     qualquer botão da página. */
   const irParaOPedido = () => {
     setAberta(false);
     abertaRef.current = false;
-    document.getElementById(DESTINO)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    document.getElementById(DESTINO)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
   /* `aria-hidden`: esta barra não acrescenta nada a quem não a vê. A rolagem por

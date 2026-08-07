@@ -10,6 +10,7 @@ import { ConnectorLines } from './hero/ConnectorLines';
 import { WordRotator } from './hero/WordRotator';
 import { DotGridSpotlight } from './hero/DotGridSpotlight';
 import { MotionButton } from './ui/MotionButton';
+import { HREF_FORMS } from '../ancoras';
 import { useIsDesktop } from '../hooks/useIsDesktop';
 import { TOOLS } from './tools';
 // Bitmap wordmark — the only form the owner has. Card 002 wants this vectorised
@@ -125,14 +126,20 @@ export function Hero() {
         </nav>
 
         <div className="flex items-center gap-2 md:gap-3">
+          {/* As duas ações do topo vão para o MESMO lugar, e é de propósito:
+              "falar com a gente" e "quero viralizar" são a mesma intenção dita
+              em dois tons, e o site tem uma porta só. Elas apontavam para `#`
+              (rola zero pixel) e para `/empresas` (uma rota que não existe neste
+              app) — os dois botões da primeira dobra não levavam a lugar
+              nenhum. */}
           <a
-            href="#"
+            href={HREF_FORMS}
             className="hidden rounded-full border border-white/[0.11] bg-white/[0.06] px-4 py-2 text-xs text-white backdrop-blur-md transition-colors hover:bg-white/[0.12] sm:block md:text-sm"
           >
             Falar com a gente
           </a>
           <a
-            href="/empresas"
+            href={HREF_FORMS}
             className="rounded-full bg-white px-4 py-2 text-xs font-medium text-black transition-transform hover:scale-[1.03] md:px-5 md:text-sm"
           >
             Quero viralizar
@@ -276,7 +283,7 @@ export function Hero() {
                 keeps the tighter horizontal gap from `lg`, where the button
                 and the deck sit side by side and 24px would read as a gulf. */}
             <div className="mt-6 flex flex-col items-center gap-6 lg:mt-9 lg:flex-row lg:items-start lg:justify-center lg:gap-3">
-              <MotionButton label="Quero viralizar" href="/empresas" />
+              <MotionButton label="Quero viralizar" href={HREF_FORMS} />
 
               {/* The canvas below the desktop breakpoint, in its two forms.
 

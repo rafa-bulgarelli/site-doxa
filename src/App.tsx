@@ -1,4 +1,5 @@
 import { Suspense, lazy, useEffect } from 'react';
+import { ANCORA_FORMS, HREF_FORMS } from './ancoras';
 import { Hero } from './components/Hero';
 import { Rolador } from './components/ui/Rolador';
 
@@ -87,6 +88,61 @@ export default function App() {
     // dobra terminar de montar.
     const id = window.setTimeout(puxar, 1500);
     return () => window.clearTimeout(id);
+  }, []);
+
+  /**
+   * ─── O SEGURO DA ÂNCORA `#forms` ─────────────────────────────────────────
+   *
+   * `#forms` marca o painel claro da comparação, e a comparação é `lazy`. Nos
+   * primeiros segundos de visita ela ainda não montou — o que existe no lugar
+   * dela é o vão do `Suspense`, e o elemento com esse `id` não está no
+   * documento. Um clique nesse intervalo é o pior defeito possível numa CTA: o
+   * navegador não acha o fragmento, não rola um pixel, não escreve nada no
+   * console, e a pessoa conclui que o botão do site não funciona.
+   *
+   * A janela é curta mas real. O botão do topo está visível no primeiro quadro,
+   * e o carregamento adiantado acima só acontece quando o navegador fica ocioso
+   * — numa rede lenta, ou numa máquina ocupada, isso é segundo e meio depois.
+   * Quem clica em "Quero viralizar" assim que lê o título cai bem no meio dela.
+   *
+   * Então: se o alvo já existe, este ouvinte não faz NADA e o salto é o do
+   * navegador, com a rolagem suave do CSS. Se não existe, ele segura o clique,
+   * puxa o pedaço na hora e rola quando o alvo aparecer.
+   *
+   * A espera é por QUADRO, e não um atraso fixo: o `import` resolver significa
+   * que o código chegou, não que o React já pintou o painel. Sessenta quadros
+   * são cerca de um segundo — depois disso, desiste em silêncio, que é o mesmo
+   * que teria acontecido sem este seguro.
+   */
+  useEffect(() => {
+    const rolarQuandoChegar = (quadrosRestantes: number) => {
+      const alvo = document.getElementById(ANCORA_FORMS);
+      if (alvo) {
+        alvo.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        return;
+      }
+      if (quadrosRestantes > 0) {
+        window.requestAnimationFrame(() => rolarQuandoChegar(quadrosRestantes - 1));
+      }
+    };
+
+    const aoClicar = (evento: MouseEvent) => {
+      // Cliques com modificador são "abrir noutra aba/janela", e são do
+      // navegador. Botão do meio não gera `click` em toda plataforma, mas o
+      // `button` é testado do mesmo jeito — só o principal é nosso.
+      if (evento.defaultPrevented || evento.button !== 0) return;
+      if (evento.metaKey || evento.ctrlKey || evento.shiftKey || evento.altKey) return;
+
+      const alvo = evento.target as Element | null;
+      if (!alvo?.closest(`a[href="${HREF_FORMS}"]`)) return;
+      if (document.getElementById(ANCORA_FORMS)) return;
+
+      evento.preventDefault();
+      void import('./components/Comparacao').then(() => rolarQuandoChegar(60));
+    };
+
+    document.addEventListener('click', aoClicar);
+    return () => document.removeEventListener('click', aoClicar);
   }, []);
 
   return (

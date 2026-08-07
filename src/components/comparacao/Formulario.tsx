@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, type RefObject } from 'react';
 import { AnimatePresence, motion, useInView, useReducedMotion } from 'framer-motion';
 import { ArrowLeft, Check } from 'lucide-react';
+import { ID_CARTAO_PEDIDO } from '../../ancoras';
 // O mesmo facho do hero, apontado para dentro deste cartão. É genérico apesar da
 // pasta: recebe o container e escreve a posição do ponteiro nele. Custo zero de
 // bundle, e é o que faz o único elemento clicável da página responder à mão.
@@ -232,9 +233,10 @@ export function Formulario({ cartaoRef }: { cartaoRef: RefObject<HTMLDivElement>
   return (
     <motion.div
       ref={cartaoRef}
-      /* O destino do `#pedido` — o FAQ manda para cá quem perguntou o que a
-         página não sabe responder. */
-      id="pedido"
+      /* HANDLE DE MEDIDA, e não destino de botão: o FAQ lê o PÉ deste cartão
+         para calcular o próprio recuo de topo. Quem recebe os cliques é
+         `#forms`, o painel claro inteiro — `ancoras.ts` explica os dois. */
+      id={ID_CARTAO_PEDIDO}
       initial={parado ? undefined : { opacity: 0, y: 28, scale: 0.98 }}
       animate={naTela ? { opacity: 1, y: 0, scale: 1 } : undefined}
       transition={{ duration: 0.75, ease: EASE, delay: 0.15 }}
