@@ -326,9 +326,17 @@ export function Comparacao() {
               — trocaria um corte por outro.
 
               `sm:flex-initial` devolve o comportamento padrão de 640px para
-              cima, onde a lista sempre coube e nada disto precisa existir. */}
+              cima, onde a lista sempre coube e nada disto precisa existir.
+
+              E `pt-0` até 640px, a pedido do dono. Com os 28 pixels de respiro,
+              a linha cinza ficava 28 acima da BORDA DE CORTE da janela: via-se
+              o filete, uma faixa preta, e só então a lista começando no meio de
+              uma linha de texto — e o que aquilo parece é uma tarja cobrindo a
+              conta, não uma lista correndo. Sem o respiro, o filete É a borda de
+              corte: o texto sai de baixo dele, que é o que ele sempre quis
+              dizer. Os 28 pixels ainda voltam para a janela como altura. */}
           <div
-            className={`${RESPIRO} flex min-h-0 flex-1 flex-col border-t border-white/[0.09] pt-7 sm:flex-initial md:pt-10`}
+            className={`${RESPIRO} flex min-h-0 flex-1 flex-col border-t border-white/[0.09] pt-0 sm:flex-initial sm:pt-7 md:pt-10`}
           >
             {/* A janela é uma caixa só, sem padding: assim `clientHeight` dela é
                 exatamente o espaço que a lista tem para correr, e a medida não
