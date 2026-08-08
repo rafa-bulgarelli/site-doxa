@@ -107,6 +107,31 @@ const ESPALHA = 0.6;
 const ACENDE = 0.15;
 
 /**
+ * O mesmo acender, encurtado para a janela do telefone.
+ *
+ * 15% do percurso são pouco mais de SEIS itens a meio caminho ao mesmo tempo —
+ * e no desktop isso é a graça: a lista inteira está à vista, e a franja de
+ * palavras chegando lê como escrita à mão. Na janela estreita cabem cinco
+ * linhas. Uma franja de seis itens é MAIOR do que a janela: tudo que estava na
+ * tela era texto a meio fade, e o dono leu exatamente assim — "as palavras estão
+ * todas pretas, só ficam legíveis quando chego no fim da seção". Não estava
+ * quebrado; estava calibrado para uma janela dez vezes maior.
+ *
+ * 4% é pouco mais de UM item de franja. A conta continua se escrevendo, mas o
+ * que está escrito já se lê.
+ */
+const ACENDE_ESTREITO = 0.04;
+
+/**
+ * O mínimo do freio, para os quatro pontos do deslize nunca empatarem.
+ *
+ * `useTransform` precisa de entradas estritamente crescentes; antes da primeira
+ * medida a janela mede zero e o freio calculado daria zero, empatando com o
+ * ponto de partida.
+ */
+const FREIO_MINIMO = 0.01;
+
+/**
  * Onde entram as duas linhas que FECHAM a conta, depois dos vinte e cinco itens.
  *
  * O total ("meses") em 66%, a frase da garantia em 77%, e a ordem entre eles é o
@@ -215,6 +240,7 @@ function Lamina({ item }: { item: Item }) {
 function Palavra({
   progresso,
   fatia,
+  acende,
   parado,
   numero,
   nome,
@@ -224,6 +250,8 @@ function Palavra({
   progresso: MotionValue<number>;
   /** Onde no percurso esta palavra acende, de 0 a 1. */
   fatia: number;
+  /** Quanto do percurso ela leva acendendo. Depende do tamanho da janela. */
+  acende: number;
   /** A pessoa pediu menos movimento: a palavra nasce pronta. */
   parado: boolean;
   numero?: string;
@@ -231,7 +259,7 @@ function Palavra({
   className: string;
   aoApontar: (evento: React.MouseEvent) => void;
 }) {
-  const opacity = useTransform(progresso, [fatia, fatia + ACENDE], [0, 1]);
+  const opacity = useTransform(progresso, [fatia, fatia + acende], [0, 1]);
   /*
    * ─── O QUE NÃO SE VÊ NÃO SE APONTA ───────────────────────────────────────
    *
@@ -256,7 +284,7 @@ function Palavra({
      lerem como uma conta sendo escrita em vez de um texto que estava lá o tempo
      todo com a luz apagada. Em `transform`, que não empurra o texto ao lado nem
      obriga o navegador a refazer a justificação a cada quadro. */
-  const y = useTransform(progresso, [fatia, fatia + ACENDE], [6, 0]);
+  const y = useTransform(progresso, [fatia, fatia + acende], [6, 0]);
 
   return (
     <motion.span
@@ -302,6 +330,9 @@ export function Ladainha({
   const isDesktop = useIsDesktop();
   const parado = useReducedMotion() === true;
   const podeSeguir = isDesktop && !parado;
+  // A franja de palavras a meio caminho tem de caber na janela em que ela
+  // aparece — e as duas janelas não têm nada a ver uma com a outra.
+  const acende = isDesktop ? ACENDE : ACENDE_ESTREITO;
 
 
   const [apontado, setApontado] = useState<Item | null>(null);
@@ -339,7 +370,7 @@ export function Ladainha({
    * enfeite, é a única forma de o conteúdo ser alcançável. O que se move aqui
    * anda na velocidade do dedo de quem rola, e não sozinho.
    */
-  const [excedente, setExcedente] = useState(0);
+  const [corrida, setCorrida] = useState({ freio: FREIO_MINIMO, alvo: 0, fim: 0 });
 
   useLayoutEffect(() => {
     const janela = janelaRef.current;
@@ -350,8 +381,35 @@ export function Ladainha({
       // `scrollHeight` da lista e não `getBoundingClientRect`: o deslize é um
       // `transform`, e o retângulo desenhado já viria deslocado pelo próprio
       // valor que estamos tentando calcular — a medida se perseguiria.
-      const sobra = Math.max(0, lista.scrollHeight - janela.clientHeight);
-      setExcedente((atual) => (Math.abs(atual - sobra) < 1 ? atual : sobra));
+      const altura = janela.clientHeight;
+      const fim = Math.max(0, lista.scrollHeight - altura);
+      /*
+       * Onde os ITENS acabam, que não é onde a lista acaba.
+       *
+       * O último filho do parágrafo é o total, e ele tem filete, respiro e corpo
+       * de manchete — quase noventa pixels que não fazem parte da fatura. O
+       * percurso dos itens tem de terminar no fim dos itens, senão a lista ainda
+       * está correndo quando a última linha já acendeu. `offsetTop` é relativo
+       * ao parágrafo porque ele é `relative`, então é ele o `offsetParent`.
+       */
+      const total = lista.lastElementChild;
+      const fimDosItens =
+        total instanceof HTMLElement ? total.offsetTop : lista.scrollHeight;
+      const alvo = Math.min(fim, Math.max(0, fimDosItens - altura));
+      // O FREIO: a lista não anda enquanto a janela não estiver cheia. Sem ele,
+      // o texto começa a subir com três linhas escritas e a pessoa persegue uma
+      // conta que foge dela antes de existir.
+      const freio =
+        fimDosItens > 0
+          ? Math.min(ESPALHA * 0.98, Math.max(FREIO_MINIMO, ESPALHA * (altura / fimDosItens)))
+          : FREIO_MINIMO;
+      setCorrida((atual) =>
+        Math.abs(atual.fim - fim) < 1 &&
+        Math.abs(atual.alvo - alvo) < 1 &&
+        Math.abs(atual.freio - freio) < 0.005
+          ? atual
+          : { freio, alvo, fim },
+      );
     };
 
     medir();
@@ -361,9 +419,27 @@ export function Ladainha({
     return () => observador.disconnect();
   }, [janelaRef]);
 
-  // No layout largo a janela é `h-auto`: o conteúdo cabe, `excedente` dá zero e
-  // o deslize é uma translação de zero pixel. O desktop não sente nada disto.
-  const deslize = useTransform(progresso, [0, FATIA_TOTAL], [0, -excedente]);
+  /*
+   * O deslize em três trechos, e cada dobra tem um porquê.
+   *
+   * `0 → freio`: parado. A janela está se enchendo, e nada precisa correr.
+   * `freio → ESPALHA`: a lista sobe com a FRENTE DA ESCRITA colada na borda de
+   *   baixo — as linhas acesas ficam acima dela, legíveis, e a próxima chega por
+   *   baixo. É este trecho que estava errado: um deslize linear de 0 a
+   *   `FATIA_TOTAL` subia mais rápido do que a escrita, e o que sobrava na
+   *   janela eram só as linhas ainda apagadas. A conta corria na frente da
+   *   própria soma.
+   * `ESPALHA → FATIA_TOTAL`: os itens acabaram e o que falta subir é o total,
+   *   que chega ao pé da janela exatamente quando acende.
+   *
+   * No layout largo os três números dão zero — a lista cabe, `fim` e `alvo` são
+   * zero, e isto é uma translação de zero pixel do começo ao fim.
+   */
+  const deslize = useTransform(
+    progresso,
+    [0, corrida.freio, ESPALHA, FATIA_TOTAL],
+    [0, 0, -corrida.alvo, -corrida.fim],
+  );
 
   const seguir = (evento: React.MouseEvent) => {
     if (!podeSeguir) return;
@@ -439,6 +515,7 @@ export function Ladainha({
             <Fragment key={item.nome}>
               <Palavra
                 progresso={progresso}
+                acende={acende}
                 parado={parado}
                 fatia={(i / ITENS.length) * ESPALHA}
                 numero={String(i + 1).padStart(2, '0')}
@@ -485,6 +562,7 @@ export function Ladainha({
             parcela não fecha nada. */}
         <Palavra
           progresso={progresso}
+          acende={acende}
           parado={parado}
           fatia={FATIA_TOTAL}
           nome={TEMPO.nome}

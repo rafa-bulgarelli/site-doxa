@@ -22,6 +22,7 @@ import { WALL_REELS, WALL_REELS_MOBILE, type Reel } from './proof/reels';
 import { DotGridSpotlight } from './hero/DotGridSpotlight';
 import { MotionButton } from './ui/MotionButton';
 import { HREF_FORMS } from '../ancoras';
+import { TITULO_SECAO } from '../tipografia';
 import { useIsDesktop } from '../hooks/useIsDesktop';
 
 /**
@@ -1193,7 +1194,7 @@ export function ProofWall() {
                 cartão embaixo, por uma quebra que ninguém pediu. A 27px ela cabe
                 inteira, e o título volta a ter as duas linhas que o `<br>`
                 escreveu. Acima de 640 nada muda. */}
-            <h2 className="font-serif text-[1.7rem] font-normal leading-[1.05] tracking-[-0.02em] text-white sm:text-4xl md:text-6xl">
+            <h2 className={`font-serif ${TITULO_SECAO} font-normal leading-[1.05] tracking-[-0.02em] text-white sm:text-4xl md:text-6xl`}>
               {CLIENTES} empresas já
               <br />
               viralizaram com a Doxa.

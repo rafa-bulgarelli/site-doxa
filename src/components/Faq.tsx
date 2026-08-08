@@ -9,6 +9,7 @@ import { ABERTURA, DUVIDAS, ESPERA, SEM_RESPOSTA, type Duvida } from './faq/conf
 import { CORES, SEM_COR, corDaDuvida } from './faq/cores';
 import { MotionButton } from './ui/MotionButton';
 import { ANCORA_FAQ, HREF_FORMS, ID_CARTAO_PEDIDO } from '../ancoras';
+import { MANCHETE } from '../tipografia';
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
@@ -604,7 +605,7 @@ export function Faq() {
                * estão na MESMA linha de base, e ali a proximidade é o que faz a
                * frase menor ler como resposta à maior. */}
               <div className="mt-5 flex flex-wrap items-baseline gap-x-5 gap-y-4">
-                <h2 className="font-serif text-[2.9rem] leading-[0.95] tracking-[-0.03em] text-[#F4F1E8] md:text-[4.4rem]">
+                <h2 className={`font-serif ${MANCHETE} leading-[0.95] tracking-[-0.03em] text-[#F4F1E8] md:text-[4.4rem]`}>
                   {ABERTURA.titulo}
                 </h2>
                 {/* ─── EM SERIFA E ACESO, e por que NÃO no tamanho do título ──

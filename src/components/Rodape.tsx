@@ -6,6 +6,7 @@ import { ArrastoInfinito } from './rodape/ArrastoInfinito';
 import { Peca, usePalco } from './rodape/Peca';
 import { ATALHOS, EXPOSTAS, FECHO, PECAS } from './rodape/config';
 import { MotionButton } from './ui/MotionButton';
+import { MANCHETE } from '../tipografia';
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
@@ -277,7 +278,7 @@ export function Rodape() {
                * Um oito acima de um é o que devolve o ar sem separá-las: elas
                * continuam sendo um bloco, mas com uma respiração entre a
                * afirmação e o que falta. */}
-              <h2 className="texto-aceso font-serif text-[2.6rem] leading-[1.08] tracking-[-0.03em] text-[#F4F1E8] md:text-[4.4rem]">
+              <h2 className={`texto-aceso font-serif ${MANCHETE} leading-[1.08] tracking-[-0.03em] text-[#F4F1E8] md:text-[4.4rem]`}>
                 {FECHO.titulo}
                 <span className="block">{FECHO.linha}</span>
               </h2>

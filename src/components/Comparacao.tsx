@@ -10,6 +10,7 @@ import {
 } from 'framer-motion';
 import wordmarkUrl from '../../brand/doxa-wordmark-white.png';
 import { ANCORA_FORMS } from '../ancoras';
+import { MANCHETE, TITULO_SECAO } from '../tipografia';
 import { DotGridSpotlight } from './hero/DotGridSpotlight';
 import { BordaViva } from './comparacao/BordaViva';
 import { FioConvite } from './comparacao/FioConvite';
@@ -255,7 +256,7 @@ export function Comparacao() {
                 que foi o que o dono leu. A 28px a linha cabe, o `<br>` volta a
                 ser a única quebra que existe, e o título recupera as duas linhas
                 que ele foi escrito para ter. De 640px para cima nada muda. */}
-            <h2 className="font-serif text-[1.75rem] font-normal leading-[1.05] tracking-[-0.02em] text-white sm:text-4xl md:text-6xl">
+            <h2 className={`font-serif ${TITULO_SECAO} font-normal leading-[1.05] tracking-[-0.02em] text-white sm:text-4xl md:text-6xl`}>
               {PERGUNTA[0]}
               <br />
               {PERGUNTA[1]}
@@ -527,7 +528,7 @@ export function Comparacao() {
               for refeita, é melhor a frase vazar e ser vista na hora do que
               quebrar sozinha e deixar "viraliza." pendurada — quebra sozinha
               parece de propósito. */}
-          <h2 className="mt-8 font-serif text-[2.8rem] leading-[0.95] tracking-[-0.03em] text-[#0B0B0B] md:text-[4.4rem] lg:whitespace-nowrap lg:text-[clamp(2.8rem,calc(6.13vw_-_4.9px),5.8rem)]">
+          <h2 className={`mt-8 font-serif ${MANCHETE} leading-[0.95] tracking-[-0.03em] text-[#0B0B0B] md:text-[4.4rem] lg:whitespace-nowrap lg:text-[clamp(2.8rem,calc(6.13vw_-_4.9px),5.8rem)]`}>
             {CONVITE[0]}
             {/* A quebra só existe onde a frase não cabe numa linha. No
                 desktop ela sai, e o espaço que a substitui tem de ser
