@@ -211,6 +211,8 @@ export function Comparacao() {
    * da lista. `Ladainha.tsx` guarda os limites e o porquê deles.
    */
   const contagem = useContagem(secaoRef);
+  /** A caixa em que a ladainha corre no telefone. Ver o bloco que a monta. */
+  const janelaLadainhaRef = useRef<HTMLDivElement>(null);
   const fechoOpacity = useTransform(contagem, [FATIA_FECHO, 1], [0, 1]);
   const fechoY = useTransform(contagem, [FATIA_FECHO, 1], [10, 0]);
   const giro = useTransform(scrollYProgress, [0, 1], [GIRO, 0]);
@@ -244,7 +246,16 @@ export function Comparacao() {
               claro, que entra girado e cobre o terço de baixo da tela. O valor é
               o clímax da coluna e não podia estar na parte que some. */}
           <div className="mt-6 flex flex-wrap items-end justify-between gap-x-10 gap-y-6">
-            <h2 className="font-serif text-4xl font-normal leading-[1.05] tracking-[-0.02em] text-white md:text-6xl">
+            {/* 1,75rem só até 640px, e o número é o que faz a primeira linha
+                caber inteira.
+
+                A 36px, "Quanto custa não ter a Doxa" não entra nos 280 pixels
+                úteis de um telefone de 320 e quebra sozinha depois do "a" — o
+                título chegava em três linhas com a palavra Doxa órfã na segunda,
+                que foi o que o dono leu. A 28px a linha cabe, o `<br>` volta a
+                ser a única quebra que existe, e o título recupera as duas linhas
+                que ele foi escrito para ter. De 640px para cima nada muda. */}
+            <h2 className="font-serif text-[1.75rem] font-normal leading-[1.05] tracking-[-0.02em] text-white sm:text-4xl md:text-6xl">
               {PERGUNTA[0]}
               <br />
               {PERGUNTA[1]}
@@ -254,14 +265,26 @@ export function Comparacao() {
                 para ocupar o peso que ela dividia. O `/mês` sozinho já diz que
                 é recorrente, e um número desacompanhado bate mais forte do que
                 um número com uma legenda ao lado pedindo atenção. */}
-            <span className="font-serif text-[2.6rem] leading-none text-white md:text-[4.6rem]">
+            {/* 1,5rem e `nowrap` até 640px, a pedido do dono: a conta cabe numa
+                linha só no telefone.
+
+                Ela vinha maior que o título — 41,6px contra 36 — e quebrava em
+                duas linhas, o que custava dois erros de uma vez: a hierarquia
+                invertida, com o número gritando mais alto que a pergunta que ele
+                responde, e cinquenta pixels comidos do vão da lista embaixo.
+                Menor que o título, ela volta a ser a resposta e não a manchete.
+
+                O `nowrap` é o que garante a linha única independente do que o
+                número vier a ser: se `CUSTO_ATE` ganhar uma casa, o corpo é que
+                fica apertado — a quebra não volta pela porta dos fundos. */}
+            <span className="whitespace-nowrap font-serif text-[1.5rem] leading-none text-white sm:whitespace-normal sm:text-[2.6rem] md:text-[4.6rem]">
               R$ <Contador ate={CUSTO_DE} naTela={contaNaTela} /> a{' '}
               <Contador ate={CUSTO_ATE} naTela={contaNaTela} />
               {/* O `/mês` em destaque, a pedido do dono, e o argumento é dele:
                   no fim do dia o que dói não é o valor, é a recorrência dele.
                   Um custo alto se engole uma vez; um custo alto TODO MÊS, sem
                   resultado garantido, é o que faz a pergunta do título doer. */}
-              <span className="ml-1 align-baseline text-3xl text-white/75 md:text-[3.2rem]">
+              <span className="ml-1 align-baseline text-[1rem] text-white/75 sm:text-3xl md:text-[3.2rem]">
                 {CUSTO_UNIDADE}
               </span>
             </span>
@@ -286,13 +309,40 @@ export function Comparacao() {
               sozinho, escrevendo-se conforme a pessoa rola. Um título em cima de
               uma conta que está sendo somada na frente de quem lê é legenda de
               museu — e o filete separa tão bem quanto, sem falar nada. */}
-          <div className={`${RESPIRO} border-t border-white/[0.09] pt-7 md:pt-10`}>
-            {/* A lista recebe a régua pronta: o painel onde ela mora é `sticky`,
-                e um elemento grudado não se move em relação à janela — um
-                `useScroll` apontado para ele devolveria um progresso travado no
-                mesmo número durante toda a leitura. Por isso o alvo é a seção, e
-                por isso a medida é feita aqui em cima. */}
-            <Ladainha progresso={contagem} />
+          {/* `flex-1 min-h-0` até 640px, e é ele que cria a JANELA da conta.
+
+              O painel é `sticky` e tem uma tela de altura exata. No telefone os
+              vinte e cinco itens medem 684 pixels num vão de menos de duzentos:
+              o dono via cinco e os outros vinte acendiam embaixo da dobra de um
+              painel que, por ser grudado, nunca rola até eles. Com `flex-1`, este
+              bloco passa a valer exatamente o que sobrou da coluna depois do
+              selo, do título, da conta e do fecho — e é dentro dele que a lista
+              corre, puxada pela mesma régua que a acende.
+
+              `min-h-0` não é enfeite: um filho de flex se recusa a encolher
+              abaixo do próprio conteúdo por padrão, e sem isto a caixa cresceria
+              para os 684 pixels da lista e empurraria o fecho para fora da tela
+              — trocaria um corte por outro.
+
+              `sm:flex-initial` devolve o comportamento padrão de 640px para
+              cima, onde a lista sempre coube e nada disto precisa existir. */}
+          <div
+            className={`${RESPIRO} flex min-h-0 flex-1 flex-col border-t border-white/[0.09] pt-7 sm:flex-initial md:pt-10`}
+          >
+            {/* A janela é uma caixa só, sem padding: assim `clientHeight` dela é
+                exatamente o espaço que a lista tem para correr, e a medida não
+                precisa descontar o `pt-7` do pai. */}
+            <div
+              ref={janelaLadainhaRef}
+              className="min-h-0 flex-1 overflow-hidden sm:flex-initial sm:overflow-visible"
+            >
+              {/* A lista recebe a régua pronta: o painel onde ela mora é
+                  `sticky`, e um elemento grudado não se move em relação à janela
+                  — um `useScroll` apontado para ele devolveria um progresso
+                  travado no mesmo número durante toda a leitura. Por isso o alvo
+                  é a seção, e por isso a medida é feita aqui em cima. */}
+              <Ladainha progresso={contagem} janelaRef={janelaLadainhaRef} />
+            </div>
           </div>
 
           {/* O soco, em texto puro.

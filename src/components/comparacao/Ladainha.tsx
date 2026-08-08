@@ -1,4 +1,4 @@
-import { Fragment, useRef, useState, type RefObject } from 'react';
+import { Fragment, useLayoutEffect, useRef, useState, type RefObject } from 'react';
 import {
   AnimatePresence,
   motion,
@@ -284,7 +284,20 @@ function Palavra({
  * a mão. Só no desktop: no telefone não há ponteiro para seguir, e uma imagem
  * presa ao dedo em cima do texto seria uma imagem tapando o texto.
  */
-export function Ladainha({ progresso }: { progresso: MotionValue<number> }) {
+export function Ladainha({
+  progresso,
+  janelaRef,
+}: {
+  progresso: MotionValue<number>;
+  /**
+   * A caixa em que a lista corre, e ela é de quem MEDE — o painel escuro.
+   *
+   * Vem de fora porque a altura dela é o que sobrou da coluna depois do selo,
+   * do título, da conta e do fecho, e quem sabe essa conta é o `flex` do painel.
+   * Medida daqui de dentro, a lista teria de adivinhar o próprio lugar.
+   */
+  janelaRef: RefObject<HTMLDivElement>;
+}) {
   const ref = useRef<HTMLParagraphElement>(null);
   const isDesktop = useIsDesktop();
   const parado = useReducedMotion() === true;
@@ -295,6 +308,62 @@ export function Ladainha({ progresso }: { progresso: MotionValue<number> }) {
   const [aEsquerda, setAEsquerda] = useState(false);
   const x = useSpring(0, PERSEGUE);
   const y = useSpring(0, PERSEGUE);
+
+  /*
+   * ─── A CONTA CORRE DENTRO DA JANELA, e isso é só do telefone ───────────────
+   *
+   * O painel escuro é `sticky` e tem exatamente uma tela de altura. No desktop a
+   * lista inteira cabe nela e não há assunto. Num aparelho de 320 por 568 ela
+   * mede 684 pixels e começa a 404 do topo: dos vinte e cinco itens, o dono via
+   * uns cinco. Os outros vinte existiam, estavam escritos, acendiam na hora
+   * certa — embaixo da dobra de um painel que não rola, porque é isso que
+   * `sticky` faz. A conta que a seção inteira foi construída para somar era
+   * somada onde ninguém olhava.
+   *
+   * A saída NÃO é encolher o corpo até caber: vinte e cinco itens em cento e
+   * oitenta pixels dariam letra de sete pixels, e uma lista que não se lê prova
+   * menos ainda do que uma lista que não se vê. A saída é a lista CORRER: a
+   * janela fica parada no vão que sobrou do painel e o texto sobe dentro dela,
+   * puxado pela mesma régua que acende as palavras. O painel continua grudado,
+   * a composição continua a mesma, e a fatura se escreve passando — que é mais
+   * perto do que a seção sempre quis dizer do que uma lista parada.
+   *
+   * O casamento das duas réguas é o que faz funcionar, e ele não é acidental: o
+   * item que está acendendo está SEMPRE dentro da janela. As palavras acendem
+   * de 0 a `ESPALHA` e o total em `FATIA_TOTAL`; o deslize corre de 0 a
+   * `FATIA_TOTAL` também, então quando a última palavra acende o texto ainda não
+   * chegou ao fim do curso, e quando o total acende ele está no pé da janela —
+   * que é exatamente onde um total tem de estar.
+   *
+   * Vale para quem pediu menos movimento também, e de propósito: isto não é
+   * enfeite, é a única forma de o conteúdo ser alcançável. O que se move aqui
+   * anda na velocidade do dedo de quem rola, e não sozinho.
+   */
+  const [excedente, setExcedente] = useState(0);
+
+  useLayoutEffect(() => {
+    const janela = janelaRef.current;
+    const lista = ref.current;
+    if (janela == null || lista == null) return;
+
+    const medir = () => {
+      // `scrollHeight` da lista e não `getBoundingClientRect`: o deslize é um
+      // `transform`, e o retângulo desenhado já viria deslocado pelo próprio
+      // valor que estamos tentando calcular — a medida se perseguiria.
+      const sobra = Math.max(0, lista.scrollHeight - janela.clientHeight);
+      setExcedente((atual) => (Math.abs(atual - sobra) < 1 ? atual : sobra));
+    };
+
+    medir();
+    const observador = new ResizeObserver(medir);
+    observador.observe(janela);
+    observador.observe(lista);
+    return () => observador.disconnect();
+  }, [janelaRef]);
+
+  // No layout largo a janela é `h-auto`: o conteúdo cabe, `excedente` dá zero e
+  // o deslize é uma translação de zero pixel. O desktop não sente nada disto.
+  const deslize = useTransform(progresso, [0, FATIA_TOTAL], [0, -excedente]);
 
   const seguir = (evento: React.MouseEvent) => {
     if (!podeSeguir) return;
@@ -329,8 +398,12 @@ export function Ladainha({ progresso }: { progresso: MotionValue<number> }) {
           disparava o `mouseleave` — a lâmina ficava travada na tela depois de o
           ponteiro já ter ido embora. Com o tempo de volta para dentro da conta,
           o envelope não guarda mais nada que o parágrafo não guarde. */}
-      <p
+      <motion.p
         ref={ref}
+        // O deslize da conta dentro da janela. Zero no desktop, onde `excedente`
+        // é zero porque a lista cabe — o `style` existe nos dois layouts e só
+        // tem efeito num deles, que é melhor do que dois caminhos de render.
+        style={{ y: deslize }}
         onMouseMove={seguir}
         onMouseLeave={() => setApontado(null)}
         // Justificado, na SANS, e com o vão horizontal igual ao vertical.
@@ -420,7 +493,7 @@ export function Ladainha({ progresso }: { progresso: MotionValue<number> }) {
             podeSeguir ? 'cursor-default' : ''
           }`}
         />
-      </p>
+      </motion.p>
 
       {/* Fora do parágrafo e `fixed`: presa ao fluxo, a lâmina seria recortada
           pelo painel e não poderia acompanhar a mão até a borda da tela. */}
