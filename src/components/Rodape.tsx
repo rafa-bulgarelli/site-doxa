@@ -311,28 +311,48 @@ export function Rodape() {
          * campo acima é que se ajusta ao que sobra da tela.
          */}
         <div className="shrink-0 border-t border-white/[0.08] px-5 py-8 md:px-10">
-          <div className="mx-auto flex w-full max-w-screen-2xl flex-col items-start gap-6 sm:flex-row sm:items-center sm:justify-between">
+          {/* Uma linha só, em qualquer largura — pedido do dono.
+ 
+              Ela empilhava até 640px, e empilhada ocupava 107 pixels de altura
+              num rodapé que já divide a tela com o campo de peças. Em fila, os
+              quatro pedaços somam mais do que os 280 úteis de um telefone de
+              320 no corpo em que estavam: 13px de texto e um logo de 20 de
+              altura dão cerca de 315 pixels de conteúdo, e o que não cabe
+              quebra.
+ 
+              Daí a medida fluida com TETO, e não um degrau por breakpoint. Até
+              cerca de 420px de tela o corpo acompanha a largura — 9,9px num
+              320, onde é isto ou a quebra —, e a partir dali trava nos 13px do
+              projeto e nunca mais cresce. `sm:` devolve os valores fixos de
+              640 para cima, então nada disto existe no desktop.
+ 
+              `whitespace-nowrap` e `flex-nowrap` são o cinto: sem eles, a
+              primeira coisa que o flex faz quando aperta é quebrar "Falar com a
+              gente" no meio — que é exatamente a quebra que o dono não quer. */}
+          <div className="mx-auto flex w-full max-w-screen-2xl flex-row items-center justify-between gap-x-2 sm:gap-6">
             <img
               src={wordmarkUrl}
               alt="Doxa"
-              className="h-5 w-auto md:h-6"
+              className="h-[min(5vw,1.25rem)] w-auto shrink-0 sm:h-5 md:h-6"
               width={657}
               height={173}
             />
 
-            <nav className="flex flex-wrap items-center gap-x-7 gap-y-3">
+            <nav className="flex flex-nowrap items-center gap-x-[min(3.5vw,1.75rem)] sm:gap-x-7">
               {ATALHOS.map((atalho) => (
                 <a
                   key={atalho.destino}
                   href={atalho.destino}
-                  className="text-[13px] text-white/45 transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50"
+                  className="whitespace-nowrap text-[min(3.1vw,13px)] text-white/45 transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 sm:text-[13px]"
                 >
                   {atalho.rotulo}
                 </a>
               ))}
             </nav>
 
-            <p className="text-[13px] text-white/25">© {ANO} Doxa</p>
+            <p className="whitespace-nowrap text-[min(3.1vw,13px)] text-white/25 sm:text-[13px]">
+              © {ANO} Doxa
+            </p>
           </div>
         </div>
       </footer>
