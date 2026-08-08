@@ -197,11 +197,183 @@ export const FILTRO = {
   corpo: 'Não é o preço do diagnóstico — é o que faz a gente conversar só com quem já decidiu.',
 };
 
+/**
+ * O nome do que a pessoa está preenchendo, decidido pelo dono.
+ *
+ * O cartão não se apresentava: começava na trilha de etapas, e quem chegava por
+ * um botão de CTA via um campo de nome sem saber o que estava começando. Com o
+ * título, o mesmo formulário deixa de ser "um cadastro" e passa a ser uma
+ * AUDITORIA — que é o que os R$ 100 compram. É a palavra que justifica o preço
+ * antes de o preço aparecer, três passos depois.
+ *
+ * Escrito em capitulares pelo CSS e não aqui: em caixa alta no arquivo, ele
+ * chegaria gritado em qualquer lugar que reusasse a constante, inclusive num
+ * leitor de tela — que soletra sigla.
+ */
+export const AUDITORIA = 'Auditoria Estratégica Doxa';
+
+/**
+ * O que os R$ 100 compram, dito no passo em que se paga.
+ *
+ * PENDENTE-DONO: a frase é dele, palavra por palavra. Ela entra ABAIXO de
+ * "Falta o filtro." e não no lugar: aquela linha é o título do passo e cabe na
+ * serifa grande; esta é a instrução, e instrução em corpo de manchete lê como
+ * anúncio. Juntas elas dizem o par que o passo precisa — por que se cobra, e o
+ * que acontece quando se paga.
+ *
+ * ATENÇÃO: isto é promessa pública. "Agendar uma reunião" obriga a existir uma
+ * reunião agendada — não um contato, não um retorno. Se o processo real for
+ * ligar em 24 horas e marcar depois, o verbo aqui tem de mudar junto.
+ */
+export const PAGAMENTO_CHAMADA =
+  'Complete o pagamento para agendar uma reunião com o time Doxa.';
+
 /** O que acontece depois de pagar. Vai na tela de sucesso e ao lado do botão. */
 export const RETORNO = 'Um consultor entra em contato em até 24 horas.';
 
 /** As formas de pagamento, listadas antes de existirem de verdade. */
 export const PAGAMENTOS = ['Pix', 'Cartão', 'Apple Pay', 'Google Pay'];
+
+/** A opção que abre um campo em vez de responder sozinha. */
+export const OUTRO = 'Outro';
+
+export interface PerguntaFicha {
+  chave: 'segmento' | 'faturamento' | 'objetivo' | 'trava' | 'aparece';
+  /** O rótulo curto da resposta guardada. */
+  rotulo: string;
+  pergunta: string;
+  dica: string;
+  opcoes: readonly string[];
+  /** Aceita mais de uma resposta — e aí precisa de botão para seguir. */
+  multipla?: boolean;
+  /** O texto do campo que a opção `OUTRO` abre. Sem isto, `OUTRO` não aparece. */
+  livre?: string;
+}
+
+/**
+ * A ficha do consultor: o que se pergunta DEPOIS do dinheiro.
+ *
+ * A ordem das duas metades do formulário é a decisão de conversão mais cara
+ * desta seção, e ela é contra-intuitiva. O kit padrão de qualificação —
+ * faturamento, verba, meta — existe para separar quem pode pagar de quem não
+ * pode ANTES de gastar o tempo de um vendedor. Aqui quem separa é o checkout, e
+ * um filtro de R$ 100 é mais duro que qualquer pergunta de faixa: ninguém mente
+ * num Pix. Perguntadas antes, essas perguntas cobrariam conversão duas vezes
+ * pelo mesmo trabalho — e cobrariam a cara, porque faturamento é justamente a
+ * pergunta que faz fechar a aba, e ela fecharia a aba ANTES de o preço aparecer,
+ * que é o único instante em que este funil recebe.
+ *
+ * Depois de pagar, a pessoa está no melhor estado do funil inteiro:
+ * comprometida, esperando 24 horas, e querendo que a ligação valha o que ela
+ * acabou de gastar. É aí que ela responde faturamento de verdade. E se ela
+ * abandonar no meio, já foram recebidos o contato e o dinheiro — o custo de
+ * abandono aqui é zero, que é o que torna toda pergunta desta lista PULÁVEL.
+ *
+ * Faixa e nunca número aberto: ninguém digita faturamento exato, e quem digita
+ * arredonda para cima. Faixa também é a única forma que serve para agrupar
+ * depois — cem respostas em texto livre não viram uma tabela.
+ *
+ * PENDENTE-DONO, três coisas:
+ *
+ * 1. Os SEGMENTOS são chute meu a partir do mercado que a página descreve. Os
+ *    certos são os que o dono mais atende, e ele vai saber depois de cinquenta
+ *    leads — a lista existe para ser trocada, e `OUTRO` é a válvula até lá.
+ * 2. As FAIXAS de faturamento estão cortadas onde o argumento da seção deixa de
+ *    valer: a página diz que o jeito antigo custa R$ 8.000 a 10.500 por mês
+ *    (`CUSTO_DE`/`CUSTO_ATE`), e quem fatura 15 mil não tem esse problema. O
+ *    primeiro degrau serve para o consultor saber, antes de abrir a boca, que a
+ *    comparação inteira não fala com aquela pessoa.
+ * 3. O DESTINO das respostas continua sem decisão — o mesmo pendente que trava
+ *    o formulário de ir ao ar, agora com cinco campos a mais esperando por ele.
+ */
+export const FICHA: readonly PerguntaFicha[] = [
+  {
+    chave: 'segmento',
+    rotulo: 'Segmento',
+    pergunta: 'O que a sua empresa vende?',
+    dica: 'Para o consultor chegar sabendo do que se trata.',
+    opcoes: [
+      'Advocacia',
+      'Saúde e estética',
+      'Imóveis',
+      'Educação e cursos',
+      'Alimentação',
+      'Varejo e e-commerce',
+      'Serviços para empresas',
+      OUTRO,
+    ],
+    livre: 'O que a sua empresa vende',
+  },
+  {
+    chave: 'faturamento',
+    rotulo: 'Faturamento',
+    pergunta: 'Quanto a empresa fatura hoje?',
+    dica: 'Por faixa, e fica entre nós. É o que dimensiona a proposta.',
+    opcoes: [
+      'Até R$ 20 mil',
+      'R$ 20 a 50 mil',
+      'R$ 50 a 200 mil',
+      'Mais de R$ 200 mil',
+      'Prefiro não dizer',
+    ],
+  },
+  {
+    chave: 'objetivo',
+    rotulo: 'Objetivo',
+    pergunta: 'O que você quer que os vídeos façam?',
+    dica: 'A resposta muda o roteiro antes de mudar qualquer outra coisa.',
+    opcoes: [
+      'Vender mais',
+      'Autoridade no meu nicho',
+      'Lançar algo novo',
+      'Atrair gente boa para a equipe',
+    ],
+  },
+  {
+    chave: 'trava',
+    rotulo: 'Trava',
+    pergunta: 'O que te impede de postar hoje?',
+    dica: 'Pode marcar mais de uma.',
+    opcoes: [
+      'Não tenho tempo',
+      'Não sei o que falar',
+      'Não gosto de aparecer',
+      'Já paguei agência e não deu certo',
+      'Não tenho equipe',
+    ],
+    multipla: true,
+  },
+  {
+    chave: 'aparece',
+    rotulo: 'Aparecer',
+    /*
+     * A pergunta que nenhum formulário de qualificação padrão tem, e a mais
+     * desta empresa que existe na lista.
+     *
+     * As outras quatro serviriam a qualquer fornecedor de qualquer coisa. Esta
+     * é sobre a ENTREGA: a oferta da página é "uma foto e um áudio", e se a
+     * pessoa não quer aparecer, muda o que se produz, muda o preço e muda a
+     * conversa inteira. É também a objeção mais silenciosa do mercado — quem
+     * tem vergonha de câmera não escreve isso em lugar nenhum, e some.
+     */
+    pergunta: 'Você aparece nos vídeos?',
+    dica: 'Não aparecer é uma resposta comum aqui, e tem caminho.',
+    opcoes: ['Apareço', 'Prefiro não aparecer', 'Tanto faz'],
+  },
+];
+
+/** O fecho da ficha, depois da última pergunta. */
+export const FICHA_FIM = {
+  titulo: 'Agora sim.',
+  corpo: 'O consultor lê isto antes de te chamar. A conversa começa do meio.',
+};
+
+/** O convite para responder a ficha, na tela de confirmação. */
+export const FICHA_CONVITE = {
+  titulo: 'Enquanto isso: cinco perguntas.',
+  corpo: 'Para o consultor não chegar cru na sua ligação. Leva um minuto.',
+  botao: 'Responder',
+};
 
 /**
  * As duas cores de estado da seção, e são as duas únicas dela.

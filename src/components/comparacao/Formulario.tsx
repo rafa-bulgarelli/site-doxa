@@ -8,8 +8,21 @@ import { ID_CARTAO_PEDIDO } from '../../ancoras';
 import { DotGridSpotlight } from '../hero/DotGridSpotlight';
 import { BordaViva } from './BordaViva';
 import { CampoVivo } from './CampoVivo';
+import { Escolha } from './Escolha';
 import { MotionButton } from '../ui/MotionButton';
-import { FILTRO, NO_AR, PAGAMENTOS, RETORNO } from './config';
+import {
+  AUDITORIA,
+  FICHA,
+  FICHA_CONVITE,
+  FICHA_FIM,
+  FILTRO,
+  NO_AR,
+  OUTRO,
+  PAGAMENTO_CHAMADA,
+  PAGAMENTOS,
+  RETORNO,
+  type PerguntaFicha,
+} from './config';
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
@@ -97,9 +110,45 @@ const PASSOS: readonly Passo[] = [
   },
 ];
 
-/** O passo do pagamento e o da confirmação vêm depois das perguntas. */
+/**
+ * O que a pessoa responde quando não tem perfil para responder.
+ *
+ * O passo do @ exigia um @ válido para deixar avançar, e isso trava exatamente
+ * quem esta página foi feita para atender: o lead do site é quem NÃO posta, e
+ * boa parte dele não tem perfil de empresa nenhum. Sem saída, essa pessoa
+ * abandona no último passo antes do pagamento ou inventa um @ — e um @ inventado
+ * é pior que campo vazio, porque o consultor abre, não acha, e chega achando que
+ * errou o cadastro.
+ *
+ * É uma frase e não um traço: ela vai aparecer na ficha de resposta e na mão do
+ * consultor, e ali "—" é ambíguo entre "não tem" e "não perguntaram".
+ */
+const SEM_PERFIL = 'ainda não tenho';
+
+/**
+ * O respiro entre tocar numa resposta e a tela virar, em milissegundos.
+ *
+ * As perguntas de resposta única avançam sozinhas — é o que torna a ficha um
+ * minuto em vez de três. Mas virar no mesmo quadro do toque apaga a única
+ * confirmação de que a escolha foi registrada, e a pessoa chega na pergunta
+ * seguinte sem saber se acertou o alvo. Este intervalo é o tempo de a pílula
+ * acender e ser vista, e não mais que isso.
+ */
+const RESPIRO_TOQUE = 340;
+
+/**
+ * Os passos que vêm depois das perguntas, na ordem em que acontecem.
+ *
+ * `RECEBIDO` é o fim do que o dono precisa: contato e dinheiro. Tudo a partir
+ * dali é bônus e por isso é pulável — a ficha é um favor pedido a quem já pagou,
+ * e favor não se cobra com trava.
+ */
 const PAGAMENTO = PASSOS.length;
-const PRONTO = PASSOS.length + 1;
+const RECEBIDO = PASSOS.length + 1;
+const FICHA_INICIO = PASSOS.length + 2;
+const FIM = FICHA_INICIO + FICHA.length;
+
+type ChaveFicha = PerguntaFicha['chave'];
 
 /**
  * O formulário do painel claro: três perguntas, o pagamento e a confirmação.
@@ -136,7 +185,11 @@ const PRONTO = PASSOS.length + 1;
  *    recebidos e de retorno em 24 horas, que continua verdade depois de ligado.
  * 2. O DESTINO DO LEAD. Ainda não foi decidido para onde vão as respostas, e
  *    enquanto não for, este formulário NÃO PODE IR AO AR — alguém preencheria,
- *    veria a confirmação e ninguém receberia nada.
+ *    veria a confirmação e ninguém receberia nada. A ficha do consultor
+ *    multiplicou o tamanho desse pendente: são oito campos esperando um cano
+ *    que não existe. Toda a saída passa por `enviar()`, que é uma função só, de
+ *    propósito: quando o destino for decidido, é ali dentro e em nenhum outro
+ *    lugar que o `fetch` entra.
  */
 export function Formulario({ cartaoRef }: { cartaoRef: RefObject<HTMLDivElement> }) {
   const [passo, setPasso] = useState(0);
@@ -145,8 +198,24 @@ export function Formulario({ cartaoRef }: { cartaoRef: RefObject<HTMLDivElement>
   const [enviando, setEnviando] = useState(false);
   /** Para onde a animação corre: 1 avança, -1 volta. */
   const [sentido, setSentido] = useState(1);
+  /** As respostas da ficha. Sempre lista, inclusive nas perguntas de uma só. */
+  const [respostas, setRespostas] = useState<Partial<Record<ChaveFicha, string[]>>>({});
+  /** O que foi escrito no campo que a opção `OUTRO` abre. */
+  const [livres, setLivres] = useState<Partial<Record<ChaveFicha, string>>>({});
   const campoRef = useRef<HTMLInputElement>(null);
   const parado = useReducedMotion() === true;
+
+  /*
+   * Um relógio só para os dois adiamentos da tela, e ele é limpo na saída.
+   *
+   * O da cobrança e o do respiro do toque nunca correm juntos — são fases
+   * diferentes do mesmo formulário —, então um `ref` basta. O que ele impede é
+   * o caso feio: a seção é `lazy`, e um `setPasso` disparando depois de o
+   * componente sair de cena é aviso no console em desenvolvimento e trabalho
+   * jogado fora em produção.
+   */
+  const relogio = useRef<number>();
+  useEffect(() => () => window.clearTimeout(relogio.current), []);
 
   /**
    * Quando o cartão sobe.
@@ -159,6 +228,8 @@ export function Formulario({ cartaoRef }: { cartaoRef: RefObject<HTMLDivElement>
   const naTela = useInView(cartaoRef, { amount: 0.5, once: true });
 
   const atual = PASSOS[passo];
+  const naFicha = passo >= FICHA_INICIO && passo < FIM;
+  const fichaAtual = naFicha ? FICHA[passo - FICHA_INICIO] : undefined;
 
   /*
    * O foco segue o passo — mas SÓ quando o passo muda de verdade.
@@ -204,9 +275,121 @@ export function Formulario({ cartaoRef }: { cartaoRef: RefObject<HTMLDivElement>
   };
 
   const voltar = (destino: number) => {
+    // O avanço automático da ficha fica pendurado por um terço de segundo, e
+    // nesse intervalo dá tempo de tocar em "voltar". Sem esta linha, o relógio
+    // dispara depois e joga a pessoa para a frente logo depois de ela ter
+    // pedido para ir para trás — o pior tipo de defeito, o que desfaz a ação.
+    window.clearTimeout(relogio.current);
     setErro(null);
     setSentido(-1);
     setPasso(destino);
+  };
+
+  /** Segue sem cobrar nada de ninguém. É o avanço da ficha, e o pulo também. */
+  const seguir = () => {
+    setSentido(1);
+    setPasso((p) => p + 1);
+  };
+
+  /**
+   * A saída de emergência do passo do @.
+   *
+   * Não valida porque não há o que validar: a pessoa está declarando a ausência
+   * do dado, e a ausência é uma resposta legítima aqui. Escrever no campo em vez
+   * de só pular mantém a ficha de resposta honesta — quem voltar vê o que foi
+   * respondido, e o consultor recebe a frase em vez de um vazio.
+   */
+  const semPerfil = () => {
+    setDados((d) => ({ ...d, arroba: SEM_PERFIL }));
+    setErro(null);
+    setSentido(1);
+    setPasso((p) => p + 1);
+  };
+
+  /**
+   * As respostas da ficha como elas vão sair daqui.
+   *
+   * `OUTRO` nunca é resposta: é o rótulo do botão que abre o campo. O que sai é
+   * o que foi escrito, e se nada foi escrito, não sai nada — uma lista com a
+   * palavra "Outro" dentro diria ao consultor exatamente o que ele já sabia.
+   */
+  const respostaFinal = () =>
+    Object.fromEntries(
+      FICHA.map((pergunta) => {
+        const marcadas = respostas[pergunta.chave] ?? [];
+        const resolvidas = marcadas
+          .map((opcao) => (opcao === OUTRO ? (livres[pergunta.chave] ?? '').trim() : opcao))
+          .filter((opcao) => opcao.length > 0);
+        return [pergunta.chave, resolvidas];
+      }),
+    );
+
+  /**
+   * O ÚNICO lugar por onde os dados saem deste formulário.
+   *
+   * PENDENTE-DONO: hoje ela monta a carga e não a manda para lugar nenhum,
+   * porque o destino não foi decidido. É de propósito que exista assim mesmo, e
+   * vazia: com uma função só, ligar o formulário é escrever um `fetch` aqui
+   * dentro; sem ela, seria caçar três pontos de saída em duas fases do fluxo e
+   * descobrir o terceiro em produção.
+   *
+   * Ela é chamada duas vezes por lead, e as duas importam sozinhas: em
+   * `contato`, com o que foi pago — e essa não pode se perder por nada; em
+   * `ficha`, com o contexto, que é bônus. Quando o cano existir, a primeira
+   * precisa de repetição em caso de falha, a segunda não.
+   */
+  const enviar = (etapa: 'contato' | 'ficha') => {
+    return { etapa, ...dados, ...respostaFinal() };
+  };
+
+  /*
+   * A ficha sai quando ela termina, tenha sido respondida ou pulada inteira.
+   *
+   * Num efeito e não no clique porque há três saídas para o fim — o botão, o
+   * pulo e o avanço automático da última pergunta —, e a que fosse esquecida
+   * seria a que perde o lead mais completo do dia. O `ref` é a guarda contra o
+   * `StrictMode`, que roda cada efeito duas vezes no desenvolvimento: sem ele,
+   * a ficha chegaria em duplicata exatamente onde ela é testada.
+   */
+  const jaMandou = useRef(false);
+  useEffect(() => {
+    if (passo !== FIM || jaMandou.current) return;
+    jaMandou.current = true;
+    enviar('ficha');
+    // `enviar` fica fora das dependências de propósito: ela é recriada a cada
+    // desenho e entraria num laço com o próprio efeito que dispara.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [passo]);
+
+  /**
+   * O toque numa resposta da ficha.
+   *
+   * A de várias respostas junta e tira, e espera o botão. A de resposta única
+   * avança sozinha, que é o que faz cinco perguntas caberem num minuto — menos
+   * quando a escolha foi `OUTRO`, porque aí a pessoa ainda vai escrever, e
+   * virar a tela levaria embora o campo que o toque dela acabou de abrir.
+   */
+  const escolher = (pergunta: PerguntaFicha, opcao: string) => {
+    if (pergunta.multipla === true) {
+      // A lista sai de dentro do próprio `set`, e não da leitura do desenho:
+      // dois toques na mesma passagem — que é o que acontece quando alguém
+      // marca duas travas depressa — leriam o mesmo estado velho, e a segunda
+      // marca apagaria a primeira.
+      setRespostas((r) => {
+        const marcadas = r[pergunta.chave] ?? [];
+        return {
+          ...r,
+          [pergunta.chave]: marcadas.includes(opcao)
+            ? marcadas.filter((o) => o !== opcao)
+            : [...marcadas, opcao],
+        };
+      });
+      return;
+    }
+    setRespostas((r) => ({ ...r, [pergunta.chave]: [opcao] }));
+    if (opcao === OUTRO && pergunta.livre != null) return;
+    window.clearTimeout(relogio.current);
+    relogio.current = window.setTimeout(seguir, RESPIRO_TOQUE);
   };
 
   const pagar = () => {
@@ -214,10 +397,11 @@ export function Formulario({ cartaoRef }: { cartaoRef: RefObject<HTMLDivElement>
     // confirmação, com a espera de propósito — para o passo ser sentido no
     // protótipo como ele vai ser sentido de verdade.
     setEnviando(true);
-    window.setTimeout(() => {
+    relogio.current = window.setTimeout(() => {
       setEnviando(false);
       setSentido(1);
-      setPasso(PRONTO);
+      setPasso(RECEBIDO);
+      enviar('contato');
     }, 900);
   };
 
@@ -275,6 +459,30 @@ export function Formulario({ cartaoRef }: { cartaoRef: RefObject<HTMLDivElement>
       <BordaViva alvoRef={cartaoRef} />
 
       <div className="relative p-8 md:p-12">
+        {/* ── O NOME DO QUE ESTÁ SENDO PREENCHIDO.
+
+            O cartão não se apresentava: quem chegava por um dos botões de CTA
+            caía numa trilha de etapas e num campo de nome, sem nada dizendo o
+            que aquilo era. Com o título, o mesmo objeto deixa de ser "mais um
+            cadastro" e passa a ser uma AUDITORIA — a palavra que justifica os
+            R$ 100 três passos antes de eles aparecerem.
+
+            Fora da condição da trilha, de propósito: ele vale em TODOS os
+            passos, inclusive na confirmação. É o nome da coisa, não o de uma
+            fase dela.
+
+            Caixa alta pelo CSS e não no texto, e a diferença não é estética —
+            uma constante escrita em maiúsculas chega gritada em qualquer outro
+            lugar que a use, e leitor de tela soletra o que parece sigla. */}
+        <motion.p
+          initial={parado ? undefined : { opacity: 0, y: -6 }}
+          animate={naTela || parado ? { opacity: 1, y: 0 } : undefined}
+          transition={{ duration: 0.5, ease: EASE, delay: 0.25 }}
+          className="mb-6 text-[11px] uppercase leading-none tracking-[0.2em] text-[#F4F1E8]/50"
+        >
+          {AUDITORIA}
+        </motion.p>
+
         {/* O andamento. Três de três é curto o bastante para ser dito por extenso,
             e dizer quantos faltam é o que impede a pessoa de imaginar dez. */}
         {/* ── A trilha das etapas, e ela tem NOME.
@@ -461,6 +669,27 @@ export function Formulario({ cartaoRef }: { cartaoRef: RefObject<HTMLDivElement>
                     <MotionButton label="Continuar" onClick={avancar} fullWidth />
                   </div>
                 </div>
+
+                {/* A saída do passo do @, e ela é obrigatória neste passo.
+
+                    A validação exige um @ para deixar seguir, e o lead desta
+                    página é justamente quem NÃO posta — boa parte não tem
+                    perfil de empresa nenhum. Sem esta linha, essa pessoa
+                    desiste no último passo antes do pagamento, ou inventa um @;
+                    e o @ inventado sai mais caro, porque o consultor abre, não
+                    encontra, e começa a conversa achando que errou o cadastro.
+
+                    Discreta de propósito. Ela precisa existir para quem
+                    realmente não tem, e não convidar quem tem a não procurar. */}
+                {atual.chave === 'arroba' && (
+                  <button
+                    type="button"
+                    onClick={semPerfil}
+                    className="mt-4 rounded px-1 py-0.5 text-[13px] text-white/40 underline decoration-white/20 underline-offset-4 transition-colors hover:text-white hover:decoration-white/60 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white/50"
+                  >
+                    Ainda não tenho perfil da empresa
+                  </button>
+                )}
               </motion.div>
             )}
 
@@ -469,6 +698,18 @@ export function Formulario({ cartaoRef }: { cartaoRef: RefObject<HTMLDivElement>
                 <p className="font-serif text-[1.75rem] leading-[1.1] tracking-[-0.02em] text-white md:text-[2.35rem]">
                   Falta o filtro.
                 </p>
+
+                {/* O que o pagamento compra, dito pelo dono e posto ABAIXO do
+                    título, não no lugar dele. "Falta o filtro." é o nome do
+                    passo e cabe na serifa grande; esta é a instrução, e uma
+                    instrução em corpo de manchete lê como anúncio. O par é que
+                    fecha o passo: a de cima diz por que se cobra, a de baixo
+                    diz o que acontece quando se paga.
+
+                    Mesmo 15px a 70% da linha de dica das perguntas, e pelo
+                    mesmo motivo documentado lá em cima: é a frase que sustenta
+                    a pessoa na tela em que ela decide gastar dinheiro. */}
+                <p className="mt-3 text-[15px] leading-snug text-white/70">{PAGAMENTO_CHAMADA}</p>
 
                 <div className="mt-6 rounded-2xl border border-white/[0.09] bg-white/[0.04] p-5">
                   <div className="flex items-baseline gap-2">
@@ -516,9 +757,9 @@ export function Formulario({ cartaoRef }: { cartaoRef: RefObject<HTMLDivElement>
               </motion.div>
             )}
 
-            {passo === PRONTO && (
+            {passo === RECEBIDO && (
               <motion.div
-                key="pronto"
+                key="recebido"
                 initial={parado ? undefined : { opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, ease: EASE }}
@@ -543,6 +784,140 @@ export function Formulario({ cartaoRef }: { cartaoRef: RefObject<HTMLDivElement>
                   Recebemos.
                 </p>
                 <p className="mt-3 max-w-sm text-[15px] leading-snug text-white/55">
+                  {RETORNO} No WhatsApp que você deixou, {dados.whatsapp}.
+                </p>
+
+                {/* ── O CONVITE PARA A FICHA, e ele vem DEPOIS da confirmação.
+
+                    A promessa é paga primeiro. Só com "Recebemos" na tela é que
+                    o pedido seguinte deixa de ser mais uma exigência do funil e
+                    passa a ser um favor a quem já foi atendido — e é por isso
+                    que a moldura fala do CONSULTOR, não da gente: o que a
+                    pessoa ganha respondendo é uma ligação que começa do meio.
+
+                    Botão secundário e estreito, e é hierarquia, não timidez. A
+                    pílula cheia da largura toda é a forma que este cartão usa
+                    para "faça isto"; a ficha é opcional de verdade, e um botão
+                    que grita promete uma obrigação que a tela seguinte não
+                    cobra — todas as cinco perguntas podem ser puladas. */}
+                <div className="mt-8 border-t border-white/[0.09] pt-6">
+                  <p className="font-serif text-[1.35rem] leading-tight tracking-[-0.01em] text-white md:text-[1.6rem]">
+                    {FICHA_CONVITE.titulo}
+                  </p>
+                  <p className="mt-2 max-w-sm text-[14px] leading-snug text-white/55">
+                    {FICHA_CONVITE.corpo}
+                  </p>
+                  <div className="mt-5">
+                    <MotionButton
+                      label={FICHA_CONVITE.botao}
+                      onClick={seguir}
+                      variant="secondary"
+                    />
+                  </div>
+                </div>
+              </motion.div>
+            )}
+
+            {fichaAtual != null && (
+              <motion.div key={fichaAtual.chave} {...desliza} className="mt-7">
+                {/* A contagem que a trilha do topo não faz aqui.
+
+                    As pílulas nomeadas ficaram nas três perguntas de antes do
+                    pagamento, onde ver a tarefa inteira é o que convence a
+                    começar. Cinco nomes a mais nesta fase seriam a promessa
+                    contrária — e o argumento da trilha, escrito lá em cima, é
+                    justamente que a pessoa precise pensar "isso é rápido". Aqui
+                    dois números bastam: quem já pagou não está avaliando se
+                    entra, está querendo saber quanto falta. */}
+                <p className="text-[11px] uppercase leading-none tracking-[0.2em] text-white/35">
+                  {passo - FICHA_INICIO + 1} de {FICHA.length}
+                </p>
+
+                {/* Um degrau abaixo da serifa das perguntas de cima, de
+                    propósito: nome e WhatsApp são o que o negócio precisa, e
+                    estas cinco são contexto. Mesma família, corpo menor — a
+                    hierarquia entre as duas metades do formulário continua
+                    legível mesmo depois que o dinheiro já entrou. */}
+                <p
+                  id={`ficha-${fichaAtual.chave}`}
+                  className="mt-3 font-serif text-[1.5rem] leading-[1.15] tracking-[-0.02em] text-white md:text-[1.95rem]"
+                >
+                  {fichaAtual.pergunta}
+                </p>
+                <p className="mt-2 text-[15px] leading-snug text-white/70">{fichaAtual.dica}</p>
+
+                <div className="mt-6">
+                  <Escolha
+                    rotuladoPor={`ficha-${fichaAtual.chave}`}
+                    opcoes={fichaAtual.opcoes}
+                    escolhidas={respostas[fichaAtual.chave] ?? []}
+                    multipla={fichaAtual.multipla === true}
+                    livre={fichaAtual.livre}
+                    textoLivre={livres[fichaAtual.chave] ?? ''}
+                    aoEscolher={(opcao) => escolher(fichaAtual, opcao)}
+                    aoEscreverLivre={(valor) =>
+                      setLivres((l) => ({ ...l, [fichaAtual.chave]: valor }))
+                    }
+                    aoConfirmarLivre={seguir}
+                  />
+                </div>
+
+                <div className="mt-8 flex items-center gap-3">
+                  <button
+                    type="button"
+                    onClick={() => voltar(passo - 1)}
+                    aria-label="Voltar para a pergunta anterior"
+                    className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full border border-white/20 text-white/60 transition-colors hover:border-white/50 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black"
+                  >
+                    <ArrowLeft className="h-5 w-5" strokeWidth={2} />
+                  </button>
+
+                  {/* Um botão só, e o RÓTULO dele é que muda.
+
+                      "Pular" ao lado de "Continuar" seriam duas ações do mesmo
+                      peso para a mesma tecla, e obrigariam a pessoa a escolher
+                      entre dois botões em toda pergunta que ela não quisesse
+                      responder. Com um, o cartão sempre tem uma saída para a
+                      frente, e ela diz exatamente o que vai acontecer com o que
+                      está — ou não está — marcado na tela. */}
+                  <div className="min-w-0 flex-1">
+                    <MotionButton
+                      label={(respostas[fichaAtual.chave] ?? []).length > 0 ? 'Continuar' : 'Pular'}
+                      onClick={seguir}
+                      fullWidth
+                    />
+                  </div>
+                </div>
+              </motion.div>
+            )}
+
+            {passo === FIM && (
+              <motion.div
+                key="fim"
+                initial={parado ? undefined : { opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, ease: EASE }}
+                className="mt-7"
+              >
+                <motion.span
+                  initial={parado ? undefined : { scale: 0.6, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  transition={{ duration: 0.5, ease: EASE, delay: 0.1 }}
+                  className="flex h-14 w-14 items-center justify-center rounded-full bg-[#F4F1E8] text-[#0B0B0B]"
+                >
+                  <Check className="h-7 w-7" strokeWidth={2} />
+                </motion.span>
+
+                <p className="mt-6 font-serif text-[1.9rem] leading-[1.1] tracking-[-0.02em] text-[#F4F1E8] md:text-[2.3rem]">
+                  {FICHA_FIM.titulo}
+                </p>
+                <p className="mt-3 max-w-sm text-[15px] leading-snug text-white/55">
+                  {FICHA_FIM.corpo}
+                </p>
+                {/* A promessa volta a aparecer no fim de verdade. Ela foi dita na
+                    confirmação, cinco telas atrás, e é a única coisa que a
+                    pessoa precisa levar embora daqui. */}
+                <p className="mt-6 max-w-sm text-[13px] leading-snug text-white/40">
                   {RETORNO} No WhatsApp que você deixou, {dados.whatsapp}.
                 </p>
               </motion.div>
