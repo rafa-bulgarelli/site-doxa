@@ -83,13 +83,32 @@ const MARGEM_CARTAO = 20;
 const FOLGA_CARTAO = 12;
 
 /**
- * O cartão de fecho reduzido até caber no que a tela realmente deixou.
+ * O TETO do cartão de fecho no layout estreito, em vezes o tamanho de projeto.
  *
- * Reduz e nunca aumenta: o tamanho de projeto é o teto, e um cartão esticado
- * além dele num telefone grande viraria a única peça da parede fora de escala
- * com os reels ao lado. `FOCUS_SCALE` entra na conta porque o que precisa caber
- * não é o cartão parado — é ele no instante em que aterrissa e cresce doze por
- * cento, que é justamente quando o visitante está olhando para ele.
+ * O cartão só reduzia: `CTA_MOBILE` era um teto duro, e num telefone alto ele
+ * ficava com 264 pixels de largura sobrando tela dos dois lados — o mesmo
+ * defeito dos reels, na peça que fecha a seção. Agora ele cresce junto.
+ *
+ * Para de crescer no tamanho do cartão do DESKTOP, e o número sai daí (470
+ * sobre 264): o layout estreito vai até 1023 pixels, e passar do cartão que o
+ * layout largo usa seria a peça de telefone ficando maior do que a peça de
+ * computador na mesma página.
+ */
+const TETO_CARTAO = CTA_DESKTOP.width / CTA_MOBILE.width;
+
+/**
+ * O cartão de fecho no tamanho que a tela realmente deixou — para baixo E para
+ * cima.
+ *
+ * As duas contas são as duas paredes do vão em que ele estaciona: a largura da
+ * tela menos as goteiras, e o vão entre o título e as cifras menos o respiro. A
+ * menor manda, e é o que faz o cartão ir de 251 num 320 por 568 a 348 num 430
+ * por 932 sem nenhuma medida de tipo ser reescrita — o miolo inteiro escala
+ * numa transformação só (ver `ClosingCard`).
+ *
+ * `FOCUS_SCALE` entra na conta porque o que precisa caber não é o cartão parado
+ * — é ele no instante em que aterrissa e cresce doze por cento, que é
+ * justamente quando o visitante está olhando para ele.
  *
  * A altura sai arredondada a partir da largura, e não das duas contas em
  * paralelo: dois arredondamentos independentes desencontram a proporção em até
@@ -99,45 +118,41 @@ function caberCartao(base: { width: number; height: number }, largura: number, v
   if (largura <= 0 || vao <= 0) return base;
   const naLargura = (largura - 2 * MARGEM_CARTAO) / (1 + FOCUS_SCALE) / base.width;
   const naAltura = (vao - 2 * FOLGA_CARTAO) / (1 + FOCUS_SCALE) / base.height;
-  const escala = Math.min(1, naLargura, naAltura);
+  const escala = Math.min(TETO_CARTAO, naLargura, naAltura);
   const width = Math.round(base.width * escala);
   return { width, height: Math.round(base.height * (width / base.width)) };
 }
 
 /**
- * O REEL no layout estreito: a fração da tela que ele ocupa de largura, e o
- * respiro que guarda do vão entre as duas faixas de tipografia.
+ * O REEL no layout estreito: até quanto da largura ele pode tomar, e o respiro
+ * que guarda do vão entre as duas faixas de tipografia.
  *
- * O cartão era 132 por 235 em QUALQUER telefone, e é o defeito que o dono
- * marcou de verde nas duas capturas. Num aparelho de 320 esses 132 pixels são
- * 41% da tela; num de 430 são 31%; numa janela de 550 são 24% — o mesmo
- * retângulo, encolhendo conforme o aparelho cresce. Uma parede que existe para
- * mostrar vídeo não pode ficar proporcionalmente menor à medida que a tela dá
- * mais espaço para ele.
+ * O cartão era 132 por 235 em QUALQUER telefone — o defeito que o dono marcou
+ * de verde. Corrigido pela largura, ele ficou proporcional mas ainda pequeno, e
+ * o dono voltou com a segunda metade do mesmo pedido: maior TAMBÉM pela altura.
+ * O número que explica os dois pedidos é este — num 390 por 844 o cartão de 285
+ * ocupava 46% do vão, quase metade da faixa em que ele voa estava vazia; num
+ * 320 por 568, onde a tela é baixa, ele já ocupava 72% e era exatamente ali que
+ * a parede parecia certa.
  *
- * 0,41 é exatamente o que o cartão de hoje mede no telefone mais estreito que
- * este site atende (132 de 320): no aparelho em que o dono já aprovou o
- * tamanho nada muda, e daí para cima o reel acompanha a tela.
+ * Então o vão passou a MANDAR, e a largura virou o freio. 0,60 é o freio: ele
+ * segura a tela alta, onde o vão sozinho pediria um cartão de três quartos da
+ * largura e a parede deixaria de ser uma parede — sobraria um cartão só, sem os
+ * vizinhos que fazem o voo ler como voo.
  *
- * A folga é a mesma ideia do `FOLGA_CARTAO`, e serve ao mesmo teto — só que
- * aqui ela quase nunca manda: um telefone em pé sempre tem mais altura de vão
- * do que largura de tela, e é a largura que decide.
+ * Quem decide troca conforme o aparelho, e é isso que se quer: no 320 e no
+ * tablet em pé, onde a tela é baixa para o que é larga, manda o vão; no
+ * telefone alto manda a largura.
  */
-const REEL_NA_TELA = 0.41;
+const REEL_NA_TELA = 0.6;
 const FOLGA_REEL = 16;
 
 /**
- * A escala do reel na tela que existe — e esta CRESCE, ao contrário de
- * `caberCartao`.
+ * A escala do reel na tela que existe — e esta CRESCE, ao contrário do que
+ * `caberCartao` fazia antes.
  *
- * A diferença entre as duas contas é a diferença entre os dois objetos. O
- * cartão de fecho ESTACIONA entre o título e as cifras, então para ele o vão é
- * uma prisão: só pode reduzir. O reel ATRAVESSA a tela e sai; o que governa o
- * tamanho dele é a largura disponível, e o vão entra só como teto para ele não
- * subir por cima da tipografia num aparelho baixo.
- *
- * Nunca desce de 1, e isso é deliberado: abaixo de 1 estaria mexendo no
- * tamanho que o dono já viu e aprovou num 320 por 568. Quem cai abaixo de 1 na
+ * Nunca desce de 1, e isso é deliberado: abaixo de 1 estaria encolhendo o
+ * cartão que o dono já viu e aprovou num 320 por 568. Quem cai abaixo de 1 na
  * conta é o telefone DEITADO — vão de cem e poucos pixels —, e ali a escolha é
  * consciente: o reel passa por trás das faixas de texto, que é o que ele já
  * faz hoje, em vez de virar uma miniatura de cinquenta pixels.
@@ -284,6 +299,25 @@ const END_WIDTH = 4.5;
  */
 const CLEAR_FROM = 3;
 const CLEAR_TO = 0;
+
+/**
+ * Até que opacidade o reel ainda responde à mão — e o defeito que este número
+ * conserta é o que o dono relatou: "os dois últimos vídeos não têm o efeito de
+ * destaque", no hover e no toque.
+ *
+ * Era `> 0.99`, ou seja: o reel parava de responder no primeiro quadro em que
+ * a saída começava. Parece prudente e é uma armadilha de calendário, porque a
+ * saída começa `CLEAR_FROM` cartões antes do fim — exatamente os cartões que
+ * ainda estão passando pelo MEIO DA TELA. Medido no navegador, antes: o
+ * penúltimo reel chega ao centro com opacidade 0,92 e `pointerEvents: none`, e
+ * o último com 0,60 e também morto. Os dois cartões grandes, no meio da tela,
+ * de frente para o visitante, e nenhum dos dois respondia.
+ *
+ * Em 0,3 cada reel atravessa o centro respondendo, e a proteção que o 0,99
+ * tentava dar continua: quando o cartão de fecho aterrissa a saída já zerou, e
+ * nenhum reel disputa o ponteiro com o botão dele.
+ */
+const PEGA_ATE = 0.3;
 
 /**
  * How sharply the row parts around the attention, in cards.
@@ -735,8 +769,24 @@ function ReelCard({
   const { transform, focus, display } = usePlacement(placement);
   const videoRef = useRef<HTMLVideoElement | null>(null);
 
-  /** Off the moment it starts leaving, not when it has finished — see `CLEAR_FROM`. */
-  const catches = useTransform(fade, (f) => (f > 0.99 ? 'auto' : 'none'));
+  /** Enquanto ainda dá para ver o que se está apontando — ver `PEGA_ATE`. */
+  const catches = useTransform(fade, (f) => (f > PEGA_ATE ? 'auto' : 'none'));
+
+  /**
+   * A saída perde força no cartão que está sendo olhado.
+   *
+   * Metade do relato do dono era o ponteiro morto; a outra metade é esta. Mesmo
+   * respondendo, o último reel chega ao meio da tela a 60% de opacidade — ele
+   * levanta, tira o véu e acende o anel, e ainda assim lê como apagado, porque
+   * a peça inteira está translúcida. O foco agora recupera parte do que a saída
+   * tirou: a 0,60 de saída, um cartão em foco vai a 0,84.
+   *
+   * O que devolve é proporcional ao que ainda resta, e é isso que impede o
+   * abuso: multiplicado por `f`, o reforço morre junto com a saída. Um cartão
+   * com a mão em cima no fim do voo não fica aceso enquanto o cartão de fecho
+   * aterrissa — que é a única coisa que esta seção não pode deixar acontecer.
+   */
+  const opacidade = useTransform([fade, focus], ([f, k]: number[]) => f * (1 + (1 - f) * k));
 
   /**
    * Playback is driven here rather than by `autoPlay` and a `muted` prop.
@@ -784,7 +834,7 @@ function ReelCard({
         height: placement.card.height,
         transform,
         display,
-        opacity: fade,
+        opacity: opacidade,
         pointerEvents: catches,
         transformStyle: 'preserve-3d',
       }}
