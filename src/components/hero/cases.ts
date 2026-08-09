@@ -61,9 +61,9 @@ export const CASES: readonly HeroCase[] = [
   {
     name: 'Magalu',
     handle: null,
-    photoUrl: '/media/magalu-foto.jpg',
+    photoUrl: '/media/magalu-foto.avif',
     videoUrl: '/media/magalu-video.mp4',
-    posterUrl: '/media/magalu-poster.jpg',
+    posterUrl: '/media/magalu-poster.avif',
     outputLabel: 'Vídeo de SKU/Produto',
     stats: null,
     inlineHeader: true,
@@ -71,9 +71,9 @@ export const CASES: readonly HeroCase[] = [
   {
     name: 'Core',
     handle: '@corealquimias',
-    photoUrl: '/media/core-foto.jpg',
+    photoUrl: '/media/core-foto.avif',
     videoUrl: '/media/core-video.mp4',
-    posterUrl: '/media/core-poster.jpg',
+    posterUrl: '/media/core-poster.avif',
     outputLabel: 'Vídeo viral',
     // PENDENTE-DONO: sharpened from '+3M' / '+170k' on the owner's word. These
     // are the figures he gave for this post; they render wherever the case is
@@ -84,9 +84,9 @@ export const CASES: readonly HeroCase[] = [
   {
     name: 'Uninova',
     handle: '@uninovamotos',
-    photoUrl: '/media/uninova-foto.jpg',
+    photoUrl: '/media/uninova-foto.avif',
     videoUrl: '/media/uninova-video.mp4',
-    posterUrl: '/media/uninova-poster.jpg',
+    posterUrl: '/media/uninova-poster.avif',
     outputLabel: 'Vídeo viral',
     stats: { views: '+2,5M', likes: '+111k', comments: null, reposts: null },
     inlineHeader: false,

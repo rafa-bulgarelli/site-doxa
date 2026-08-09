@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!--
+    PROVISÓRIO, e trocar é substituir este arquivo.
+
+    A marca da Doxa é um wordmark (`brand/doxa-wordmark-white.png`), e wordmark
+    em 16 pixels não se lê — vira um borrão claro. Enquanto o desenho de um
+    símbolo não existir, o favicon é a inicial na tipografia da própria página:
+    creme sobre o preto do site, no mesmo par de cores de tudo aqui.
+
+    SVG e não .ico porque a aba do navegador segue o tema do sistema e um vetor
+    fica nítido em qualquer densidade de tela — e porque um arquivo que se edita
+    em texto é um arquivo que o próximo commit consegue trocar.
+  -->
+  <rect width="64" height="64" rx="14" fill="#0B0B0B"/>
+  <text x="32" y="46" text-anchor="middle"
+        font-family="Instrument Serif, Georgia, 'Times New Roman', serif"
+        font-size="44" fill="#F4F1E8">D</text>
+</svg>

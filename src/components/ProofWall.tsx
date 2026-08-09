@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type RefObject } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState, type RefObject } from 'react';
 import {
   BadgeCheck,
   Eye,
@@ -18,9 +18,10 @@ import {
   useTransform,
   type MotionValue,
 } from 'framer-motion';
-import { REELS, WALL_REELS, WALL_REELS_MOBILE, type Reel } from './proof/reels';
+import { WALL_REELS, WALL_REELS_MOBILE, type Reel } from './proof/reels';
 import { DotGridSpotlight } from './hero/DotGridSpotlight';
 import { MotionButton } from './ui/MotionButton';
+import { HREF_FORMS } from '../ancoras';
 import { useIsDesktop } from '../hooks/useIsDesktop';
 
 /**
@@ -50,16 +51,58 @@ const CARD_DESKTOP = { width: 220, height: 391 };
 const CARD_MOBILE = { width: 132, height: 235 };
 const CTA_DESKTOP = { width: 470, height: 330 };
 /**
- * The narrow card is sized against the *narrowest* phone, not against a
- * comfortable one. `FOCUS_SCALE` grows it another twelve per cent at the moment
- * it lands, and at 300px that put a 336px card on a 320px screen with its two
- * ends hanging off the sides. 264 lands at 296 and keeps a margin.
+ * O TAMANHO DE PROJETO do cartão estreito — e ele é um teto, não uma medida.
  *
- * Taller than the width would suggest because the figures take two lines here.
- * The narrow card is the one place the landscape format gives way: five numbers
- * worth reading cost a second row, and a second row costs the height.
+ * Era medida fixa, e era o defeito que o dono viu num aparelho de 320 por 568:
+ * o cartão chegava com 293 de largura numa tela de 320, e 280 de altura num vão
+ * que só tinha 193 — passava por cima do título em cima e das duas cifras
+ * embaixo. Um número escolhido contra "o telefone mais estreito" só acerta
+ * naquele telefone: no de 320 ele espremia, e no de 430 sobrava tela.
+ *
+ * Agora este par é a proporção e o tamanho MÁXIMO. O que vai para a tela sai de
+ * `caberCartao`, que reduz até caber no vão realmente medido, e o miolo encolhe
+ * junto na mesma escala — nenhum corpo de texto daqui precisou ser reescrito
+ * para o cartão caber, e nenhum vai precisar quando esta caixa mudar.
+ *
+ * Mais alto do que a largura sugere porque as cifras ocupam duas linhas aqui. O
+ * cartão estreito é o único lugar em que o formato deitado cede: cinco números
+ * que valem a leitura custam uma segunda fileira, e a fileira custa a altura.
  */
 const CTA_MOBILE = { width: 264, height: 252 };
+
+/**
+ * O respiro do cartão de fecho até a borda da tela e até a tipografia, em px.
+ *
+ * A margem lateral é a mesma `px-5` das duas faixas de texto, e é de propósito:
+ * assim a borda do cartão cai na mesma goteira do título, e a coluna da seção
+ * continua sendo uma só no celular. A folga vertical é menor porque as faixas
+ * já trazem o respiro delas no próprio padding — este número só impede que o
+ * cartão ENCOSTE nelas, que é diferente de dar espaço a elas.
+ */
+const MARGEM_CARTAO = 20;
+const FOLGA_CARTAO = 12;
+
+/**
+ * O cartão de fecho reduzido até caber no que a tela realmente deixou.
+ *
+ * Reduz e nunca aumenta: o tamanho de projeto é o teto, e um cartão esticado
+ * além dele num telefone grande viraria a única peça da parede fora de escala
+ * com os reels ao lado. `FOCUS_SCALE` entra na conta porque o que precisa caber
+ * não é o cartão parado — é ele no instante em que aterrissa e cresce doze por
+ * cento, que é justamente quando o visitante está olhando para ele.
+ *
+ * A altura sai arredondada a partir da largura, e não das duas contas em
+ * paralelo: dois arredondamentos independentes desencontram a proporção em até
+ * um pixel, e é essa proporção que faz o miolo escalado preencher a caixa exata.
+ */
+function caberCartao(base: { width: number; height: number }, largura: number, vao: number) {
+  if (largura <= 0 || vao <= 0) return base;
+  const naLargura = (largura - 2 * MARGEM_CARTAO) / (1 + FOCUS_SCALE) / base.width;
+  const naAltura = (vao - 2 * FOLGA_CARTAO) / (1 + FOCUS_SCALE) / base.height;
+  const escala = Math.min(1, naLargura, naAltura);
+  const width = Math.round(base.width * escala);
+  return { width, height: Math.round(base.height * (width / base.width)) };
+}
 
 /**
  * Cards of run-up before the first reel, in card widths.
@@ -233,15 +276,58 @@ const HOVER_SPRING = { mass: 0.6, stiffness: 200, damping: 26 };
 const HOVER_INSTANT = { stiffness: 1000, damping: 100 };
 
 /**
- * PENDENTE-DONO: the owner's framing of the scale — "milhares de clientes,
- * centenas de vídeos novos todos os dias". Rendered as he said it, and marked
- * because a round adjective is the weakest form of a number he actually has.
- * Exact beats big: "2.400 clientes" outsells "milhares" every time, and this
- * page's whole credibility rests on being the kind that quotes figures.
+ * Quantas empresas já publicaram com a Doxa.
+ *
+ * PENDENTE-DONO: o número é do dono — ele disse "mais de 1500 clientes". Está
+ * exato e não como "milhares" de propósito, e era o que a versão anterior deste
+ * arquivo já pedia: adjetivo redondo é a forma mais fraca de um número que
+ * existe. Uma parede inteira montada para ser conferida não pode abrir com uma
+ * estimativa.
+ *
+ * ATENÇÃO ao verbo que acompanha: "1.500 empresas JÁ VIRALIZARAM" afirma que
+ * todas as mil e quinhentas passaram do milhão de views, e é uma afirmação
+ * diferente de "1.500 clientes atendidos". O dono ditou a frase nessa forma e
+ * ela está escrita nessa forma; se o que ele tem são 1.500 CONTRATOS e não
+ * 1.500 viralizações, a linha correta é "1.500 empresas já publicam com a
+ * Doxa" — mesma força, sem prometer o resultado de todas.
+ */
+const CLIENTES = '1.500';
+
+/**
+ * Os dois números do alto — a ESCALA da operação, por decisão do dono.
+ *
+ * A dupla já foi por três lugares diferentes, e vale saber onde ela esteve
+ * porque a terceira volta ao território da primeira.
+ *
+ * Primeiro foi "Milhares de clientes atendidos" e "Centenas de vídeos novos por
+ * dia": tamanho de operação, dito em adjetivo. O dono leu como desconexo e
+ * estava certo — falavam da Doxa numa seção cujo trabalho é falar do visitante.
+ *
+ * Depois viraram a promessa e o método, nas palavras do hero: um milhão de views
+ * ou o dinheiro de volta, sessenta conteúdos em noventa dias. Em cima da prova
+ * publicada, a promessa deixava de ser promessa e virava legenda.
+ *
+ * Agora são escala de novo, e é o dono quem trocou — mas com a diferença que
+ * derrubava a primeira versão: são NÚMEROS, e não "milhares" e "centenas". Dez
+ * bilhões de views e novecentos vídeos por dia dizem o tamanho da máquina que
+ * está por trás dos reels passando na tela, que é uma coisa que a parede não
+ * contava em lugar nenhum.
+ *
+ * ATENÇÃO, e é o custo desta troca: a GARANTIA saiu daqui. "ou seu dinheiro de
+ * volta" estava nesta linha e não está mais. Ela continua no hero e no painel
+ * claro da comparação (`GARANTIA`, em `comparacao/config.ts`), então a página
+ * não perdeu a promessa — mas esta seção, que é a da prova, deixou de repeti-la
+ * ao lado dos números. Se a intenção era somar e não trocar, o lugar de devolver
+ * a garantia é aqui.
+ *
+ * PENDENTE-DONO: os dois números são afirmações públicas e verificáveis por
+ * quem quiser conferir — "+10B" é uma ordem de grandeza que muito poucas
+ * operações de conteúdo no país sustentam, e "+900 por dia" implica capacidade
+ * instalada. São dele para afirmar; ficam registrados aqui como o que são.
  */
 const SCALE_CLAIMS = [
-  { value: 'Milhares', label: 'de clientes atendidos' },
-  { value: 'Centenas', label: 'de vídeos novos por dia' },
+  { value: '+10B', label: 'de views orgânicas geradas' },
+  { value: '+900', label: 'vídeos gerados por dia' },
 ];
 
 /**
@@ -435,7 +521,7 @@ function Stat({
   return (
     <span className={`flex items-center ${big ? 'gap-1 lg:gap-1.5' : 'gap-1'}`}>
       <Icon
-        className={`shrink-0 ${big ? 'h-3.5 w-3.5 lg:h-[18px] lg:w-[18px]' : 'h-3 w-3'} ${
+        className={`shrink-0 ${big ? 'h-3.5 w-3.5 lg:h-4 lg:w-4' : 'h-3 w-3'} ${
           liked ? 'fill-current text-[#ff3040]' : 'text-white/70'
         }`}
         strokeWidth={liked ? 0 : 2}
@@ -443,7 +529,7 @@ function Stat({
       />
       <span
         className={`font-semibold leading-none tabular-nums text-white ${
-          big ? 'text-[15px] lg:text-[19px]' : 'text-[10px]'
+          big ? 'text-[15px] lg:text-[16px]' : 'text-[10px]'
         }`}
       >
         {value}
@@ -462,13 +548,85 @@ function Stat({
  * that carried its own would need the same two sets of flex classes passed into
  * it, which is the wrapper it was trying not to be.
  */
+/**
+ * A largura do palco e o VÃO que sobra entre as duas faixas de tipografia.
+ *
+ * Medido, e não estimado a partir de constantes de padding. As duas faixas são
+ * texto do dono — o título e as duas cifras —, e texto do dono muda: uma palavra
+ * a mais no título quebra uma linha nova no telefone estreito e come mais vinte
+ * e cinco pixels do meio da tela. Um número escrito à mão aqui estaria errado no
+ * commit seguinte, e erraria em silêncio, que é a pior forma: o sintoma não é um
+ * erro, é o cartão passando por cima da frase.
+ *
+ * Em `useLayoutEffect` para a conta acontecer ANTES da pintura. Num efeito
+ * comum, o primeiro quadro sairia com o cartão no tamanho de projeto e o
+ * seguinte com ele reduzido, e o visitante veria a peça principal da seção dar
+ * um pulo ao aparecer.
+ */
+function useVaoLivre(
+  palcoRef: RefObject<HTMLElement>,
+  topoRef: RefObject<HTMLElement>,
+  rodapeRef: RefObject<HTMLElement>,
+) {
+  const [medida, setMedida] = useState({ largura: 0, vao: 0 });
+
+  useLayoutEffect(() => {
+    const palco = palcoRef.current;
+    if (palco == null) return;
+
+    const medir = () => {
+      // As faixas escondidas por breakpoint medem zero sozinhas — a de baixo é
+      // `lg:hidden` e a coluna de cifras do topo é `hidden lg:flex`, então a
+      // mesma conta serve para os dois layouts sem perguntar em qual estamos.
+      const topo = topoRef.current?.getBoundingClientRect().height ?? 0;
+      const rodape = rodapeRef.current?.getBoundingClientRect().height ?? 0;
+      const largura = palco.clientWidth;
+      const vao = Math.max(0, palco.clientHeight - topo - rodape);
+      // Só troca o objeto quando o número muda: um objeto novo a cada medida
+      // redesenharia a parede inteira a cada quadro de uma rotação de tela.
+      setMedida((m) => (m.largura === largura && m.vao === vao ? m : { largura, vao }));
+    };
+
+    medir();
+    const observador = new ResizeObserver(medir);
+    observador.observe(palco);
+    if (topoRef.current != null) observador.observe(topoRef.current);
+    if (rodapeRef.current != null) observador.observe(rodapeRef.current);
+    return () => observador.disconnect();
+  }, [palcoRef, topoRef, rodapeRef]);
+
+  return medida;
+}
+
 function ScaleClaims() {
   return (
     <>
       {SCALE_CLAIMS.map(({ value, label }) => (
         <div key={label} className="flex flex-col gap-1">
-          <span className="font-serif text-xl leading-none text-white lg:text-3xl">{value}</span>
-          <span className="text-[11px] leading-none text-white/50 lg:text-[12px]">{label}</span>
+          {/* ── A DIETA FOI DESFEITA, e o registro das duas decisões fica.
+
+              Estas cifras estiveram em 1,4rem e 13px por uma razão minha, não
+              do dono: no telefone o título e elas ocupavam dois terços da altura
+              da tela, e o terço restante é o vão em que o cartão de fecho tem de
+              caber. Encolhê-las devolvia vão ao cartão.
+
+              O dono olhou o resultado e pediu maior — e é uma troca legítima,
+              porque quem paga não é conteúdo cortado: o cartão se REDUZ sozinho
+              ao vão que sobrar (`caberCartao`). Cifra maior aqui é cartão um
+              pouco menor ali, e mais nada.
+
+              O custo real é pequeno, e vale saber por quê: os rótulos já
+              quebravam em duas linhas numa coluna de 134px, então os dois
+              pixels a mais de corpo não acrescentam linha nenhuma — a faixa
+              cresce cerca de doze pixels no total, não sessenta.
+
+              A copy mudou desde aquela nota: eram "1 milhão" e "60 vídeos
+              virais", hoje são "+10B" e "+900". Números curtos, que é o que
+              torna 2rem seguro numa coluna estreita. */}
+          <span className="font-serif text-[2rem] leading-none text-white lg:text-[2.6rem]">
+            {value}
+          </span>
+          <span className="text-[14px] leading-snug text-white/60 lg:text-[15px]">{label}</span>
         </div>
       ))}
     </>
@@ -649,8 +807,33 @@ function ReelCard({
  * not a photograph, and by the time it arrives it is also the only card left on
  * screen, so it can afford to be composed rather than to blend in.
  */
-function ClosingCard({ onEnter, ...placement }: TrackPlacement & { onEnter: () => void }) {
+function ClosingCard({
+  onEnter,
+  base,
+  ...placement
+}: TrackPlacement & {
+  onEnter: () => void;
+  /** O tamanho em que o miolo foi desenhado. `card` é o que coube na tela. */
+  base: { width: number; height: number };
+}) {
   const { transform, focus, display } = usePlacement(placement);
+  /*
+   * O miolo inteiro numa escala só, em vez de um corpo de texto por breakpoint.
+   *
+   * O cartão encolhe para caber no vão da tela, e tudo que está dentro dele tem
+   * de encolher junto — senão o que sobra é o pior dos dois mundos: a caixa
+   * ajustada e o conteúdo transbordando por baixo do `overflow-hidden`, que
+   * corta o botão sem avisar. Reescrever oito medidas de tipo em `vw` seria a
+   * outra saída, e ela custaria a proporção: estas medidas foram afinadas juntas
+   * — o vão do arroba, a fileira de cifras em duas linhas, a manchete de 34px, o
+   * disco de 56 do botão —, e afinar cada uma por conta própria desmancha o que
+   * as fez funcionar. Uma escala mantém a composição idêntica em qualquer
+   * telefone; só o tamanho dela muda.
+   *
+   * No desktop dá exatamente 1: `card` e `base` são o mesmo objeto lá, e a
+   * conta devolve o cartão que sempre existiu.
+   */
+  const escala = placement.card.width / base.width;
 
   return (
     <motion.div
@@ -689,10 +872,22 @@ function ClosingCard({ onEnter, ...placement }: TrackPlacement & { onEnter: () =
           rather than split into three gaps by `justify-between`. That was the
           card reading as strange: a header, a headline and a button each
           hanging in space with nothing holding them to anything. */}
-      <div className="relative flex h-full flex-col items-center p-4 text-center lg:p-6">
-        <div className="flex w-full flex-col items-center gap-2 font-ui lg:gap-2.5">
+      <div
+        className="relative flex flex-col items-center p-4 text-center lg:p-6"
+        style={{
+          width: base.width,
+          height: base.height,
+          transform: `scale(${escala})`,
+          transformOrigin: 'top left',
+        }}
+      >
+        {/* O vão entre o arroba e os números é maior do que o ritmo do cartão, a
+            pedido do dono: são duas coisas de natureza diferente — quem postou
+            e o que o post fez —, e coladas no mesmo passo do resto elas liam
+            como uma linha só de cabeçalho. */}
+        <div className="flex w-full flex-col items-center gap-3 font-ui lg:gap-4">
           <span className="flex items-center gap-1 text-[12px] font-semibold text-white/70">
-            @seuperfil
+            @suaempresa
             <Verified />
           </span>
           {/* The five figures, at nearly twice a reel's size. The followers come
@@ -705,8 +900,12 @@ function ClosingCard({ onEnter, ...placement }: TrackPlacement & { onEnter: () =
               320px screen that is four and an orphan. Two and three is a shape;
               it is also what lets the figures be fifteen pixels there instead
               of the twelve it takes to crush all five into one line, and being
-              read is the entire job of this row. */}
-          <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 lg:gap-x-5">
+              read is the entire job of this row.
+
+              Fifteen pixels between them on the wide card, set as a number
+              rather than as a step on the scale: the owner asked for that gap,
+              and `gap-x-4` would be sixteen. */}
+          <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 lg:gap-x-[15px]">
             <Stat big icon={Eye} value={CTA_STATS.views} label="visualizações" />
             <Stat big icon={Heart} value={CTA_STATS.likes} label="curtidas" liked />
             <span aria-hidden className="w-full lg:hidden" />
@@ -731,10 +930,10 @@ function ClosingCard({ onEnter, ...placement }: TrackPlacement & { onEnter: () =
             gaps come out equal without either being a number that has to be
             re-tuned when the card or the type changes. */}
         <p className="my-auto whitespace-nowrap font-serif text-[34px] leading-none tracking-[-0.03em] text-white lg:text-[58px]">
-          O próximo é o seu.
+          E a próxima é a sua.
         </p>
 
-        <MotionButton label="Quero viralizar" href="/empresas" />
+        <MotionButton label="Quero viralizar" href={HREF_FORMS} />
       </div>
     </motion.div>
   );
@@ -763,6 +962,12 @@ export function ProofWall() {
    * had travelled.
    */
   const stickyRef = useRef<HTMLDivElement>(null);
+  /** As duas faixas de tipografia que fecham o vão em que o cartão aterrissa. */
+  const topoRef = useRef<HTMLDivElement>(null);
+  const rodapeRef = useRef<HTMLDivElement>(null);
+  // Medido aqui em cima porque o tamanho do cartão sai desta conta, e ele é
+  // decidido antes do desenho — não depois, num efeito que corrige.
+  const { largura, vao } = useVaoLivre(stickyRef, topoRef, rodapeRef);
   const isDesktop = useIsDesktop();
   const still = useReducedMotion() ?? false;
 
@@ -814,7 +1019,17 @@ export function ProofWall() {
 
   const step = isDesktop ? STEP_DESKTOP : STEP_MOBILE;
   const card = isDesktop ? CARD_DESKTOP : CARD_MOBILE;
-  const ctaCard = isDesktop ? CTA_DESKTOP : CTA_MOBILE;
+  /*
+   * O cartão de fecho é o único que se ajusta à tela, e SÓ no layout estreito.
+   *
+   * `isDesktop` devolve `CTA_DESKTOP` intocado de propósito: no layout largo o
+   * vão sempre coube, o dono não pediu nada ali, e uma medida que "por via das
+   * dúvidas" também roda no desktop é uma mudança de desktop disfarçada de
+   * segurança. Os reels não entram nesta conta — eles atravessam a tela e saem,
+   * e é só o cartão que PARA no meio dela, entre as duas faixas de texto.
+   */
+  const ctaBase = isDesktop ? CTA_DESKTOP : CTA_MOBILE;
+  const ctaCard = isDesktop ? CTA_DESKTOP : caberCartao(CTA_MOBILE, largura, vao);
 
   const hoverCentre = useSpring(endSlot, still ? HOVER_INSTANT : HOVER_SPRING);
   const hoverAmount = useSpring(0, still ? HOVER_INSTANT : HOVER_SPRING);
@@ -878,6 +1093,7 @@ export function ProofWall() {
   return (
     <section
       ref={sectionRef}
+      data-secao="Prova"
       className="relative bg-doxa-bg"
       // Sized by the content: every card gets the same share of scroll, plus
       // the run-up and the hold at the end. Adding files lengthens the section
@@ -929,6 +1145,7 @@ export function ProofWall() {
               <ClosingCard
                 {...placement}
                 card={ctaCard}
+                base={ctaBase}
                 // Dead centre when the run stops, and that costs it the step
                 // toward the camera — see `FOCUS_Z`.
                 lift={0}
@@ -974,17 +1191,59 @@ export function ProofWall() {
               four hundred pixels down a five-hundred-and-sixty pixel screen,
               and the reels flew through the middle of it. They go to the floor
               instead — see the block below. */}
-          <div className="pointer-events-none absolute inset-x-0 top-0 z-20 flex flex-wrap items-end justify-between gap-x-10 gap-y-8 px-5 py-12 md:px-10 md:py-24">
-            <h2 className="font-serif text-4xl font-normal leading-[1.05] tracking-[-0.02em] text-white md:text-6xl">
-              A prova já está
+          <div
+            ref={topoRef}
+            /* `py-8` até 640px, `py-12` daí para cima — o valor antigo continua
+               valendo em tudo que não é telefone estreito. Os 32 pixels que esta
+               faixa devolve vão inteiros para o vão do cartão, e numa tela de
+               568 de altura eles são a diferença entre o cartão caber e o cartão
+               ser reduzido para caber.
+
+               `md:pt-14` no lugar do `md:py-24`, a pedido do dono: mais ar
+               entre a tipografia e o cartão de fecho. O espaço tinha de sair
+               DAQUI, e não de baixar o cartão — ele pousa no centro do palco 3D,
+               que é a origem em torno da qual os dezesseis reels são colocados;
+               mover a origem é mover a trajetória inteira do voo, e já foi o que
+               quebrou o ponteiro na metade de trás desta seção uma vez (a nota
+               sobre `offset` em `usePlacement` conta a história).
+
+               Com a faixa 40px mais alta, o vão entre o pé do título e o topo do
+               cartão passa de 63 para 103 pixels numa tela de 940 — e o `pb-24`
+               fica onde estava porque ele não é visível: a faixa é transparente
+               e `pointer-events-none`, então o que se vê é onde o TEXTO termina,
+               não onde a caixa dele acaba. */
+            className="pointer-events-none absolute inset-x-0 top-0 z-20 flex flex-wrap items-end justify-between gap-x-10 gap-y-8 px-5 py-8 sm:py-12 md:px-10 md:pb-24 md:pt-14"
+          >
+            {/* O número primeiro, e a promessa do hero no passado.
+
+                "A prova já está publicada" descrevia a seção; esta frase
+                entrega o argumento. E o argumento é uma vírgula: o hero promete
+                um milhão de views, e aqui a mesma frase aparece conjugada como
+                coisa que já aconteceu — mil e quinhentas vezes, com os vídeos
+                passando na tela enquanto se lê.
+
+                A contagem de `REELS` saiu daqui. Ela dizia quantos reels a
+                parede mostra, o que era honesto e útil quando o título falava
+                da parede; ao lado de "1.500", um "(3)" em versalete lê como a
+                letra miúda desmentindo a manchete. O número de arquivos que
+                temos não é o número de clientes que atendemos, e só um dos dois
+                é assunto desta seção. */}
+            {/* 2,1rem no telefone — os 2,6 de `MANCHETE` divididos por 1,25,
+                a pedido do dono, depois de ele ver os 2,6 na tela.
+
+                Volta a ser um corpo próprio em vez de um token, e o ganho paga:
+                a 33,6px a segunda linha ("viralizaram com a Doxa.") mede 255
+                pixels nos 280 úteis de um telefone de 320 — cabe inteira. Com
+                isso a quebra escrita em três linhas, que existia só para impedir
+                a órfã "Doxa." a 41,6px, deixa de ter motivo, e o título volta a
+                ser as duas linhas que o `<br>` sempre disse. Menos tamanho aqui
+                comprou menos marcação.
+
+                Acima de 640 nada muda. */}
+            <h2 className="font-serif text-[2.1rem] font-normal leading-[1.05] tracking-[-0.02em] text-white sm:text-4xl md:text-6xl">
+              {CLIENTES} empresas já
               <br />
-              publicada.
-              {/* Counts `REELS`, never the drawn cards: the wall is padded with
-                  repeats today, and the one thing it must not do is put a
-                  number on them. */}
-              <span className="ml-3 align-super font-sans text-base font-medium tabular-nums text-white md:text-xl">
-                ({REELS.length})
-              </span>
+              viralizaram com a Doxa.
             </h2>
 
             <div className="hidden flex-wrap justify-end gap-x-10 gap-y-4 text-right lg:flex">
@@ -1003,7 +1262,10 @@ export function ProofWall() {
               which layout the cards are in, and that is what `useIsDesktop`
               answers — two breakpoints deciding one thing is one of them being
               wrong at some width. */}
-          <div className="pointer-events-none absolute inset-x-0 bottom-0 z-20 flex justify-between gap-x-3 px-5 pb-12 lg:hidden">
+          <div
+            ref={rodapeRef}
+            className="pointer-events-none absolute inset-x-0 bottom-0 z-20 flex justify-between gap-x-3 px-5 pb-8 sm:pb-12 lg:hidden"
+          >
             <ScaleClaims />
           </div>
         </div>

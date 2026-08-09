@@ -3,6 +3,13 @@ import { useEffect, useRef, type RefObject } from 'react';
 interface DotGridSpotlightProps {
   /** The area the cursor is tracked inside; coordinates are relative to it. */
   containerRef: RefObject<HTMLElement>;
+  /**
+   * Extra classes on the lit layer, for surfaces that need a different gain —
+   * `is-forte` opens it up for the small dark card in the comparison section.
+   * The geometry still comes from the shared custom properties, so the lit dots
+   * cannot drift off their dim twins.
+   */
+  className?: string;
 }
 
 /**
@@ -17,7 +24,7 @@ interface DotGridSpotlightProps {
  * screen refreshes, so anything beyond the last position in a frame is paint
  * work thrown away.
  */
-export function DotGridSpotlight({ containerRef }: DotGridSpotlightProps) {
+export function DotGridSpotlight({ containerRef, className = '' }: DotGridSpotlightProps) {
   const layerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -44,11 +51,19 @@ export function DotGridSpotlight({ containerRef }: DotGridSpotlightProps) {
       x = event.clientX - rect.left;
       y = event.clientY - rect.top;
       layer.style.opacity = '1';
+      // Promised only while the mask is actually moving. `will-change` in the
+      // stylesheet keeps every one of these layers on its own compositor
+      // surface for the whole life of the page, and there are six of them at
+      // full viewport size — tens of megabytes of GPU memory held for an effect
+      // that is idle until a pointer arrives. Set here and dropped on the way
+      // out, the hint costs nothing when nobody is pointing at this section.
+      layer.style.willChange = '-webkit-mask-position, mask-position';
       if (!frame) frame = requestAnimationFrame(flush);
     };
 
     const handleLeave = () => {
       layer.style.opacity = '0';
+      layer.style.willChange = '';
     };
 
     container.addEventListener('pointermove', handleMove);
@@ -61,6 +76,10 @@ export function DotGridSpotlight({ containerRef }: DotGridSpotlightProps) {
   }, [containerRef]);
 
   return (
-    <div ref={layerRef} className="dot-grid-glow pointer-events-none absolute inset-0" aria-hidden />
+    <div
+      ref={layerRef}
+      className={`dot-grid-glow pointer-events-none absolute inset-0 ${className}`}
+      aria-hidden
+    />
   );
 }

@@ -3,6 +3,100 @@
 @tailwind utilities;
 
 /*
+ * As fontes, servidas por nós.
+ *
+ * Vinham do Google, e o custo não era o peso — era a CADEIA: o navegador
+ * abria conexão com `fonts.googleapis.com` (DNS + TLS), baixava um CSS, e só
+ * então descobria que precisava abrir uma SEGUNDA conexão com
+ * `fonts.gstatic.com` (DNS + TLS de novo) para os arquivos. São quatro
+ * idas e vindas antes da primeira letra desenhada, e num 4G isso é um quarto
+ * de segundo gasto sem que nada apareça na tela. Servidos daqui, os arquivos
+ * vêm pela conexão que já está aberta para a página.
+ *
+ * Só os subsets latinos. O Almarai é uma família árabe e o Google entrega os
+ * dois alfabetos; o site é em português, e os blocos árabes eram 75 KB que
+ * ninguém nunca desenharia. O `unicode-range` de cada bloco é o do Google,
+ * copiado sem alteração: é ele que diz ao navegador qual arquivo baixar para
+ * qual caractere, e mexer nisso quebraria a acentuação.
+ *
+ * `font-display: swap` mantém o comportamento que a página já tinha — o texto
+ * aparece na fonte de sistema e troca quando a real chega, em vez de manter a
+ * dobra em branco esperando um arquivo.
+ */
+
+@font-face {
+  font-family: 'Almarai';
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+  src: url(/fonts/Almarai-300-normal-latin.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'Almarai';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/fonts/Almarai-400-normal-latin.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'Almarai';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url(/fonts/Almarai-700-normal-latin.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'Almarai';
+  font-style: normal;
+  font-weight: 800;
+  font-display: swap;
+  src: url(/fonts/Almarai-800-normal-latin.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'Instrument Serif';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/fonts/InstrumentSerif-400-italic-latin-ext.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@font-face {
+  font-family: 'Instrument Serif';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/fonts/InstrumentSerif-400-italic-latin.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'Instrument Serif';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/fonts/InstrumentSerif-400-normal-latin-ext.woff2) format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@font-face {
+  font-family: 'Instrument Serif';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/fonts/InstrumentSerif-400-normal-latin.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+/*
  * Set the default on `body`, not on `*`. A universal selector re-applies the
  * sans to every descendant directly, which beats inheritance — so `font-serif`
  * on a parent silently loses on its children. That bug ate the hero headline.
@@ -34,6 +128,556 @@ html {
 
 body {
   background-color: #000000;
+}
+
+/*
+ * ─── A BARRA DE ROLAGEM, NOSSA ───────────────────────────────────────────────
+ *
+ * A régua da direita, na língua do site. Ela era a única peça da tela que ainda
+ * vinha do sistema operacional, virou uma barra nativa repintada, passou por uma
+ * fase de vidro líquido com marcas de seção — e o dono cortou as duas coisas.
+ * Ficou uma só, que é a que ele queria desde a referência: a ILHA.
+ *
+ * ─── O QUE FOI CORTADO, E POR QUE O CORTE ESTÁ CERTO ─────────────────────────
+ *
+ * Saiu o vidro: a ilha da referência é PRETA e opaca, e um objeto que deixa a
+ * página aparecer por dentro é o oposto de uma peça de hardware colada na borda
+ * da tela. Saíram os capítulos: eram uma segunda interface na mesma coluna, e
+ * duas coisas disputando dezesseis pixels de largura é uma a mais. O que a régua
+ * precisava dizer — onde a pessoa está — a ilha diz melhor aberta, com nome e
+ * porcentagem, do que seis traços diziam fechados.
+ *
+ * Só a barra do DOCUMENTO é escondida. As de dentro da página (o campo do FAQ é
+ * a única hoje) continuam sendo as do navegador: elas rolam conteúdo dentro de
+ * uma caixa, e uma ilha dentro de um campo de texto seria um enfeite no lugar de
+ * um controle.
+ */
+html {
+  scrollbar-width: none;
+}
+
+html::-webkit-scrollbar {
+  display: none;
+}
+
+/*
+ * ─── ESTADO 1: DORMINDO ──────────────────────────────────────────────────────
+ *
+ * No topo da página ela é uma barra de rolagem e nada mais — cinza, fina,
+ * discreta, a primeira imagem da referência. Quem acabou de chegar não tem o que
+ * fazer com ela, e um objeto preto chamando atenção na borda antes de a pessoa
+ * ter rolado um pixel é ruído no lugar mais caro da tela.
+ *
+ * A cápsula clicável tem 16px e o traço pintado tem 8: a área de pegar é o dobro
+ * do que se vê, porque uma barra que se vê com oito pixels se acerta com muito
+ * mais dificuldade do que isso.
+ */
+/*
+ * ─── A BORDA DIREITA NÃO SE MEXE, E ISSO É UM BUG CONSERTADO ─────────────────
+ *
+ * `right` é o MESMO nos três estados, e tem de continuar sendo. Ele já valeu 6,
+ * 10 e 12 — um por forma —, e o resultado era a ilha piscando sem parar em vez
+ * de abrir: cada estado recuava a borda direita alguns pixels, então um ponteiro
+ * pousado na faixa mais à direita da barra ficava FORA da caixa nova. Isso
+ * dispara `pointerleave`, que fecha; fechada, a caixa volta a alcançar o
+ * ponteiro e dispara `pointerenter`, que abre. Trinta vezes por segundo.
+ *
+ * Com o `right` fixo, cada forma CONTÉM a anterior — as três crescem só para a
+ * esquerda, e o ponteiro que entrou nunca sai por culpa da própria animação.
+ */
+.rolador {
+  position: fixed;
+  top: 0;
+  right: 6px;
+  z-index: 60;
+  width: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: grab;
+  /*
+   * ─── SEM TRANSPARÊNCIA, por decisão do dono ────────────────────────────────
+   *
+   * A peça tinha uma rampa de presença: 0,62 parada, 0,95 enquanto a página
+   * andava, 1 com a mão em cima. Ela existia para a régua ser discreta sem
+   * sumir — e o preço era a cor NUNCA ser a mesma duas vezes, porque opacidade
+   * sobre uma página preta é um segundo controle de brilho por cima do primeiro.
+   * Pedida uma cor só, a rampa passou a ser o que impedia essa cor de existir.
+   *
+   * A discrição agora vem do próprio cinza, que desceu para `#2c2c2e` na mesma
+   * decisão. É a troca que estava implícita no pedido: presença constante e tom
+   * baixo, em vez de tom alto piscando de presença.
+   */
+  opacity: 1;
+  /* Sem isto, o arrasto vira seleção de texto da página inteira assim que o
+     cursor sai da cápsula. */
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: none;
+  transition:
+    width 460ms cubic-bezier(0.34, 1.4, 0.64, 1),
+    height 460ms cubic-bezier(0.34, 1.4, 0.64, 1);
+
+  /*
+   * ─── UMA COR PARA AS TRÊS FORMAS ───────────────────────────────────────────
+   *
+   * Pedido do dono, e o que ele viu era um defeito de verdade: a lasca dormindo
+   * era cinza, a pílula ACORDADA era `#08080a` — preta —, e o painel aberto
+   * voltava a ser cinza. Rolar a página fazia a peça escurecer no meio do
+   * caminho e clarear de novo ao abrir. Três cores para três estados do MESMO
+   * objeto, e o olho lia como três objetos se substituindo.
+   *
+   * `#4f4f4f` não é um cinza novo: é exatamente o que a lasca já mostrava —
+   * `rgba(255,255,255,0.28)` composto sobre o `#0b0b0b` da página. A peça em
+   * repouso continua idêntica ao que era; o que mudou é que agora ela continua
+   * essa cor quando acorda e quando abre.
+   *
+   * Opaco no lugar de translúcido, e isso ganha uma coisa de graça: a barra é
+   * `fixed` e passa por cima do painel CREME da comparação. Em branco a 28% ela
+   * sumia ali dentro; em cinza chapado ela existe sobre qualquer seção.
+   *
+   * A rampa de opacidade do `.rolador` fica: 0,62 em repouso, 0,95 rolando, 1
+   * com a mão em cima. É ela que mantém a peça discreta, e é presença — não cor.
+   */
+  --rolador-fundo: #2c2c2e;
+}
+
+/*
+ * O corpo pintado, e o ESTICÃO.
+ *
+ * `--estica` é escrita pelo componente a cada quadro de rolagem e vale 1 quando
+ * a página está parada. A peça cresce no eixo em que anda e encolhe no outro na
+ * mesma proporção — `1 / var(--estica)` —, que é como borracha se comporta e é o
+ * que separa "esticou" de "ficou maior". A curva de volta passa de 1 e retorna:
+ * é o "boing" da chegada.
+ *
+ * ─── A ARMADILHA QUE CUSTOU UM BUG INTEIRO ───────────────────────────────────
+ *
+ * `transform` só pode ser animado AQUI, no `::before`, e nunca na cápsula. A
+ * posição vertical da barra é um `translateY` reescrito a cada quadro de
+ * rolagem; com `transform` em transição na cápsula, cada quadro viraria uma
+ * animação de 400ms começando — e a barra andaria sempre atrás da página, com um
+ * atraso elástico, exatamente como se estivesse quebrada.
+ */
+.rolador::before {
+  content: '';
+  width: 8px;
+  height: 100%;
+  border-radius: 999px;
+  background: var(--rolador-fundo);
+  transform: scaleY(var(--estica, 1)) scaleX(calc(1 / var(--estica, 1)));
+  transition:
+    width 460ms cubic-bezier(0.34, 1.4, 0.64, 1),
+    border-radius 460ms cubic-bezier(0.34, 1.4, 0.64, 1),
+    background-color 340ms ease,
+    box-shadow 340ms ease,
+    transform 380ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* `.rolador-aceso` e o `:hover` saíram com a rampa, e o JS que punha e tirava a
+   classe saiu junto: os dois só mexiam em opacidade, e a peça agora tem uma só.
+   Se o brilho de "a página está andando" voltar um dia, ele volta por uma
+   propriedade que sobreviva a zero transparência — `box-shadow`, ou o próprio
+   cinza subindo um degrau. */
+.rolador-preso {
+  cursor: grabbing;
+}
+
+/*
+ * ─── ESTADO 2: ACORDADA ──────────────────────────────────────────────────────
+ *
+ * Noventa pixels de rolagem depois, a barra vira a pílula preta com o disco e a
+ * porcentagem — a segunda imagem da referência. O gatilho é a rolagem porque é
+ * ela que dá sentido ao objeto: uma régua de leitura só é útil depois que existe
+ * leitura para medir. Voltando ao topo, ela dorme de novo.
+ *
+ * Preto sobre uma página preta precisa de contorno, e é o único ponto em que
+ * este componente discorda da referência: nas fotos a ilha vive sobre o papel de
+ * parede do sistema, quase sempre claro, e o preto chapado basta para recortá-la.
+ * Aqui, sem o fio de branco a 14% e a sombra, ela sumiria em quatro das seis
+ * seções.
+ */
+.rolador-viva {
+  width: 34px;
+  cursor: grab;
+}
+
+.rolador-viva::before {
+  width: 100%;
+  background: var(--rolador-fundo);
+  /* O `inset` de branco a 14% saiu junto com o preto: ele existia só para
+     recortar uma pílula quase preta de uma página preta. Neste cinza a peça se
+     recorta sozinha, e o dono já tinha pedido a mesma coisa no painel aberto. */
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.55);
+  /* Acordada ela não estica: a pílula tem conteúdo dentro, e um bloco com texto
+     que se deforma ao rolar é um cartaz tremendo. */
+  transform: none;
+}
+
+/*
+ * O conteúdo entra DEPOIS da caixa, nos dois estados, e é o detalhe que separa a
+ * referência de uma imitação dela: na ilha do sistema a moldura abre e o
+ * conteúdo aparece dentro dela já aberta. Nascendo junto, ele seria esticado
+ * pela animação da caixa e o olho leria um cartaz sendo desenrolado.
+ *
+ * `visibility` junto de `opacity`, e não só opacity: um botão a zero de opacidade
+ * continua clicável, e um botão invisível na frente da borda direita da tela é
+ * uma armadilha para o clique de quem só queria a barra de rolagem.
+ */
+.rolador-viva-corpo,
+.rolador-ilha-corpo {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  opacity: 0;
+  visibility: hidden;
+  translate: 0 6px;
+  transition:
+    opacity 200ms ease,
+    translate 260ms cubic-bezier(0.16, 1, 0.3, 1),
+    visibility 0s linear 260ms;
+}
+
+.rolador-viva .rolador-viva-corpo,
+.rolador-ilha .rolador-ilha-corpo {
+  opacity: 1;
+  visibility: visible;
+  translate: 0 0;
+  transition:
+    opacity 260ms ease 200ms,
+    translate 420ms cubic-bezier(0.34, 1.4, 0.64, 1) 200ms,
+    visibility 0s linear 200ms;
+}
+
+/* Aberta, o corpo do estado de passagem sai de cena na hora: os dois ocupam o
+   mesmo lugar, e meio quadro com os dois visíveis é o conteúdo do painel
+   nascendo por cima de um disco que ainda não sumiu. */
+.rolador-ilha .rolador-viva-corpo {
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 120ms ease,
+    visibility 0s linear 120ms;
+}
+
+/* ─── O miolo do estado acordado: o disco e a porcentagem ──────────────────
+ *
+ * Dois elementos e nada mais — é um estado de passagem, e tudo o que ele precisa
+ * dizer é "isto aqui é um objeto, e você está nesta altura da página". O disco
+ * branco é o mesmo do `MotionButton` do site, encolhido: quem o reconhece já
+ * sabe, antes de abrir, que ali dentro tem um caminho para o formulário.
+ */
+.rolador-viva-corpo {
+  align-items: center;
+  justify-content: space-between;
+  padding: 5px 4px 9px;
+}
+
+/* O disco vale a largura da pílula menos os cinco pixels de folga de cada lado.
+   Escrito assim, e não em número solto: quando o dono pedir a pílula mais fina
+   de novo, é um valor só que muda. */
+.rolador-viva-disco {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 999px;
+  background: #ffffff;
+  color: #0b0b0b;
+  flex-shrink: 0;
+}
+
+.rolador-viva-disco svg {
+  width: 13px;
+  height: 13px;
+}
+
+.rolador-viva-pct {
+  font-size: 9.5px;
+  letter-spacing: 0.01em;
+  color: rgba(255, 255, 255, 0.72);
+  font-variant-numeric: tabular-nums;
+}
+
+/*
+ * ─── ESTADO 3: ABERTA ────────────────────────────────────────────────────────
+ *
+ * A mesma peça inchando, no formato da foto do player. Nada aparece AO LADO da
+ * barra: a pílula de 46 pixels cresce para 208 e o conteúdo troca dentro dela.
+ * Um cartão abrindo ao lado seria um segundo objeto, e a graça do original é não
+ * haver segundo objeto.
+ *
+ * O canto deixa de ser pílula e vira 28px: é o que muda a leitura de "cápsula"
+ * para "painel", e é a mesma mudança que a referência faz entre as duas fotos.
+ */
+.rolador-ilha {
+  width: 236px;
+  cursor: default;
+}
+
+/*
+ * CINZA e não preto, a pedido do dono — e o painel é a única forma das três em
+ * que isso vale. Fechada e acordada, a peça é um objeto pequeno sobre a página e
+ * o preto a separa dela; aberta, ela é uma SUPERFÍCIE com conteúdo em cima, e
+ * superfície preta sobre página preta não tem onde apoiar a capa clara nem os
+ * dois níveis de texto. O cinza dá o degrau que faltava.
+ *
+ * ─── E O CINZA É O DA BARRA EM REPOUSO, sem contorno nenhum ──────────────────
+ *
+ * Segundo pedido do dono, e ele fecha o ciclo das três formas: a lasca que
+ * dorme na borda, a pílula que acorda e o painel que abre passam a ser a MESMA
+ * superfície mudando de tamanho, em vez de três objetos de cores diferentes que
+ * se substituem. Os dois `inset` que faziam o contorno saíram junto — eles
+ * existiam para recortar um painel quase preto de uma página preta, e um painel
+ * neste cinza se recorta sozinho.
+ *
+ * A cor sai de `--rolador-fundo`, declarado no `.rolador` — as três formas da
+ * peça compartilham o mesmo cinza, e o porquê está documentado lá.
+ */
+.rolador-ilha::before {
+  width: 100%;
+  border-radius: 30px;
+  background: var(--rolador-fundo);
+  box-shadow: 0 30px 74px rgba(0, 0, 0, 0.7);
+  transform: none;
+}
+
+/*
+ * ─── A CONTA QUE O BOTÃO PEDIU ───────────────────────────────────────────────
+ *
+ * O botão estava saindo pela borda de baixo, e não era erro de margem: a soma do
+ * conteúdo passava da altura fixa do painel. Uma capa quadrada de largura cheia
+ * já come 200 pixels, e sobravam 68 para dois textos, uma trilha e um botão.
+ *
+ * Agora a caixa é medida a partir do que ela precisa conter — 348 de altura para
+ * 236 de largura —, e o `min-height: 0` no corpo é o que impede a capa de voltar
+ * a empurrar: sem ele, um item flex se recusa a encolher abaixo do próprio
+ * conteúdo e é sempre o ÚLTIMO da coluna que é expulso.
+ */
+.rolador-ilha-corpo {
+  gap: 12px;
+  padding: 14px;
+  min-height: 0;
+}
+
+/*
+ * A CAPA — o quadrado claro onde a referência põe a arte do disco.
+ *
+ * O nosso disco é a página: o quadrado carrega o quanto dela já foi lido, em
+ * serifa, na cor do papel do site. É a peça que faz o painel valer a pena
+ * existir — sem ela, a ilha seria um botão dentro de uma caixa preta; com ela, é
+ * um objeto que RESPONDE, porque o número muda enquanto a pessoa rola.
+ */
+.rolador-capa {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 1;
+  min-height: 0;
+  aspect-ratio: 1;
+  width: 100%;
+  border-radius: 18px;
+  background: #f4f1e8;
+  color: #0b0b0b;
+  font-family: 'Instrument Serif', serif;
+  font-size: 52px;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Título e subtítulo, como o "Pink + White / Frank Ocean" da foto: a seção em
+   branco cheio, o que o número significa em cinza. */
+.rolador-ilha-secao {
+  display: block;
+  font-size: 16px;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  color: #ffffff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.rolador-ilha-copy {
+  display: block;
+  margin-top: 2px;
+  font-size: 13px;
+  line-height: 1.2;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* A barra de progresso do player, que aqui é literal: o quanto da página foi
+   rolado, o mesmo número da capa em forma de traço. */
+.rolador-trilha {
+  display: block;
+  height: 3px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.16);
+  overflow: hidden;
+}
+
+.rolador-progresso {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: #ffffff;
+}
+
+/*
+ * O controle. Onde a referência põe voltar / pausar / avançar, esta ilha põe a
+ * única ação que tem para oferecer — e ela ocupa a linha inteira, porque uma
+ * ação sozinha centralizada num espaço de três lê como as outras duas terem
+ * quebrado.
+ */
+.rolador-ilha-botao {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  margin-top: auto;
+  flex-shrink: 0;
+  padding: 6px 14px 6px 6px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.07);
+  color: #ffffff;
+  font-size: 13.5px;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    background-color 200ms ease,
+    border-color 200ms ease;
+}
+
+.rolador-ilha-botao:hover {
+  background: rgba(255, 255, 255, 0.14);
+  border-color: rgba(255, 255, 255, 0.28);
+}
+
+.rolador-ilha-botao:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.6);
+  outline-offset: 2px;
+}
+
+.rolador-ilha-seta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  background: #ffffff;
+  color: #0b0b0b;
+  flex-shrink: 0;
+  transition: transform 260ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* A seta desce um fio sob a mão, na direção para onde ela leva. É a única
+   animação de dentro da ilha: a caixa já fez a entrada, e um segundo objeto
+   crescendo no mesmo palmo de tela seria movimento demais. */
+.rolador-ilha-botao:hover .rolador-ilha-seta {
+  transform: translateY(3px);
+}
+
+/* No telefone não existe cursor para abrir nada, e o polegar da mão cobre a
+   barra inteira no instante em que ela seria útil. A rolagem por toque já tem o
+   indicador do próprio sistema. */
+@media (hover: none) {
+  .rolador {
+    display: none;
+  }
+}
+
+/*
+ * ─── UM TERÇO MENOR NA JANELA ESTREITA ───────────────────────────────────────
+ *
+ * Pedido do dono. A regra acima já esconde a peça no telefone de verdade, então
+ * o que esta atende é a janela estreita COM ponteiro — um navegador puxado para
+ * 320 de largura. Ali o painel aberto ocupava 236 dos 320 pixels: três quartos
+ * da tela para um atalho que a pessoa nem pediu.
+ *
+ * A fração aparece como `calc(... * 2 / 3)` em toda regra, e o JS guarda a mesma
+ * conta em `ENCOLHE` — as duas linguagens não compartilham a constante, mas
+ * mostram a mesma origem. Quem mudar uma acha a outra procurando por "2 / 3".
+ *
+ * O MIOLO encolhe por `scale` e não por uma segunda tabela de corpos e recuos.
+ * São nove medidas lá dentro — a capa em serifa de 52px, dois níveis de texto, a
+ * trilha, o botão, três vãos e o recuo — e elas foram afinadas JUNTAS: a altura
+ * de 358 é a soma exata delas, documentada em `ILHA_ALTURA`. Reescrever cada uma
+ * por conta própria desmancharia a soma e o sintoma seria o botão saindo pela
+ * borda de baixo, que é justamente o defeito que aquela conta existe para
+ * impedir. Com a escala, a composição é a mesma; só o tamanho dela muda.
+ *
+ * O truque é dar ao miolo o tamanho de PROJETO e reduzi-lo dentro da caixa já
+ * reduzida — por isso `right`/`bottom` voltam a `auto`: com `inset: 0` ele
+ * herdaria a caixa pequena e a escala o encolheria uma segunda vez.
+ */
+@media (max-width: 639px) {
+  .rolador-viva {
+    width: calc(34px * 2 / 3);
+  }
+
+  .rolador-ilha {
+    width: calc(236px * 2 / 3);
+  }
+
+  .rolador-ilha::before {
+    border-radius: calc(30px * 2 / 3);
+  }
+
+  .rolador-viva-corpo,
+  .rolador-ilha-corpo {
+    right: auto;
+    bottom: auto;
+    transform: scale(0.6667);
+    transform-origin: top left;
+  }
+
+  .rolador-viva-corpo {
+    width: 34px;
+    height: 148px;
+  }
+
+  .rolador-ilha-corpo {
+    width: 236px;
+    height: 358px;
+  }
+}
+
+/* O esticão é a única coisa aqui que se move sem ninguém pedir, e é justamente
+   o que a preferência manda desligar — a ilha continua inteira, apenas sem
+   deformar e sem inflar com overshoot. */
+@media (prefers-reduced-motion: reduce) {
+  .rolador,
+  .rolador::before,
+  .rolador-viva-corpo,
+  .rolador-ilha-corpo,
+  .rolador-ilha-botao,
+  .rolador-ilha-seta {
+    transition: none;
+  }
+
+  .rolador::before,
+  .rolador-ilha-botao:hover .rolador-ilha-seta {
+    transform: none;
+  }
+
+  /* Sem transição, `visibility` precisa acompanhar na hora — o atraso que
+     escondia o corpo depois do fade não tem mais o fade para esperar, e o
+     conteúdo ficaria clicável um quarto de segundo depois de invisível. */
+  .rolador-viva-corpo,
+  .rolador-ilha-corpo {
+    visibility: hidden;
+  }
+
+  .rolador-viva .rolador-viva-corpo,
+  .rolador-ilha .rolador-ilha-corpo {
+    visibility: visible;
+  }
 }
 
 /* Connector curves draw themselves in. `pathLength` from framer-motion can't be
@@ -85,9 +729,16 @@ body {
   }
 }
 
+/*
+ * O brilho do pulso é uma variável porque o site tem dois papéis. No preto o
+ * sinal é luz branca; no creme da seção de comparação a mesma gramática tem de
+ * ser desenhada em TINTA, e uma auréola branca sobre papel claro é invisível.
+ * Só a cor muda — o dasharray, a velocidade e o "sinal não faz ease" são os
+ * mesmos, senão são dois sinais diferentes contando a mesma história.
+ */
 .connector-pulse {
   stroke-dasharray: 70 1165 70 1165;
-  filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.85));
+  filter: drop-shadow(0 0 5px var(--pulse-glow, rgba(255, 255, 255, 0.85)));
   animation: connector-pulse 4.5s linear infinite both;
 }
 
@@ -184,11 +835,126 @@ body {
     calc(var(--spot-y) - var(--spot-size) / 2);
   mask-position: calc(var(--spot-x) - var(--spot-size) / 2)
     calc(var(--spot-y) - var(--spot-size) / 2);
-  /* The mask moves every frame the cursor does; keeping the layer on its own
-     surface stops the whole hero from repainting behind it. */
-  will-change: -webkit-mask-position, mask-position;
+  /* The mask moves every frame the cursor does, and keeping the layer on its
+     own surface stops the whole section from repainting behind it — but that
+     promise is made by `DotGridSpotlight` on the first pointer move and dropped
+     when the pointer leaves. Declared here, it would hold a compositor surface
+     the size of the viewport for each of the six grids on the page, for the
+     whole life of it, whether or not anyone ever points at them. */
   opacity: 0;
   transition: opacity 220ms ease-out;
+}
+
+/*
+ * A MESMA grade, em tinta — para o papel.
+ *
+ * A página passa a ter uma textura só, e é a mudança que mais amarra o site: o
+ * visitante desce cinco telas sobre um campo de pontos que acende onde a mão
+ * passa, e no meio do caminho o fundo vira papel sem que a textura vá embora.
+ * Ela apenas troca de tinta. Um creme liso no meio de um site pontilhado lê
+ * como outra página; pontilhado, lê como a mesma página de manhã.
+ *
+ * A 7%, e o número desceu de 10% a pedido do dono: o painel claro é o único
+ * lugar da página em que a textura divide a superfície com PARÁGRAFOS, e ali a
+ * grade cobra caro. Ponto escuro sobre papel claro cria contraste na mesma
+ * frequência do texto — o olho tenta separar os dois e cansa antes de acabar a
+ * leitura. Textura tem de ser sentida, não vista.
+ */
+.dot-grid-tinta {
+  background-image: radial-gradient(
+    circle,
+    rgba(11, 11, 11, 0.07) var(--dot-radius),
+    transparent var(--dot-radius)
+  );
+  background-size: var(--dot-pitch) var(--dot-pitch);
+}
+
+/*
+ * O facho em tinta. Sobre papel não há o que ACENDER — o que existe é o oposto:
+ * os pontos ESCURECEM sob a mão. Mesma geometria, mesma pegada, sinal trocado,
+ * e é por isso que a leitura continua sendo "o site reage onde eu passo" em vez
+ * de dois efeitos diferentes em duas superfícies.
+ */
+.dot-grid-glow.is-tinta {
+  --spot-size: 520px;
+  --dot-lit-radius: 1.5px;
+  --dot-bloom-radius: 4.4px;
+  /* Mais claros do que eram (0,5 e 0,09), pelo mesmo motivo da grade em
+     repouso: sob a mão, a poça de pontos escuros passava por cima da headline
+     e do parágrafo do painel. O facho ainda se vê — ele só parou de disputar a
+     leitura com o que está escrito. */
+  --dot-lit-color: rgba(11, 11, 11, 0.32);
+  --dot-bloom-color: rgba(11, 11, 11, 0.06);
+}
+
+/*
+ * O mesmo facho, com o ganho aberto — para dentro do cartão do pedido.
+ *
+ * O do hero é contido de propósito: ele varre uma tela inteira atrás do
+ * conteúdo e, forte, viraria uma lanterna passeando pela dobra. Aqui ele mora
+ * numa caixa que é o único elemento clicável da página, e a mesma discrição
+ * vira invisibilidade.
+ *
+ * Contido no teto, porém: o dono leu o cartão com os pontos no máximo e não
+ * conseguiu ler o que estava escrito. Num cartaz isso seria uma escolha; num
+ * FORMULÁRIO é um defeito — o texto atrás do qual os pontos brilham é a
+ * pergunta que a pessoa precisa responder. Aceso o bastante para ser visto sob
+ * a mão, apagado o bastante para a pergunta continuar sendo a coisa mais legível
+ * da caixa.
+ */
+/*
+ * E a pegada é um TERÇO da do resto do site, a pedido do dono.
+ *
+ * O facho de 620px é calibrado para uma tela: nela, uma poça de luz desse
+ * tamanho é um foco. Dentro de um cartão de seiscentos pixels de largura, a
+ * mesma poça cobre o cartão inteiro e deixa de ser foco — vira iluminação, e
+ * então não há mais nada para a mão descobrir. O dono desceu de 620 a 310, de
+ * 310 a 206 e daí a 124 — um quinto do que era, e um quinto da largura do
+ * cartão. É onde a luz para de ser um estado da superfície e vira um objeto
+ * pequeno sendo carregado por cima dela.
+ */
+.dot-grid-glow.is-forte {
+  --spot-size: 124px;
+  --dot-lit-radius: 1.6px;
+  --dot-bloom-radius: 5px;
+  /* E o ganho desceu outra vez — de 0,62 para 0,4. A pegada de 124px já é
+     pequena, mas dentro dela os pontos ainda batiam na pergunta e no rótulo do
+     campo. Num cartaz seria escolha; num FORMULÁRIO, o texto atrás do qual eles
+     brilham é o que a pessoa precisa ler para responder. */
+  --dot-lit-color: rgba(255, 255, 255, 0.4);
+  --dot-bloom-color: rgba(255, 255, 255, 0.07);
+}
+
+/*
+ * O piscar.
+ *
+ * `filter` e não `opacity`, e isso é uma restrição real: a opacidade do facho é
+ * escrita inline pelo `DotGridSpotlight` para aparecer e sumir com o ponteiro, e
+ * uma animação CSS de opacidade venceria esse inline e deixaria os pontos
+ * pulsando com a mão longe do cartão. O brilho é a propriedade que sobra, e é a
+ * certa: pisca o que já está aceso sem discutir com quem acende.
+ *
+ * Só enquanto o ponteiro está sobre o cartão. Fora dele não há o que piscar, e
+ * uma animação infinita repintando uma camada invisível é trabalho jogado fora.
+ */
+@keyframes dot-twinkle {
+  0%,
+  100% {
+    filter: brightness(0.75);
+  }
+  50% {
+    filter: brightness(1.25);
+  }
+}
+
+.cartao-pedido:hover .dot-grid-glow.is-forte {
+  animation: dot-twinkle 2.4s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cartao-pedido:hover .dot-grid-glow.is-forte {
+    animation: none;
+  }
 }
 
 /*
@@ -208,6 +974,651 @@ body {
     rgba(0, 0, 0, 0.92) 45%,
     transparent 100%
   );
+}
+
+/*
+ * ── O SINAL DA SEÇÃO DE COMPARAÇÃO, EM UM CICLO SÓ.
+ *
+ * São dois trechos de um mesmo percurso: o fio que sai da frase e atravessa até
+ * o cartão, e os dois ramos que contornam o cartão depois que ele chega. O dono
+ * pediu que nunca houvesse mais de um par em cena — enquanto os ramos não se
+ * reencontram e apagam, nada dispara de novo, nem no papel nem na borda.
+ *
+ * Isso é feito com UM ciclo de sete segundos partilhado pelas duas animações,
+ * em vez de um controlador em JavaScript. Cada uma roda os mesmos 7s e só se
+ * mostra na sua janela: o fio de 0 a 26%, a borda de 30 a 72%, e o resto é o
+ * silêncio antes do próximo disparo. Duas animações CSS de mesma duração,
+ * iniciadas no mesmo carregamento, não se desencontram — e nada precisa de um
+ * temporizador vigiando o outro.
+ *
+ * Um traço por linha, e o brilho é o efeito. O rastro de estrela cadente foi
+ * tentado e o dono cortou: quatro camadas empilhadas liam como riscos
+ * sobrepostos, não como uma coisa em movimento. O que sobrou é o vocabulário do
+ * hero — um pulso limpo com auréola —, e é ele que a página inteira já fala.
+ */
+/*
+ * O DESENHO DE CADA JANELA, e por que ele é assim.
+ *
+ * O bug que o dono viu: o traço sumia e reaparecia por um instante no início.
+ * A causa era a saída em degrau — a versão anterior levava a opacidade de 1 a 0
+ * em um centésimo do ciclo, que a sete segundos é menos de um quadro. Um corte
+ * assim não é lido como "apagou", é lido como falha; e o `stroke-dashoffset`,
+ * que só era declarado nos dois extremos da janela, ficava livre para o
+ * navegador reposicionar no reinício, ainda dentro do quadro em que a opacidade
+ * não tinha terminado de cair.
+ *
+ * A correção é declarar as DUAS propriedades em todos os pontos que importam:
+ * onde o traço espera, onde ele acende, onde apaga e onde fica parado até o
+ * próximo ciclo. Assim o percurso é sempre monotônico — entra por uma ponta,
+ * sai pela outra, e passa o resto do tempo invisível e IMÓVEL no fim do
+ * caminho. Não há volta ao início com nada aceso.
+ *
+ * As bordas de acender e apagar são rampas de três a quatro por cento do ciclo,
+ * que a sete segundos dão dois décimos de segundo: curto o bastante para ler
+ * como um sinal, longo o bastante para não piscar.
+ */
+/*
+ * TRÊS JANELAS DE UM CICLO SÓ, e a ordem delas é o percurso.
+ *
+ * O sinal nasce no cartão do "falta você", se abre em dois, contorna aquela
+ * caixa, se reencontra na borda direita dela — que é exatamente de onde o fio
+ * sai —, atravessa o papel pelo fio e vai contornar o cartão do pedido. Um
+ * percurso, três trechos, um ciclo de sete segundos: como as três animações
+ * partem do mesmo carregamento e têm a mesma duração, elas nunca se
+ * desencontram, e nada precisa de um temporizador vigiando o outro.
+ *
+ * As janelas não se sobrepõem, e é isso que faz o sinal ser UM. Duas acesas ao
+ * mesmo tempo seriam dois sinais, e a leitura deixaria de ser "aquilo andou até
+ * aqui" para virar "esta seção tem uns brilhos".
+ *
+ * O tamanho de cada janela é proporcional ao CAMINHO que ela percorre, e não
+ * igual: meia volta no cartão pequeno tem uns 370px, o fio uns 520, meia volta
+ * no cartão do pedido uns 1050. Repartido em partes iguais, o mesmo sinal
+ * andaria devagar na caixa pequena e dispararia na grande — e um sinal que muda
+ * de velocidade ao mudar de superfície deixa de parecer a mesma coisa em
+ * movimento. Os 16% de silêncio no fim são o que o torna um EVENTO: sem a
+ * pausa, é uma esteira.
+ */
+@keyframes pulso-falta {
+  0% {
+    stroke-dashoffset: 0.05;
+    opacity: 0;
+  }
+  2.5% {
+    opacity: 1;
+  }
+  14.5% {
+    opacity: 1;
+  }
+  17% {
+    stroke-dashoffset: -1.05;
+    opacity: 0;
+  }
+  100% {
+    stroke-dashoffset: -1.05;
+    opacity: 0;
+  }
+}
+
+@keyframes pulso-fio {
+  0% {
+    stroke-dashoffset: 0.05;
+    opacity: 0;
+  }
+  /* Parado e invisível enquanto o sinal dá a volta no cartão de origem. */
+  19% {
+    stroke-dashoffset: 0.05;
+    opacity: 0;
+  }
+  21.5% {
+    opacity: 1;
+  }
+  39.5% {
+    opacity: 1;
+  }
+  42% {
+    stroke-dashoffset: -1.05;
+    opacity: 0;
+  }
+  100% {
+    stroke-dashoffset: -1.05;
+    opacity: 0;
+  }
+}
+
+@keyframes pulso-borda {
+  0% {
+    stroke-dashoffset: 0.05;
+    opacity: 0;
+  }
+  /* Parado e invisível enquanto o fio atravessa: é o que garante um par de
+     linhas por vez. */
+  44% {
+    stroke-dashoffset: 0.05;
+    opacity: 0;
+  }
+  46.5% {
+    opacity: 1;
+  }
+  81.5% {
+    opacity: 1;
+  }
+  84% {
+    stroke-dashoffset: -1.05;
+    opacity: 0;
+  }
+  100% {
+    stroke-dashoffset: -1.05;
+    opacity: 0;
+  }
+}
+
+/*
+ * As classes que aplicam as janelas acima.
+ *
+ * `pathLength="1"` no elemento é o que torna estes números independentes do
+ * tamanho: o traço é uma FRAÇÃO do caminho, e serve tanto para o fio de duzentos
+ * pixels quanto para o contorno de um cartão que muda de altura a cada passo.
+ */
+/*
+ * O VÃO É MAIOR QUE O CAMINHO, e isso é a correção de um fantasma real.
+ *
+ * `stroke-dasharray` é um PADRÃO, não um traço: ele se repete pelo caminho
+ * inteiro. Com 0,05 de traço e 0,95 de vão o período dava exatamente 1 — o
+ * mesmo `pathLength` —, então existia sempre uma segunda cópia do traço a uma
+ * volta de distância da primeira. Enquanto a ponta principal saía pelo encontro,
+ * a cópia entrava pela bifurcação: em 68% do ciclo, com opacidade ainda cheia.
+ * Era o defeito que o dono viu — "elas somem e reaparecem no início do card".
+ *
+ * Com o vão em 1,95 o período vai a 2, e a cópia mais próxima fica a uma volta
+ * INTEIRA de distância: ela nunca alcança o caminho enquanto a de verdade o
+ * percorre. O traço passa a ser um só, do começo ao fim.
+ */
+.pulso {
+  stroke-dasharray: 0.05 1.95;
+  animation-duration: 7s;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  animation-fill-mode: both;
+}
+
+/*
+ * A auréola em duas camadas: um núcleo curto que engorda o traço sem borrá-lo, e
+ * uma larga e fraca que é o brilho de fato. Uma só, aberta o bastante para
+ * espalhar, apaga o fio dentro dela.
+ */
+.pulso-fio {
+  animation-name: pulso-fio;
+  filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.85)) drop-shadow(0 0 16px rgba(0, 0, 0, 0.5));
+}
+
+/*
+ * A auréola do contorno, aberta a pedido do dono — três camadas em vez de duas.
+ *
+ * A ordem é a de sempre e ela importa: núcleo curto e forte para engordar o
+ * traço sem borrá-lo, uma média que é o brilho que se lê como brilho, e uma
+ * larga e fraca que não desenha nada sozinha — ela só põe luz no preto ao redor,
+ * que é o que faz o miolo do cartão parecer iluminado pelo sinal em vez de ter
+ * um risco branco por cima. Só a larga, e o traço se apaga dentro da própria
+ * névoa; só as curtas, e o brilho para na espessura do traço.
+ */
+.pulso-borda {
+  animation-name: pulso-borda;
+  filter: drop-shadow(0 0 7px rgba(255, 255, 255, 1))
+    drop-shadow(0 0 20px rgba(255, 255, 255, 0.85))
+    drop-shadow(0 0 44px rgba(255, 255, 255, 0.45));
+}
+
+/*
+ * A mesma auréola, na medida do cartão pequeno.
+ *
+ * As camadas são as três de sempre, com os raios pela metade. O brilho de um
+ * sinal tem de ser proporcional ao objeto que ele contorna: os 44px calibrados
+ * para um cartão de 450px de altura, numa caixa de 90px, cobrem a caixa inteira
+ * — o que se veria não seria uma linha correndo pela borda, e sim o cartão
+ * piscando. Metade do raio, mesma gramática.
+ */
+.pulso-falta {
+  animation-name: pulso-falta;
+  filter: drop-shadow(0 0 4px rgba(255, 255, 255, 1))
+    drop-shadow(0 0 11px rgba(255, 255, 255, 0.85))
+    drop-shadow(0 0 24px rgba(255, 255, 255, 0.45));
+}
+
+/*
+ * O traço que acompanha o exemplo se escrevendo.
+ *
+ * Pisca por atenuação, e é a mesma regra do cursor do formulário: apagar em
+ * degrau, ao lado de letras que chegam com física, é a única coisa dura na
+ * caixa. Aqui ele tem uma função a mais — é ele que diz que aquele texto é um
+ * EXEMPLO sendo escrito, e não algo que a pessoa digitou e esqueceu ali.
+ */
+@keyframes cursor-exemplo {
+  0%,
+  45% {
+    opacity: 0.9;
+  }
+  55%,
+  100% {
+    opacity: 0.15;
+  }
+}
+
+.cursor-exemplo {
+  margin-left: 1px;
+  animation: cursor-exemplo 1.05s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cursor-exemplo {
+    animation: none;
+  }
+}
+
+/*
+ * O anel do selo — em CSS, e essa é a correção de um travamento real.
+ *
+ * Era animado em JS. Uma sequência de quadros-chave com `times` não entra no
+ * caminho acelerado do framer-motion: ela roda na thread principal, um quadro
+ * por vez, na MESMA seção em que o painel gira com o scroll, o facho reescreve
+ * variáveis a cada movimento do ponteiro e três auréolas de `drop-shadow`
+ * repintam o contorno de um cartão inteiro. Um anel de oito pixels perde essa
+ * disputa: ele não fica lento, ele fica ENGASGADO — anda, para, anda —, que foi
+ * o que o dono descreveu.
+ *
+ * Em CSS, `transform` e `opacity` sobem para o compositor e passam a ser
+ * desenhados fora da thread principal. O anel fica liso mesmo enquanto o resto
+ * da seção trabalha, e o navegador para de ser acordado por JS a cada quadro
+ * para mover dois pontinhos.
+ *
+ * Continua `linear`: com `ease-out` o anel disparava e quase parava no fim, e o
+ * olho lê o freio como solavanco. A opacidade tem um ponto no meio do caminho
+ * para não cair junto com a escala — em linha reta ela some cedo demais e o anel
+ * desaparece antes de chegar longe.
+ */
+@keyframes selo-anel {
+  0% {
+    transform: scale(1);
+    opacity: 0.5;
+  }
+  45% {
+    opacity: 0.26;
+  }
+  100% {
+    transform: scale(4.4);
+    opacity: 0;
+  }
+}
+
+.selo-anel {
+  animation: selo-anel 3.2s linear infinite;
+}
+
+/*
+ * O segundo anel, com meio ciclo de atraso — NEGATIVO.
+ *
+ * Um atraso positivo deixaria o segundo anel mudo nos primeiros 1,6s: o selo
+ * nasceria piscando e só depois passaria a transmitir. Negativo, ele já começa
+ * na metade do próprio percurso, e desde o primeiro quadro sempre há um anel
+ * nascendo enquanto o outro apaga.
+ */
+.selo-anel-tardio {
+  animation-delay: -1.6s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .selo-anel {
+    animation: none;
+    opacity: 0;
+  }
+}
+
+/*
+ * O cursor do campo, desenhado por nós.
+ *
+ * Pisca por atenuação em vez de sumir: o cursor nativo apaga em degrau, e ao
+ * lado de letras que chegam com mola isso é a única coisa dura na caixa. Não
+ * chega a zero — um traço que some por inteiro obriga o olho a reencontrá-lo a
+ * cada volta.
+ */
+@keyframes caret-piscar {
+  0%,
+  42% {
+    opacity: 1;
+  }
+  58%,
+  100% {
+    opacity: 0.18;
+  }
+}
+
+.caret-vivo {
+  opacity: 0;
+}
+
+/* Só com o campo em foco. Um cursor piscando num campo que ninguém está
+   preenchendo é um convite falso. */
+.campo-vivo:focus-within .caret-vivo {
+  animation: caret-piscar 1.15s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .campo-vivo:focus-within .caret-vivo {
+    animation: none;
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pulso {
+    animation: none;
+    opacity: 0;
+  }
+}
+
+/*
+ * A palavra acesa: "você", no cartão que fecha o argumento.
+ *
+ * `text-shadow` e não `filter: drop-shadow`, porque o brilho tem de sair das
+ * letras e não da caixa — um drop-shadow no bloco desenharia um halo retangular
+ * atrás de uma frase de duas palavras.
+ *
+ * Duas camadas: um núcleo curto que engorda a letra e um halo largo que sangra
+ * no preto em volta. Uma só ou fica dura como contorno, ou fica difusa como
+ * neblina; as duas juntas leem como algo que emite luz.
+ */
+.texto-aceso {
+  text-shadow:
+    0 0 12px rgba(255, 255, 255, 0.35),
+    0 0 38px rgba(255, 255, 255, 0.28);
+}
+
+/*
+ * O mesmo brilho um passo abaixo, para o que acompanha a palavra acesa sem
+ * disputar com ela. Duas coisas brilhando igual não são duas ênfases — são
+ * nenhuma.
+ */
+.texto-aceso-fraco {
+  text-shadow:
+    0 0 10px rgba(255, 255, 255, 0.2),
+    0 0 28px rgba(255, 255, 255, 0.12);
+}
+
+/*
+ * ─── A LUZ DA SIRI, NA PRÓPRIA LETRA ─────────────────────────────────────────
+ *
+ * Quarta e última volta do pedido do convite do FAQ ("Pergunte o que quiser."),
+ * e a que mudou de ideia: o dono olhou o halo colorido e decidiu que a COR devia
+ * estar na tipografia, com o brilho de acompanhante em vez de protagonista.
+ *
+ * ─── COMO A LETRA FICA PINTADA ───────────────────────────────────────────────
+ *
+ * `background-clip: text` recorta o fundo do elemento na forma dos glifos, e o
+ * preenchimento vira transparente para deixá-lo aparecer. O fundo é uma fita
+ * horizontal com as seis cores de `faq/cores.ts` e a primeira REPETIDA no fim —
+ * sem essa repetição, o fim da fita encontra o começo numa emenda dura, e o que
+ * corre pelas letras é um corte visível dando voltas.
+ *
+ * A fita tem o dobro da largura da caixa e o que anda é a POSIÇÃO dela. Um
+ * `conic-gradient` seria a cópia literal do anel do campo, e é a escolha errada
+ * aqui: o cone tem um centro, e numa linha de texto larga as letras da ponta
+ * ficariam todas da mesma cor enquanto a emenda do cone atravessaria o meio da
+ * frase. Numa fita horizontal cada letra tem a sua cor, e elas correm.
+ *
+ * ─── E POR QUE O BRILHO SAIU DO `text-shadow` ────────────────────────────────
+ *
+ * Ordem de pintura: o fundo vem primeiro, as sombras de texto depois, o glifo
+ * por último. Com o glifo transparente, um `text-shadow` seria desenhado POR
+ * CIMA do gradiente recortado — o borrão colorido cobriria justamente a letra
+ * pintada que ele deveria acompanhar.
+ *
+ * `filter: drop-shadow` opera sobre o que já foi renderizado, e o que já foi
+ * renderizado aqui é a letra colorida: o brilho sai dela e mantém a forma dos
+ * glifos. A ressalva que o `.texto-aceso` documenta — drop-shadow desenha halo
+ * retangular — vale para uma caixa com fundo opaco; este elemento é só texto, e
+ * fora dos glifos ele é transparente.
+ *
+ * Duas camadas: um branco curto que engorda a letra e uma colorida larga que
+ * sangra no escuro. A colorida troca junto com a fita, então o brilho é sempre a
+ * cor que está passando — é o que amarra as duas coisas numa só.
+ *
+ * Seis segundos, contra os 2,4 do anel do campo: o anel responde à mão e a troca
+ * rápida é a resposta; esta frase está sempre na tela, e na cadência do anel ela
+ * viraria um letreiro.
+ *
+ * A exceção monocromática que isto abre está declarada em `faq/cores.ts`, junto
+ * com as outras duas.
+ */
+@keyframes texto-siri {
+  0% {
+    background-position: 0.0% 50%;
+    filter:
+      drop-shadow(0 0 9px rgba(255, 255, 255, 0.22))
+      drop-shadow(0 0 22px rgba(242, 166, 90, 0.45));
+  }
+  16.67% {
+    background-position: 33.33% 50%;
+    filter:
+      drop-shadow(0 0 9px rgba(255, 255, 255, 0.22))
+      drop-shadow(0 0 22px rgba(232, 115, 90, 0.45));
+  }
+  33.33% {
+    background-position: 66.67% 50%;
+    filter:
+      drop-shadow(0 0 9px rgba(255, 255, 255, 0.22))
+      drop-shadow(0 0 22px rgba(222, 92, 126, 0.45));
+  }
+  50.0% {
+    background-position: 100.0% 50%;
+    filter:
+      drop-shadow(0 0 9px rgba(255, 255, 255, 0.22))
+      drop-shadow(0 0 22px rgba(155, 123, 224, 0.45));
+  }
+  66.67% {
+    background-position: 133.33% 50%;
+    filter:
+      drop-shadow(0 0 9px rgba(255, 255, 255, 0.22))
+      drop-shadow(0 0 22px rgba(90, 160, 224, 0.45));
+  }
+  83.33% {
+    background-position: 166.67% 50%;
+    filter:
+      drop-shadow(0 0 9px rgba(255, 255, 255, 0.22))
+      drop-shadow(0 0 22px rgba(79, 201, 168, 0.45));
+  }
+  100% {
+    background-position: 200.0% 50%;
+    filter:
+      drop-shadow(0 0 9px rgba(255, 255, 255, 0.22))
+      drop-shadow(0 0 22px rgba(242, 166, 90, 0.45));
+  }
+}
+
+.texto-aceso-siri {
+  background-image: linear-gradient(90deg, #F2A65A, #E8735A, #DE5C7E, #9B7BE0, #5AA0E0, #4FC9A8, #F2A65A);
+  background-size: 200% 100%;
+  /*
+   * ─── O RECUO QUE DESENTORTA O "g" ──────────────────────────────────────────
+   *
+   * `background-clip: text` recorta o fundo na forma dos glifos, mas o fundo
+   * continua sendo o fundo do ELEMENTO — ele não existe fora da caixa dele. A
+   * frase usa `leading-none`, ou seja, altura de linha igual ao corpo da fonte,
+   * e em serifa a perna do "g" e do "q" desce abaixo disso. A parte que passa da
+   * caixa fica sem pintura, e como o preenchimento do glifo é transparente, o
+   * que se vê é a letra cortada no meio da perna.
+   *
+   * O conserto é dar caixa à pintura sem dar espaço ao layout: o recuo estica o
+   * fundo para baixo e a margem negativa devolve os mesmos pixels. O elemento
+   * ocupa o que ocupava, alinhado pela mesma linha de base ao lado do título, e
+   * o gradiente passa a alcançar as pernas.
+   *
+   * Em `em` e não em pixels porque a frase muda de corpo no breakpoint — 24 no
+   * telefone, 36 no desktop —, e um número fixo acertaria um e erraria o outro.
+   */
+  padding-bottom: 0.2em;
+  margin-bottom: -0.2em;
+  padding-top: 0.06em;
+  margin-top: -0.06em;
+  -webkit-background-clip: text;
+  background-clip: text;
+  /* Os dois, e não só um: `color` é o que o Firefox lê, e `-webkit-text-fill-color`
+     é o que ganha do `text-[#F4F1E8]` da classe do elemento sem depender de
+     ordem de cascata. A cor do Tailwind fica de rede — se `background-clip: text`
+     não existir no navegador, a frase aparece em creme em vez de sumir. */
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  animation: texto-siri 6s linear infinite;
+}
+
+/* Sem a corrida, a fita para no começo: a frase continua colorida da esquerda
+   para a direita, com o brilho parado no âmbar. O que a preferência manda
+   desligar é o movimento, não a cor. */
+@media (prefers-reduced-motion: reduce) {
+  .texto-aceso-siri {
+    animation: none;
+    background-position: 0% 50%;
+    filter:
+      drop-shadow(0 0 9px rgba(255, 255, 255, 0.22))
+      drop-shadow(0 0 22px rgba(242, 166, 90, 0.45));
+  }
+}
+
+/*
+ * ─── A MESMA FITA, SEM A AURÉOLA ─────────────────────────────────────────────
+ *
+ * Pedido do dono para o título do cartão do pedido: só o rgb, sem o glow.
+ *
+ * O halo não mora numa propriedade à parte — ele vive DENTRO dos `keyframes` do
+ * `texto-siri`, que animam o `drop-shadow` junto com a posição do gradiente,
+ * trocando a cor da auréola conforme a fita corre. Por isso não dá para
+ * desligá-lo com um `filter: none` comum: uma animação em curso ganha de uma
+ * declaração normal, e só um `!important` a venceria — que é caro demais para
+ * uma diferença de estilo.
+ *
+ * A saída é trocar a ANIMAÇÃO, não a propriedade. Estes `keyframes` fazem
+ * exatamente o que os outros fazem com a cor — de 0 a 200% da posição — e nada
+ * mais. Sem paradas intermediárias porque elas só existiam para trocar o tom do
+ * halo: sem halo, a corrida da cor é linear entre as duas pontas e o resultado é
+ * pixel a pixel o mesmo.
+ *
+ * Sobrescrever só o `animation-name` mantém os 6s, o `linear` e o `infinite` do
+ * atalho da classe base — um lugar só continua decidindo o ritmo das duas.
+ *
+ * ONDE USAR: no cartão do pedido a auréola sobrava porque ali a fita está em
+ * corpo grande, e halo em serifa de 48px engrossa o traço até a letra perder
+ * desenho. No FAQ ela continua — lá a frase é menor e o glow é o que a descola
+ * do fundo.
+ */
+@keyframes texto-siri-limpo {
+  from {
+    background-position: 0% 50%;
+  }
+  to {
+    background-position: 200% 50%;
+  }
+}
+
+.texto-aceso-siri.sem-halo {
+  animation-name: texto-siri-limpo;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* A regra parada acima repõe o `filter` na mão, fora dos `keyframes` — aqui
+     ele também não é bem-vindo. Especificidade de duas classes contra uma, e
+     por isso esta vence sem `!important`. */
+  .texto-aceso-siri.sem-halo {
+    filter: none;
+  }
+}
+
+/*
+ * E o mesmo gesto em tinta, para o papel.
+ *
+ * Um "glow preto" não ilumina: ele ADENSA. Sobre creme, a sombra escura em volta
+ * da letra engrossa o traço e afunda o entorno, e a frase ganha o peso que no
+ * escuro se consegue acendendo. É a mesma ideia do facho em tinta — mesma
+ * gramática, sinal trocado.
+ */
+.texto-aceso-tinta {
+  text-shadow:
+    0 0 14px rgba(11, 11, 11, 0.28),
+    0 0 40px rgba(11, 11, 11, 0.16);
+}
+
+/*
+ * ─── A CLAREIRA DO FECHO ─────────────────────────────────────────────────────
+ *
+ * Pedido do dono, e o que ele resolve dá para ver numa captura: com o mosaico
+ * derivando, mais cedo ou mais tarde UM quadro claro passa exatamente atrás de
+ * "Falta uma foto e um áudio" e do botão. Nenhuma densidade de preto na peça
+ * conserta isso, porque o problema não é o brilho médio do campo — é que o
+ * fundo do texto MUDA enquanto a pessoa lê. Um contraste que só funciona em
+ * alguns instantes do ciclo é um contraste que não existe.
+ *
+ * Então o miolo da tela ganha um fundo próprio: a cor do palco em cheio no
+ * centro, morrendo para transparente muito antes das bordas. Onde o texto está,
+ * o fundo é sempre `doxa-stage`, qualquer que seja o quadro que passe por trás;
+ * na periferia o mosaico continua inteiro, e é ele que faz o rodapé.
+ *
+ * As três medidas, e o que cada uma paga:
+ *
+ *  - ELIPSE e não círculo, 55% por 45%: o bloco do fecho é largo e baixo (duas
+ *    linhas de serifa grande, um parágrafo e um botão). Um círculo que cobrisse
+ *    as pontas do título apagaria meia tela na vertical.
+ *  - CHEIO até 40% do raio, e não só no ponto central: é o que garante fundo
+ *    sólido debaixo das letras em vez de um degradê subindo por dentro delas.
+ *    Era 32%, e subiu junto com o palco escurecendo e o véu de cada peça
+ *    afrouxando para 50%: com o mosaico mais presente atrás do texto, o miolo
+ *    da clareira precisa de mais raio antes de começar a desaparecer.
+ *  - MORRENDO só em 100%: a transição ocupa dois terços do raio. Fade curto
+ *    desenha uma borda — e uma mancha de contorno visível no meio da tela é
+ *    pior do que o problema que ela veio resolver.
+ *
+ * `theme()` e não a cor escrita à mão: este gradiente TEM de ser a mesma cor do
+ * palco, e ela já mudou cinco vezes. Escrita aqui, a sexta mudança deixaria uma
+ * mancha de outro cinza no meio do rodapé — e o pedido do dono que veio junto
+ * desta última ("ajuste o gradiente para a nova cor de fundo") não teria sido
+ * uma linha de comentário, teria sido um bug.
+ */
+.clareira {
+  background: radial-gradient(
+    ellipse 55% 45% at 50% 50%,
+    theme('colors.doxa.stage') 0%,
+    theme('colors.doxa.stage') 40%,
+    theme('colors.doxa.stage / 0%') 100%
+  );
+}
+
+/*
+ * A MESMA clareira, na proporção que o telefone pede.
+ *
+ * As três medidas de cima foram afinadas contra um bloco LARGO E BAIXO — é o
+ * que o fecho é numa tela de 1500 por 940. No telefone o mesmo conteúdo vira
+ * outra forma: o texto ocupa 280 dos 320 pixels de largura (87% da tela contra
+ * uns 60% no desktop) e empilha em altura. A elipse de 55% deixava as pontas
+ * das duas frases fora do miolo sólido, e é justamente ali que um quadro claro
+ * do mosaico passa por trás da letra.
+ *
+ * 85% de largura leva o sólido além das duas bordas do texto. E o miolo cheio
+ * sobe de 40% para 55% do raio pelo mesmo motivo: com o bloco ocupando quase a
+ * largura toda, o degradê que no desktop começava depois do texto começaria no
+ * meio dele.
+ *
+ * A altura ficou em 46%, e ela já foi 40%: o título subiu uma vez e meia a
+ * pedido do dono e voltou a ocupar quatro linhas, o que devolveu ao bloco os
+ * ~85 pixels que o corpo menor tinha economizado. Com 46% o miolo cheio cobre
+ * 287 pixels de altura contra os ~288 do bloco — as pontas do título e o botão
+ * ficam sobre fundo sólido, que é a única coisa que esta peça precisa garantir.
+ */
+@media (max-width: 639px) {
+  .clareira {
+    background: radial-gradient(
+      ellipse 85% 46% at 50% 50%,
+      theme('colors.doxa.stage') 0%,
+      theme('colors.doxa.stage') 58%,
+      theme('colors.doxa.stage / 0%') 100%
+    );
+  }
 }
 
 /* The brand allows no chromatic accent, so "highlight" has to be light itself:
@@ -314,4 +1725,313 @@ body {
 /* Fractal noise laid over the hero video to break up the gradient banding. */
 .noise-overlay {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/*
+ * ─── O ANEL DO CAMPO DE PERGUNTA ─────────────────────────────────────────────
+ *
+ * A borda que acende e gira sob a mão. Ela já existiu aqui uma vez, correndo
+ * eternamente, e saiu a pedido do dono — com razão: uma luz que nunca para não
+ * é resposta a nada, é um objeto pedindo atenção sozinho num fundo preto. Volta
+ * agora com a única regra que faltava: só existe sob a MÃO ou sob o CURSOR de
+ * texto. Fora disso o campo é a caixa quieta de sempre.
+ *
+ * Isso também é o que a torna barata. Sem hover e sem foco não há `animation`
+ * declarada — o navegador não tem nenhum quadro para calcular, e a seção volta
+ * a custar zero quando ninguém está mexendo nela.
+ *
+ * `@property` é o que permite animar o ÂNGULO de um `conic-gradient`. Sem
+ * registrar o tipo, `--anel-siri` seria só um texto para o CSS e saltaria de 0
+ * a 360 sem passar pelo meio; registrado como `<angle>`, ele interpola. É
+ * também por isso que o anel NÃO é um box girando: um retângulo em rotação
+ * mostraria as quinas passando por dentro da máscara, e o que se veria seria
+ * uma hélice, não uma luz correndo pela borda.
+ *
+ * As cores vêm de fora, em `--anel-siri-cores`, escritas pelo componente a
+ * partir de `faq/cores.ts`. Repetidas aqui, o arco do anel e os pontos do
+ * cabeçalho divergiriam no primeiro ajuste de paleta.
+ *
+ * A máscara é o recorte clássico de "só a borda": dois gradientes iguais, um
+ * limitado ao content-box e outro ao box inteiro, subtraídos um do outro. O que
+ * sobra é exatamente o anel de um pixel que o `padding` define.
+ */
+@property --anel-siri {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes anel-siri-gira {
+  to {
+    --anel-siri: 360deg;
+  }
+}
+
+.anel-siri::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: conic-gradient(from var(--anel-siri), var(--anel-siri-cores));
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 420ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* `focus-within` e não `focus`: quem está com o cursor no campo é o textarea,
+   e é a caixa em volta dele que carrega o anel.
+ 
+   `.anel-siri-aceso` é o terceiro gatilho, e ele não é um estado de ponteiro: é
+   "esta caixa foi ESCOLHIDA". Entrou com as alternativas do formulário, onde o
+   dono quis que a selecionada mantivesse o mesmo fundo das outras e se
+   distinguisse só pela borda acesa. Mora nos mesmos seletores das outras duas
+   de propósito — três portas para um efeito só, em vez de uma segunda cópia das
+   cinco regras que ele custa. */
+.anel-siri:hover::before,
+.anel-siri:focus-within::before,
+.anel-siri-aceso::before {
+  opacity: 1;
+  /* Os mesmos 2,4s da `.luz-borda`, e não um tempo próprio: os dois desenham a
+     MESMA borda, um como fio e o outro como cor. Em tempos diferentes eles se
+     descolam e a borda passa a ter duas cores discordando na mesma linha. */
+  animation: anel-siri-gira 2.4s linear infinite;
+}
+
+/*
+ * ─── A ISCA: o anel chamando ANTES da mão ────────────────────────────────────
+ *
+ * O anel acima é uma RESPOSTA — ele só existe depois que alguém já encostou no
+ * campo. E aí estava o defeito que o dono viu: a coisa que mais convida da
+ * seção só aparece para quem já descobriu que ela existe. Fechado, o campo é
+ * uma pastilha escura num fundo preto, e nada nela diz que passar o mouse ali
+ * muda alguma coisa.
+ *
+ * A isca é o MESMO anel: a mesma volta, as mesmas cores, o mesmo desenho de um
+ * pixel. O que muda é a força e o regime — acende a pouco mais de um terço por
+ * um segundo e meio, e some por sete. Não é uma segunda animação inventada
+ * para chamar atenção: é a borda do hover se mostrando de longe, para que o
+ * hover, quando vier, seja RECONHECIDO em vez de descoberto.
+ *
+ * A pausa longa é o que a torna suportável, e ela é a cicatriz da primeira
+ * versão desta borda: um anel aceso sem parar num fundo preto é um objeto
+ * pedindo atenção sozinho, e foi exatamente por isso que ele saiu daqui uma
+ * vez. Um pulso espaçado é um chamado; o mesmo pulso sem intervalo é um alarme.
+ *
+ * `:not(:hover):not(:focus-within)` impede que as duas se somem: sob a mão a
+ * regra de cima assume sozinha, em opacidade cheia e sem pulso — e como ela
+ * vem antes, é o seletor daqui que precisa se calar, não ela.
+ */
+@keyframes anel-siri-chama {
+  0%,
+  100% {
+    opacity: 0;
+  }
+  6%,
+  22% {
+    opacity: 0.38;
+  }
+}
+
+.anel-siri-isca:not(:hover):not(:focus-within)::before {
+  animation:
+    anel-siri-gira 2.4s linear infinite,
+    anel-siri-chama 8.5s ease-in-out 1.2s infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* O anel continua acendendo — ele é o estado "esta caixa está sob a sua
+     mão", e essa informação não é decoração. O que para é a volta. */
+  .anel-siri:hover::before,
+  .anel-siri:focus-within::before,
+  .anel-siri-aceso::before {
+    animation: none;
+  }
+
+  /* A isca some inteira, e sem ressalva: ela é movimento que ninguém pediu num
+     campo que ninguém tocou — a definição exata do que a preferência desliga. */
+  .anel-siri-isca:not(:hover):not(:focus-within)::before {
+    animation: none;
+  }
+}
+
+/*
+ * ─── A LUZ DA SIRI, NA BORDA ─────────────────────────────────────────────────
+ *
+ * O que o dono pediu, com o nome dele: o gradiente que corre nas bordas da tela
+ * quando a Siri acorda. O anel de um pixel acima NÃO é isso — ele é uma borda
+ * colorida, e uma borda colorida lê como enfeite. A luz da Siri é uma FAIXA
+ * BORRADA encostada na borda por dentro, brilhando mais no encosto e morrendo
+ * para o centro, com o halo dela atravessando o vidro e saindo para fora.
+ *
+ * A ordem em que o navegador aplica as coisas é o que dita a estrutura deste
+ * bloco: num mesmo elemento, `filter` roda ANTES da `mask`. Borrar e mascarar
+ * juntos devolveria um cone borrado (que é quase idêntico ao cone nítido) e
+ * depois um corte SECO na faixa — exatamente o contrário de um brilho. Então a
+ * faixa mascarada mora no `::before`, e o borrão fica no `span` que o contém:
+ * assim o borrão pega o resultado já recortado e o espalha para os dois lados.
+ *
+ * São duas, e giram em sentidos CONTRÁRIOS. Uma volta só, por mais lenta que
+ * seja, é um desfile: dá para acompanhar uma cor dando a volta na caixa. Duas
+ * cruzando em tempos primos entre si (5s e 8s) fazem as cores se somarem em
+ * lugares diferentes a cada instante — que é o cintilar da referência, e o que
+ * impede o olho de pegar o loop.
+ *
+ * Nada disto existe fora do hover e do foco: sem eles a camada está em
+ * `opacity: 0`, nenhuma `animation` está declarada, e um `blur` de 22 pixels
+ * que não está na tela não custa quadro nenhum.
+ */
+.anel-luz {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 520ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.anel-siri:hover .anel-luz,
+.anel-siri:focus-within .anel-luz,
+.anel-siri-aceso .anel-luz {
+  opacity: 1;
+}
+
+/*
+ * Onde cada faixa NASCE é o que decide se o texto continua legível.
+ *
+ * Um borrão espalha para os dois lados por igual — não há como pedir a ele que
+ * vaze só para fora. O que dá para escolher é o LUGAR da faixa antes de borrar,
+ * e é só isso que separa as duas: a fina nasce em cima da borda (é ela a cor do
+ * contorno, e tem de encostar no vidro); a larga nasce inteira do lado de FORA
+ * dela, de modo que o borrão gaste a maior parte do alcance na página, e não
+ * por dentro da caixa.
+ *
+ * A conta que manda aqui: o texto começa a 16px da borda de cima. Somando o
+ * quanto cada faixa entra (o seu recuo mais o seu borrão), nenhuma das duas
+ * chega lá — a fina morre nos 5px, a larga nos 12. O meio da caixa, que é onde
+ * a pergunta é lida, fica sendo o preto de sempre.
+ */
+.anel-luz span {
+  position: absolute;
+  border-radius: inherit;
+}
+
+/* O mesmo recorte de "só a borda" do anel — dois gradientes iguais, um limitado
+   ao content-box e outro à caixa inteira, subtraídos. A quina reta que a
+   máscara deixa por dentro é menor que o borrão que vem por cima, então ela
+   nunca chega a aparecer. */
+.anel-luz span::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: conic-gradient(from var(--anel-siri), var(--anel-siri-cores));
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  mask-composite: exclude;
+}
+
+/* A fina, em cima da borda: é ela a COR do contorno, e por isso é a única que
+   vai a força cheia. Borrão curto de propósito — o que se quer aqui é cor
+   acesa e definida, não brilho. */
+.luz-borda {
+  inset: -2px;
+  filter: blur(4px);
+}
+
+.luz-borda::before {
+  padding: 3px;
+}
+
+/* A larga, inteira do lado de fora: é o clarão atravessando o vidro. Apagada,
+   porque brilho é o que estava pesando — a borda continua forte, o entorno é
+   que para de gritar. O `respira` é lento e de pouca amplitude: a luz da Siri
+   pulsa, mas não pisca. */
+.luz-halo {
+  inset: -8px;
+  filter: blur(12px) saturate(1.25);
+  opacity: 0.45;
+}
+
+.luz-halo::before {
+  padding: 8px;
+}
+
+@keyframes luz-respira {
+  50% {
+    opacity: 0.3;
+    transform: scale(1.015);
+  }
+}
+
+/* A volta é rápida porque a graça está na TROCA: devagar, o que se vê é uma cor
+   fazendo o contorno; nesta cadência, a borda inteira muda de cor debaixo da
+   mão, que é o que o telefone faz. A fina anda junto com o fio de um pixel
+   (mesmos 2,4s, mesmo começo) — as duas coladas leem como uma borda só, acesa;
+   fora de fase, leem como duas. */
+.anel-siri:hover .luz-borda::before,
+.anel-siri:focus-within .luz-borda::before,
+.anel-siri-aceso .luz-borda::before {
+  animation: anel-siri-gira 2.4s linear infinite;
+}
+
+.anel-siri:hover .luz-halo::before,
+.anel-siri:focus-within .luz-halo::before,
+.anel-siri-aceso .luz-halo::before {
+  animation: anel-siri-gira 3.4s linear infinite reverse;
+}
+
+.anel-siri:hover .luz-halo,
+.anel-siri:focus-within .luz-halo,
+.anel-siri-aceso .luz-halo {
+  animation: luz-respira 3.6s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* A luz continua acendendo — ela é o estado "esta caixa está sob a sua mão",
+     e isso não é decoração. O que para é a volta e o pulso. */
+  .anel-siri:hover .anel-luz span,
+  .anel-siri:focus-within .anel-luz span,
+  .anel-siri-aceso .anel-luz span,
+  .anel-siri:hover .anel-luz span::before,
+  .anel-siri:focus-within .anel-luz span::before,
+  .anel-siri-aceso .anel-luz span::before {
+    animation: none;
+  }
+}
+
+/*
+ * O clarão distante, muito além de onde o borrão da faixa alcança.
+ *
+ * É o que separa uma caixa com a borda pintada de um objeto ACESO na página: os
+ * 70 pixels de luz que tiram o preto em volta. Tudo o que existia por DENTRO do
+ * campo saiu — a aurora que morava atrás do vidro estava lendo como um fundo
+ * alaranjado à direita, e fundo colorido atrás de texto é ruído, por mais baixa
+ * que seja a opacidade. Restou o que a caixa faz para fora. Em `box-shadow` e
+ * não em `filter`, para não repintar o conteúdo.
+ */
+.anel-siri {
+  transition:
+    border-color 300ms ease,
+    box-shadow 620ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.anel-siri:hover,
+.anel-siri:focus-within {
+  box-shadow:
+    0 0 40px -12px rgba(222, 92, 126, 0.2),
+    0 0 70px -14px rgba(90, 160, 224, 0.18);
 }

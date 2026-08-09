@@ -3,13 +3,72 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Doxa</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Almarai:wght@300;400;700;800&family=Instrument+Serif:ital@0;1&display=swap"
-      rel="stylesheet"
+
+    <!-- ─── O QUE O SITE DIZ QUANDO NÃO É O SITE QUE APARECE ─────────────────
+         O funil desta página termina no WhatsApp, e é lá que o link dela vai
+         ser colado. Sem estas linhas, o que chega no aplicativo é uma URL crua:
+         sem título, sem frase, sem nada que explique o que é. A primeira
+         impressão da Doxa, na maioria dos casos, vai ser esta caixinha — e não
+         a primeira dobra que o resto do repositório passou semanas afinando.
+
+         O título é a promessa do topo da página, palavra por palavra. Repetida
+         aqui, ela é a mesma afirmação em outro lugar; reescrita, seriam duas
+         promessas. ATENÇÃO: se `GARANTIA` mudar em `comparacao/config.ts`, esta
+         linha muda no mesmo commit. -->
+    <title>Doxa — Um milhão de views. Ou seu dinheiro de volta.</title>
+    <meta
+      name="description"
+      content="Uma foto e um áudio viram sessenta conteúdos em noventa dias. Um milhão de views somadas, ou seu dinheiro de volta."
     />
+    <meta name="theme-color" content="#0B0B0B" />
+
+    <!-- PROVISÓRIO: a inicial na tipografia da página. Trocar é substituir o
+         arquivo — ver o comentário dentro dele. -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Doxa" />
+    <meta property="og:locale" content="pt_BR" />
+    <meta property="og:title" content="Um milhão de views. Ou seu dinheiro de volta." />
+    <meta
+      property="og:description"
+      content="Uma foto e um áudio viram sessenta conteúdos em noventa dias."
+    />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <!-- PENDENTE-DONO — A IMAGEM DA PRÉVIA, e é a única coisa desta lista que
+         eu não consigo escrever.
+
+         Sem ela, WhatsApp e LinkedIn mostram só título e frase: já é muito
+         melhor do que a URL crua, e é por isso que as tags acima entram mesmo
+         sem a imagem. Com ela, o link passa a ocupar um cartão inteiro na
+         conversa.
+
+         O que ela precisa ser: PNG ou JPG (AVIF e WebP não são lidos por boa
+         parte dos leitores de link), 1200 por 630, em `public/og.png`. Quando
+         existir, descomente as duas linhas:
+
+         <meta property="og:image" content="/og.png" />
+         <meta property="og:image:alt" content="Doxa — um milhão de views ou seu dinheiro de volta" />
+
+         E o `og:url` com o domínio final, que também ainda não existe. -->
+    <!-- As duas fontes que a primeira dobra desenha: a serifada do título e a
+         sans do corpo. Declaradas aqui porque um `@font-face` dentro do CSS só
+         é descoberto depois de o CSS baixar e o navegador achar o texto que
+         precisa dele — com o preload elas viajam junto com o CSS, e não depois.
+         Só estas duas: precarregar as seis faria as outras quatro competirem
+         por banda com o que está na tela. `crossorigin` é obrigatório mesmo
+         sendo mesma origem, senão o navegador baixa o arquivo duas vezes. -->
+    <link rel="preload" as="font" type="font/woff2" crossorigin
+      href="/fonts/InstrumentSerif-400-normal-latin.woff2" />
+    <link rel="preload" as="font" type="font/woff2" crossorigin
+      href="/fonts/Almarai-400-normal-latin.woff2" />
+
+    <!-- A foto do primeiro case do hero: é ela que o navegador mede como maior
+         elemento da dobra, e sem isto ele só a descobre depois de baixar,
+         parsear e executar o JS que a monta. -->
+    <link rel="preload" as="image" type="image/avif" href="/media/magalu-foto.avif"
+      fetchpriority="high" />
   </head>
   <body>
     <div id="root"></div>

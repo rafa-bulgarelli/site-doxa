@@ -1,4 +1,4 @@
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Loader2 } from 'lucide-react';
 
 interface MotionButtonProps {
   label: string;
@@ -6,8 +6,33 @@ interface MotionButtonProps {
   href?: string;
   /** Acts in place. Given this, the element renders as a real `<button>`. */
   onClick?: () => void;
-  /** `primary` fills with white on hover and flips the label to black. */
-  variant?: 'primary' | 'secondary';
+  /**
+   * Waiting on something. The label becomes a spinner and the button stops
+   * taking clicks — including the hover fill, which would otherwise keep
+   * promising an action that is already under way.
+   *
+   * Only meaningful with `onClick`: a link navigates and has nothing to wait
+   * for.
+   */
+  busy?: boolean;
+  /**
+   * `primary` fills with white on hover and flips the label to black.
+   *
+   * `inverse` is the same button on a light surface: the disc and the label are
+   * ink, and the hover floods ink and turns the label back to paper. It exists
+   * because the comparison section's winning card is cream, and a white disc on
+   * cream is an invisible button.
+   */
+  variant?: 'primary' | 'secondary' | 'inverse';
+  /**
+   * Stretches the pill to its container instead of to its label.
+   *
+   * For the button that IS the section — a call to action the width of its own
+   * caption reads as a footnote, not as the thing the page was built to get
+   * clicked. The disc still grows from the left, so the hover fills exactly the
+   * shape the visitor was already looking at.
+   */
+  fullWidth?: boolean;
 }
 
 /**
@@ -23,40 +48,66 @@ interface MotionButtonProps {
  * Only white at varying alpha, per the brand's monochrome rule: the disc is the
  * light source, the label inverts against it.
  */
-export function MotionButton({ label, href, onClick, variant = 'primary' }: MotionButtonProps) {
+export function MotionButton({
+  label,
+  href,
+  onClick,
+  busy = false,
+  variant = 'primary',
+  fullWidth = false,
+}: MotionButtonProps) {
   const isPrimary = variant === 'primary';
-  const className =
-    'group relative inline-flex h-14 items-center overflow-hidden rounded-full pl-[4.25rem] pr-8 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black';
+  const isInverse = variant === 'inverse';
+  const className = `group relative inline-flex h-14 items-center overflow-hidden rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 ${
+    fullWidth
+      ? `w-full justify-center px-8 ring-1 ring-inset ${isInverse ? 'ring-black/15' : 'ring-white/15'}`
+      : 'pl-[4.25rem] pr-8'
+  } ${
+    isInverse
+      ? 'focus-visible:ring-black focus-visible:ring-offset-[#F4F1E8]'
+      : 'focus-visible:ring-white focus-visible:ring-offset-black'
+  }`;
 
   const body = (
     <>
       <span
         aria-hidden
-        className={`absolute left-1 top-1 h-12 w-12 rounded-full transition-[width] duration-500 ease-out group-hover:w-[calc(100%-0.5rem)] motion-reduce:transition-none ${
-          isPrimary ? 'bg-white' : 'bg-white/[0.14]'
-        }`}
+        className={`absolute left-1 top-1 h-12 w-12 rounded-full transition-[width] duration-500 ease-out motion-reduce:transition-none ${
+          busy ? '' : 'group-hover:w-[calc(100%-0.5rem)]'
+        } ${isInverse ? 'bg-[#0B0B0B]' : isPrimary ? 'bg-white' : 'bg-white/[0.14]'}`}
       />
       <span
         aria-hidden
-        className={`absolute left-7 top-1/2 -translate-x-1/2 -translate-y-1/2 transition-transform duration-500 group-hover:translate-x-0 motion-reduce:transition-none ${
-          isPrimary ? 'text-black' : 'text-white'
-        }`}
+        className={`absolute left-7 top-1/2 -translate-x-1/2 -translate-y-1/2 transition-transform duration-500 motion-reduce:transition-none ${
+          busy ? '' : 'group-hover:translate-x-0'
+        } ${isInverse ? 'text-[#F4F1E8]' : isPrimary ? 'text-black' : 'text-white'}`}
       >
         <ArrowRight className="h-5 w-5" strokeWidth={2} />
       </span>
       <span
-        className={`relative whitespace-nowrap text-sm font-medium tracking-tight text-white transition-colors duration-500 motion-reduce:transition-none md:text-base ${
-          isPrimary ? 'group-hover:text-black' : ''
+        className={`relative whitespace-nowrap text-sm font-medium tracking-tight transition-colors duration-500 motion-reduce:transition-none md:text-base ${
+          isInverse
+            ? `text-[#0B0B0B] ${busy ? '' : 'group-hover:text-[#F4F1E8]'}`
+            : `text-white ${isPrimary && !busy ? 'group-hover:text-black' : ''}`
         }`}
       >
-        {label}
+        {/* The spinner takes the label's place rather than sitting beside it:
+            beside it the pill would change width mid-action, and a button that
+            resizes on the click is a button that moved away from the pointer. */}
+        {busy ? <Loader2 className="h-5 w-5 animate-spin" strokeWidth={2} /> : label}
       </span>
     </>
   );
 
   if (onClick) {
     return (
-      <button type="button" onClick={onClick} className={className}>
+      <button
+        type="button"
+        onClick={onClick}
+        disabled={busy}
+        aria-busy={busy}
+        className={className}
+      >
         {body}
       </button>
     );
