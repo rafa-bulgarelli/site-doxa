@@ -58,8 +58,26 @@ const CASCATA = 60;
  * Aberta ela vai para `max-w-screen-2xl`, que é a MESMA faixa da comparação e do
  * "como funciona": com as duas colunas em cena, a seção precisa de toda a
  * largura da página, e passa a alinhar com o resto dela.
+ *
+ * ─── POR QUE 56rem E NÃO 48 ─────────────────────────────────────────────────
+ *
+ * A fechada era 48rem, e o número não foi escolhido contra nada: era a coluna
+ * confortável para um campo de texto. Quem passou a mandar nele foi a BANDEJA
+ * dos atalhos, embaixo do campo — os seis rótulos somam cerca de 786 pixels com
+ * os vãos, e 48rem deixavam 709 úteis depois do recuo da caixa. "Para quem é"
+ * caía sozinho numa segunda fileira, e um botão órfão embaixo de cinco lê como
+ * sobra, não como o sexto de seis.
+ *
+ * 56rem devolvem 837 — cinquenta de folga, que é o que a próxima palavra a mais
+ * num rótulo vai gastar. Menos que isso e a conta volta a fechar no limite; mais
+ * e a caixa começa a perder a proporção de coluna que o parágrafo acima defende.
+ *
+ * A quebra continua permitida (`flex-wrap` na bandeja) e continua certa: numa
+ * janela de 800 pixels não há largura para seis, e ali empilhar é o correto. O
+ * que este número resolve é a tela cheia, onde havia espaço e ele não estava
+ * sendo dado.
  */
-const FECHADA = '48rem';
+const FECHADA = '56rem';
 const ABERTA = '96rem';
 
 /** A cadência da abertura — a mesma do resto do site. */
