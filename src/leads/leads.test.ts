@@ -12,6 +12,7 @@ import { describe, expect, it } from 'vitest';
 import { derivar, simplificar } from './filtrar';
 import { montarCsv } from './csv';
 import { eixosDo, estrelasDe, pontosDe, scoreDo } from './score';
+import { CORTE, INVESTIMENTO } from '../components/comparacao/config';
 import type { Lead, LeadNovo } from './tipos';
 
 const base: LeadNovo = {
@@ -52,6 +53,17 @@ const escolhas = {
 };
 
 describe('score', () => {
+  it('toda faixa de investimento tem nota — nenhuma cai no vazio', () => {
+    // O teste que teria pego a renomeação das faixas sozinho: se alguém mexer
+    // no texto de uma faixa em `config.ts` e esquecer da tabela aqui, a verba
+    // do lead vira zero em silêncio.
+    for (const faixa of INVESTIMENTO.faixas) {
+      const { verba } = eixosDo({ ...base, investimento: faixa });
+      expect(verba, `faixa sem nota na régua: ${faixa}`).toBeGreaterThanOrEqual(0);
+      if (faixa !== INVESTIMENTO.faixas[CORTE]) expect(verba).toBeGreaterThan(0);
+    }
+  });
+
   it('quem pulou a ficha inteira pontua pouco, mas nunca zero estrelas', () => {
     const { pontos, estrelas } = scoreDo(base);
     expect(pontos).toBeLessThan(20);
@@ -60,9 +72,9 @@ describe('score', () => {
 
   it('a verba vem do investimento, e não do faturamento, quando os dois existem', () => {
     const alto = eixosDo({ ...base, investimento: 'Mais de R$ 5.000', faturamento: 'Até R$ 20 mil' });
-    const baixo = eixosDo({ ...base, investimento: 'R$ 1.000 a R$ 1.500', faturamento: 'Mais de R$ 200 mil' });
+    const baixo = eixosDo({ ...base, investimento: 'R$ 1.000 a R$ 2.000', faturamento: 'Mais de R$ 200 mil' });
     expect(alto.verba).toBe(10);
-    expect(baixo.verba).toBe(3);
+    expect(baixo.verba).toBe(4);
   });
 
   it('sem investimento declarado, o faturamento assume a verba', () => {

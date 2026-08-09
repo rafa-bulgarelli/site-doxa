@@ -452,16 +452,28 @@ export const FICHA_FIM = {
  * passa a barrar a faixa errada em silêncio.
  */
 export const INVESTIMENTO = {
-  rotulo: 'Investimento',
-  pergunta: 'Quanto você consegue investir por mês?',
+  rotulo: 'Budget',
+  pergunta: 'Qual é o seu budget mensal?',
   dica: 'Por faixa. É o que define se a Doxa cabe no seu momento.',
+  /*
+   * CINCO faixas, a pedido do dono, e com um buraco fechado.
+   *
+   * Ele ditou "abaixo de 1000, entre 1000 e 2000, entre 3000 e 4000, entre
+   * 4000 e 5000, acima de 5k" — cinco itens, mas com a faixa dos dois aos três
+   * mil faltando. Uma escada com degrau faltando não é detalhe: quem consegue
+   * dois mil e quinhentos não tem em que clicar, e o formulário trava no passo
+   * que existe para não travar ninguém.
+   *
+   * Fechado esticando a faixa do meio até quatro mil. Quatro dos cinco rótulos
+   * são os dele, palavra por palavra; o terceiro é o que cobre o vão. Se a
+   * intenção era outra — separar 2–3 e 3–4 e juntar em cima —, é trocar esta
+   * lista e a tabela de `INVESTIMENTO` em `leads/score.ts`, que lê os mesmos
+   * textos.
+   */
   faixas: [
     'Abaixo de R$ 1.000',
-    'R$ 1.000 a R$ 1.500',
-    'R$ 1.500 a R$ 2.000',
-    'R$ 2.000 a R$ 2.500',
-    'R$ 2.500 a R$ 3.000',
-    'R$ 3.000 a R$ 4.000',
+    'R$ 1.000 a R$ 2.000',
+    'R$ 2.000 a R$ 4.000',
     'R$ 4.000 a R$ 5.000',
     'Mais de R$ 5.000',
   ],

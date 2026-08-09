@@ -85,11 +85,8 @@ const PESO: Record<Eixo, number> = {
  */
 const INVESTIMENTO: Record<string, number> = {
   'Abaixo de R$ 1.000': 0,
-  'R$ 1.000 a R$ 1.500': 3,
-  'R$ 1.500 a R$ 2.000': 4,
-  'R$ 2.000 a R$ 2.500': 5,
-  'R$ 2.500 a R$ 3.000': 6,
-  'R$ 3.000 a R$ 4.000': 8,
+  'R$ 1.000 a R$ 2.000': 4,
+  'R$ 2.000 a R$ 4.000': 7,
   'R$ 4.000 a R$ 5.000': 9,
   'Mais de R$ 5.000': 10,
 };
