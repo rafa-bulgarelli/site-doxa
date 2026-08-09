@@ -212,7 +212,15 @@ export const DUVIDAS: readonly Duvida[] = [
   },
   {
     chave: 'prazo',
-    atalho: 'Em quanto tempo',
+    /* "Em quanto tempo" sozinho não é pergunta — o dono leu e perguntou "em
+       quanto tempo o quê?". Era o único rótulo dos seis que dependia da pergunta
+       inteira para significar alguma coisa: "A garantia", "Quem já usou" e "Para
+       quem é" são incompletos mas se fecham na cabeça de quem lê; aquele ficava
+       pendurado no ar.
+
+       O botão continua abrindo a MESMA pergunta ("Em quanto tempo começo a ver
+       resultados?"). O que mudou foi só a etiqueta dela. */
+    atalho: 'Quando vejo resultado?',
     pergunta: 'Em quanto tempo começo a ver resultados?',
     resposta: [
       'Os primeiros resultados podem aparecer já nas primeiras semanas, mas nossa estratégia é construída para performance consistente ao longo de todo o período contratado.',
@@ -227,6 +235,8 @@ export const DUVIDAS: readonly Duvida[] = [
       'resultados',
       'comeco a ver resultado',
       'ver resultado',
+      'quando vejo',
+      'quando vejo resultado',
     ],
     termos: ['rapido', 'comeca', 'inicio', 'primeiro video'],
   },
