@@ -15,16 +15,23 @@
  * São DOIS e não um, e a diferença não é estética — é o que o título tem embaixo
  * dele:
  *
- * `TITULO_SECAO` nomeia um painel que ainda precisa mostrar outra coisa na mesma
- * tela. A comparação tem uma fatura de vinte e cinco linhas embaixo do título; a
- * parede de prova tem o cartão de fecho aterrissando entre o título e as cifras.
- * Em 2,6rem os dois voltam a ter três linhas de manchete num aparelho de 320, e
- * as três linhas saem do vão do que vem depois — foi exatamente o defeito que o
- * dono relatou nas duas seções.
+ * `TITULO_SECAO` nomeia o título que tem de CEDER altura ao conteúdo dele. É um
+ * só hoje: a comparação, com uma fatura de vinte e cinco linhas correndo numa
+ * janela medida embaixo dele. Ali cada linha de manchete a mais sai direto do
+ * que a pessoa consegue ler, e não há nada elástico para absorver.
  *
- * `MANCHETE` nomeia um painel em que o título É a tela: o convite do painel
- * claro, o do FAQ e o do rodapé não dividem a altura com nada que precise ser
- * medido. Ali a manchete pode ocupar o que quiser.
+ * `MANCHETE` nomeia o título que NÃO paga esse preço — porque é a tela inteira
+ * (o convite do painel claro, o FAQ, o rodapé) ou porque o que divide a tela com
+ * ele sabe se ajustar. A parede de prova entrou por esta segunda porta, a pedido
+ * do dono: o cartão de fecho dela se reduz sozinho ao vão que sobrar
+ * (`caberCartao`, em `ProofWall.tsx`), então um título maior ali custa tamanho
+ * de cartão — nunca conteúdo cortado.
+ *
+ * O dono pediu a parede "uma vez e meia maior", o que daria 2,7rem sobre os 1,8.
+ * `MANCHETE` vale 2,6: quatro por cento abaixo, invisível na tela, e vale a pena
+ * pagar essa diferença para a página continuar com DOIS corpos de manchete em
+ * vez de três. Um terceiro tamanho a quatro por cento do segundo não é decisão
+ * de tipografia — é um número que ninguém consegue defender daqui a um mês.
  *
  * Os três de `MANCHETE` convergiram no MENOR dos valores que tinham (2,6rem, do
  * rodapé) de propósito: subir os outros dois para 2,9 seria padronizar para cima

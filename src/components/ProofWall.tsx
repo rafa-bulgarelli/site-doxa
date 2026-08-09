@@ -22,7 +22,7 @@ import { WALL_REELS, WALL_REELS_MOBILE, type Reel } from './proof/reels';
 import { DotGridSpotlight } from './hero/DotGridSpotlight';
 import { MotionButton } from './ui/MotionButton';
 import { HREF_FORMS } from '../ancoras';
-import { TITULO_SECAO } from '../tipografia';
+import { MANCHETE } from '../tipografia';
 import { useIsDesktop } from '../hooks/useIsDesktop';
 
 /**
@@ -1216,16 +1216,43 @@ export function ProofWall() {
                 letra miúda desmentindo a manchete. O número de arquivos que
                 temos não é o número de clientes que atendemos, e só um dos dois
                 é assunto desta seção. */}
-            {/* 1,7rem só até 640px. A 36px, a segunda linha ("viralizaram com a
-                Doxa.") não cabe nos 280px úteis de um telefone de 320 e quebra
-                sozinha numa terceira — três linhas de manchete comendo o vão do
-                cartão embaixo, por uma quebra que ninguém pediu. A 27px ela cabe
-                inteira, e o título volta a ter as duas linhas que o `<br>`
-                escreveu. Acima de 640 nada muda. */}
-            <h2 className={`font-serif ${TITULO_SECAO} font-normal leading-[1.05] tracking-[-0.02em] text-white sm:text-4xl md:text-6xl`}>
-              {CLIENTES} empresas já
-              <br />
-              viralizaram com a Doxa.
+            {/* ── UMA VEZ E MEIA MAIOR NO TELEFONE, e por isso este título
+                mudou de TOKEN em vez de ganhar um número solto.
+
+                O dono pediu 1,5x sobre os 1,8rem de `TITULO_SECAO`, o que dá
+                2,7. `MANCHETE` vale 2,6 — quatro por cento abaixo, invisível na
+                tela — e usá-lo mantém a página com dois corpos de manchete em
+                vez de três. Um terceiro tamanho a quatro por cento do segundo
+                não é uma decisão de tipografia, é um número que ninguém vai
+                conseguir defender daqui a um mês.
+
+                A troca de papel também ficou VERDADEIRA, e é o argumento que
+                importa: `TITULO_SECAO` existe para o painel cujo título tem de
+                ceder altura ao conteúdo — a comparação, com uma fatura de vinte
+                e cinco linhas correndo numa janela medida. Aqui embaixo não há
+                fatura: o que divide a tela com o título é o cartão de fecho, e
+                ele se AJUSTA sozinho ao vão que sobrar (`caberCartao`). Um
+                título maior aqui custa tamanho de cartão, não conteúdo cortado —
+                e essa é a troca que o dono acabou de escolher.
+
+                A quebra vai escrita por isso: a 41,6px, "viralizaram com a
+                Doxa." mede 328 pixels nos 280 úteis e quebraria deixando
+                "Doxa." órfã — o mesmo defeito que ele já apontou duas vezes em
+                outros títulos. Em três linhas de 192, 192 e 151 não sobra
+                nenhuma solta. Acima de 640 nada muda. */}
+            <h2 className={`font-serif ${MANCHETE} font-normal leading-[1.05] tracking-[-0.02em] text-white sm:text-4xl md:text-6xl`}>
+              <span className="sm:hidden">
+                {CLIENTES} empresas
+                <br />
+                já viralizaram
+                <br />
+                com a Doxa.
+              </span>
+              <span className="hidden sm:inline">
+                {CLIENTES} empresas já
+                <br />
+                viralizaram com a Doxa.
+              </span>
             </h2>
 
             <div className="hidden flex-wrap justify-end gap-x-10 gap-y-4 text-right lg:flex">
