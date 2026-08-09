@@ -11,12 +11,18 @@ import {
 } from 'framer-motion';
 import wordmarkUrl from '../../brand/doxa-wordmark-white.png';
 import { ANCORA_FORMS } from '../ancoras';
-import { MANCHETE } from '../tipografia';
+import { MANCHETE, TITULO_SECAO } from '../tipografia';
 import { DotGridSpotlight } from './hero/DotGridSpotlight';
 import { BordaViva } from './comparacao/BordaViva';
 import { FioConvite } from './comparacao/FioConvite';
 import { Formulario } from './comparacao/Formulario';
-import { FATIA_CONTA, FATIA_FECHO, Ladainha, useContagem } from './comparacao/Ladainha';
+import {
+  FATIA_CONTA,
+  FATIA_FECHO,
+  FATIA_TOTAL_PUBLICA,
+  Ladainha,
+  useContagem,
+} from './comparacao/Ladainha';
 import { ProvaRotativa } from './comparacao/ProvaRotativa';
 import { useIsDesktop } from '../hooks/useIsDesktop';
 import {
@@ -29,7 +35,6 @@ import {
   NO_AR,
   PARADO,
   PERGUNTA,
-  PERGUNTA_ESTREITA,
   SEM_GARANTIA,
   TROCA_ANTES,
   TROCA_DEPOIS,
@@ -261,9 +266,9 @@ export function Comparacao() {
   /*
    * A revelação da conta, e o gatilho do contador junto com ela.
    *
-   * A régua vai de `FATIA_CONTA` até `FATIA_FECHO`: a conta termina de entrar no
-   * quadro exato em que o soco começa. É o que faz a cascata ser lida como três
-   * tempos e não como três coisas piscando.
+   * A régua vai de `FATIA_CONTA` até o total: a conta termina de entrar no quadro
+   * exato em que "E o seu tempo." começa, logo abaixo dela. É o que faz a cauda
+   * ser lida como duas linhas de um fecho e não como duas coisas piscando.
    *
    * `contaAcesa` existe porque o contador e a revelação precisavam ser o MESMO
    * evento. Preso ao `contaNaTela` do painel, o número subia de zero a dez mil e
@@ -271,8 +276,8 @@ export function Comparacao() {
    * atrás de uma opacidade zero, e o que aparecia depois era um número parado.
    * Aqui ele começa a subir quando a conta começa a aparecer.
    */
-  const contaOpacity = useTransform(contagem, [FATIA_CONTA, FATIA_FECHO], [0, 1]);
-  const contaY = useTransform(contagem, [FATIA_CONTA, FATIA_FECHO], [10, 0]);
+  const contaOpacity = useTransform(contagem, [FATIA_CONTA, FATIA_TOTAL_PUBLICA], [0, 1]);
+  const contaY = useTransform(contagem, [FATIA_CONTA, FATIA_TOTAL_PUBLICA], [10, 0]);
   const [contaAcesa, setContaAcesa] = useState(false);
   useMotionValueEvent(contagem, 'change', (valor) => {
     if (valor >= FATIA_CONTA) setContaAcesa(true);
@@ -319,34 +324,24 @@ export function Comparacao() {
                 que foi o que o dono leu. A 28px a linha cabe, o `<br>` volta a
                 ser a única quebra que existe, e o título recupera as duas linhas
                 que ele foi escrito para ter. De 640px para cima nada muda. */}
-            {/* 2,7rem no telefone — uma vez e meia os 1,8 de `TITULO_SECAO`, a
-                pedido do dono, e é uma EXCEÇÃO consciente à padronização que ele
-                pediu duas rodadas atrás.
+            {/* De volta ao token, uma vez e meia menor que os 2,7rem da rodada
+                passada — o dono viu grande na tela e desfez. Com isto a exceção
+                à padronização de h2 deixa de existir: esta seção e a parede de
+                prova voltam a usar o mesmo `TITULO_SECAO`, que é onde o número
+                mora e onde ele se muda.
 
-                O token continua sendo o padrão e continua valendo na parede de
-                prova; aqui ele é sobrescrito porque o dono olhou para esta tela
-                em específico e pediu maior. Fica escrito para a próxima pessoa
-                não "consertar" isto de volta achando que é sobra: é decisão, e a
-                mais recente das duas.
-
-                O preço são as três linhas de `PERGUNTA_ESTREITA` no lugar de
-                duas, e mais 76 pixels comidos da janela da lista — que continua
-                sendo quem paga a conta desta coluna no telefone. */}
+                A quebra escrita para o telefone foi junto, e o arquivo de
+                conteúdo voltou a ter uma versão só da pergunta. A 1,8rem a
+                primeira linha mede 257 pixels nos 280 úteis de um telefone de
+                320: cabe inteira, o `<br>` volta a ser a única quebra, e um
+                segundo texto que teria de ser mantido em sincronia para sempre
+                deixa de ter motivo para existir. */}
             <h2
-              className="font-serif text-[2.7rem] font-normal leading-[1.05] tracking-[-0.02em] text-white sm:text-4xl md:text-6xl"
+              className={`font-serif ${TITULO_SECAO} font-normal leading-[1.05] tracking-[-0.02em] text-white sm:text-4xl md:text-6xl`}
             >
-              <span className="sm:hidden">
-                {PERGUNTA_ESTREITA[0]}
-                <br />
-                {PERGUNTA_ESTREITA[1]}
-                <br />
-                {PERGUNTA_ESTREITA[2]}
-              </span>
-              <span className="hidden sm:inline">
-                {PERGUNTA[0]}
-                <br />
-                {PERGUNTA[1]}
-              </span>
+              {PERGUNTA[0]}
+              <br />
+              {PERGUNTA[1]}
             </h2>
 
             {/* A pílula da recorrência saiu a pedido do dono, e o valor cresceu
@@ -428,7 +423,42 @@ export function Comparacao() {
                   — um `useScroll` apontado para ele devolveria um progresso
                   travado no mesmo número durante toda a leitura. Por isso o alvo
                   é a seção, e por isso a medida é feita aqui em cima. */}
-              <Ladainha progresso={contagem} janelaRef={janelaLadainhaRef} />
+              <Ladainha
+                progresso={contagem}
+                janelaRef={janelaLadainhaRef}
+              cauda={
+                /* ─── A RESPOSTA, dentro da própria fatura ───────────────────
+                 *
+                 * Terceira posição do valor em três rodadas, e esta é a que o
+                 * argumento pedia desde o começo: ele entra DEPOIS do vigésimo
+                 * quinto item e ANTES de "E o seu tempo.". Vinte e cinco linhas,
+                 * o quanto elas somam, e então a única que não se compra. É a
+                 * última linha da nota, no lugar onde uma nota a escreve.
+                 *
+                 * Fora da lista ele já foi duas coisas erradas: no pé da coluna,
+                 * um número solto depois de um ponto final; e antes disso, no
+                 * cabeçalho, disputando a linha com a pergunta.
+                 *
+                 * `data-cauda` não é enfeite de teste: é por ele que a lista
+                 * sabe onde os ITENS acabam. Ver a nota no `useLayoutEffect` da
+                 * Ladainha.
+                 *
+                 * Só no telefone. No desktop este nó existe em `display: none` e
+                 * a conta continua ao lado do título, que é onde a coluna
+                 * inteira cabendo na tela a coloca. */
+                <motion.span
+                  data-cauda
+                  style={parado ? undefined : { opacity: contaOpacity, y: contaY }}
+                  className="mt-7 block sm:hidden"
+                >
+                  <Conta
+                    naTela={contaAcesa}
+                    className="block whitespace-nowrap font-serif text-[2.2rem] leading-none text-white texto-aceso"
+                    unidade="ml-1 text-[1.2rem]"
+                  />
+                </motion.span>
+              }
+              />
             </div>
           </div>
 
@@ -439,37 +469,6 @@ export function Comparacao() {
               sistema, e o escudo cortado como ícone de erro. A frase não precisa
               de moldura — ela é a única coisa em branco cheio depois do título,
               e isso já a torna a segunda voz mais alta da tela. */}
-          {/* ─── A RESPOSTA, antes do soco e só no telefone ──────────────────
-           *
-           * A ordem é do dono e ela mudou duas vezes: a conta desceu do
-           * cabeçalho para o pé da coluna, e agora sobe um degrau para ficar
-           * ANTES do fecho. É a leitura certa das três linhas — a fatura é
-           * somada, a conta responde a pergunta do alto, e o soco vem por cima
-           * do valor já dito. Embaixo do soco, ela era um número depois de um
-           * ponto final.
-           *
-           * E resolve de graça o risco que ficou anotado aqui na rodada
-           * passada: o painel claro entra girado e cobre o terço de baixo da
-           * tela, e o bloco mais baixo da coluna é o primeiro que o papel come.
-           * Esse bloco voltou a ser o fecho, que é quem foi calibrado para
-           * fechar antes do papel subir.
-           *
-           * 2,7rem no título e 2,2 aqui: a pergunta é maior que a resposta na
-           * página, mas a resposta é a única coisa da coluna com `texto-aceso`.
-           * Tamanho e brilho são duas ênfases diferentes, e dar as duas para o
-           * mesmo elemento é o que fazia o número gritar por cima da pergunta
-           * quando os dois dividiam a mesma linha.
-           */}
-          <motion.div
-            style={parado ? undefined : { opacity: contaOpacity, y: contaY }}
-            className="mt-7 sm:hidden"
-          >
-            <Conta
-              naTela={contaAcesa}
-              className="block whitespace-nowrap font-serif text-[2.2rem] leading-none text-white texto-aceso"
-              unidade="ml-1 text-[1.2rem]"
-            />
-          </motion.div>
 
           {/* As duas metades acesas em degraus, como no cartão do outro painel:
               creme fechado na que prepara, branco com brilho na que bate. A

@@ -1,4 +1,4 @@
-import { Fragment, useLayoutEffect, useRef, useState, type RefObject } from 'react';
+import { Fragment, useLayoutEffect, useRef, useState, type ReactNode, type RefObject } from 'react';
 import {
   AnimatePresence,
   motion,
@@ -151,17 +151,18 @@ const FATIA_TOTAL = 0.66;
 /**
  * Onde a CONTA acende, e ela é a linha do meio de uma cascata de três.
  *
- * Só existe no telefone: é lá que o valor desceu para o pé da coluna, e a pedido
- * do dono ele passou a ter revelação como todo o resto. No desktop a conta mora
- * ao lado do título e está de pé desde o primeiro quadro.
+ * Só existe no telefone: é lá que o valor entrou para DENTRO da lista, a pedido
+ * do dono, como a linha que fecha a nota. No desktop a conta mora ao lado do
+ * título e está de pé desde o primeiro quadro.
  *
- * A ordem é 66 · 70 · 77, e ela é o argumento inteiro desta coluna dito em três
- * tempos: a soma fecha (o total), a conta aparece (o quanto isso custa), e só
- * então o soco (que nada disso garante nada). Cada uma entra quando a anterior
- * terminou de entrar — nenhuma disputa a atenção da outra, e é por isso que os
- * números são estes e não três valores redondos.
+ * A ordem é 60 · 62 · 66 · 77, e ela é o argumento inteiro da coluna em quatro
+ * tempos: o último item entra, a conta responde a pergunta do alto, o tempo é
+ * cobrado por cima do valor já dito, e só então o soco (que nada disso garante
+ * nada). Cada uma entra quando a anterior terminou — nenhuma disputa a atenção
+ * da outra, e é por isso que os números são estes e não quatro valores redondos.
  */
-export const FATIA_CONTA = 0.7;
+export const FATIA_CONTA = 0.62;
+export const FATIA_TOTAL_PUBLICA = FATIA_TOTAL;
 export const FATIA_FECHO = 0.77;
 
 /** Tamanho da lâmina que segue o ponteiro, em pixels. */
@@ -330,6 +331,7 @@ function Palavra({
 export function Ladainha({
   progresso,
   janelaRef,
+  cauda,
 }: {
   progresso: MotionValue<number>;
   /**
@@ -340,6 +342,15 @@ export function Ladainha({
    * Medida daqui de dentro, a lista teria de adivinhar o próprio lugar.
    */
   janelaRef: RefObject<HTMLDivElement>;
+  /**
+   * O que entra na fila DEPOIS dos vinte e cinco itens e antes do total.
+   *
+   * Vem de fora porque é a conta, e a conta é do painel: o contador, o valor e a
+   * régua de revelação dela já moram lá, e trazer os três para cá só para
+   * desenhá-los num lugar diferente seria mudar de dono um estado que não é
+   * desta lista. Aqui ela só ocupa a posição que o dono pediu.
+   */
+  cauda?: ReactNode;
 }) {
   const ref = useRef<HTMLParagraphElement>(null);
   const isDesktop = useIsDesktop();
@@ -407,9 +418,25 @@ export function Ladainha({
        * está correndo quando a última linha já acendeu. `offsetTop` é relativo
        * ao parágrafo porque ele é `relative`, então é ele o `offsetParent`.
        */
-      const total = lista.lastElementChild;
+      /*
+       * O marcador vence o último filho, e a diferença apareceu com a conta.
+       *
+       * A cauda deixou de ser só o total: no telefone a conta entra antes dele,
+       * e medir pelo ÚLTIMO filho passaria a contar a conta como se ela fosse
+       * item de fatura — a lista correria além do vigésimo quinto antes de ele
+       * acender. `data-cauda` marca onde os itens acabam de verdade.
+       *
+       * `offsetParent` é o teste de que o marcador está visível: no desktop a
+       * conta é `display: none`, e um elemento escondido devolve `offsetTop`
+       * zero — o que zeraria a conta inteira em silêncio.
+       */
+      const marcado = lista.querySelector('[data-cauda]');
+      const inicioDaCauda =
+        marcado instanceof HTMLElement && marcado.offsetParent != null
+          ? marcado
+          : lista.lastElementChild;
       const fimDosItens =
-        total instanceof HTMLElement ? total.offsetTop : lista.scrollHeight;
+        inicioDaCauda instanceof HTMLElement ? inicioDaCauda.offsetTop : lista.scrollHeight;
       const alvo = Math.min(fim, Math.max(0, fimDosItens - altura));
       // O FREIO: a lista não anda enquanto a janela não estiver cheia. Sem ele,
       // o texto começa a subir com três linhas escritas e a pessoa persegue uma
@@ -598,6 +625,16 @@ export function Ladainha({
         {/* O total acende DEPOIS do último item, na ponta do percurso: ele é a
             linha que fecha a soma, e uma soma que se fecha antes da última
             parcela não fecha nada. */}
+        {cauda}
+
+        {/* O FILETE do total sai no telefone, a pedido do dono.
+ 
+            Ele existe para fazer a leitura de "total": vinte e cinco itens, uma
+            linha, e embaixo dela a única coisa que a lista não sabe cobrar. Só
+            que agora quem responde a pergunta é a CONTA, que entra logo acima —
+            e com ela ali, o filete deixa de separar a soma do seu fecho e passa
+            a cortar o meio de um par que se lê junto. O respiro sozinho já
+            separa, e separa sem desenhar nada. */}
         <Palavra
           progresso={progresso}
           acende={acende}
@@ -605,7 +642,7 @@ export function Ladainha({
           fatia={FATIA_TOTAL}
           nome={TEMPO.nome}
           aoApontar={apontar(TEMPO)}
-          className={`mt-7 block w-fit border-t border-white/[0.12] pt-7 [word-spacing:normal] font-serif text-[2rem] leading-none text-[#F4F1E8] md:mt-9 md:pt-9 md:text-[3rem] ${
+          className={`mt-7 block w-fit pt-0 [word-spacing:normal] font-serif text-[2rem] leading-none text-[#F4F1E8] sm:border-t sm:border-white/[0.12] sm:pt-7 md:mt-9 md:pt-9 md:text-[3rem] ${
             podeSeguir ? 'cursor-default' : ''
           }`}
         />
