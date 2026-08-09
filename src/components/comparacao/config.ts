@@ -227,11 +227,17 @@ export const FILTRO = {
  * AUDITORIA — que é o que os R$ 100 compram. É a palavra que justifica o preço
  * antes de o preço aparecer, três passos depois.
  *
- * Escrito em capitulares pelo CSS e não aqui: em caixa alta no arquivo, ele
- * chegaria gritado em qualquer lugar que reusasse a constante, inclusive num
- * leitor de tela — que soletra sigla.
+ * Em caixa de frase, a pedido do dono — só a primeira letra, e o nome próprio.
+ * Ele já foi versalete desenhado por CSS, e o argumento de então (nunca escrever
+ * em caixa alta no arquivo, porque leitor de tela soletra o que parece sigla)
+ * segue valendo e agora é de graça: em caixa de frase não há o que desfazer.
+ *
+ * O que mudou junto foi a natureza da linha. Versalete a 11px é ETIQUETA, e
+ * etiqueta se lê de raspão; em serifa, com a fita do FAQ correndo por dentro
+ * das letras, ela virou o NOME da coisa — e nome de coisa se escreve como se
+ * escreve um nome.
  */
-export const AUDITORIA = 'Auditoria Estratégica Doxa';
+export const AUDITORIA = 'Auditoria estratégica Doxa';
 
 /**
  * O que os R$ 100 compram, dito no passo em que se paga.

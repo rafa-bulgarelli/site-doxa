@@ -37,13 +37,19 @@ const EASE = [0.16, 1, 0.3, 1] as const;
 const ERRO = '#E8938C';
 
 interface Passo {
-  chave: 'nome' | 'whatsapp' | 'arroba';
+  chave: 'caminho' | 'nome' | 'whatsapp' | 'arroba';
   /** O nome da etapa na trilha do topo. Uma palavra, senão não é uma trilha. */
   rotulo: string;
   pergunta: string;
   dica: string;
-  exemplo: string;
-  tipo: 'tel' | 'text';
+  /**
+   * As respostas prontas. Com elas o passo é de TOQUE e não de digitação: some o
+   * campo, entram as pílulas, e a escolha avança sozinha.
+   */
+  opcoes?: readonly string[];
+  /** Só nos passos de digitar. */
+  exemplo?: string;
+  tipo?: 'tel' | 'text';
   /** Devolve o erro, ou `null` se estiver bom. */
   valida: (valor: string) => string | null;
   /** Formata enquanto se digita. */
@@ -66,15 +72,35 @@ function mascaraTelefone(valor: string) {
 }
 
 /**
- * As três perguntas, e a ordem delas é decisão de conversão.
+ * As perguntas, e a ordem delas é decisão de conversão.
  *
- * O nome vem primeiro. A primeira pergunta é a que decide se a pessoa entra, e o
- * nome é o compromisso mais barato que existe — ninguém desiste de um formulário
- * por ter dito como se chama. O WhatsApp é o dado caro, e ele é pedido no segundo
- * passo, quando a pessoa já não está começando e sim terminando. Perguntado
- * primeiro, ele é uma catraca na porta.
+ * O CAMINHO abre a fila, a pedido do dono, e ele é o passo mais barato que este
+ * formulário podia ter: dois toques possíveis, nenhuma tecla, nenhum dado
+ * pessoal. A primeira pergunta é a que decide se a pessoa entra, e uma que se
+ * responde com o polegar entra mais gente do que uma que pede o nome — mesmo o
+ * nome sendo barato. E ela paga duas vezes: separa, já na porta, o cliente do
+ * FRANQUEADO, que são duas conversas comerciais diferentes e hoje chegavam
+ * misturadas na mesma caixa.
+ *
+ * Depois o nome, que é o compromisso mais barato que existe — ninguém desiste de
+ * um formulário por ter dito como se chama. O WhatsApp é o dado caro, e ele vem
+ * quando a pessoa já não está começando e sim terminando. Perguntado primeiro,
+ * ele é uma catraca na porta.
  */
 const PASSOS: readonly Passo[] = [
+  {
+    chave: 'caminho',
+    rotulo: 'Caminho',
+    pergunta: 'O que você quer com a Doxa?',
+    dica: 'As duas portas existem. A conversa muda conforme a sua.',
+    /* PENDENTE-DONO: as duas frases são dele, palavra por palavra. A segunda é
+       uma afirmação sobre o negócio — "agência licenciada" promete que existe um
+       programa de licenciamento com condições. Se ainda não existir fechado, é
+       melhor a porta não estar na página do que estar e a resposta ser "ainda
+       não temos isso pronto" na primeira ligação. */
+    opcoes: ['Quero viralizar minha empresa', 'Quero ser uma agência licenciada'],
+    valida: (v) => (v.length === 0 ? 'Escolhe uma das duas.' : null),
+  },
   {
     chave: 'nome',
     rotulo: 'Nome',
@@ -193,7 +219,7 @@ type ChaveFicha = PerguntaFicha['chave'];
  */
 export function Formulario({ cartaoRef }: { cartaoRef: RefObject<HTMLDivElement> }) {
   const [passo, setPasso] = useState(0);
-  const [dados, setDados] = useState({ nome: '', whatsapp: '', arroba: '' });
+  const [dados, setDados] = useState({ caminho: '', nome: '', whatsapp: '', arroba: '' });
   const [erro, setErro] = useState<string | null>(null);
   const [enviando, setEnviando] = useState(false);
   /** Para onde a animação corre: 1 avança, -1 volta. */
@@ -259,7 +285,9 @@ export function Formulario({ cartaoRef }: { cartaoRef: RefObject<HTMLDivElement>
   useEffect(() => {
     if (passoAnterior.current === passo) return;
     passoAnterior.current = passo;
-    if (atual != null) campoRef.current?.focus({ preventScroll: true });
+    // Passo de toque não tem campo para focar — e chamar `focus` num `null`
+    // seria inofensivo, mas a intenção fica escrita.
+    if (atual != null && atual.opcoes == null) campoRef.current?.focus({ preventScroll: true });
   }, [passo, atual]);
 
   const avancar = () => {
@@ -478,9 +506,29 @@ export function Formulario({ cartaoRef }: { cartaoRef: RefObject<HTMLDivElement>
           initial={parado ? undefined : { opacity: 0, y: -6 }}
           animate={naTela || parado ? { opacity: 1, y: 0 } : undefined}
           transition={{ duration: 0.5, ease: EASE, delay: 0.25 }}
-          className="mb-6 text-[11px] uppercase leading-none tracking-[0.2em] text-[#F4F1E8]/50"
+          className="mb-6"
         >
-          {AUDITORIA}
+          {/* Serifa e a FITA DO FAQ, a pedido do dono — o mesmo
+              `texto-aceso-siri` de "Pergunte o que quiser.", que é o efeito que
+              ele apontou como referência.
+
+              Subiu de 11 para 17px, e não é gosto: o gradiente é recortado na
+              forma dos glifos, e a 11px o que sobra de cada letra é fino demais
+              para caber uma faixa de cor — o efeito existiria no CSS e não na
+              tela.
+
+              E saiu o versalete, a pedido do dono: só a primeira letra. Com ele
+              saiu o `tracking` largo, que existe para abrir caixa alta e em
+              caixa de frase só afrouxa a palavra. A linha deixou de ser etiqueta
+              e virou o NOME do que está sendo preenchido.
+
+              O efeito vive num `span` e a margem no `<p>` de fora, de propósito:
+              `.texto-aceso-siri` usa `margin-bottom` negativa para o gradiente
+              alcançar as pernas dos glifos, e ela apagaria um `mb-6` posto no
+              mesmo elemento. Duas caixas, duas responsabilidades. */}
+          <span className="texto-aceso-siri font-serif text-[17px] tracking-[-0.01em] text-[#F4F1E8]">
+            {AUDITORIA}
+          </span>
         </motion.p>
 
         {/* O andamento. Três de três é curto o bastante para ser dito por extenso,
@@ -516,19 +564,32 @@ export function Formulario({ cartaoRef }: { cartaoRef: RefObject<HTMLDivElement>
                      baixo e mudar a altura do cartão inteiro no meio do
                      preenchimento. O destaque vem do fundo, que não ocupa
                      espaço nenhum. */
+                  /* A etapa da vez usa `pilula-siri` — a mesma fita do
+                     `texto-aceso-siri` do FAQ, aqui preenchendo a superfície em
+                     vez de recortada nos glifos. Era creme chapado com halo
+                     branco fixo, e o dono pediu o efeito no lugar do "branco
+                     puro". O halo veio junto e de graça: o `drop-shadow` dos
+                     `keyframes` circunda a pílula e TROCA DE COR ao longo do
+                     ciclo, que é o que o halo branco não fazia.
+
+                     Texto em tinta cheia sobre ela, e é obrigatório: a fita
+                     passa por âmbar, magenta e azul em seis segundos, e um
+                     rótulo claro sumiria em dois deles.
+
+                     O verde do `feito` fica: ele não é decoração, é o mesmo
+                     verde do selo "Com Doxa" — a mesma afirmação dita sobre a
+                     empresa e sobre o campo que a pessoa acabou de responder. */
                   className={`flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full border px-3 py-1.5 text-[12px] leading-none transition-colors duration-500 ${
                     agora
-                      ? 'border-transparent bg-[#F4F1E8] text-[#0B0B0B]'
+                      ? 'pilula-siri border-transparent text-[#0B0B0B]'
                       : feito
                         ? 'text-[#F4F1E8]'
                         : 'border-white/[0.12] text-white/30'
                   }`}
                   style={
-                    agora
-                      ? { boxShadow: '0 0 18px -2px rgba(255,255,255,0.55)' }
-                      : feito
-                        ? { borderColor: `${NO_AR}80`, background: `${NO_AR}1a` }
-                        : undefined
+                    feito
+                      ? { borderColor: `${NO_AR}80`, background: `${NO_AR}1a` }
+                      : undefined
                   }
                 >
                   {feito ? (
@@ -573,41 +634,93 @@ export function Formulario({ cartaoRef }: { cartaoRef: RefObject<HTMLDivElement>
           <AnimatePresence mode="wait" initial={false}>
             {atual != null && (
               <motion.div key={atual.chave} {...desliza} className="mt-7">
-                <label htmlFor={`campo-${atual.chave}`} className="block">
-                  <span className="block font-serif text-[1.75rem] leading-[1.1] tracking-[-0.02em] text-white md:text-[2.35rem]">
-                    {atual.pergunta}
-                  </span>
-                  {/* 15px e 70% de branco, e os dois números subiram juntos por
-                      um motivo só: esta linha é a que responde "por que você
-                      quer isso de mim?" — a única defesa que o formulário tem
-                      contra a pessoa desistir de entregar o dado. Escrita em
-                      13px a 45%, ela existia sem ser lida. */}
-                  <span className="mt-2 block text-[15px] text-white/70">{atual.dica}</span>
-                </label>
+                {/* `<label>` quando há campo, `<div>` quando não há.
 
-                <CampoVivo
-              id={`campo-${atual.chave}`}
-              valor={dados[atual.chave]}
-              exemplo={atual.exemplo}
-              tipo={atual.tipo}
-              autoComplete={
-                atual.chave === 'whatsapp' ? 'tel' : atual.chave === 'nome' ? 'name' : 'off'
-              }
-              invalido={erro != null}
-              descritoPor={erro != null ? `erro-${atual.chave}` : undefined}
-              campoRef={campoRef}
-              aoDigitar={(bruto) => {
-                const valor = atual.formata != null ? atual.formata(bruto) : bruto;
-                setDados((d) => ({ ...d, [atual.chave]: valor }));
-                if (erro != null) setErro(null);
-              }}
-              aoTeclar={(evento) => {
-                if (evento.key === 'Enter') {
-                  evento.preventDefault();
-                  avancar();
-                }
-              }}
-            />
+                    Um rótulo é a etiqueta de um controle e existe para que
+                    clicar nele foque o controle. No passo de toque não existe
+                    controle único — são duas pílulas —, e um `htmlFor`
+                    apontando para um `id` que não existe é uma promessa quebrada
+                    para o leitor de tela. Ali o enunciado vira texto com `id`, e
+                    quem se amarra a ele é o `role="group"` das opções. */}
+                {atual.opcoes != null ? (
+                  <div>
+                    <p
+                      id={`campo-${atual.chave}`}
+                      className="block font-serif text-[1.75rem] leading-[1.1] tracking-[-0.02em] text-white md:text-[2.35rem]"
+                    >
+                      {atual.pergunta}
+                    </p>
+                    <p className="mt-2 block text-[15px] text-white/70">{atual.dica}</p>
+                  </div>
+                ) : (
+                  <label htmlFor={`campo-${atual.chave}`} className="block">
+                    <span className="block font-serif text-[1.75rem] leading-[1.1] tracking-[-0.02em] text-white md:text-[2.35rem]">
+                      {atual.pergunta}
+                    </span>
+                    {/* 15px e 70% de branco, e os dois números subiram juntos
+                        por um motivo só: esta linha é a que responde "por que
+                        você quer isso de mim?" — a única defesa que o formulário
+                        tem contra a pessoa desistir de entregar o dado. Escrita
+                        em 13px a 45%, ela existia sem ser lida. */}
+                    <span className="mt-2 block text-[15px] text-white/70">{atual.dica}</span>
+                  </label>
+                )}
+
+                {atual.opcoes != null ? (
+                  /* A MESMA `Escolha` da ficha do consultor, reusada aqui.
+
+                     Ela já sabe tudo o que este passo precisa — pílulas de
+                     toque, estado marcado, foco visível, `aria-pressed` — e
+                     reusá-la é o que faz o primeiro passo e as cinco perguntas
+                     do fim parecerem o mesmo formulário. Um segundo componente
+                     de pílula divergiria no primeiro ajuste de espessura de
+                     borda.
+
+                     Escolher avança sozinho, com o mesmo respiro do toque das
+                     outras: o `RESPIRO_TOQUE` é o tempo de a pílula acender e
+                     ser vista antes de a tela virar. */
+                  <div className="mt-6">
+                    <Escolha
+                      rotuladoPor={`campo-${atual.chave}`}
+                      opcoes={atual.opcoes}
+                      escolhidas={dados[atual.chave] === '' ? [] : [dados[atual.chave]]}
+                      multipla={false}
+                      textoLivre=""
+                      aoEscolher={(opcao) => {
+                        setDados((d) => ({ ...d, [atual.chave]: opcao }));
+                        setErro(null);
+                        window.clearTimeout(relogio.current);
+                        relogio.current = window.setTimeout(seguir, RESPIRO_TOQUE);
+                      }}
+                      aoEscreverLivre={() => {}}
+                      aoConfirmarLivre={avancar}
+                    />
+                  </div>
+                ) : (
+                  <CampoVivo
+                    id={`campo-${atual.chave}`}
+                    valor={dados[atual.chave]}
+                    exemplo={atual.exemplo ?? ''}
+                    tipo={atual.tipo ?? 'text'}
+                    autoComplete={
+                      atual.chave === 'whatsapp' ? 'tel' : atual.chave === 'nome' ? 'name' : 'off'
+                    }
+                    invalido={erro != null}
+                    descritoPor={erro != null ? `erro-${atual.chave}` : undefined}
+                    campoRef={campoRef}
+                    aoDigitar={(bruto) => {
+                      const valor = atual.formata != null ? atual.formata(bruto) : bruto;
+                      setDados((d) => ({ ...d, [atual.chave]: valor }));
+                      if (erro != null) setErro(null);
+                    }}
+                    aoTeclar={(evento) => {
+                      if (evento.key === 'Enter') {
+                        evento.preventDefault();
+                        avancar();
+                      }
+                    }}
+                  />
+                )}
 
             {/* A linha do erro tem altura fixa. Sem isso o botão sobe e desce
                     conforme a validação fala, e ele é justamente o alvo que a
