@@ -6,7 +6,6 @@ import { ArrastoInfinito } from './rodape/ArrastoInfinito';
 import { Peca, usePalco } from './rodape/Peca';
 import { ATALHOS, EXPOSTAS, FECHO, PECAS } from './rodape/config';
 import { MotionButton } from './ui/MotionButton';
-import { MANCHETE } from '../tipografia';
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
@@ -278,7 +277,29 @@ export function Rodape() {
                * Um oito acima de um é o que devolve o ar sem separá-las: elas
                * continuam sendo um bloco, mas com uma respiração entre a
                * afirmação e o que falta. */}
-              <h2 className={`texto-aceso font-serif ${MANCHETE} leading-[1.08] tracking-[-0.03em] text-[#F4F1E8] md:text-[4.4rem]`}>
+              {/* ─── UMA LINHA CADA, EM QUALQUER LARGURA ────────────────────
+               *
+               * São DUAS frases, e o dono pediu que cada uma ocupe uma linha —
+               * "dois títulos diferentes", não um parágrafo de quatro linhas. A
+               * 41,6px a primeira mede 439 pixels nos 280 úteis de um telefone
+               * de 320: as duas quebravam, cada uma no ponto em que o navegador
+               * decidiu, e num bloco CENTRADO quatro linhas de comprimentos
+               * aleatórios é exatamente o "não estão alinhados" que ele leu.
+               *
+               * A saída é corpo fluido com TETO, e não um degrau por
+               * breakpoint. `7,8vw` é o maior corpo em que a frase mais longa
+               * — 32 caracteres — ainda cabe na largura útil, e a conta se
+               * mantém verdadeira em toda largura porque as duas pontas crescem
+               * juntas. O teto de 2,6rem é o valor de `MANCHETE`, escrito à mão
+               * aqui porque um `min()` precisa de literal: a partir de ~533px de
+               * tela o corpo trava nele, então de `sm` para cima esta linha vale
+               * exatamente o que valia antes.
+               *
+               * Sem `whitespace-nowrap`: se a copy crescer e a conta não for
+               * refeita, é melhor a frase quebrar do que vazar pela borda —
+               * quebra se vê e se conserta, vazamento horizontal rola a página
+               * inteira de lado. */}
+              <h2 className="texto-aceso font-serif text-[min(7.8vw,2.6rem)] leading-[1.08] tracking-[-0.03em] text-[#F4F1E8] md:text-[4.4rem]">
                 {FECHO.titulo}
                 <span className="block">{FECHO.linha}</span>
               </h2>
@@ -287,14 +308,30 @@ export function Rodape() {
                   pixels. No preto ele era um cinza discreto; sobre o palco ele
                   tinha sumido, e é a linha que diz para QUEM a oferta é —
                   apagada, o fecho passa a falar com ninguém em particular. */}
-              <p className="mx-auto mt-5 max-w-lg text-[16px] text-white/85 md:text-[17px]">
+              {/* A HIERARQUIA, refeita para o corpo novo do título.
+ 
+                  A 16px sob uma manchete de 41,6 o degrau era de duas vezes e
+                  meia. Com o título fluido descendo a 25px no telefone, o mesmo
+                  16 vira um degrau de 1,5 — perto demais, e duas coisas quase do
+                  mesmo tamanho não são um título e um subtítulo, são dois
+                  parágrafos. 14px devolve a distância onde ela some.
+ 
+                  E o vão encolhe junto: `mt-5` era o respiro de um bloco de
+                  quatro linhas. Com duas, ele afasta o subtítulo de um título
+                  que ficou curto — o ritmo do bloco tem de acompanhar o tamanho
+                  dele, senão o que sobra é ar no meio de uma coisa só. */}
+              <p className="mx-auto mt-3 max-w-lg text-[14px] text-white/85 sm:mt-5 sm:text-[16px] md:text-[17px]">
                 {FECHO.publico}
               </p>
 
               {/* O único ponto clicável do campo. `pointer-events-auto` devolve
                   o clique a ele e a mais nada: em volta, a mão continua
                   arrastando o mosaico. */}
-              <div className="pointer-events-auto mt-9 flex justify-center">
+              {/* `mt-6` no telefone contra os `mt-9` de antes, pela mesma razão do
+                  subtítulo — e com uma a mais: o botão é a AÇÃO, e ar demais
+                  entre a frase e a ação lê como duas seções, não como um pedido
+                  e o seu botão. */}
+              <div className="pointer-events-auto mt-6 flex justify-center sm:mt-9">
                 <MotionButton label={FECHO.acao} href={FECHO.destino} />
               </div>
             </motion.div>

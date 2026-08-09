@@ -1541,6 +1541,36 @@ html::-webkit-scrollbar {
   );
 }
 
+/*
+ * A MESMA clareira, na proporção que o telefone pede.
+ *
+ * As três medidas de cima foram afinadas contra um bloco LARGO E BAIXO — é o
+ * que o fecho é numa tela de 1500 por 940. No telefone o mesmo conteúdo vira
+ * outra forma: o texto ocupa 280 dos 320 pixels de largura (87% da tela contra
+ * uns 60% no desktop) e empilha em altura. A elipse de 55% deixava as pontas
+ * das duas frases fora do miolo sólido, e é justamente ali que um quadro claro
+ * do mosaico passa por trás da letra.
+ *
+ * 85% de largura leva o sólido além das duas bordas do texto. E o miolo cheio
+ * sobe de 40% para 55% do raio pelo mesmo motivo: com o bloco ocupando quase a
+ * largura toda, o degradê que no desktop começava depois do texto começaria no
+ * meio dele.
+ *
+ * A altura DESCE de 45% para 40%: o bloco encolheu junto com o título fluido, e
+ * uma elipse alta demais apaga tela sem proteger nada — a periferia é o mosaico,
+ * e é ele que faz o rodapé.
+ */
+@media (max-width: 639px) {
+  .clareira {
+    background: radial-gradient(
+      ellipse 85% 40% at 50% 50%,
+      theme('colors.doxa.stage') 0%,
+      theme('colors.doxa.stage') 55%,
+      theme('colors.doxa.stage / 0%') 100%
+    );
+  }
+}
+
 /* The brand allows no chromatic accent, so "highlight" has to be light itself:
    a soft grey bloom lifting the centre of the hero off the black. */
 .hero-glow {

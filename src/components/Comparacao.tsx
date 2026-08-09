@@ -34,6 +34,7 @@ import {
   NO_AR,
   PARADO,
   PERGUNTA,
+  PERGUNTA_ESTREITA,
   SEM_GARANTIA,
   TROCA_ANTES,
   TROCA_DEPOIS,
@@ -365,24 +366,29 @@ export function Comparacao() {
                 que foi o que o dono leu. A 28px a linha cabe, o `<br>` volta a
                 ser a única quebra que existe, e o título recupera as duas linhas
                 que ele foi escrito para ter. De 640px para cima nada muda. */}
-            {/* De volta ao token, uma vez e meia menor que os 2,7rem da rodada
-                passada — o dono viu grande na tela e desfez. Com isto a exceção
-                à padronização de h2 deixa de existir: esta seção e a parede de
-                prova voltam a usar o mesmo `TITULO_SECAO`, que é onde o número
-                mora e onde ele se muda.
+            {/* 2,25rem no telefone — 1,25x sobre os 1,8 anteriores, a pedido
+                do dono, e o número vive em `TITULO_SECAO` porque a comparação é
+                o único consumidor dele.
 
-                A quebra escrita para o telefone foi junto, e o arquivo de
-                conteúdo voltou a ter uma versão só da pergunta. A 1,8rem a
-                primeira linha mede 257 pixels nos 280 úteis de um telefone de
-                320: cabe inteira, o `<br>` volta a ser a única quebra, e um
-                segundo texto que teria de ser mantido em sincronia para sempre
-                deixa de ter motivo para existir. */}
+                A 36px a primeira linha de `PERGUNTA` mede 321 pixels nos 280
+                úteis e quebraria depois do "a", com "Doxa" órfã. Daí
+                `PERGUNTA_ESTREITA`: as mesmas palavras, com a dobra escrita
+                depois de "ter" — duas linhas de 238 e 261, e o artigo fica com o
+                substantivo. Duas e não três de propósito: a terceira custaria 37
+                pixels da janela em que a fatura corre logo abaixo. */}
             <h2
               className={`font-serif ${TITULO_SECAO} font-normal leading-[1.05] tracking-[-0.02em] text-white sm:text-4xl md:text-6xl`}
             >
-              {PERGUNTA[0]}
-              <br />
-              {PERGUNTA[1]}
+              <span className="sm:hidden">
+                {PERGUNTA_ESTREITA[0]}
+                <br />
+                {PERGUNTA_ESTREITA[1]}
+              </span>
+              <span className="hidden sm:inline">
+                {PERGUNTA[0]}
+                <br />
+                {PERGUNTA[1]}
+              </span>
             </h2>
 
             {/* A pílula da recorrência saiu a pedido do dono, e o valor cresceu

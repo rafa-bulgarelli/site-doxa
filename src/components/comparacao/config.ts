@@ -111,6 +111,27 @@ export const CUSTO_UNIDADE = '/mês';
 export const PERGUNTA = ['Quanto custa não ter a Doxa', 'na sua empresa?'];
 
 /**
+ * A MESMA pergunta, com as dobras da tela estreita.
+ *
+ * O dono subiu o título 1,25x no telefone, e a 36px a primeira linha de
+ * `PERGUNTA` mede 321 pixels nos 280 úteis de um aparelho de 320. Ela quebra
+ * sozinha depois do "a", deixando "Doxa" órfã numa linha — o defeito que ele já
+ * apontou três vezes em três títulos diferentes.
+ *
+ * Continuam DUAS linhas, e não três: 238 e 261 pixels, as duas com folga. Três
+ * custariam mais 37 pixels de altura, e quem paga essa altura é a janela em que
+ * a fatura de vinte e cinco linhas corre, logo abaixo.
+ *
+ * A dobra cai depois de "ter" e mantém o artigo com o substantivo — "a Doxa na
+ * sua empresa?" é uma oração inteira na segunda linha.
+ *
+ * ATENÇÃO: são as MESMAS palavras de `PERGUNTA`, só com outras dobras. Se a
+ * pergunta mudar, as duas mudam no mesmo commit — senão o telefone e o desktop
+ * passam a fazer perguntas diferentes, e ninguém vê até um cliente ver.
+ */
+export const PERGUNTA_ESTREITA = ['Quanto custa não ter', 'a Doxa na sua empresa?'];
+
+/**
  * O convite, e a ORDEM dele é o pedido do dono.
  *
  * Era "Pronto para viralizar?", que é o fim da história contada primeiro. Com a

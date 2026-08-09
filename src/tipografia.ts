@@ -27,11 +27,13 @@
  * (`caberCartao`, em `ProofWall.tsx`), então um título maior ali custa tamanho
  * de cartão — nunca conteúdo cortado.
  *
- * O dono pediu a parede "uma vez e meia maior", o que daria 2,7rem sobre os 1,8.
- * `MANCHETE` vale 2,6: quatro por cento abaixo, invisível na tela, e vale a pena
- * pagar essa diferença para a página continuar com DOIS corpos de manchete em
- * vez de três. Um terceiro tamanho a quatro por cento do segundo não é decisão
- * de tipografia — é um número que ninguém consegue defender daqui a um mês.
+ * A parede de prova passou por aqui e voltou: subiu para `MANCHETE` a pedido do
+ * dono e, vendo na tela, ele a desceu 1,25x — para 2,1rem, que é um corpo
+ * próprio dela, escrito no componente. Fica registrado porque a alternativa
+ * seria um terceiro token para um consumidor só.
+ *
+ * `TITULO_SECAO` foi de 1,8 para 2,25rem na mesma rodada, também 1,25x e também
+ * a pedido dele. Tem um consumidor: a comparação.
  *
  * Os três de `MANCHETE` convergiram no MENOR dos valores que tinham (2,6rem, do
  * rodapé) de propósito: subir os outros dois para 2,9 seria padronizar para cima
@@ -43,7 +45,7 @@
  */
 
 /** Título de painel que divide a tela com o conteúdo dele. */
-export const TITULO_SECAO = 'text-[1.8rem]';
+export const TITULO_SECAO = 'text-[2.25rem]';
 
 /** Título que é a própria tela, sem nada abaixo disputando altura. */
 export const MANCHETE = 'text-[2.6rem]';
