@@ -393,15 +393,34 @@ html::-webkit-scrollbar {
  * o preto a separa dela; aberta, ela é uma SUPERFÍCIE com conteúdo em cima, e
  * superfície preta sobre página preta não tem onde apoiar a capa clara nem os
  * dois níveis de texto. O cinza dá o degrau que faltava.
+ *
+ * ─── E O CINZA É O DA BARRA EM REPOUSO, sem contorno nenhum ──────────────────
+ *
+ * Segundo pedido do dono, e ele fecha o ciclo das três formas: a lasca que
+ * dorme na borda, a pílula que acorda e o painel que abre passam a ser a MESMA
+ * superfície mudando de tamanho, em vez de três objetos de cores diferentes que
+ * se substituem. Os dois `inset` que faziam o contorno saíram junto — eles
+ * existiam para recortar um painel quase preto de uma página preta, e um painel
+ * neste cinza se recorta sozinho.
+ *
+ * `#4f4f4f` é OPACO de propósito, e é a única liberdade que esta regra toma: o
+ * valor é exatamente `rgba(255,255,255,0.28)` — o fundo da barra dormindo —
+ * composto sobre o `#0b0b0b` da página, então sobre o preto os dois são
+ * indistinguíveis. Translúcido de verdade, o painel deixaria a página passar
+ * por dentro: são 236 por 358 pixels de superfície, e por baixo dela passa o
+ * painel CREME da comparação. Ali ele viraria uma caixa quase branca com texto
+ * branco em cima. A lasca pode ser translúcida porque tem oito pixels de
+ * largura e nenhum texto; o painel não.
+ *
+ * Se o fundo da página mudar, este número muda junto — e o jeito de conferir é
+ * abrir o painel em cima do hero e ver se a borda dele desaparece contra a
+ * barra dormindo.
  */
 .rolador-ilha::before {
   width: 100%;
   border-radius: 30px;
-  background: #1c1c1e;
-  box-shadow:
-    inset 0 0 0 1px rgba(255, 255, 255, 0.09),
-    inset 0 1px 0 rgba(255, 255, 255, 0.14),
-    0 30px 74px rgba(0, 0, 0, 0.7);
+  background: #4f4f4f;
+  box-shadow: 0 30px 74px rgba(0, 0, 0, 0.7);
   transform: none;
 }
 

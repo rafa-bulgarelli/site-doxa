@@ -69,9 +69,6 @@ const VIVA_ALTURA = 148;
 const ILHA_ALTURA = 358;
 const ILHA_ESPERA = 220;
 
-/** Onde a leitura da seção acontece: um terço abaixo do topo da janela. */
-const LINHA_DE_LEITURA = 0.3;
-
 /**
  * Quanto o ponteiro pode estar longe da peça e ainda contar como em cima dela.
  *
@@ -93,20 +90,6 @@ const ALCANCE = 300;
 
 /** Onde o botão leva. É a mesma âncora de toda CTA da página. */
 const DESTINO = ANCORA_FORMS;
-
-/**
- * A posição de um elemento na PÁGINA, somada pela cadeia de `offsetTop`.
- *
- * E não `getBoundingClientRect`, pelo mesmo motivo que `Faq.tsx` já documenta: o
- * painel claro da comparação sobe GIRADO e só assenta perto do fim da rolagem, e
- * o rect enxerga a caixa girada — o nome da seção trocaria a cada quadro do giro.
- * `offsetTop` é posição de layout, e transform não a toca.
- */
-function topoNaPagina(el: HTMLElement): number {
-  let y = 0;
-  for (let n: HTMLElement | null = el; n; n = n.offsetParent as HTMLElement | null) y += n.offsetTop;
-  return y;
-}
 
 /**
  * ─── A ILHA ──────────────────────────────────────────────────────────────────
@@ -147,10 +130,9 @@ export function Rolador() {
   const pctVivaRef = useRef<HTMLSpanElement>(null);
   const pctCapaRef = useRef<HTMLSpanElement>(null);
   const progressoRef = useRef<HTMLSpanElement>(null);
-  const secoesRef = useRef<{ nome: string; topo: number }[]>([]);
-  const nomeRef = useRef<string | null>(null);
+  /** O que falta ler, escrito no nó a cada quadro. Ver `desenhar`. */
+  const faltaRef = useRef<HTMLSpanElement>(null);
 
-  const [atual, setAtual] = useState<string | null>(null);
   const [acordada, setAcordada] = useState(false);
   const [aberta, setAberta] = useState(false);
 
@@ -184,21 +166,17 @@ export function Rolador() {
     let ultimoT = performance.now();
 
     /*
-     * As seções, lidas do DOM pelo `data-secao` de cada `<section>`.
+     * O NOME DA SEÇÃO saiu daqui, e com ele a leitura dos `data-secao`.
      *
-     * A fonte é o próprio elemento, e não uma lista escrita aqui: uma lista
-     * neste arquivo seria uma segunda verdade sobre quais seções a página tem, e
-     * ela envelheceria na primeira seção nova — com o sintoma mais chato
-     * possível, que é uma régua mentindo baixinho.
+     * O painel dizia em que seção a pessoa estava; o dono trocou a linha por
+     * quanto FALTA para o fim, que é a mesma régua contada pela outra ponta e
+     * diz respeito ao que ele quer que aconteça em vez de onde a pessoa está.
      *
-     * Relida a cada mudança de altura porque as seções são `lazy`: no primeiro
-     * quadro só existe o hero, e as outras cinco chegam depois.
+     * Os atributos `data-secao` continuam nas seis seções de propósito: eles são
+     * marcação semântica barata, e são a fonte pronta se a linha voltar um dia.
+     * O que saiu foi a medição por `ResizeObserver` e o laço por quadro — não o
+     * contrato com o DOM.
      */
-    const medirSecoes = () => {
-      secoesRef.current = Array.from(document.querySelectorAll<HTMLElement>('[data-secao]')).map(
-        (el) => ({ nome: el.dataset.secao ?? '', topo: topoNaPagina(el) }),
-      );
-    };
 
     const desenhar = () => {
       quadro = 0;
@@ -259,10 +237,17 @@ export function Rolador() {
          mostram — a pílula acordada e a capa do painel — recebem o mesmo texto,
          de uma conta só: dois cálculos separados para o mesmo número é como eles
          acabam divergindo num arredondamento. */
-      const lido = `${Math.round(progresso * 100)}%`;
+      const feito = Math.round(progresso * 100);
+      const lido = `${feito}%`;
       if (pctVivaRef.current != null) pctVivaRef.current.textContent = lido;
       if (pctCapaRef.current != null) pctCapaRef.current.textContent = lido;
       if (progressoRef.current != null) progressoRef.current.style.width = lido;
+      /* O QUE FALTA sai da MESMA conta do que foi lido, e não de um segundo
+         arredondamento: `round(1 - p)` e `100 - round(p)` discordam em um ponto
+         percentual em metade dos valores, e o painel mostraria a capa em 40% com
+         a linha dizendo "faltam 61%". A capa conta o que passou, a frase conta o
+         que vem — o mesmo número pelas duas pontas. */
+      if (faltaRef.current != null) faltaRef.current.textContent = `Faltam ${100 - feito}%`;
 
       /* ─── O ESTICÃO ────────────────────────────────────────────────────────
        *
@@ -287,19 +272,6 @@ export function Rolador() {
       ultimoY = window.scrollY;
       ultimoT = agora;
 
-      /* Qual seção está sendo lida. A linha de leitura fica um terço abaixo do
-         topo da janela, e não no topo: com a leitura no topo, a seção "muda" no
-         instante em que a anterior ainda ocupa dois terços da tela — o painel
-         diria uma coisa e o olho estaria vendo outra. */
-      const linha = window.scrollY + janela * LINHA_DE_LEITURA;
-      let nome: string | null = null;
-      for (const secao of secoesRef.current) {
-        if (secao.topo <= linha) nome = secao.nome;
-      }
-      if (nome !== nomeRef.current) {
-        nomeRef.current = nome;
-        setAtual(nome);
-      }
     };
 
     /* Ela acende enquanto a página anda e se apaga sozinha depois. É o que a
@@ -502,7 +474,6 @@ export function Rolador() {
        decodificando. Com `resize` só, a régua ficaria errada até a pessoa rolar
        de novo. */
     const olho = new ResizeObserver(() => {
-      medirSecoes();
       desenhar();
     });
     olho.observe(doc);
@@ -514,7 +485,6 @@ export function Rolador() {
     barra.addEventListener('pointerup', aoSoltar);
     barra.addEventListener('pointercancel', aoSoltar);
     window.addEventListener('pointermove', aoMover, { passive: true });
-    medirSecoes();
     desenhar();
 
     return () => {
@@ -599,9 +569,19 @@ export function Rolador() {
           <span ref={pctCapaRef} />
         </div>
 
+        {/* A régua contada pela outra ponta, a pedido do dono.
+ 
+            "Início · da página, lidos" dizia onde a pessoa estava; isto diz o
+            que falta e para quê. É a mesma porcentagem da capa, invertida — e a
+            inversão é o argumento: um número que diminui é uma promessa se
+            aproximando, e um que aumenta é só uma medida.
+ 
+            Sem filhos no JSX, como a pílula acordada: o texto é escrito por
+            `ref` a cada quadro, e um valor declarado aqui seria reposto pelo
+            React a cada re-render, apagando o número. */}
         <div>
-          <span className="rolador-ilha-secao">{atual ?? 'Doxa'}</span>
-          <span className="rolador-ilha-copy">da página, lidos</span>
+          <span ref={faltaRef} className="rolador-ilha-secao" />
+          <span className="rolador-ilha-copy">para mudar sua empresa</span>
         </div>
 
         <span className="rolador-trilha">
@@ -612,7 +592,7 @@ export function Rolador() {
           <span className="rolador-ilha-seta">
             <ArrowDown className="h-4 w-4" strokeWidth={2.25} aria-hidden />
           </span>
-          Me leve para a ação
+          Pule a experiência
         </button>
       </div>
     </div>
