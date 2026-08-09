@@ -91,8 +91,8 @@ const PASSOS: readonly Passo[] = [
   {
     chave: 'caminho',
     rotulo: 'Caminho',
-    pergunta: 'O que você quer com a Doxa?',
-    dica: 'As duas portas existem. A conversa muda conforme a sua.',
+    pergunta: 'O que melhor te descreve?',
+    dica: 'Só para a conversa começar do lugar certo.',
     /* PENDENTE-DONO: as duas frases são dele, palavra por palavra. A segunda é
        uma afirmação sobre o negócio — "agência licenciada" promete que existe um
        programa de licenciamento com condições. Se ainda não existir fechado, é
@@ -512,10 +512,12 @@ export function Formulario({ cartaoRef }: { cartaoRef: RefObject<HTMLDivElement>
               `texto-aceso-siri` de "Pergunte o que quiser.", que é o efeito que
               ele apontou como referência.
 
-              Subiu de 11 para 17px, e não é gosto: o gradiente é recortado na
-              forma dos glifos, e a 11px o que sobra de cada letra é fino demais
-              para caber uma faixa de cor — o efeito existiria no CSS e não na
-              tela.
+              Subiu de 11 para 17 e depois para 20/24, e não é gosto: o
+              gradiente é recortado na forma dos glifos, e quanto mais fino o
+              traço menos faixa de cor cabe dentro dele — a 11px o efeito
+              existiria no CSS e não na tela. O teto é a largura do cartão no
+              telefone: a 24px a frase mede 206 dos 216 pixels úteis lá, e por
+              isso o corpo cheio fica em `md:`.
 
               E saiu o versalete, a pedido do dono: só a primeira letra. Com ele
               saiu o `tracking` largo, que existe para abrir caixa alta e em
@@ -526,7 +528,7 @@ export function Formulario({ cartaoRef }: { cartaoRef: RefObject<HTMLDivElement>
               `.texto-aceso-siri` usa `margin-bottom` negativa para o gradiente
               alcançar as pernas dos glifos, e ela apagaria um `mb-6` posto no
               mesmo elemento. Duas caixas, duas responsabilidades. */}
-          <span className="texto-aceso-siri font-serif text-[17px] tracking-[-0.01em] text-[#F4F1E8]">
+          <span className="texto-aceso-siri font-serif text-[20px] tracking-[-0.01em] text-[#F4F1E8] md:text-[24px]">
             {AUDITORIA}
           </span>
         </motion.p>
@@ -572,16 +574,21 @@ export function Formulario({ cartaoRef }: { cartaoRef: RefObject<HTMLDivElement>
                      `keyframes` circunda a pílula e TROCA DE COR ao longo do
                      ciclo, que é o que o halo branco não fazia.
 
-                     Texto em tinta cheia sobre ela, e é obrigatório: a fita
-                     passa por âmbar, magenta e azul em seis segundos, e um
-                     rótulo claro sumiria em dois deles.
+                     Texto BRANCO, a pedido do dono, com uma sombra de um pixel
+                     por baixo. A sombra não é enfeite e é o que torna o pedido
+                     seguro: a fita passa por âmbar, coral e teal — tons de
+                     luminância média — e branco puro sobre eles tem menos
+                     contraste medido do que a tinta que estava aqui antes. O
+                     halo escuro devolve a borda de cada letra sem aparecer como
+                     efeito, e o rótulo para de depender de qual segundo do ciclo
+                     de seis a pessoa olhou.
 
                      O verde do `feito` fica: ele não é decoração, é o mesmo
                      verde do selo "Com Doxa" — a mesma afirmação dita sobre a
                      empresa e sobre o campo que a pessoa acabou de responder. */
                   className={`flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full border px-3 py-1.5 text-[12px] leading-none transition-colors duration-500 ${
                     agora
-                      ? 'pilula-siri border-transparent text-[#0B0B0B]'
+                      ? 'pilula-siri border-transparent text-white [text-shadow:0_1px_3px_rgba(0,0,0,0.45)]'
                       : feito
                         ? 'text-[#F4F1E8]'
                         : 'border-white/[0.12] text-white/30'
