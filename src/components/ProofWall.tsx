@@ -105,6 +105,55 @@ function caberCartao(base: { width: number; height: number }, largura: number, v
 }
 
 /**
+ * O REEL no layout estreito: a fração da tela que ele ocupa de largura, e o
+ * respiro que guarda do vão entre as duas faixas de tipografia.
+ *
+ * O cartão era 132 por 235 em QUALQUER telefone, e é o defeito que o dono
+ * marcou de verde nas duas capturas. Num aparelho de 320 esses 132 pixels são
+ * 41% da tela; num de 430 são 31%; numa janela de 550 são 24% — o mesmo
+ * retângulo, encolhendo conforme o aparelho cresce. Uma parede que existe para
+ * mostrar vídeo não pode ficar proporcionalmente menor à medida que a tela dá
+ * mais espaço para ele.
+ *
+ * 0,41 é exatamente o que o cartão de hoje mede no telefone mais estreito que
+ * este site atende (132 de 320): no aparelho em que o dono já aprovou o
+ * tamanho nada muda, e daí para cima o reel acompanha a tela.
+ *
+ * A folga é a mesma ideia do `FOLGA_CARTAO`, e serve ao mesmo teto — só que
+ * aqui ela quase nunca manda: um telefone em pé sempre tem mais altura de vão
+ * do que largura de tela, e é a largura que decide.
+ */
+const REEL_NA_TELA = 0.41;
+const FOLGA_REEL = 16;
+
+/**
+ * A escala do reel na tela que existe — e esta CRESCE, ao contrário de
+ * `caberCartao`.
+ *
+ * A diferença entre as duas contas é a diferença entre os dois objetos. O
+ * cartão de fecho ESTACIONA entre o título e as cifras, então para ele o vão é
+ * uma prisão: só pode reduzir. O reel ATRAVESSA a tela e sai; o que governa o
+ * tamanho dele é a largura disponível, e o vão entra só como teto para ele não
+ * subir por cima da tipografia num aparelho baixo.
+ *
+ * Nunca desce de 1, e isso é deliberado: abaixo de 1 estaria mexendo no
+ * tamanho que o dono já viu e aprovou num 320 por 568. Quem cai abaixo de 1 na
+ * conta é o telefone DEITADO — vão de cem e poucos pixels —, e ali a escolha é
+ * consciente: o reel passa por trás das faixas de texto, que é o que ele já
+ * faz hoje, em vez de virar uma miniatura de cinquenta pixels.
+ *
+ * `FOCUS_SCALE` entra porque o que precisa caber no vão não é o cartão parado
+ * — é ele no instante em que assume o foco e cresce doze por cento, que é
+ * exatamente quando alguém está olhando para ele.
+ */
+function escalaDoReel(largura: number, vao: number) {
+  if (largura <= 0 || vao <= 0) return 1;
+  const naLargura = (largura * REEL_NA_TELA) / CARD_MOBILE.width;
+  const naAltura = (vao - 2 * FOLGA_REEL) / (1 + FOCUS_SCALE) / CARD_MOBILE.height;
+  return Math.max(1, Math.min(naLargura, naAltura));
+}
+
+/**
  * Cards of run-up before the first reel, in card widths.
  *
  * There is no matching run-out. The track used to overshoot the last card,
@@ -274,6 +323,23 @@ const FOCUS_PUSH = 0.42;
 /** How the pointer's claim on the attention arrives and lets go. */
 const HOVER_SPRING = { mass: 0.6, stiffness: 200, damping: 26 };
 const HOVER_INSTANT = { stiffness: 1000, damping: 100 };
+
+/**
+ * Até onde o cartão TOCADO segura o foco, em cartões de distância do meio.
+ *
+ * O ponteiro do desktop solta sozinho: o mouse sai do cartão e o `mouseleave`
+ * avisa. O dedo não sai de lugar nenhum — o toque acaba no mesmo quadro em que
+ * começou, e sem isto o cartão tocado ficaria em pé, iluminado e TOCANDO ÁUDIO
+ * enquanto o voo o carrega para fora da tela e a pessoa continua rolando. É o
+ * mesmo defeito que faria o visitante ouvir um vídeo que ele não vê mais.
+ *
+ * Os dois números são diferentes porque os dois lados são diferentes. Um cartão
+ * à frente do voo já passou pelo visitante e sai pela esquerda depressa; um
+ * cartão ao fundo ainda está chegando, e a pessoa pode muito bem ter tocado
+ * justamente nele — soltar cedo demais desse lado tiraria o foco de um cartão
+ * que acabou de ser escolhido.
+ */
+const TOQUE_SOLTA = { frente: 1.6, fundo: 2.8 };
 
 /**
  * Quantas empresas já publicaram com a Doxa.
@@ -651,6 +717,7 @@ function ReelCard({
   soundOn,
   fade,
   onEnter,
+  onTap,
   onToggleSound,
   ...placement
 }: TrackPlacement & {
@@ -661,6 +728,8 @@ function ReelCard({
   /** How much of the wall is left, 0 to 1 — see `CLEAR_FROM`. */
   fade: MotionValue<number>;
   onEnter: () => void;
+  /** O mesmo pedido de atenção, feito com o dedo — ver `TOQUE_SOLTA`. */
+  onTap: () => void;
   onToggleSound: () => void;
 }) {
   const { transform, focus, display } = usePlacement(placement);
@@ -696,9 +765,20 @@ function ReelCard({
   return (
     <motion.div
       onMouseEnter={onEnter}
+      /* O toque é o `hover` do telefone, e é só isso: nada nesta parede é
+         alcançável APENAS por ele — o cartão continua legível parado, com o
+         arroba e as cifras por cima do pôster, e o vídeo é enriquecimento.
+         Por isso um `div` com `onClick` e não um `button`: anunciar dezesseis
+         botões a um leitor de tela por causa de um efeito visual custa mais do
+         que entrega. O único controle DE VERDADE do cartão — o som — é um
+         `button` de verdade, ali embaixo. */
+      onClick={onTap}
       // `rounded-xl` and the hairline border are the hero's media frame — the
       // same object in a different room: a client's file lying on the canvas.
-      className="group absolute overflow-hidden rounded-xl border border-white/[0.14] bg-doxa-raised shadow-[0_30px_80px_-30px_rgba(0,0,0,0.95)]"
+      // `select-none` e o realce zerado são do toque: sem eles o iOS pinta um
+      // quadrado cinza sobre o vídeo a cada toque e um toque mais longo começa
+      // a selecionar o arroba.
+      className="group absolute select-none overflow-hidden rounded-xl border border-white/[0.14] bg-doxa-raised shadow-[0_30px_80px_-30px_rgba(0,0,0,0.95)] [-webkit-tap-highlight-color:transparent]"
       style={{
         width: placement.card.width,
         height: placement.card.height,
@@ -753,7 +833,14 @@ function ReelCard({
       {playing && reel.videoUrl && (
         <button
           type="button"
-          onClick={onToggleSound}
+          /* Segura o evento aqui. O cartão inteiro virou alvo de toque, e sem
+             o `stopPropagation` um toque no botão de som chegaria também ao
+             cartão — que responderia soltando o foco, matando o vídeo cujo som
+             a pessoa acabou de pedir. */
+          onClick={(event) => {
+            event.stopPropagation();
+            onToggleSound();
+          }}
           aria-pressed={soundOn}
           aria-label={soundOn ? 'Desligar o som do vídeo' : 'Ativar som do vídeo'}
           className="absolute right-2 top-2 flex h-8 w-8 items-center justify-center rounded-full border border-white/[0.14] bg-black/50 text-white opacity-80 backdrop-blur-sm transition hover:bg-black/70 hover:opacity-100 focus-visible:opacity-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/60"
@@ -1017,8 +1104,34 @@ export function ProofWall() {
    */
   const track = useTransform(smooth, [0, arrive], [-LEAD_IN, endSlot]);
 
-  const step = isDesktop ? STEP_DESKTOP : STEP_MOBILE;
-  const card = isDesktop ? CARD_DESKTOP : CARD_MOBILE;
+  /**
+   * A escala do voo no layout estreito — ver `escalaDoReel`.
+   *
+   * No desktop é 1, e ali as três multiplicações abaixo são identidade: saem
+   * exatamente os números que sempre saíram. O layout largo não entra nesta
+   * conta de propósito — o dono não pediu nada lá, e uma medida que "por via
+   * das dúvidas" também roda no desktop é uma mudança de desktop disfarçada de
+   * segurança.
+   *
+   * O passo escala JUNTO com o cartão, e é o que separa "reels maiores" de
+   * "reels empilhados": o passo é a distância entre um cartão e o próximo nos
+   * três eixos, então cartão 30% maior com passo parado é 30% de sobreposição
+   * a mais em cada par. O mesmo vale para o salto em direção à câmera — um
+   * cartão em foco tem de se destacar dos vizinhos na mesma proporção em que
+   * eles estão espalhados.
+   */
+  const escalaReel = isDesktop ? 1 : escalaDoReel(largura, vao);
+  const passoBase = isDesktop ? STEP_DESKTOP : STEP_MOBILE;
+  const cartaoBase = isDesktop ? CARD_DESKTOP : CARD_MOBILE;
+  const step = {
+    x: passoBase.x * escalaReel,
+    y: passoBase.y * escalaReel,
+    z: passoBase.z * escalaReel,
+  };
+  const card = {
+    width: Math.round(cartaoBase.width * escalaReel),
+    height: Math.round(cartaoBase.height * escalaReel),
+  };
   /*
    * O cartão de fecho é o único que se ajusta à tela, e SÓ no layout estreito.
    *
@@ -1056,7 +1169,6 @@ export function ProofWall() {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
   const claimFocus = (slot: number) => {
-    if (!isDesktop) return;
     // Arriving from nothing, the attention appears where the cursor is instead
     // of sweeping across the whole track to get there. Moving between cards
     // does travel — that is the parting following the pointer. Either way the
@@ -1072,6 +1184,52 @@ export function ProofWall() {
     hoverAmount.set(0);
     setHoveredIndex(null);
   };
+
+  /**
+   * O ponteiro, e SÓ o ponteiro. O telefone chega por `tocarCartao`.
+   *
+   * A separação existe porque o navegador do celular emula `mouseenter` no
+   * toque: sem esta guarda o mesmo dedo dispararia os dois caminhos, e o
+   * segundo toque no cartão em foco — que devia devolvê-lo à parede — seria
+   * desfeito pelo `mouseenter` emulado no mesmo instante.
+   */
+  const ponteiroEntrou = (slot: number) => {
+    if (!isDesktop) return;
+    claimFocus(slot);
+  };
+
+  /**
+   * O toque: o cartão tocado assume a atenção, e o toque de novo devolve.
+   *
+   * Um gesto para os dois sentidos porque no telefone não existe o outro — o
+   * dedo não tem "sair de cima". Sem a volta, o único jeito de tirar o foco de
+   * um cartão seria rolar a página até ele sumir.
+   */
+  const tocarCartao = (slot: number) => {
+    if (isDesktop) return;
+    if (hoveredIndex === slot) releaseFocus();
+    else claimFocus(slot);
+  };
+
+  /**
+   * E o voo também solta, quando leva o cartão tocado para fora da tela.
+   *
+   * Escrito contra `track` — onde o voo chegou — e não contra o scroll da
+   * página, porque é a distância ao MEIO DA TELA que diz se o cartão ainda
+   * está lá. Assinado uma vez por cartão tocado, e não a cada quadro: o
+   * `hoveredIndex` é a única coisa que muda a conta.
+   */
+  useEffect(() => {
+    if (isDesktop || hoveredIndex == null) return;
+    const conferir = (onde: number) => {
+      const distancia = hoveredIndex - onde;
+      if (distancia < -TOQUE_SOLTA.frente || distancia > TOQUE_SOLTA.fundo) releaseFocus();
+    };
+    conferir(track.get());
+    return track.on('change', conferir);
+    // `releaseFocus` só fecha sobre um spring e um setter, ambos estáveis.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isDesktop, hoveredIndex, track]);
 
   /**
    * One sound switch for the wall, not one per card. Having asked for sound,
@@ -1131,13 +1289,14 @@ export function ProofWall() {
                   key={`${reel.handle}-${index}`}
                   {...placement}
                   card={card}
-                  lift={FOCUS_Z}
+                  lift={FOCUS_Z * escalaReel}
                   index={index}
                   reel={reel}
                   playing={index === hoveredIndex && inView}
                   soundOn={soundOn}
                   fade={wallFade}
-                  onEnter={() => claimFocus(index)}
+                  onEnter={() => ponteiroEntrou(index)}
+                  onTap={() => tocarCartao(index)}
                   onToggleSound={() => setSoundOn((current) => !current)}
                 />
               ))}
@@ -1150,7 +1309,7 @@ export function ProofWall() {
                 // toward the camera — see `FOCUS_Z`.
                 lift={0}
                 index={endSlot}
-                onEnter={() => claimFocus(endSlot)}
+                onEnter={() => ponteiroEntrou(endSlot)}
               />
             </div>
           </div>
