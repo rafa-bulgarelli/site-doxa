@@ -1484,6 +1484,54 @@ html::-webkit-scrollbar {
 }
 
 /*
+ * ─── A MESMA FITA, SEM A AURÉOLA ─────────────────────────────────────────────
+ *
+ * Pedido do dono para o título do cartão do pedido: só o rgb, sem o glow.
+ *
+ * O halo não mora numa propriedade à parte — ele vive DENTRO dos `keyframes` do
+ * `texto-siri`, que animam o `drop-shadow` junto com a posição do gradiente,
+ * trocando a cor da auréola conforme a fita corre. Por isso não dá para
+ * desligá-lo com um `filter: none` comum: uma animação em curso ganha de uma
+ * declaração normal, e só um `!important` a venceria — que é caro demais para
+ * uma diferença de estilo.
+ *
+ * A saída é trocar a ANIMAÇÃO, não a propriedade. Estes `keyframes` fazem
+ * exatamente o que os outros fazem com a cor — de 0 a 200% da posição — e nada
+ * mais. Sem paradas intermediárias porque elas só existiam para trocar o tom do
+ * halo: sem halo, a corrida da cor é linear entre as duas pontas e o resultado é
+ * pixel a pixel o mesmo.
+ *
+ * Sobrescrever só o `animation-name` mantém os 6s, o `linear` e o `infinite` do
+ * atalho da classe base — um lugar só continua decidindo o ritmo das duas.
+ *
+ * ONDE USAR: no cartão do pedido a auréola sobrava porque ali a fita está em
+ * corpo grande, e halo em serifa de 48px engrossa o traço até a letra perder
+ * desenho. No FAQ ela continua — lá a frase é menor e o glow é o que a descola
+ * do fundo.
+ */
+@keyframes texto-siri-limpo {
+  from {
+    background-position: 0% 50%;
+  }
+  to {
+    background-position: 200% 50%;
+  }
+}
+
+.texto-aceso-siri.sem-halo {
+  animation-name: texto-siri-limpo;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* A regra parada acima repõe o `filter` na mão, fora dos `keyframes` — aqui
+     ele também não é bem-vindo. Especificidade de duas classes contra uma, e
+     por isso esta vence sem `!important`. */
+  .texto-aceso-siri.sem-halo {
+    filter: none;
+  }
+}
+
+/*
  * E o mesmo gesto em tinta, para o papel.
  *
  * Um "glow preto" não ilumina: ele ADENSA. Sobre creme, a sombra escura em volta

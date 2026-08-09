@@ -536,6 +536,11 @@ export function Formulario({ cartaoRef }: { cartaoRef: RefObject<HTMLDivElement>
               certo: duas linhas de serifa grande são um título, uma linha de
               corpo pequeno era uma etiqueta.
 
+              `sem-halo` desliga a auréola e deixa só a cor, a pedido do dono. É
+              o tamanho que pede: o glow é uma auréola por glifo, e em serifa de
+              48px ele engrossa o traço até a letra perder desenho. No FAQ, com a
+              frase menor, ele continua — lá é o que a descola do fundo.
+
               E saiu o versalete, a pedido do dono: só a primeira letra. Com ele
               saiu o `tracking` largo, que existe para abrir caixa alta e em
               caixa de frase só afrouxa a palavra. A linha deixou de ser etiqueta
@@ -545,7 +550,7 @@ export function Formulario({ cartaoRef }: { cartaoRef: RefObject<HTMLDivElement>
               `.texto-aceso-siri` usa `margin-bottom` negativa para o gradiente
               alcançar as pernas dos glifos, e ela apagaria um `mb-6` posto no
               mesmo elemento. Duas caixas, duas responsabilidades. */}
-          <span className="texto-aceso-siri font-serif text-[40px] tracking-[-0.02em] text-[#F4F1E8] md:text-[48px]">
+          <span className="texto-aceso-siri sem-halo font-serif text-[40px] tracking-[-0.02em] text-[#F4F1E8] md:text-[48px]">
             {AUDITORIA}
           </span>
         </motion.p>
