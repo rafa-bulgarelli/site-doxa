@@ -303,8 +303,17 @@ export function Comparacao() {
    * da lista. `Ladainha.tsx` guarda os limites e o porquê deles.
    */
   const contagem = useContagem(secaoRef);
-  /** A caixa em que a ladainha corre no telefone. Ver o bloco que a monta. */
-  const janelaLadainhaRef = useRef<HTMLDivElement>(null);
+  /**
+   * A caixa em que a ladainha corre no telefone. Ver o bloco que a monta.
+   *
+   * Estado, e não `ref`, porque quem precisa dela é um filho: a lista mede a
+   * própria pista e o React só prende a `ref` desta caixa DEPOIS de rodar os
+   * efeitos de dentro. Com `ref`, o filho acordava com `null` na mão, desistia,
+   * e nunca mais era acordado — a lista ficava congelada e a conta serrada na
+   * borda. Um nó em estado chega numa renderização, e renderização o filho vê.
+   * A nota inteira está em `Ladainha`, na prop `janela`.
+   */
+  const [janelaLadainha, setJanelaLadainha] = useState<HTMLDivElement | null>(null);
   /*
    * A revelação da conta, e o gatilho do contador junto com ela.
    *
@@ -462,7 +471,7 @@ export function Comparacao() {
                 exatamente o espaço que a lista tem para correr, e a medida não
                 precisa descontar o `pt-7` do pai. */}
             <div
-              ref={janelaLadainhaRef}
+              ref={setJanelaLadainha}
               className="min-h-0 flex-1 overflow-hidden sm:flex-initial sm:overflow-visible"
             >
               {/* A lista recebe a régua pronta: o painel onde ela mora é
@@ -472,7 +481,7 @@ export function Comparacao() {
                   é a seção, e por isso a medida é feita aqui em cima. */}
               <Ladainha
                 progresso={contagem}
-                janelaRef={janelaLadainhaRef}
+                janela={janelaLadainha}
               cauda={
                 /* ─── A RESPOSTA, dentro da própria fatura ───────────────────
                  *
