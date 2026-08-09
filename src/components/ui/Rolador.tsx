@@ -8,9 +8,6 @@ const MARGEM = 10;
 /** A menor barra aceitável, no estado dormindo. Abaixo disso não se pega. */
 const MINIMO = 44;
 
-/** Quanto a barra continua acesa depois do último quadro de rolagem, em ms. */
-const BRILHO = 900;
-
 /** Quanto ela espera parada antes de desinchar do esticão, em ms. */
 const DESINCHA = 90;
 
@@ -160,7 +157,6 @@ export function Rolador() {
 
     const doc = document.documentElement;
     let quadro = 0;
-    let relogioBrilho: number | undefined;
     let relogioEsticao: number | undefined;
     let ultimoY = window.scrollY;
     let ultimoT = performance.now();
@@ -274,14 +270,15 @@ export function Rolador() {
 
     };
 
-    /* Ela acende enquanto a página anda e se apaga sozinha depois. É o que a
-       mantém discreta: parada, é uma lasca na borda; em movimento, é a régua que
-       diz onde a pessoa está. */
-    const acender = () => {
-      barra.classList.add('rolador-aceso');
-      window.clearTimeout(relogioBrilho);
-      relogioBrilho = window.setTimeout(() => barra.classList.remove('rolador-aceso'), BRILHO);
-    };
+    /* O BRILHO saiu daqui junto com a rampa de opacidade do CSS.
+
+       Ele acendia a peça enquanto a página andava e a apagava sozinho depois — e
+       fazia isso com o único recurso que o dono acabou de tirar de cena: a
+       opacidade. Sem ela, `acender()` punha e tirava uma classe que não pinta
+       nada, e um `setTimeout` por lote de rolagem para não pintar nada é pior do
+       que não ter o efeito: parece que existe. Se o brilho voltar, ele volta por
+       uma propriedade que sobreviva a "zero transparente" — `box-shadow`, ou o
+       próprio cinza subindo um degrau. */
 
     /*
      * ─── O SONO ────────────────────────────────────────────────────────────
@@ -318,7 +315,6 @@ export function Rolador() {
     };
 
     const aoRolar = () => {
-      acender();
       rolouAgora = true;
       avaliarSono();
       window.clearTimeout(relogioSono);
@@ -457,7 +453,6 @@ export function Rolador() {
       // andar cobre o quanto a página pode rolar.
       const fator = (total - janela) / andar;
       window.scrollTo(0, rolagemNoInicio + (evento.clientY - mouseNoInicio) * fator);
-      acender();
     };
 
     const aoSoltar = (evento: PointerEvent) => {
@@ -489,7 +484,6 @@ export function Rolador() {
 
     return () => {
       window.cancelAnimationFrame(quadro);
-      window.clearTimeout(relogioBrilho);
       window.clearTimeout(relogioEsticao);
       window.clearTimeout(relogioIlha);
       window.clearTimeout(relogioSono);

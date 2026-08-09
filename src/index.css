@@ -196,7 +196,20 @@ html::-webkit-scrollbar {
   align-items: center;
   justify-content: center;
   cursor: grab;
-  opacity: 0.62;
+  /*
+   * ─── SEM TRANSPARÊNCIA, por decisão do dono ────────────────────────────────
+   *
+   * A peça tinha uma rampa de presença: 0,62 parada, 0,95 enquanto a página
+   * andava, 1 com a mão em cima. Ela existia para a régua ser discreta sem
+   * sumir — e o preço era a cor NUNCA ser a mesma duas vezes, porque opacidade
+   * sobre uma página preta é um segundo controle de brilho por cima do primeiro.
+   * Pedida uma cor só, a rampa passou a ser o que impedia essa cor de existir.
+   *
+   * A discrição agora vem do próprio cinza, que desceu para `#2c2c2e` na mesma
+   * decisão. É a troca que estava implícita no pedido: presença constante e tom
+   * baixo, em vez de tom alto piscando de presença.
+   */
+  opacity: 1;
   /* Sem isto, o arrasto vira seleção de texto da página inteira assim que o
      cursor sai da cápsula. */
   user-select: none;
@@ -204,8 +217,7 @@ html::-webkit-scrollbar {
   touch-action: none;
   transition:
     width 460ms cubic-bezier(0.34, 1.4, 0.64, 1),
-    height 460ms cubic-bezier(0.34, 1.4, 0.64, 1),
-    opacity 260ms cubic-bezier(0.16, 1, 0.3, 1);
+    height 460ms cubic-bezier(0.34, 1.4, 0.64, 1);
 
   /*
    * ─── UMA COR PARA AS TRÊS FORMAS ───────────────────────────────────────────
@@ -228,7 +240,7 @@ html::-webkit-scrollbar {
    * A rampa de opacidade do `.rolador` fica: 0,62 em repouso, 0,95 rolando, 1
    * com a mão em cima. É ela que mantém a peça discreta, e é presença — não cor.
    */
-  --rolador-fundo: #4f4f4f;
+  --rolador-fundo: #2c2c2e;
 }
 
 /*
@@ -263,15 +275,11 @@ html::-webkit-scrollbar {
     transform 380ms cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-.rolador-aceso {
-  opacity: 0.95;
-}
-
-.rolador:hover,
-.rolador-preso {
-  opacity: 1;
-}
-
+/* `.rolador-aceso` e o `:hover` saíram com a rampa, e o JS que punha e tirava a
+   classe saiu junto: os dois só mexiam em opacidade, e a peça agora tem uma só.
+   Se o brilho de "a página está andando" voltar um dia, ele volta por uma
+   propriedade que sobreviva a zero transparência — `box-shadow`, ou o próprio
+   cinza subindo um degrau. */
 .rolador-preso {
   cursor: grabbing;
 }
@@ -408,7 +416,6 @@ html::-webkit-scrollbar {
 .rolador-ilha {
   width: 236px;
   cursor: default;
-  opacity: 1;
 }
 
 /*
