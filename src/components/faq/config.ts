@@ -1,4 +1,3 @@
-import { FILTRO, GARANTIA, RETORNO, TROCA_DEPOIS } from '../comparacao/config';
 
 /**
  * Conteúdo do dono do FAQ. Aqui mora TODA pergunta e TODA resposta — o resto
@@ -20,10 +19,21 @@ import { FILTRO, GARANTIA, RETORNO, TROCA_DEPOIS } from '../comparacao/config';
  * RENDERIZADO. Uma pergunta sem resposta some da tela; uma pergunta com resposta
  * inventada vira o contrato.
  *
- * Importar de `comparacao/config` em vez de reescrever é a mesma disciplina que
- * aquele arquivo já cobra de si: a garantia mudou de lugar uma vez e o comentário
- * dela pede que as duas cópias mudem no mesmo commit. Uma cópia que o compilador
- * mantém é melhor do que duas que um humano promete manter.
+ * ATENÇÃO — ESTE ARQUIVO DEIXOU DE IMPORTAR DE `comparacao/config`.
+ *
+ * Ele importava `FILTRO`, `GARANTIA`, `RETORNO` e `TROCA_DEPOIS`, e a disciplina
+ * era esta: uma cópia que o compilador mantém é melhor do que duas que um humano
+ * promete manter. As seis respostas novas são texto do dono e não derivam mais
+ * de nada, então o vínculo caiu.
+ *
+ * O preço disso é concreto e vale saber onde ele cobra: a GARANTIA agora existe
+ * em duas redações independentes. O topo da página promete "Um milhão de views.
+ * Ou seu dinheiro de volta." (`GARANTIA`, em `comparacao/config`), e a resposta
+ * daqui fala em "metas de performance definidas em contrato" e "condições de
+ * garantia previstas no contrato". As duas são compatíveis — a segunda é a letra
+ * da primeira —, mas nada no código força isso a continuar verdade. Se a
+ * promessa do topo mudar, esta resposta tem de mudar no mesmo commit, e agora é
+ * um humano quem lembra.
  * ─────────────────────────────────────────────────────────────────────────────
  */
 
@@ -61,87 +71,118 @@ export interface Duvida {
 }
 
 export const DUVIDAS: readonly Duvida[] = [
-  {
-    chave: 'como-funciona',
-    atalho: 'Como funciona',
-    pergunta: 'O que eu preciso fazer?',
-    resposta: [
-      `${TROCA_DEPOIS} Você manda os dois, e o vídeo volta pronto para publicar.`,
-      'O resto — roteiro, edição, trilha, legenda — é o que a Doxa põe no lugar das vinte e cinco contratações que a conta aqui em cima lista.',
-    ],
-    ancoras: ['preciso fazer', 'gravar', 'gravacao', 'foto e audio', 'passo a passo'],
-    termos: ['como funciona', 'processo', 'etapas'],
-  },
-  {
-    /* A chave era `filtro`, e o enquadramento inteiro desta resposta era o
-       mesmo que o dono recusou no formulário: "por que cobrar para conversar",
-       "catraca da agenda". FILTRO é palavra sobre o VENDEDOR — explica por que a
-       empresa cobra, não o que o cliente leva. Trocado no cartão do pedido e não
-       aqui, o site passava a dar duas explicações diferentes para o mesmo
-       dinheiro, e a do FAQ é justamente a que a pessoa procura quando hesita.
-
-       A âncora `filtro` fica na lista de propósito: quem leu a versão antiga da
-       página, ou ouviu de alguém, ainda vai digitar essa palavra. Âncora é o que
-       a pessoa PERGUNTA, não o que a gente responde. */
-    chave: 'auditoria',
-    atalho: 'Os R$ 100',
-    pergunta: 'Por que a auditoria custa R$ 100?',
-    resposta: [
-      `${FILTRO.corpo}`,
-      'Não é mensalidade, não é sinal e não é o preço do serviço: é o que reserva a hora na agenda.',
-    ],
-    ancoras: ['100', 'cem reais', 'filtro', 'simbolico', 'simbolicos', 'auditoria'],
-    termos: ['cobrar', 'cobram', 'taxa'],
-  },
-  {
-    chave: 'preco',
-    atalho: 'O preço',
-    pergunta: 'Quanto custa o serviço?',
-    resposta: [
-      'Esse número não está nesta página. Quem passa é o consultor, na reunião.',
-      `Se você chegou aqui pelos ${FILTRO.valor} da auditoria: aqueles cem reais não são a mensalidade.`,
-    ],
-    ancoras: ['preco', 'custa', 'custo', 'valor', 'mensalidade', 'orcamento', 'investimento'],
-    termos: ['plano', 'pacote'],
-  },
-  {
-    chave: 'depois-do-pagamento',
-    atalho: 'Depois que eu pago',
-    pergunta: 'O que acontece depois que eu pago?',
-    /* "um consultor do time Doxa" é a ponte entre os dois nomes que a página
-       usava. O cartão do pedido promete "reunião com o time Doxa"; este arquivo
-       dizia "o consultor" sete vezes. São a mesma pessoa, e duas palavras para a
-       mesma pessoa fazem o visitante achar que são duas — uma que marca e outra
-       que atende. Dita uma vez por extenso, "consultor" sozinho passa a ser
-       reconhecido no resto. */
-    resposta: [
-      RETORNO,
-      'Um consultor do time fala com você no WhatsApp que você deixar no formulário — não por e-mail, não por ligação.',
-    ],
-    ancoras: ['whatsapp', 'consultor', 'retorno', 'entra em contato', 'depois que eu pago'],
-    termos: ['depois', 'contato', 'responde', 'resposta'],
-  },
+  /*
+   * ─── AS SEIS, DITADAS PELO DONO ─────────────────────────────────────────────
+   *
+   * O conjunto anterior foi substituído inteiro. Ele tinha seis também, mas
+   * outras seis: como funciona, os R$ 100, o preço, depois que eu pago, a
+   * garantia e quem já usou — três delas sobre DINHEIRO. Estas falam de
+   * operação, prova e resultado.
+   *
+   * As respostas são do dono, palavra por palavra, e é assim que tem de ser:
+   * cada uma afirma um fato sobre o negócio dele que a página passa a sustentar
+   * publicamente. Eu escrevo `ancoras` e `termos`, que são busca e não conteúdo.
+   *
+   * O que se perdeu está registrado embaixo, em `PENDENTES`.
+   */
   {
     chave: 'garantia',
     atalho: 'A garantia',
     pergunta: 'Como funciona a garantia?',
     resposta: [
-      `${GARANTIA[0]} ${GARANTIA[1]} É o que está escrito no topo desta página, e é para valer.`,
-      'Os termos — prazo, plataformas, o que entra na contagem — quem detalha é o consultor do time Doxa, antes de você contratar qualquer coisa.',
+      'A Doxa trabalha com metas de performance definidas em contrato.',
+      'Nossa operação é estruturada para atingir o volume de visualizações acordado dentro do período estabelecido e, caso a meta não seja alcançada, aplicam-se as condições de garantia previstas no contrato.',
     ],
-    ancoras: ['garantia', 'garantido', 'dinheiro de volta', 'reembolso', 'milhao', 'views', 'viralizar', 'viraliza'],
-    termos: ['devolve', 'devolucao'],
+    ancoras: [
+      'garantia',
+      'garantido',
+      'dinheiro de volta',
+      'reembolso',
+      'milhao',
+      'meta',
+      'contrato',
+    ],
+    termos: ['devolve', 'devolucao', 'nao der certo', 'e se nao'],
+  },
+  {
+    chave: 'como-gera',
+    atalho: 'Como vocês geram',
+    pergunta: 'Como a Doxa gera tantas visualizações?',
+    resposta: [
+      'Construímos uma operação proprietária de conteúdo baseada em volume, testes constantes, análise de dados e otimização.',
+      'Em vez de depender de um único vídeo viral, criamos um sistema contínuo para aumentar as chances de distribuição e crescimento.',
+    ],
+    ancoras: ['como voces geram', 'como geram', 'como funciona', 'metodo', 'operacao', 'sistema'],
+    termos: ['processo', 'etapas', 'estrategia', 'segredo', 'algoritmo'],
+  },
+  {
+    chave: 'organico',
+    atalho: 'É orgânico?',
+    pergunta: 'As visualizações são orgânicas?',
+    resposta: [
+      'Sim. As visualizações geradas pela Doxa são 100% orgânicas, provenientes da distribuição dos conteúdos produzidos dentro da nossa operação.',
+      'Sem depender da compra de mídia para atingir as metas contratadas.',
+    ],
+    /* `bot`, `robo` e `comprada` são âncoras de propósito, e são a razão de esta
+       pergunta existir: quem desconfia não digita "orgânico", digita a acusação.
+       A resposta tem de estar do outro lado da palavra que a pessoa realmente
+       escreve. */
+    ancoras: [
+      'organico',
+      'organicas',
+      'trafego pago',
+      'midia paga',
+      'comprada',
+      'compradas',
+      'bot',
+      'bots',
+      'robo',
+      'fake',
+      'falsa',
+      'falsas',
+    ],
+    termos: ['anuncio', 'anuncios', 'impulsionamento', 'verdadeira', 'real'],
   },
   {
     chave: 'prova',
     atalho: 'Quem já usou',
-    pergunta: 'Vocês têm caso real?',
+    pergunta: 'Quem já usou a plataforma?',
     resposta: [
-      'Tem, e está nesta página: os posts da parede de prova são de clientes, com os números que eles fizeram.',
-      'Os perfis aparecem com arroba de propósito — dá para abrir e conferir por fora.',
+      'A tecnologia e a operação da Doxa já foram utilizadas por mais de 1.500 clientes, incluindo empresas e marcas como Magalu, G4 e Natália Beauty.',
+      'Além de operações no Brasil e nos Estados Unidos.',
     ],
-    ancoras: ['caso', 'casos', 'cliente', 'clientes', 'resultado', 'resultados', 'prova', 'portfolio', 'depoimento'],
-    termos: ['exemplo', 'ja usou', 'funcionou'],
+    ancoras: ['quem usou', 'quem ja usou', 'cliente', 'clientes', 'caso', 'casos', 'exemplo'],
+    termos: ['prova', 'resultado', 'funciona mesmo', 'confiavel', 'referencia'],
+  },
+  {
+    chave: 'prazo',
+    atalho: 'Em quanto tempo',
+    pergunta: 'Em quanto tempo começo a ver resultados?',
+    resposta: [
+      'Os primeiros resultados podem aparecer já nas primeiras semanas, mas nossa estratégia é construída para performance consistente ao longo de todo o período contratado.',
+      'Quanto mais conteúdo é publicado, mais dados temos para identificar os formatos com maior potencial e escalar os resultados.',
+    ],
+    ancoras: ['quanto tempo', 'prazo', 'demora', 'quando', 'primeiras semanas', 'resultados'],
+    termos: ['rapido', 'comeca', 'inicio', 'primeiro video'],
+  },
+  {
+    chave: 'para-quem',
+    atalho: 'Para quem é',
+    pergunta: 'Para quais empresas a Doxa é indicada?',
+    resposta: [
+      'A Doxa é indicada para empresas que querem transformar conteúdo em um canal previsível e escalável de crescimento.',
+      'Trabalhamos especialmente com marcas que precisam ganhar relevância, aumentar audiência e ocupar espaço de forma consistente nas principais plataformas digitais.',
+    ],
+    ancoras: [
+      'para quem',
+      'que tipo de empresa',
+      'serve para mim',
+      'meu nicho',
+      'nicho',
+      'segmento',
+      'indicada',
+    ],
+    termos: ['pequena', 'pequenas', 'grande', 'iniciante', 'atendem'],
   },
 ];
 
@@ -227,25 +268,37 @@ export const ABERTURA = {
  * mais barata:
  *
  *  1. Quanto custa a mensalidade, de verdade.
- *  2. Quantos vídeos por mês, e em quanto tempo o primeiro fica pronto.
- *  3. Tem fidelidade? Como cancela?
- *  4. A garantia por escrito: em quanto tempo, em quais plataformas, o que conta
- *     como view, e como o reembolso é pedido. É a promessa mais cara da página e
- *     hoje ela só existe como manchete.
- *  5. Formas de pagamento — só depois que o checkout estiver ligado de verdade.
- *     `PAGAMENTOS` existe em `comparacao/config`, mas o próprio comentário de lá
- *     diz que a lista foi escrita antes de a coisa existir.
- *  6. Preciso aparecer no vídeo? E se eu não quiser mostrar o rosto?
- *  7. Vocês atendem qual tipo de empresa? Tem nicho que não dá certo?
- *  8. De quem são os direitos do vídeo depois de pronto?
+ *  2. POR QUE OS R$ 100, e o que eles são. Havia resposta escrita aqui e ela
+ *     saiu com a troca das seis — não por falta de resposta, por escolha de
+ *     quais seis aparecem. É a que mais custa da lista: a pessoa lê o preço no
+ *     cartão do pedido, hesita, vem ao FAQ perguntar "por que cobrar cem reais",
+ *     e hoje cai no "não sei responder" a um toque do botão de pagar. O texto
+ *     existe em `FILTRO`, em `comparacao/config`.
+ *  3. O que acontece DEPOIS de pagar. Mesma história: a resposta existe em
+ *     `RETORNO` e não está mais aqui.
+ *  4. Quantos vídeos por mês, e em quanto tempo o primeiro fica pronto.
+ *  5. Tem fidelidade? Como cancela?
+ *  6. A garantia por escrito: em quanto tempo, em quais plataformas, o que conta
+ *     como view, e como o reembolso é pedido. A resposta nova fala em "condições
+ *     previstas no contrato" — o que é mais prudente do que a manchete do topo,
+ *     mas o contrato ainda não existe em lugar nenhum que a página possa citar.
+ *  7. Formas de pagamento. Agora dá para responder: cartão, no checkout do
+ *     Stripe, para onde o formulário leva.
+ *  8. AGÊNCIA LICENCIADA. O primeiro passo do formulário abriu essa porta, e o
+ *     FAQ não tem uma linha sobre ela — quem entra por ali e pergunta cai no
+ *     "não sei responder".
+ *  9. Preciso aparecer no vídeo? E se eu não quiser mostrar o rosto?
+ * 10. De quem são os direitos do vídeo depois de pronto?
  */
 export const PENDENTES: readonly string[] = [
   'Quanto custa a mensalidade?',
+  'Por que os R$ 100? O que eles são?',
+  'O que acontece depois que eu pago?',
   'Quantos vídeos por mês? Em quanto tempo sai o primeiro?',
   'Tem fidelidade? Como cancela?',
   'A garantia por escrito: prazo, plataformas, o que conta como view.',
   'Quais formas de pagamento?',
+  'Como funciona ser uma agência licenciada?',
   'Preciso aparecer no vídeo?',
-  'Vocês atendem que tipo de empresa?',
   'De quem são os direitos do vídeo?',
 ];
