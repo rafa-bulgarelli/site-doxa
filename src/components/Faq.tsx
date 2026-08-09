@@ -512,21 +512,29 @@ export function Faq() {
           className="transition-[grid-template-columns] motion-reduce:transition-none lg:grid"
           style={{
             ...TRANSICAO,
-            /* 36% e não 44% para a coluna das respostas.
+            /* 44% para a coluna das respostas, e este número já foi 36% por
+               uma rodada. Vale o registro inteiro, porque os dois pedidos do
+               dono se cruzam aqui e o próximo a mexer vai esbarrar no mesmo.
 
-               A esquerda deixou de ser "a coluna do campo" e passou a ser a
-               coluna da BANDEJA: os seis atalhos somam ~752 pixels e a 44% o
-               cartão devolvia só 675 úteis, então "Para quem é" caía sozinho
-               numa segunda fileira — o mesmo defeito da seção fechada, e o dono
-               achou os dois. A 36% sobram ~789.
+               Ele viu "Para quem é" caindo sozinho numa segunda fileira e pediu
+               tudo em linha; a coluna foi a 36% e o cartão ganhou os ~110 pixels
+               que faltavam. Na tela seguinte ele desenhou uma linha por cima do
+               cartão pedindo que ele terminasse ali — e a linha caía exatamente
+               nos 44% de antes. O cartão a 36% é largo demais para o olho dele,
+               e a 44% os seis rótulos não cabem numa fileira. As duas coisas não
+               são compatíveis com ESTES rótulos nesta largura de janela.
 
-               O que a direita perde não custa leitura: as respostas são dois
-               parágrafos curtos, e 514 pixels são uma coluna de texto
-               confortável. A esquerda tinha um objeto que NÃO cabia; a direita
-               tem texto, que cabe em qualquer largura razoável. Entre as duas,
-               quem cede é quem cede sem quebrar. */
+               Ganha a largura, porque é a que se vê o tempo todo: a fileira
+               dupla só existe no instante ANTES da primeira pergunta. Depois da
+               primeira, o atalho usado some — sobram cinco, que somam ~640 e
+               cabem nos ~648 úteis. É o estado da própria captura dele.
+
+               A saída que sobra, se a fileira dupla incomodar naquele instante,
+               é encurtar os dois rótulos longos ("Como vocês viralizam?" e
+               "Quando vejo resultado?" custam 269 dos 752 pixels da fila). Isso
+               é copy, e é do dono. */
             gridTemplateColumns: aberto
-              ? 'minmax(0, 1fr) minmax(0, 36%)'
+              ? 'minmax(0, 1fr) minmax(0, 44%)'
               : 'minmax(0, 1fr) minmax(0, 0%)',
           }}
         >
