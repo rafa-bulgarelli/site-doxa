@@ -330,7 +330,7 @@ function Palavra({
  */
 export function Ladainha({
   progresso,
-  janelaRef,
+  janela,
   cauda,
 }: {
   progresso: MotionValue<number>;
@@ -340,8 +340,26 @@ export function Ladainha({
    * Vem de fora porque a altura dela é o que sobrou da coluna depois do selo,
    * do título, da conta e do fecho, e quem sabe essa conta é o `flex` do painel.
    * Medida daqui de dentro, a lista teria de adivinhar o próprio lugar.
+   *
+   * É o NÓ, e não uma `ref` — e a troca conserta um defeito que só aparecia no
+   * site publicado. A caixa é desenhada pelo painel e a lista mora DENTRO dela:
+   * o React prende as `ref` dos elementos de fora para dentro depois de rodar
+   * os efeitos de quem está dentro, então, na montagem, `janelaRef.current`
+   * ainda era `null` aqui. O efeito de medida desistia na primeira linha e
+   * nunca mais tentava — `ref` não muda de identidade, então a lista de
+   * dependências jamais o acordava de novo.
+   *
+   * O sintoma era mudo e o dono viu: `fim` e `alvo` ficavam em zero, a lista
+   * não corria um pixel, e a conta de 2,2rem ficava serrada na borda inferior
+   * da janela para sempre. Medido no site publicado, o `ResizeObserver` desta
+   * medida não observava NADA; no mesmo build rodando local, observava os dois
+   * elementos — a diferença era o instante da montagem, que é a pior espécie de
+   * defeito: o mesmo código, certo numa máquina e errado na outra.
+   *
+   * Com o nó vindo por estado, ele chega numa renderização própria e o efeito
+   * acorda com a caixa na mão. Sem sorte no meio.
    */
-  janelaRef: RefObject<HTMLDivElement>;
+  janela: HTMLDivElement | null;
   /**
    * O que entra na fila DEPOIS dos vinte e cinco itens e antes do total.
    *
@@ -399,7 +417,6 @@ export function Ladainha({
   const [corrida, setCorrida] = useState({ freio: FREIO_MINIMO, alvo: 0, fim: 0 });
 
   useLayoutEffect(() => {
-    const janela = janelaRef.current;
     const lista = ref.current;
     if (janela == null || lista == null) return;
 
@@ -459,7 +476,7 @@ export function Ladainha({
     observador.observe(janela);
     observador.observe(lista);
     return () => observador.disconnect();
-  }, [janelaRef]);
+  }, [janela]);
 
   /*
    * O deslize em três trechos, e cada dobra tem um porquê.
