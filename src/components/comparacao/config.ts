@@ -201,62 +201,78 @@ export const FALTA = ['Falta uma coisa:', 'você.'];
 export const GARANTIA = ['Um milhão de views.', 'Ou seu dinheiro de volta.'];
 
 /**
- * A explicação dos R$ 100, e ela precisa estar ao lado do botão.
+ * O QUE OS R$ 100 COMPRAM, e a redação inteira é reenquadramento do dono.
  *
- * PENDENTE-DONO: redação minha a partir do enquadramento do dono — os cem reais
- * são espanta-curioso, não preço. Sem essa frase na mesma tela, cobrar para
- * falar com um fornecedor lê como "eles cobram para me vender", e a conversão
- * cai. Dita como filtro, ela vira sinal de que do outro lado tem gente séria.
+ * Ela dizia "simbólicos, e é filtro", com o corpo explicando que não era o preço
+ * do diagnóstico e sim o que fazia a Doxa conversar só com quem já decidiu. O
+ * dono recusou o enquadramento inteiro, e ele estava certo por uma razão que
+ * vale mais do que gosto: FILTRO é uma palavra sobre o vendedor. Ela explica por
+ * que a empresa cobra, não o que o cliente leva. Numa tela em que a pessoa está
+ * decidindo gastar dinheiro, a única pergunta que importa é a segunda.
  *
- * ATENÇÃO ao verbo: o que a página prometer por esses cem reais passa a ser
- * serviço contratado. "Diagnóstico completo" obriga a entregar um diagnóstico
- * completo. Prometer menos e entregar mais é a única direção segura aqui.
+ * Agora os cem reais têm um objeto: eles marcam a Auditoria Estratégica Doxa —
+ * o mesmo nome que abre o cartão, em `AUDITORIA`. O formulário deixa de cobrar
+ * para conversar e passa a cobrar por uma coisa que tem nome, hora e gente do
+ * outro lado.
+ *
+ * ATENÇÃO ao verbo, e a nota é a mesma de antes com mais motivo agora: o que a
+ * página prometer por esses cem reais passa a ser serviço contratado. "Marcar" e
+ * "olhar o seu perfil" são promessas que uma reunião de trinta minutos cumpre.
+ * "Diagnóstico completo" ou "plano de conteúdo" não são — e a diferença entre as
+ * duas é o consultor entrando na chamada devendo ou entregando. Prometer menos e
+ * entregar mais continua sendo a única direção segura aqui.
+ *
+ * Se este par mudar, o rótulo do botão em `Formulario.tsx` muda junto: ele diz
+ * "Pagar R$ 100 e agendar", e é a mesma promessa dita uma terceira vez.
  */
 export const FILTRO = {
   valor: 'R$ 100',
-  titulo: 'simbólicos, e é filtro.',
-  corpo: 'Não é o preço do diagnóstico — é o que faz a gente conversar só com quem já decidiu.',
+  titulo: 'para marcar a auditoria estratégica.',
+  corpo:
+    'Uma reunião com o time Doxa. A gente olha o seu perfil antes e chega com a conversa pronta.',
 };
+
+/** O título do passo do pagamento. Diz o que falta, e o que falta é marcar. */
+export const PAGAMENTO_TITULO = 'Falta marcar a reunião.';
 
 /**
  * O nome do que a pessoa está preenchendo, decidido pelo dono.
  *
- * O cartão não se apresentava: começava na trilha de etapas, e quem chegava por
- * um botão de CTA via um campo de nome sem saber o que estava começando. Com o
- * título, o mesmo formulário deixa de ser "um cadastro" e passa a ser uma
- * AUDITORIA — que é o que os R$ 100 compram. É a palavra que justifica o preço
- * antes de o preço aparecer, três passos depois.
- *
- * Em caixa de frase, a pedido do dono — só a primeira letra, e o nome próprio.
- * Ele já foi versalete desenhado por CSS, e o argumento de então (nunca escrever
- * em caixa alta no arquivo, porque leitor de tela soletra o que parece sigla)
- * segue valendo e agora é de graça: em caixa de frase não há o que desfazer.
+ * Em caixa de frase, a pedido dele — só a primeira letra, e o nome próprio. Ele
+ * já foi versalete desenhado por CSS, e o argumento de então (nunca escrever em
+ * caixa alta no arquivo, porque leitor de tela soletra o que parece sigla) segue
+ * valendo e agora é de graça.
  *
  * O que mudou junto foi a natureza da linha. Versalete a 11px é ETIQUETA, e
- * etiqueta se lê de raspão; em serifa, com a fita do FAQ correndo por dentro
- * das letras, ela virou o NOME da coisa — e nome de coisa se escreve como se
- * escreve um nome.
+ * etiqueta se lê de raspão; em serifa grande, com a fita do FAQ correndo por
+ * dentro das letras, ela virou o TÍTULO do cartão — e é o mesmo nome que o passo
+ * do pagamento usa para dizer o que os R$ 100 marcam.
  */
 export const AUDITORIA = 'Auditoria estratégica Doxa';
 
 /**
  * O que os R$ 100 compram, dito no passo em que se paga.
  *
- * PENDENTE-DONO: a frase é dele, palavra por palavra. Ela entra ABAIXO de
- * "Falta o filtro." e não no lugar: aquela linha é o título do passo e cabe na
- * serifa grande; esta é a instrução, e instrução em corpo de manchete lê como
- * anúncio. Juntas elas dizem o par que o passo precisa — por que se cobra, e o
- * que acontece quando se paga.
+ * PENDENTE-DONO: a frase é dele, palavra por palavra. Ela entra ABAIXO do título
+ * do passo e não no lugar: aquela linha é o nome do passo e cabe na serifa
+ * grande; esta é a instrução, e instrução em corpo de manchete lê como anúncio.
  *
  * ATENÇÃO: isto é promessa pública. "Agendar uma reunião" obriga a existir uma
- * reunião agendada — não um contato, não um retorno. Se o processo real for
- * ligar em 24 horas e marcar depois, o verbo aqui tem de mudar junto.
+ * reunião agendada — não um contato, não um retorno. `RETORNO`, logo abaixo, foi
+ * alinhado a ela: as duas telas prometiam coisas diferentes na mesma passagem.
  */
 export const PAGAMENTO_CHAMADA =
   'Complete o pagamento para agendar uma reunião com o time Doxa.';
 
-/** O que acontece depois de pagar. Vai na tela de sucesso e ao lado do botão. */
-export const RETORNO = 'Um consultor entra em contato em até 24 horas.';
+/**
+ * O que acontece depois de pagar. Vai na tela de sucesso e ao lado do botão.
+ *
+ * Reescrito junto com o resto: dizia "um consultor entra em contato em até 24
+ * horas" enquanto a tela anterior prometia "agendar uma reunião". Eram duas
+ * promessas diferentes na mesma passagem — contato não é reunião marcada, e
+ * quem pagou ia cobrar a que leu por último.
+ */
+export const RETORNO = 'O time Doxa chama você em até 24 horas para marcar a sua auditoria.';
 
 /** As formas de pagamento, listadas antes de existirem de verdade. */
 export const PAGAMENTOS = ['Pix', 'Cartão', 'Apple Pay', 'Google Pay'];

@@ -19,6 +19,7 @@ import {
   NO_AR,
   OUTRO,
   PAGAMENTO_CHAMADA,
+  PAGAMENTO_TITULO,
   PAGAMENTOS,
   RETORNO,
   type PerguntaFicha,
@@ -132,6 +133,17 @@ const PASSOS: readonly Passo[] = [
     dica: 'A gente olha o perfil antes de conversar.',
     exemplo: '@suaempresa',
     tipo: 'text',
+    /* O @ nasce no campo e não sai dele.
+   
+       Sem isto a pessoa digitava o nome do perfil e o formulário guardava
+       "suaempresa" numa metade das vezes e "@suaempresa" na outra — e quem
+       paga a diferença é o consultor, colando um e outro na busca. Com a
+       arroba plantada, não há duas formas de responder: ela está lá antes da
+       primeira tecla, e apagar tudo devolve ela em vez de esvaziar o campo.
+   
+       A limpeza tira TODOS os @ antes de repor um: colar "@@empresa" ou
+       "instagram.com/@empresa" com o @ no meio deixaria dois. */
+    formata: (v) => `@${v.replace(/[@\s]/g, '')}`,
     valida: (v) => (v.replace(/[@\s]/g, '').length < 2 ? 'Falta o @ do perfil.' : null),
   },
 ];
@@ -219,7 +231,7 @@ type ChaveFicha = PerguntaFicha['chave'];
  */
 export function Formulario({ cartaoRef }: { cartaoRef: RefObject<HTMLDivElement> }) {
   const [passo, setPasso] = useState(0);
-  const [dados, setDados] = useState({ caminho: '', nome: '', whatsapp: '', arroba: '' });
+  const [dados, setDados] = useState({ caminho: '', nome: '', whatsapp: '', arroba: '@' });
   const [erro, setErro] = useState<string | null>(null);
   const [enviando, setEnviando] = useState(false);
   /** Para onde a animação corre: 1 avança, -1 volta. */
@@ -512,12 +524,17 @@ export function Formulario({ cartaoRef }: { cartaoRef: RefObject<HTMLDivElement>
               `texto-aceso-siri` de "Pergunte o que quiser.", que é o efeito que
               ele apontou como referência.
 
-              Subiu de 11 para 17 e depois para 20/24, e não é gosto: o
-              gradiente é recortado na forma dos glifos, e quanto mais fino o
-              traço menos faixa de cor cabe dentro dele — a 11px o efeito
-              existiria no CSS e não na tela. O teto é a largura do cartão no
-              telefone: a 24px a frase mede 206 dos 216 pixels úteis lá, e por
-              isso o corpo cheio fica em `md:`.
+              Foi de 11 a 17, a 20/24 e agora ao dobro — 40 no telefone, 48 no
+              desktop —, e cada degrau teve o mesmo motivo: o gradiente é
+              recortado na FORMA dos glifos, e quanto mais fino o traço menos
+              faixa de cor cabe dentro dele. A 11px o efeito existia no CSS e
+              não na tela.
+
+              No dobro ele deixou de ser um rótulo acima do formulário e passou
+              a ser o TÍTULO do cartão — que é o que ele sempre disse ser. No
+              telefone a frase ocupa duas linhas nos 216 pixels úteis, e é o
+              certo: duas linhas de serifa grande são um título, uma linha de
+              corpo pequeno era uma etiqueta.
 
               E saiu o versalete, a pedido do dono: só a primeira letra. Com ele
               saiu o `tracking` largo, que existe para abrir caixa alta e em
@@ -528,7 +545,7 @@ export function Formulario({ cartaoRef }: { cartaoRef: RefObject<HTMLDivElement>
               `.texto-aceso-siri` usa `margin-bottom` negativa para o gradiente
               alcançar as pernas dos glifos, e ela apagaria um `mb-6` posto no
               mesmo elemento. Duas caixas, duas responsabilidades. */}
-          <span className="texto-aceso-siri font-serif text-[20px] tracking-[-0.01em] text-[#F4F1E8] md:text-[24px]">
+          <span className="texto-aceso-siri font-serif text-[40px] tracking-[-0.02em] text-[#F4F1E8] md:text-[48px]">
             {AUDITORIA}
           </span>
         </motion.p>
@@ -566,37 +583,32 @@ export function Formulario({ cartaoRef }: { cartaoRef: RefObject<HTMLDivElement>
                      baixo e mudar a altura do cartão inteiro no meio do
                      preenchimento. O destaque vem do fundo, que não ocupa
                      espaço nenhum. */
-                  /* A etapa da vez usa `pilula-siri` — a mesma fita do
-                     `texto-aceso-siri` do FAQ, aqui preenchendo a superfície em
-                     vez de recortada nos glifos. Era creme chapado com halo
-                     branco fixo, e o dono pediu o efeito no lugar do "branco
-                     puro". O halo veio junto e de graça: o `drop-shadow` dos
-                     `keyframes` circunda a pílula e TROCA DE COR ao longo do
-                     ciclo, que é o que o halo branco não fazia.
+                  /* Creme cheio com halo branco na etapa da vez, e é a volta
+                     de onde a trilha já esteve.
 
-                     Texto BRANCO, a pedido do dono, com uma sombra de um pixel
-                     por baixo. A sombra não é enfeite e é o que torna o pedido
-                     seguro: a fita passa por âmbar, coral e teal — tons de
-                     luminância média — e branco puro sobre eles tem menos
-                     contraste medido do que a tinta que estava aqui antes. O
-                     halo escuro devolve a borda de cada letra sem aparecer como
-                     efeito, e o rótulo para de depender de qual segundo do ciclo
-                     de seis a pessoa olhou.
+                     Ela passou uma rodada com a fita colorida do FAQ
+                     preenchendo a pílula, a pedido do dono, e ele a desfez ao
+                     ver na tela — com razão, e a razão é hierarquia: a fita é a
+                     coisa mais chamativa do cartão e o TÍTULO dele já a usa. Nos
+                     dois lugares ao mesmo tempo, ela deixava de apontar para
+                     alguma coisa e virava a decoração do cartão.
 
-                     O verde do `feito` fica: ele não é decoração, é o mesmo
+                     O verde do `feito` continua: não é decoração, é o mesmo
                      verde do selo "Com Doxa" — a mesma afirmação dita sobre a
                      empresa e sobre o campo que a pessoa acabou de responder. */
                   className={`flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full border px-3 py-1.5 text-[12px] leading-none transition-colors duration-500 ${
                     agora
-                      ? 'pilula-siri border-transparent text-white [text-shadow:0_1px_3px_rgba(0,0,0,0.45)]'
+                      ? 'border-transparent bg-[#F4F1E8] text-[#0B0B0B]'
                       : feito
                         ? 'text-[#F4F1E8]'
                         : 'border-white/[0.12] text-white/30'
                   }`}
                   style={
-                    feito
-                      ? { borderColor: `${NO_AR}80`, background: `${NO_AR}1a` }
-                      : undefined
+                    agora
+                      ? { boxShadow: '0 0 18px -2px rgba(255,255,255,0.55)' }
+                      : feito
+                        ? { borderColor: `${NO_AR}80`, background: `${NO_AR}1a` }
+                        : undefined
                   }
                 >
                   {feito ? (
@@ -692,6 +704,7 @@ export function Formulario({ cartaoRef }: { cartaoRef: RefObject<HTMLDivElement>
                       opcoes={atual.opcoes}
                       escolhidas={dados[atual.chave] === '' ? [] : [dados[atual.chave]]}
                       multipla={false}
+                      empilhada
                       textoLivre=""
                       aoEscolher={(opcao) => {
                         setDados((d) => ({ ...d, [atual.chave]: opcao }));
@@ -816,7 +829,7 @@ export function Formulario({ cartaoRef }: { cartaoRef: RefObject<HTMLDivElement>
             {passo === PAGAMENTO && (
               <motion.div key="pagamento" {...desliza} className="mt-7">
                 <p className="font-serif text-[1.75rem] leading-[1.1] tracking-[-0.02em] text-white md:text-[2.35rem]">
-                  Falta o filtro.
+                  {PAGAMENTO_TITULO}
                 </p>
 
                 {/* O que o pagamento compra, dito pelo dono e posto ABAIXO do

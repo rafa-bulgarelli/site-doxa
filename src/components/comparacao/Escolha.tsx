@@ -12,6 +12,18 @@ interface EscolhaProps {
   escolhidas: readonly string[];
   /** Aceita mais de uma. Muda o desenho do selecionado e o modo de avançar. */
   multipla: boolean;
+  /**
+   * Uma resposta por linha, numerada.
+   *
+   * Para as perguntas de POUCAS opções longas, onde a fila em `flex-wrap` vira
+   * duas pílulas de larguras diferentes coladas — que se lê como duas caixas
+   * mal encaixadas e não como uma lista de escolhas. Empilhadas e numeradas,
+   * elas viram o que são: as alternativas, na ordem.
+   *
+   * Não vale para as de MUITAS opções curtas — os oito segmentos empilhados
+   * seriam oito linhas de tela para uma pergunta que se responde de raspão.
+   */
+  empilhada?: boolean;
   /** O texto de exemplo do campo que `OUTRO` abre. Ausente, `OUTRO` não abre nada. */
   livre?: string;
   textoLivre: string;
@@ -47,6 +59,7 @@ export function Escolha({
   opcoes,
   escolhidas,
   multipla,
+  empilhada = false,
   livre,
   textoLivre,
   aoEscolher,
@@ -73,7 +86,7 @@ export function Escolha({
 
   return (
     <div role="group" aria-labelledby={rotuladoPor}>
-      <div className="flex flex-wrap gap-2">
+      <div className={empilhada ? 'flex flex-col gap-2' : 'flex flex-wrap gap-2'}>
         {opcoes.map((opcao, i) => {
           const marcada = escolhidas.includes(opcao);
           return (
@@ -90,16 +103,45 @@ export function Escolha({
               transition={{ duration: 0.34, ease: EASE, delay: Math.min(i * 0.035, 0.28) }}
               /* Sem `whitespace-nowrap`: "Já paguei agência e não deu certo" é
                  mais largo que o cartão no celular, e uma pílula que não quebra
-                 estoura a caixa em vez de descer de linha. */
-              className={`flex items-center gap-2 rounded-full border px-4 py-2.5 text-left text-[13px] leading-snug transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black ${
+                 estoura a caixa em vez de descer de linha.
+
+                 Em repouso as opções estavam a 70% de branco sobre fio de 14%, e
+                 o dono leu como "muito apagadas" — com razão: uma resposta ainda
+                 não escolhida não é uma resposta secundária, é a única coisa que
+                 aquela tela pede. O apagado tem lugar numa LISTA de referência,
+                 não num par de alternativas. Branco cheio sobre fio de 30%, com
+                 um fundo de 5% para a pílula existir como superfície antes de
+                 ser tocada. */
+              className={`flex items-center gap-3 border text-left leading-snug transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black ${
+                empilhada
+                  ? 'w-full rounded-2xl px-5 py-4 text-[15px]'
+                  : 'rounded-full px-4 py-2.5 text-[13px]'
+              } ${
                 marcada
                   ? 'border-transparent bg-[#F4F1E8] text-[#0B0B0B]'
-                  : 'border-white/[0.14] text-white/70 hover:border-white/40 hover:text-white'
+                  : 'border-white/30 bg-white/[0.05] text-white hover:border-white/60 hover:bg-white/[0.09]'
               }`}
               /* O mesmo halo da etapa da vez na trilha do topo. A ficha é a
                  mesma peça do formulário, e o que está aceso se acende igual. */
               style={marcada ? { boxShadow: '0 0 18px -2px rgba(255,255,255,0.55)' } : undefined}
             >
+              {/* O NÚMERO da alternativa, só na versão empilhada.
+
+                  Ele existe para a lista ser lida como lista: sem ele, duas
+                  caixas iguais uma sobre a outra são duas caixas, e o olho não
+                  sabe se está diante de uma escolha ou de dois avisos. Em
+                  `tabular-nums` e num tom abaixo do texto, como os números da
+                  ladainha — ele ordena e não compete. */}
+              {empilhada && (
+                <span
+                  aria-hidden
+                  className={`shrink-0 tabular-nums text-[13px] ${
+                    marcada ? 'text-[#0B0B0B]/50' : 'text-white/40'
+                  }`}
+                >
+                  {i + 1}
+                </span>
+              )}
               {/* O visto só na pergunta de várias respostas. Na de resposta
                   única ele seria ruído: ali o papel cheio já diz sozinho qual
                   é, e um visto sugere que dá para juntar mais. */}

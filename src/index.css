@@ -1484,54 +1484,6 @@ html::-webkit-scrollbar {
 }
 
 /*
- * ─── A MESMA FITA, PREENCHENDO UMA SUPERFÍCIE ────────────────────────────────
- *
- * A pílula da etapa da vez, na trilha do formulário. Ela era creme chapado com
- * um halo branco, e o dono pediu o efeito do FAQ nela — "ao invés de só um
- * branco puro".
- *
- * Mesmo gradiente, mesma corrida de seis segundos, mesmos `keyframes`: é a
- * MESMA fita do `texto-aceso-siri`, e é isso que faz as duas leituras da página
- * serem uma só linguagem em vez de dois efeitos parecidos. O que muda é onde ela
- * é aplicada — ali recortada na forma dos glifos, aqui preenchendo a superfície
- * inteira.
- *
- * Sem `background-clip`, então: o texto por cima fica em tinta cheia, que é a
- * única cor legível sobre uma fita que passa por âmbar, magenta e azul enquanto
- * a pessoa preenche o campo. Texto claro sobre ela sumiria em dois dos seis
- * segundos do ciclo, e um rótulo que desaparece de vez em quando é pior do que
- * um rótulo sem efeito nenhum.
- *
- * O `drop-shadow` dos `keyframes` faz o resto de graça: onde no FAQ ele é a
- * auréola da letra, aqui vira o halo da pílula — e ele TROCA DE COR ao longo do
- * ciclo, que é exatamente o que o halo branco fixo não fazia.
- */
-.pilula-siri {
-  background-image: linear-gradient(
-    90deg,
-    #f2a65a,
-    #e8735a,
-    #de5c7e,
-    #9b7be0,
-    #5aa0e0,
-    #4fc9a8,
-    #f2a65a
-  );
-  background-size: 200% 100%;
-  animation: texto-siri 6s linear infinite;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .pilula-siri {
-    animation: none;
-    background-position: 0% 50%;
-    filter:
-      drop-shadow(0 0 9px rgba(255, 255, 255, 0.22))
-      drop-shadow(0 0 22px rgba(242, 166, 90, 0.45));
-  }
-}
-
-/*
  * E o mesmo gesto em tinta, para o papel.
  *
  * Um "glow preto" não ilumina: ele ADENSA. Sobre creme, a sombra escura em volta
