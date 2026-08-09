@@ -325,10 +325,17 @@ function useColunaEstreita() {
 export function Comparacao() {
   const escuroRef = useRef<HTMLDivElement>(null);
   const claroRef = useRef<HTMLDivElement>(null);
-  /** As três peças do fio: a caixa em que ele mora e as duas pontas. */
-  const gradeRef = useRef<HTMLDivElement>(null);
-  const faltaRef = useRef<HTMLDivElement>(null);
-  const cartaoRef = useRef<HTMLDivElement>(null);
+  /**
+   * As três peças do fio: a caixa em que ele mora e as duas pontas.
+   *
+   * NÓS, e não `ref`, pela armadilha que está documentada em `FioConvite` e no
+   * `CLAUDE.md` — com `ref`, o fio e as duas bordas vivas não existiam no site
+   * publicado. O cartão do pedido é preso lá dentro do `Formulario`, que avisa
+   * por `aoPrenderCartao`: quem o desenha é quem sabe quando ele chegou.
+   */
+  const [grade, setGrade] = useState<HTMLDivElement | null>(null);
+  const [falta, setFalta] = useState<HTMLDivElement | null>(null);
+  const [cartao, setCartao] = useState<HTMLDivElement | null>(null);
   const parado = useReducedMotion() === true;
   const contaNaTela = useInView(escuroRef, { amount: 0.4, once: true });
   /**
@@ -846,7 +853,7 @@ export function Comparacao() {
             manchete e a primeira frase. Agora são 48px, e a sobra da tela vai
             para as pontas, dividida pelo `justify-center` do painel. */}
         <div
-          ref={gradeRef}
+          ref={setGrade}
           className="relative mx-auto mt-10 grid w-full max-w-screen-2xl grid-cols-1 gap-x-16 gap-y-12 lg:mt-20 lg:grid-cols-[1fr_minmax(32rem,44%)] lg:items-start"
         >
           {/* O fio primeiro no DOM, e as duas colunas `relative` depois dele.
@@ -864,7 +871,7 @@ export function Comparacao() {
               escolhe qual das duas curvas usar é a POSIÇÃO medida das pontas, e
               não a largura da janela: o `grid` já decidiu se empilhou, e um
               segundo teste discordaria dele na largura exata da virada. */}
-          <FioConvite containerRef={gradeRef} deRef={faltaRef} paraRef={cartaoRef} />
+          <FioConvite container={grade} de={falta} para={cartao} />
 
           <div className="relative flex flex-col">
             {/* A garantia saiu do selo lateral e virou a maior coisa depois do
@@ -960,7 +967,7 @@ export function Comparacao() {
             {/* `relative`, e é o que faz o contorno vivo caber aqui dentro: o
                 SVG é desenhado em `inset-0` desta caixa. */}
             <div
-              ref={faltaRef}
+              ref={setFalta}
               className="relative mt-8 w-fit rounded-2xl border border-white/[0.14] bg-doxa-surface px-7 py-6 shadow-[0_30px_70px_-35px_rgba(0,0,0,0.5),0_0_70px_-25px_rgba(255,255,255,0.35)] lg:mt-12"
             >
               {/* ── ONDE O SINAL NASCE.
@@ -978,7 +985,7 @@ export function Comparacao() {
                   porque a caixa é `rounded-2xl`, e não `rounded-3xl` como a do
                   pedido — o arco tem de ser concêntrico com o canto que ele
                   acompanha, senão sobra uma fresta em cada esquina. */}
-              <BordaViva alvoRef={faltaRef} trecho="falta" raio={16} moldura={false} />
+              <BordaViva alvo={falta} trecho="falta" raio={16} moldura={false} />
 
               {/* A frase inteira acesa, em dois degraus. Nenhuma das metades é
                   apagada — apagada, a primeira dizia que o que falta é pouca
@@ -1017,7 +1024,7 @@ export function Comparacao() {
               O destino dos botões é `#forms`, o painel inteiro, marcado lá em
               cima. O `scroll-mt-24` foi junto: ninguém mais salta para aqui. */}
           <div className="relative flex flex-col lg:items-end">
-            <Formulario cartaoRef={cartaoRef} />
+            <Formulario aoPrenderCartao={setCartao} />
           </div>
         </div>
       </motion.div>

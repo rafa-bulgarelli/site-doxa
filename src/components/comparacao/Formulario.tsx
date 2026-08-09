@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type RefObject } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion, useInView, useReducedMotion } from 'framer-motion';
 import { ArrowLeft, Check } from 'lucide-react';
 import { ID_CARTAO_PEDIDO } from '../../ancoras';
@@ -235,7 +235,42 @@ type ChaveFicha = PerguntaFicha['chave'];
  *    propósito: quando o destino for decidido, é ali dentro e em nenhum outro
  *    lugar que o `fetch` entra.
  */
-export function Formulario({ cartaoRef }: { cartaoRef: RefObject<HTMLDivElement> }) {
+export function Formulario({
+  aoPrenderCartao,
+}: {
+  /**
+   * Avisa a comparação qual é o nó do cartão, assim que ele existe.
+   *
+   * A `ref` do cartão morava lá em cima e descia só para ser presa aqui — e era
+   * o que quebrava o fio e a borda viva no site publicado: quem recebe uma
+   * `ref` para prender não avisa ninguém quando prende, e um efeito de fora que
+   * dependa dela acorda com `null` e nunca mais é acordado. Agora o cartão é
+   * deste componente, que é quem o desenha, e o nó SOBE por este aviso.
+   */
+  aoPrenderCartao?: (no: HTMLDivElement | null) => void;
+}) {
+  /**
+   * O cartão em duas formas, e as duas são necessárias.
+   *
+   * A `ref` serve a quem lê `.current` dentro de um efeito já garantido — o
+   * `useInView` e o facho do ponteiro. O NÓ em estado serve a quem precisa
+   * REAGIR à chegada dele: a `BordaViva` aqui embaixo e, pelo aviso, o fio lá
+   * de cima. Um `ref` de callback escreve nos dois no mesmo instante.
+   */
+  // `| null` no parâmetro de tipo, e não só no valor inicial: é o que faz o
+  // TypeScript devolver uma ref MUTÁVEL. Sem ele, `current` é somente-leitura —
+  // a forma que o React reserva para quem entrega a ref ao JSX e nunca a
+  // escreve na mão.
+  const cartaoRef = useRef<HTMLDivElement | null>(null);
+  const [cartao, setCartao] = useState<HTMLDivElement | null>(null);
+  const prenderCartao = useCallback(
+    (no: HTMLDivElement | null) => {
+      cartaoRef.current = no;
+      setCartao(no);
+      aoPrenderCartao?.(no);
+    },
+    [aoPrenderCartao],
+  );
   const [passo, setPasso] = useState(0);
   const [dados, setDados] = useState({ caminho: '', nome: '', whatsapp: '', arroba: '@' });
   const [erro, setErro] = useState<string | null>(null);
@@ -458,7 +493,7 @@ export function Formulario({ cartaoRef }: { cartaoRef: RefObject<HTMLDivElement>
 
   return (
     <motion.div
-      ref={cartaoRef}
+      ref={prenderCartao}
       /* HANDLE DE MEDIDA, e não destino de botão: o FAQ lê o PÉ deste cartão
          para calcular o próprio recuo de topo. Quem recebe os cliques é
          `#forms`, o painel claro inteiro — `ancoras.ts` explica os dois. */
@@ -498,7 +533,7 @@ export function Formulario({ cartaoRef }: { cartaoRef: RefObject<HTMLDivElement>
           permite. */}
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(85%_55%_at_50%_0%,rgba(255,255,255,0.07),transparent_70%)]" />
       {/* O sinal que chegou pelo fio continua aqui, contornando o cartão. */}
-      <BordaViva alvoRef={cartaoRef} />
+      <BordaViva alvo={cartao} />
 
       <div className="relative p-6 md:p-12">
         {/* `p-6` no telefone contra os `p-8` de antes: 216 pixels úteis num

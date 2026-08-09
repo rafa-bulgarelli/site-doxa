@@ -1,12 +1,23 @@
-import { useLayoutEffect, useState, type RefObject } from 'react';
+import { useLayoutEffect, useState } from 'react';
 
+/*
+ * As três pontas chegam como NÓ, e não como `ref` — a mesma correção da
+ * `BordaViva`, pela mesma razão e com o mesmo custo antes dela.
+ *
+ * Aqui era ainda mais garantido de falhar: das três, `container` é ancestral
+ * deste componente e as outras duas são desenhadas DEPOIS dele no documento. O
+ * React prende as `ref` de fora para dentro e na ordem do documento, depois dos
+ * efeitos de dentro — então, na montagem, as três eram `null` ao mesmo tempo. O
+ * efeito desistia, `traco` ficava vazio, e o fio que liga o argumento ao pedido
+ * simplesmente não existia no site publicado.
+ */
 interface FioConviteProps {
   /** A caixa em que o fio é desenhado; as duas pontas são medidas dentro dela. */
-  containerRef: RefObject<HTMLElement>;
+  container: HTMLElement | null;
   /** De onde o fio sai: o fim da frase, na coluna do argumento. */
-  deRef: RefObject<HTMLElement>;
+  de: HTMLElement | null;
   /** Onde ele chega: a borda esquerda do cartão do pedido. */
-  paraRef: RefObject<HTMLElement>;
+  para: HTMLElement | null;
 }
 
 /** Puxão mínimo nas alças da curva, para um salto curto ainda curvar. */
@@ -66,15 +77,12 @@ function posicao(elemento: HTMLElement, container: HTMLElement) {
  * trás da prova rotativa, e é passando por trás que ele lê como cabo em vez de
  * risco em cima do texto.
  */
-export function FioConvite({ containerRef, deRef, paraRef }: FioConviteProps) {
+export function FioConvite({ container, de, para }: FioConviteProps) {
   const [caixa, setCaixa] = useState({ largura: 0, altura: 0 });
   const [traco, setTraco] = useState('');
 
   useLayoutEffect(() => {
-    const container = containerRef.current;
-    const de = deRef.current;
-    const para = paraRef.current;
-    if (!container || !de || !para) return;
+    if (container == null || de == null || para == null) return;
 
     const medir = () => {
       setCaixa({ largura: container.offsetWidth, altura: container.offsetHeight });
@@ -149,7 +157,7 @@ export function FioConvite({ containerRef, deRef, paraRef }: FioConviteProps) {
     observador.observe(de);
     observador.observe(para);
     return () => observador.disconnect();
-  }, [containerRef, deRef, paraRef]);
+  }, [container, de, para]);
 
   if (!traco || !caixa.largura) return null;
 
