@@ -512,8 +512,21 @@ export function Faq() {
           className="transition-[grid-template-columns] motion-reduce:transition-none lg:grid"
           style={{
             ...TRANSICAO,
+            /* 36% e não 44% para a coluna das respostas.
+
+               A esquerda deixou de ser "a coluna do campo" e passou a ser a
+               coluna da BANDEJA: os seis atalhos somam ~752 pixels e a 44% o
+               cartão devolvia só 675 úteis, então "Para quem é" caía sozinho
+               numa segunda fileira — o mesmo defeito da seção fechada, e o dono
+               achou os dois. A 36% sobram ~789.
+
+               O que a direita perde não custa leitura: as respostas são dois
+               parágrafos curtos, e 514 pixels são uma coluna de texto
+               confortável. A esquerda tinha um objeto que NÃO cabia; a direita
+               tem texto, que cabe em qualquer largura razoável. Entre as duas,
+               quem cede é quem cede sem quebrar. */
             gridTemplateColumns: aberto
-              ? 'minmax(0, 1fr) minmax(0, 44%)'
+              ? 'minmax(0, 1fr) minmax(0, 36%)'
               : 'minmax(0, 1fr) minmax(0, 0%)',
           }}
         >
@@ -706,7 +719,15 @@ export function Faq() {
                    sobrescrito por ele — o clique simplesmente não afundaria. */
                 bandeja={
                   atalhos.length > 0 ? (
-                    <div className="flex flex-wrap gap-2">
+                    /* `gap-1.5` e não `gap-2`: dez pixels a menos na fila
+                       inteira, e são dez que a segunda fileira custava. O vão
+                       entre pílulas é o lugar mais barato de buscar largura —
+                       ninguém lê o vão.
+
+                       Comentário de bloco, e não o de chaves que o JSX usa:
+                       aqui dentro é a expressão de um ternário, e chaves nessa
+                       posição são um objeto — não filhos de JSX. */
+                    <div className="flex flex-wrap gap-1.5">
                       <AnimatePresence initial={false}>
                         {atalhos.map((duvida, i) => (
                           <motion.button
@@ -750,7 +771,7 @@ export function Faq() {
                                objeto POUSADO nela — e é isso que faz uma
                                pastilha parecer clicável sem precisar de mais
                                contorno. */
-                            className="rounded-full border border-white/[0.14] bg-[#1F1F1F] px-4 py-2 text-[13px] font-medium text-white/70 outline-none transition-colors duration-200 hover:border-white/30 hover:bg-[#2A2A2A] hover:text-white focus-visible:ring-2 focus-visible:ring-white/50"
+                            className="rounded-full border border-white/[0.14] bg-[#1F1F1F] px-3.5 py-2 text-[13px] font-medium text-white/70 outline-none transition-colors duration-200 hover:border-white/30 hover:bg-[#2A2A2A] hover:text-white focus-visible:ring-2 focus-visible:ring-white/50"
                           >
                             {duvida.atalho}
                           </motion.button>
