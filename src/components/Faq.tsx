@@ -1009,6 +1009,14 @@ export function Faq() {
        */}
       <script
         type="application/ld+json"
+        /* O `<` sai escapado, e é a única defesa que este bloco precisa.
+           Dentro de um `<script>`, o navegador procura a sequência `</script`
+           ANTES de entregar o conteúdo ao parser de JSON: uma resposta do FAQ
+           que contivesse esse texto fecharia a tag no meio do dado, e o resto
+           viraria marcação executável no documento. Hoje a fonte é um array
+           nosso e nada disso acontece — o escape existe para o dia em que
+           alguém colar uma resposta vinda de fora. `\\u003c` é JSON válido e o
+           buscador lê exatamente o mesmo texto. */
         dangerouslySetInnerHTML={{
           __html: JSON.stringify({
             '@context': 'https://schema.org',
@@ -1022,7 +1030,7 @@ export function Faq() {
               name: duvida.pergunta,
               acceptedAnswer: { '@type': 'Answer', text: duvida.resposta.join(' ') },
             })),
-          }),
+          }).replace(/</g, '\\u003c'),
         }}
       />
     </section>
