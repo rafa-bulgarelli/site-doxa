@@ -541,10 +541,13 @@ export function Formulario({ cartaoRef }: { cartaoRef: RefObject<HTMLDivElement>
               No dobro ele deixou de ser um rótulo acima do formulário e passou
               a ser o TÍTULO do cartão — que é o que ele sempre disse ser.
 
-              No telefone ele desceu 1,5x depois, a pedido do dono: 40px ali eram
-              duas linhas ocupando 122 pixels de um cartão que ainda tem quatro
-              etapas, uma pergunta e duas alternativas para mostrar. A 27 são as
-              mesmas duas linhas em 58.
+              No telefone ele desceu 1,5x e subiu 1,25x depois, com o dono
+              olhando a tela nas duas vezes: 40px eram duas linhas ocupando 122
+              pixels de um cartão que ainda tem quatro etapas, uma pergunta e
+              duas alternativas para mostrar; 27 devolveu o espaço mas ficou do
+              tamanho da própria pergunta do passo, e título do mesmo corpo da
+              pergunta não é título. 34 são as mesmas duas linhas em 73 — e a
+              distância de volta.
 
               E a ENTRELINHA passou a ser escrita. Sem ela o `<span>` herdava o
               1,5 do corpo do documento — 60 pixels de altura de linha para uma
@@ -566,7 +569,7 @@ export function Formulario({ cartaoRef }: { cartaoRef: RefObject<HTMLDivElement>
               `.texto-aceso-siri` usa `margin-bottom` negativa para o gradiente
               alcançar as pernas dos glifos, e ela apagaria um `mb-6` posto no
               mesmo elemento. Duas caixas, duas responsabilidades. */}
-          <span className="texto-aceso-siri sem-halo font-serif text-[27px] leading-[1.08] tracking-[-0.02em] text-[#F4F1E8] md:text-[48px]">
+          <span className="texto-aceso-siri sem-halo font-serif text-[34px] leading-[1.08] tracking-[-0.02em] text-[#F4F1E8] md:text-[48px]">
             {AUDITORIA}
           </span>
         </motion.p>

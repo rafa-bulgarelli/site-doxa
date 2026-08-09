@@ -246,8 +246,27 @@ export function Escolha({
                 {empilhada && (
                   <span
                     aria-hidden
-                    className={`shrink-0 tabular-nums text-[13px] ${
-                      marcada ? 'text-white/70' : 'text-white/40'
+                    /* O número numa CAIXA, a pedido do dono.
+ 
+                       Solto, ele era um dígito de 13px encostado no texto — 5
+                       pixels de largura sem forma nenhuma, que o olho lê como
+                       uma sujeira antes da frase e não como o índice dela. Numa
+                       caixa quadrada de 26 ele vira o que é: a tecla que
+                       corresponde àquela alternativa.
+ 
+                       QUADRADO de canto macio, e não redondo: a trilha do topo
+                       já usa pílulas e o botão de ação é um disco — o redondo
+                       nesta tela significa "coisa em que se toca". Um quadradinho
+                       diz índice, que é justamente o que ele é. `rounded-md`
+                       contra o `rounded-2xl` do cartão é a mesma família de
+                       canto, dois passos abaixo.
+ 
+                       `leading-none` porque o dígito centra pela caixa, e a
+                       altura de linha herdada o empurraria para baixo do meio. */
+                    className={`flex h-[26px] w-[26px] shrink-0 items-center justify-center rounded-md border text-[12px] leading-none tabular-nums transition-colors duration-300 ${
+                      marcada
+                        ? 'border-white/25 bg-white/[0.14] text-white'
+                        : 'border-white/15 bg-white/[0.06] text-white/55'
                     }`}
                   >
                     {i + 1}

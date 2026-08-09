@@ -73,14 +73,24 @@ export const DUVIDAS: readonly Duvida[] = [
     termos: ['como funciona', 'processo', 'etapas'],
   },
   {
-    chave: 'filtro',
+    /* A chave era `filtro`, e o enquadramento inteiro desta resposta era o
+       mesmo que o dono recusou no formulário: "por que cobrar para conversar",
+       "catraca da agenda". FILTRO é palavra sobre o VENDEDOR — explica por que a
+       empresa cobra, não o que o cliente leva. Trocado no cartão do pedido e não
+       aqui, o site passava a dar duas explicações diferentes para o mesmo
+       dinheiro, e a do FAQ é justamente a que a pessoa procura quando hesita.
+
+       A âncora `filtro` fica na lista de propósito: quem leu a versão antiga da
+       página, ou ouviu de alguém, ainda vai digitar essa palavra. Âncora é o que
+       a pessoa PERGUNTA, não o que a gente responde. */
+    chave: 'auditoria',
     atalho: 'Os R$ 100',
-    pergunta: 'Por que cobrar R$ 100 só para conversar?',
+    pergunta: 'Por que a auditoria custa R$ 100?',
     resposta: [
       `${FILTRO.corpo}`,
-      'Não é mensalidade, não é sinal e não é o preço do serviço. É a catraca da agenda do consultor.',
+      'Não é mensalidade, não é sinal e não é o preço do serviço: é o que reserva a hora na agenda.',
     ],
-    ancoras: ['100', 'cem reais', 'filtro', 'simbolico', 'simbolicos'],
+    ancoras: ['100', 'cem reais', 'filtro', 'simbolico', 'simbolicos', 'auditoria'],
     termos: ['cobrar', 'cobram', 'taxa'],
   },
   {
@@ -88,8 +98,8 @@ export const DUVIDAS: readonly Duvida[] = [
     atalho: 'O preço',
     pergunta: 'Quanto custa o serviço?',
     resposta: [
-      'Esse número não está nesta página. Quem passa é o consultor, na conversa.',
-      `Se você chegou aqui pelos ${FILTRO.valor} do filtro: aqueles cem reais não são a mensalidade.`,
+      'Esse número não está nesta página. Quem passa é o consultor, na reunião.',
+      `Se você chegou aqui pelos ${FILTRO.valor} da auditoria: aqueles cem reais não são a mensalidade.`,
     ],
     ancoras: ['preco', 'custa', 'custo', 'valor', 'mensalidade', 'orcamento', 'investimento'],
     termos: ['plano', 'pacote'],
@@ -98,7 +108,16 @@ export const DUVIDAS: readonly Duvida[] = [
     chave: 'depois-do-pagamento',
     atalho: 'Depois que eu pago',
     pergunta: 'O que acontece depois que eu pago?',
-    resposta: [RETORNO, 'No WhatsApp que você deixar no formulário — não por e-mail, não por ligação.'],
+    /* "um consultor do time Doxa" é a ponte entre os dois nomes que a página
+       usava. O cartão do pedido promete "reunião com o time Doxa"; este arquivo
+       dizia "o consultor" sete vezes. São a mesma pessoa, e duas palavras para a
+       mesma pessoa fazem o visitante achar que são duas — uma que marca e outra
+       que atende. Dita uma vez por extenso, "consultor" sozinho passa a ser
+       reconhecido no resto. */
+    resposta: [
+      RETORNO,
+      'Um consultor do time fala com você no WhatsApp que você deixar no formulário — não por e-mail, não por ligação.',
+    ],
     ancoras: ['whatsapp', 'consultor', 'retorno', 'entra em contato', 'depois que eu pago'],
     termos: ['depois', 'contato', 'responde', 'resposta'],
   },
@@ -108,7 +127,7 @@ export const DUVIDAS: readonly Duvida[] = [
     pergunta: 'Como funciona a garantia?',
     resposta: [
       `${GARANTIA[0]} ${GARANTIA[1]} É o que está escrito no topo desta página, e é para valer.`,
-      'Os termos — prazo, plataformas, o que entra na contagem — quem detalha é o consultor, antes de você contratar qualquer coisa.',
+      'Os termos — prazo, plataformas, o que entra na contagem — quem detalha é o consultor do time Doxa, antes de você contratar qualquer coisa.',
     ],
     ancoras: ['garantia', 'garantido', 'dinheiro de volta', 'reembolso', 'milhao', 'views', 'viralizar', 'viraliza'],
     termos: ['devolve', 'devolucao'],
@@ -136,7 +155,7 @@ export const DUVIDAS: readonly Duvida[] = [
  */
 export const SEM_RESPOSTA = {
   titulo: 'Essa eu não sei responder.',
-  corpo: 'Quem responde é o consultor, e é rápido: deixa o contato aqui em cima que ele fala com você em até 24 horas.',
+  corpo: 'Quem responde é um consultor do time Doxa, e é rápido: deixa o contato aqui em cima que ele fala com você em até 24 horas.',
   /* O rótulo diz o destino, e não o objeto. "Ir para o formulário" descreve um
      campo de texto; quem está lendo isto quer saber com quem vai falar. O link
      continua sendo o mesmo formulário — a promessa é que ele leva a uma pessoa,
