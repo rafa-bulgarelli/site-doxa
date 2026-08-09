@@ -45,13 +45,13 @@ export const ROTULO: Record<Eixo, string> = {
  * vez de só exibi-lo. Um score que ninguém sabe de onde veio não é usado.
  */
 export const EXPLICACAO: Record<Eixo, string> = {
-  fit: 'O segmento e o objetivo batem com o que a Doxa faz.',
+  fit: 'O quanto o nicho vive de vídeo curto.',
   dor: 'O tamanho e o tipo do que trava a empresa hoje.',
-  verba: 'A faixa de faturamento declarada.',
-  escala: 'Quanto a operação tem para crescer com vídeo.',
-  intencao: 'Quanto da ficha a pessoa se deu ao trabalho de responder.',
-  presenca: 'Se existe perfil para a gente olhar antes da conversa.',
-  autoridade: 'Se há rosto para aparecer — e quem é ele no mercado.',
+  verba: 'O budget mensal declarado — o faturamento entra só se ele faltar.',
+  escala: 'O tamanho da operação, pela faixa de faturamento.',
+  intencao: 'Quanto a pessoa se deu ao trabalho de responder e de se identificar.',
+  presenca: 'Se existe um perfil para o consultor abrir antes de ligar.',
+  autoridade: 'O quanto o nicho depende de um rosto conhecido.',
 };
 
 /**
@@ -93,13 +93,13 @@ const INVESTIMENTO: Record<string, number> = {
 
 /** Faixa de faturamento → quanto de verba e de escala ela indica. */
 const FATURAMENTO: Record<string, { verba: number; escala: number }> = {
-  'Até R$ 20 mil': { verba: 3, escala: 4 },
-  'R$ 20 a 50 mil': { verba: 6, escala: 6 },
-  'R$ 50 a 200 mil': { verba: 8, escala: 8 },
-  'Mais de R$ 200 mil': { verba: 10, escala: 10 },
-  // Não é zero: recusar a faixa é comum em quem fatura bem e não é sinal ruim.
-  // É a ausência do dado, e a ausência vale a média da tabela.
-  'Prefiro não dizer': { verba: 5, escala: 5 },
+  'Até R$ 50 mil': { verba: 4, escala: 3 },
+  'R$ 50 a 200 mil': { verba: 6, escala: 5 },
+  'R$ 200 a 500 mil': { verba: 8, escala: 7 },
+  'R$ 500 mil a R$ 1 milhão': { verba: 9, escala: 8 },
+  'R$ 1 a 3 milhões': { verba: 10, escala: 9 },
+  'R$ 3 a 5 milhões': { verba: 10, escala: 10 },
+  'Mais de R$ 5 milhões': { verba: 10, escala: 10 },
 };
 
 /**
@@ -119,14 +119,6 @@ const SEGMENTO: Record<string, { fit: number; autoridade: number }> = {
   'Serviços para empresas': { fit: 7, autoridade: 7 },
 };
 
-/** Objetivo → fit e escala. Vender e lançar são as duas de maior escala. */
-const OBJETIVO: Record<string, { fit: number; escala: number }> = {
-  'Vender mais': { fit: 9, escala: 9 },
-  'Autoridade no meu nicho': { fit: 8, escala: 6 },
-  'Lançar algo novo': { fit: 8, escala: 9 },
-  'Atrair gente boa para a equipe': { fit: 6, escala: 5 },
-};
-
 /**
  * Trava → dor.
  *
@@ -142,17 +134,8 @@ const TRAVA: Record<string, number> = {
   'Não gosto de aparecer': 5,
 };
 
-/** Aparecer → autoridade e presença. */
-const APARECE: Record<string, { autoridade: number; presenca: number }> = {
-  Apareço: { autoridade: 10, presenca: 8 },
-  'Tanto faz': { autoridade: 6, presenca: 6 },
-  // Não aparecer NÃO derruba o lead: a Doxa tem caminho para isso, e a própria
-  // pergunta diz isso na dica. O que cai é a autoridade de rosto, não o lead.
-  'Prefiro não aparecer': { autoridade: 3, presenca: 5 },
-};
-
 /** Quantas respostas da ficha existem — o denominador da intenção. */
-const CAMPOS_DA_FICHA = 5;
+const CAMPOS_DA_FICHA = 3;
 
 const limita = (n: number) => Math.max(0, Math.min(10, Math.round(n)));
 
@@ -167,18 +150,14 @@ function respondidas(ficha: Ficha): number {
   let n = 0;
   if (ficha.segmento) n++;
   if (ficha.faturamento) n++;
-  if (ficha.objetivo) n++;
   if (ficha.trava && ficha.trava.length > 0) n++;
-  if (ficha.aparece) n++;
   return n;
 }
 
 /** Os sete eixos de um lead, cada um de 0 a 10. */
 export function eixosDo(lead: LeadNovo): Record<Eixo, number> {
   const seg = lead.segmento ? SEGMENTO[lead.segmento] : undefined;
-  const obj = lead.objetivo ? OBJETIVO[lead.objetivo] : undefined;
   const fat = lead.faturamento ? FATURAMENTO[lead.faturamento] : undefined;
-  const apa = lead.aparece ? APARECE[lead.aparece] : undefined;
   const travas = lead.trava ?? [];
 
   /*
@@ -209,14 +188,27 @@ export function eixosDo(lead: LeadNovo): Record<Eixo, number> {
    */
   const verba = lead.investimento != null ? INVESTIMENTO[lead.investimento] : (fat?.verba ?? 0);
 
+  /*
+   * ─── COM DUAS PERGUNTAS A MENOS, TRÊS EIXOS TROCARAM DE FONTE ──────────────
+   *
+   * Saíram "o que você quer que os vídeos façam?" e "você aparece nos vídeos?".
+   * Elas alimentavam metade de FIT, metade de ESCALA, metade de AUTORIDADE e a
+   * segunda metade de PRESENÇA. Em vez de deixar os quatro pela metade — o que
+   * derrubaria o score de todo lead sem que nada tivesse piorado —, cada um
+   * passou a ser lido inteiro pela fonte que sobrou.
+   *
+   * PRESENÇA virou binária, e é honesto que seja: sem a pergunta do rosto, o
+   * que a ficha sabe sobre presença digital é se existe um perfil para o
+   * consultor abrir antes da conversa. Existe ou não existe.
+   */
   return {
-    fit: limita(((seg?.fit ?? 0) + (obj?.fit ?? 0)) / (seg && obj ? 2 : seg || obj ? 1 : 1)),
+    fit: limita(seg?.fit ?? 0),
     dor: limita(dor),
     verba: limita(verba ?? 0),
-    escala: limita(((fat?.escala ?? 0) + (obj?.escala ?? 0)) / (fat && obj ? 2 : fat || obj ? 1 : 1)),
+    escala: limita(fat?.escala ?? 0),
     intencao: limita(intencao),
-    presenca: limita(lead.arroba ? 6 + (apa?.presenca ?? 4) / 2 : 0),
-    autoridade: limita(((seg?.autoridade ?? 0) + (apa?.autoridade ?? 0)) / (seg && apa ? 2 : seg || apa ? 1 : 1)),
+    presenca: limita(lead.arroba ? 9 : 0),
+    autoridade: limita(seg?.autoridade ?? 0),
   };
 }
 

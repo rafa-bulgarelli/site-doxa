@@ -39,9 +39,7 @@ create table if not exists public.leads (
   --    pulável inteira, então "não respondeu" é um estado legítimo e comum.
   segmento text,
   faturamento text,
-  objetivo text,
   trava text[],
-  aparece text,
 
   -- ── O estado na Central. Um lead vira "baixado" quando sai num CSV.
   baixado boolean not null default false,

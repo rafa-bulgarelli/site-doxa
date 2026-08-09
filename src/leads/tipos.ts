@@ -27,9 +27,7 @@ export type Caminho = 'empresa' | 'agencia';
 export interface Ficha {
   segmento: string | null;
   faturamento: string | null;
-  objetivo: string | null;
   trava: string[] | null;
-  aparece: string | null;
 }
 
 /** O lead como ele sai do formulário — sem id, sem data, sem score. */
@@ -84,7 +82,5 @@ export interface Lead extends LeadNovo {
 export const LEAD_VAZIO: Ficha = {
   segmento: null,
   faturamento: null,
-  objetivo: null,
   trava: null,
-  aparece: null,
 };

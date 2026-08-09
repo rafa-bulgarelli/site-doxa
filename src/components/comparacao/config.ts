@@ -302,7 +302,16 @@ export const PAGAMENTOS = ['Pix', 'Cartão', 'Apple Pay', 'Google Pay'];
 export const OUTRO = 'Outro';
 
 export interface PerguntaFicha {
-  chave: 'segmento' | 'faturamento' | 'objetivo' | 'trava' | 'aparece';
+  /*
+   * Três perguntas de contexto, e eram cinco.
+   *
+   * Saíram "o que você quer que os vídeos façam?" e "você aparece nos vídeos?",
+   * a pedido do dono. As duas eram boas perguntas de BRIEFING e ruins de
+   * qualificação: a resposta muda o roteiro, não muda se a conversa acontece —
+   * e cada pergunta no meio do funil custa gente que desiste. As duas voltam a
+   * ser feitas pelo consultor, na ligação, onde elas valem mais.
+   */
+  chave: 'segmento' | 'faturamento' | 'trava';
   /** O rótulo curto da resposta guardada. */
   rotulo: string;
   pergunta: string;
@@ -353,8 +362,8 @@ export interface PerguntaFicha {
 export const FICHA: readonly PerguntaFicha[] = [
   {
     chave: 'segmento',
-    rotulo: 'Segmento',
-    pergunta: 'O que a sua empresa vende?',
+    rotulo: 'Nicho',
+    pergunta: 'Qual é o nicho da sua empresa?',
     dica: 'Para o consultor chegar sabendo do que se trata.',
     opcoes: [
       'Advocacia',
@@ -373,24 +382,26 @@ export const FICHA: readonly PerguntaFicha[] = [
     rotulo: 'Faturamento',
     pergunta: 'Quanto a empresa fatura hoje?',
     dica: 'Por faixa, e fica entre nós. É o que dimensiona a proposta.',
+    /*
+     * A escada do faturamento, refeita a pedido do dono.
+     *
+     * Saiu o "até 20 mil" — abaixo do budget mínimo, essa empresa já não passa
+     * do corte — e saiu o "prefiro não dizer", que era uma saída sem custo para
+     * a única pergunta que dimensiona a proposta.
+     *
+     * E o topo deixou de ser um teto: "mais de 200 mil" juntava numa pílula só
+     * a empresa de trezentos mil e a de cinco milhões, que são duas conversas
+     * comerciais completamente diferentes. Agora a escada sobe até "mais de 5
+     * milhões", e é lá em cima que ela ganha degraus.
+     */
     opcoes: [
-      'Até R$ 20 mil',
-      'R$ 20 a 50 mil',
+      'Até R$ 50 mil',
       'R$ 50 a 200 mil',
-      'Mais de R$ 200 mil',
-      'Prefiro não dizer',
-    ],
-  },
-  {
-    chave: 'objetivo',
-    rotulo: 'Objetivo',
-    pergunta: 'O que você quer que os vídeos façam?',
-    dica: 'A resposta muda o roteiro antes de mudar qualquer outra coisa.',
-    opcoes: [
-      'Vender mais',
-      'Autoridade no meu nicho',
-      'Lançar algo novo',
-      'Atrair gente boa para a equipe',
+      'R$ 200 a 500 mil',
+      'R$ 500 mil a R$ 1 milhão',
+      'R$ 1 a 3 milhões',
+      'R$ 3 a 5 milhões',
+      'Mais de R$ 5 milhões',
     ],
   },
   {
@@ -406,23 +417,6 @@ export const FICHA: readonly PerguntaFicha[] = [
       'Não tenho equipe',
     ],
     multipla: true,
-  },
-  {
-    chave: 'aparece',
-    rotulo: 'Aparecer',
-    /*
-     * A pergunta que nenhum formulário de qualificação padrão tem, e a mais
-     * desta empresa que existe na lista.
-     *
-     * As outras quatro serviriam a qualquer fornecedor de qualquer coisa. Esta
-     * é sobre a ENTREGA: a oferta da página é "uma foto e um áudio", e se a
-     * pessoa não quer aparecer, muda o que se produz, muda o preço e muda a
-     * conversa inteira. É também a objeção mais silenciosa do mercado — quem
-     * tem vergonha de câmera não escreve isso em lugar nenhum, e some.
-     */
-    pergunta: 'Você aparece nos vídeos?',
-    dica: 'Não aparecer é uma resposta comum aqui, e tem caminho.',
-    opcoes: ['Apareço', 'Prefiro não aparecer', 'Tanto faz'],
   },
 ];
 

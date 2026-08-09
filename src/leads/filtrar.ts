@@ -43,7 +43,7 @@ function palheiro(lead: Lead): string {
   return simplificar(
     [
       lead.nome, lead.whatsapp, lead.email, lead.arroba, lead.origem,
-      lead.segmento, lead.faturamento, lead.objetivo, lead.aparece,
+      lead.segmento, lead.faturamento,
       lead.investimento, ...(lead.trava ?? []),
     ]
       .filter(Boolean)

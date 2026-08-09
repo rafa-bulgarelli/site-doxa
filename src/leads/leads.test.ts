@@ -12,7 +12,7 @@ import { describe, expect, it } from 'vitest';
 import { derivar, simplificar } from './filtrar';
 import { montarCsv } from './csv';
 import { eixosDo, estrelasDe, pontosDe, scoreDo } from './score';
-import { CORTE, INVESTIMENTO } from '../components/comparacao/config';
+import { CORTE, FICHA, INVESTIMENTO } from '../components/comparacao/config';
 import type { Lead, LeadNovo } from './tipos';
 
 const base: LeadNovo = {
@@ -26,9 +26,7 @@ const base: LeadNovo = {
   origem: 'Formulário do site',
   segmento: null,
   faturamento: null,
-  objetivo: null,
   trava: null,
-  aparece: null,
 };
 
 function lead(extra: Partial<Lead> = {}): Lead {
@@ -78,7 +76,17 @@ describe('score', () => {
   });
 
   it('sem investimento declarado, o faturamento assume a verba', () => {
-    expect(eixosDo({ ...base, faturamento: 'Mais de R$ 200 mil' }).verba).toBe(10);
+    expect(eixosDo({ ...base, faturamento: 'Mais de R$ 5 milhões' }).verba).toBe(10);
+  });
+
+  it('toda faixa de faturamento tem nota — a mesma guarda da de investimento', () => {
+    const faixas = FICHA.find((f) => f.chave === 'faturamento')?.opcoes ?? [];
+    expect(faixas.length).toBeGreaterThan(0);
+    for (const faixa of faixas) {
+      const { verba, escala } = eixosDo({ ...base, faturamento: faixa });
+      expect(verba, `faixa sem nota: ${faixa}`).toBeGreaterThan(0);
+      expect(escala, `faixa sem escala: ${faixa}`).toBeGreaterThan(0);
+    }
   });
 
   it('a dor é a maior trava, mais um ponto por trava extra', () => {
@@ -96,10 +104,8 @@ describe('score', () => {
       email: 'a@b.com',
       arroba: '@x',
       segmento: 'Advocacia',
-      faturamento: 'R$ 20 a 50 mil',
-      objetivo: 'Vender mais',
+      faturamento: 'R$ 50 a 200 mil',
       trava: ['Não tenho tempo'],
-      aparece: 'Apareço',
     });
     expect(cru.intencao).toBe(0);
     expect(completo.intencao).toBe(10);
@@ -109,8 +115,8 @@ describe('score', () => {
     const extremos = [
       base,
       { ...base, trava: ['Já paguei agência e não deu certo', 'Não tenho tempo', 'Não tenho equipe'] },
-      { ...base, investimento: 'Mais de R$ 5.000', segmento: 'Advocacia', aparece: 'Apareço' },
-      { ...base, segmento: 'Coisa que não está na tabela', objetivo: 'Outro objetivo qualquer' },
+      { ...base, investimento: 'Mais de R$ 5.000', segmento: 'Advocacia' },
+      { ...base, segmento: 'Coisa que não está na tabela', faturamento: 'Faixa inexistente' },
     ];
     for (const caso of extremos) {
       for (const valor of Object.values(eixosDo(caso))) {
@@ -168,12 +174,10 @@ describe('derivação da tela', () => {
       nome: 'Forte',
       investimento: 'Mais de R$ 5.000',
       segmento: 'Advocacia',
-      objetivo: 'Vender mais',
       trava: ['Já paguei agência e não deu certo'],
-      aparece: 'Apareço',
       arroba: '@forte',
       email: 'forte@x.com',
-      faturamento: 'Mais de R$ 200 mil',
+      faturamento: 'Mais de R$ 5 milhões',
     });
     const visao = derivar([fraco, forte], { ...escolhas, ordem: 'score' });
     expect(visao.daPagina[0].nome).toBe('Forte');

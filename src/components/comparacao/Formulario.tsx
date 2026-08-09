@@ -567,9 +567,7 @@ export function Formulario({
          depois — e um `[]` que significa "não respondeu" é pior ainda. */
       segmento: uma(ficha.segmento),
       faturamento: uma(ficha.faturamento),
-      objetivo: uma(ficha.objetivo),
       trava: ficha.trava.length > 0 ? ficha.trava : null,
-      aparece: uma(ficha.aparece),
     };
   };
 
@@ -1093,27 +1091,98 @@ export function Formulario({
                 transition={{ duration: 0.6, ease: EASE }}
                 className="mt-7"
               >
-                {/* Creme sobre preto: no cartão, o disco da confirmação é a única
-                    coisa em papel cheio, e é ele que devolve a cor do painel
-                    para dentro da caixa que respondeu. */}
-                <motion.span
-                  initial={parado ? undefined : { scale: 0.6, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  transition={{ duration: 0.5, ease: EASE, delay: 0.1 }}
-                  className="flex h-14 w-14 items-center justify-center rounded-full bg-[#F4F1E8] text-[#0B0B0B]"
-                >
-                  <Check className="h-7 w-7" strokeWidth={2} />
-                </motion.span>
+                {/* ── A CHEGADA DAS RESPOSTAS ────────────────────────────────
+
+                    Pedido do dono: uma animação bonita de recebimento. O que ela
+                    encena é literal — as respostas SAINDO da fila e entrando no
+                    disco —, e cada peça tem função:
+
+                    · Dois anéis que se abrem e somem, no mesmo vocabulário do
+                      LED do selo "Com Doxa". É o sinal de que alguma coisa
+                      partiu daqui.
+                    · O disco creme, que é a única superfície de papel cheio
+                      dentro do cartão preto — a cor do painel voltando para
+                      dentro da caixa que respondeu.
+                    · O visto DESENHADO, e não aparecido: `pathLength` de 0 a 1
+                      faz o traço correr como se estivesse sendo escrito à mão.
+                      É a diferença entre "estava pronto" e "acabou de acontecer".
+
+                    Tudo em `transform` e `opacity`, que são as duas propriedades
+                    que o compositor resolve sozinho — a animação não custa
+                    layout nenhum. E `parado` desliga tudo: quem pediu menos
+                    movimento recebe o disco já desenhado, sem perder informação
+                    nenhuma. */}
+                <span className="relative flex h-14 w-14 items-center justify-center">
+                  {!parado &&
+                    [0, 0.45].map((atraso) => (
+                      <motion.span
+                        key={atraso}
+                        aria-hidden
+                        className="absolute inset-0 rounded-full border border-[#F4F1E8]"
+                        initial={{ scale: 0.7, opacity: 0.55 }}
+                        animate={{ scale: 2.1, opacity: 0 }}
+                        transition={{
+                          duration: 1.6,
+                          ease: 'easeOut',
+                          delay: 0.25 + atraso,
+                          repeat: 1,
+                          repeatDelay: 0.5,
+                        }}
+                      />
+                    ))}
+
+                  <motion.span
+                    initial={parado ? undefined : { scale: 0.4, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    transition={
+                      parado
+                        ? undefined
+                        : { type: 'spring', stiffness: 260, damping: 16, delay: 0.05 }
+                    }
+                    className="relative flex h-14 w-14 items-center justify-center rounded-full bg-[#F4F1E8] text-[#0B0B0B]"
+                  >
+                    <svg
+                      viewBox="0 0 24 24"
+                      className="h-7 w-7"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth={2.4}
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      aria-hidden
+                    >
+                      <motion.path
+                        d="M20 6 9 17l-5-5"
+                        initial={parado ? undefined : { pathLength: 0 }}
+                        animate={{ pathLength: 1 }}
+                        transition={parado ? undefined : { duration: 0.45, ease: EASE, delay: 0.35 }}
+                      />
+                    </svg>
+                  </motion.span>
+                </span>
 
                 {/* O fim único do formulário. Não há segunda fase: a ficha
                     inteira foi respondida (ou pulada) antes desta tela, dentro
                     da mesma fila. */}
-                <p className="mt-6 font-serif text-[1.9rem] leading-[1.1] tracking-[-0.02em] text-[#F4F1E8] md:text-[2.3rem]">
+                {/* A cascata: o título entra quando o visto termina de ser
+                    desenhado, e a promessa logo atrás dele. Ler as duas ao
+                    mesmo tempo é ler nenhuma. */}
+                <motion.p
+                  initial={parado ? undefined : { opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={parado ? undefined : { duration: 0.5, ease: EASE, delay: 0.7 }}
+                  className="mt-6 font-serif text-[1.9rem] leading-[1.1] tracking-[-0.02em] text-[#F4F1E8] md:text-[2.3rem]"
+                >
                   Recebemos.
-                </p>
-                <p className="mt-3 max-w-sm text-[15px] leading-snug text-white/55">
+                </motion.p>
+                <motion.p
+                  initial={parado ? undefined : { opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={parado ? undefined : { duration: 0.5, ease: EASE, delay: 0.85 }}
+                  className="mt-3 max-w-sm text-[15px] leading-snug text-white/55"
+                >
                   {RETORNO} No WhatsApp que você deixou, {dados.whatsapp}.
-                </p>
+                </motion.p>
 
               </motion.div>
             )}

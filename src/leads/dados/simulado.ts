@@ -80,19 +80,16 @@ const SEGMENTOS = [
   'Alimentação', 'Varejo e e-commerce', 'Serviços para empresas',
 ];
 const FATURAMENTOS = [
-  'Até R$ 20 mil', 'R$ 20 a 50 mil', 'R$ 50 a 200 mil', 'Mais de R$ 200 mil', 'Prefiro não dizer',
-];
-const OBJETIVOS = [
-  'Vender mais', 'Autoridade no meu nicho', 'Lançar algo novo', 'Atrair gente boa para a equipe',
+  'Até R$ 50 mil', 'R$ 50 a 200 mil', 'R$ 200 a 500 mil', 'R$ 500 mil a R$ 1 milhão',
+  'R$ 1 a 3 milhões', 'R$ 3 a 5 milhões', 'Mais de R$ 5 milhões',
 ];
 const TRAVAS = [
   'Não tenho tempo', 'Não sei o que falar', 'Não gosto de aparecer',
   'Já paguei agência e não deu certo', 'Não tenho equipe',
 ];
-const APARECE = ['Apareço', 'Prefiro não aparecer', 'Tanto faz'];
 const INVESTIMENTOS = [
-  'Abaixo de R$ 1.000', 'R$ 1.000 a R$ 1.500', 'R$ 1.500 a R$ 2.000', 'R$ 2.000 a R$ 2.500',
-  'R$ 2.500 a R$ 3.000', 'R$ 3.000 a R$ 4.000', 'R$ 4.000 a R$ 5.000', 'Mais de R$ 5.000',
+  'Abaixo de R$ 1.000', 'R$ 1.000 a R$ 2.000', 'R$ 2.000 a R$ 4.000',
+  'R$ 4.000 a R$ 5.000', 'Mais de R$ 5.000',
 ];
 
 /**
@@ -134,9 +131,7 @@ function inventar(i: number): Lead {
     origem: i % 6 === 1 ? 'Campanha Meta' : 'Formulário do site',
     segmento: semFicha ? null : pega(SEGMENTOS, i * 2),
     faturamento: semFicha ? null : pega(FATURAMENTOS, i * 11),
-    objetivo: semFicha ? null : pega(OBJETIVOS, i * 13),
     trava: semFicha ? null : TRAVAS.filter((_, t) => semente(i * 17 + t) > 0.55),
-    aparece: semFicha ? null : pega(APARECE, i * 19),
   };
 
   return {

@@ -145,10 +145,8 @@ export function Detalhe({ lead, aoFechar }: { lead: Lead; aoFechar: () => void }
             <Campo rotulo="E-mail" valor={lead.email} />
             <Campo rotulo="Instagram" valor={lead.arroba} />
             <Campo rotulo="Investimento por mês" valor={lead.investimento} />
-            <Campo rotulo="Segmento" valor={lead.segmento} />
+            <Campo rotulo="Nicho" valor={lead.segmento} />
             <Campo rotulo="Faturamento atual" valor={lead.faturamento} />
-            <Campo rotulo="Objetivo com os vídeos" valor={lead.objetivo} />
-            <Campo rotulo="Aparece nos vídeos?" valor={lead.aparece} />
           </div>
 
           {/* A trava é lista e ganha a linha inteira: com cinco marcadas, uma
