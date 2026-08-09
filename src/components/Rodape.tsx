@@ -265,6 +265,17 @@ export function Rodape() {
                * luz sobre a clareira, o que separa o texto do campo mesmo no
                * instante em que um quadro claro atravessa a borda do halo.
                */}
+              {/* `leading-[1.25]` no telefone e `1.08` de 640 para cima.
+
+               * O 1,08 abaixo continua sendo a decisão do desktop, e a nota
+               * dele explica por que não é 0,95. No telefone a conta muda de
+               * novo pela mesma razão, um degrau adiante: lá o título tem TRÊS
+               * linhas em vez de duas — a primeira frase se equilibra em duas e
+               * a segunda ocupa a terceira —, e três linhas de serifa grande a
+               * 1,08 leem como um parágrafo, não como duas frases. Um quarto de
+               * entrelinha a mais devolve o ar que separa as duas.
+               *
+               * ─── e a nota original, que segue valendo no desktop: */}
               {/* `leading-[1.08]` e não `0.95`, a pedido do dono.
                *
                * Entrelinha abaixo de 1 é o ajuste certo para uma manchete de uma
@@ -340,7 +351,7 @@ export function Rodape() {
                * de um telefone de 320: continua em duas linhas, e continua
                * equilibrada pelo `text-balance`. A redução tirou 25 pixels de
                * altura do bloco, que a clareira já cobria com folga. */}
-              <h2 className="texto-aceso text-balance font-serif text-[min(9.95vw,3.32rem)] leading-[1.08] tracking-[-0.03em] text-[#F4F1E8] sm:text-[2.6rem] md:text-[4.4rem]">
+              <h2 className="texto-aceso text-balance font-serif text-[min(9.95vw,3.32rem)] leading-[1.25] tracking-[-0.03em] sm:leading-[1.08] text-[#F4F1E8] sm:text-[2.6rem] md:text-[4.4rem]">
                 {FECHO.titulo}
                 <span className="block">{FECHO.linha}</span>
               </h2>
@@ -357,22 +368,27 @@ export function Rodape() {
                   mesmo tamanho não são um título e um subtítulo, são dois
                   parágrafos. 14px devolve a distância onde ela some.
  
-                  E o vão encolhe junto: `mt-5` era o respiro de um bloco de
-                  quatro linhas. Com duas, ele afasta o subtítulo de um título
-                  que ficou curto — o ritmo do bloco tem de acompanhar o tamanho
-                  dele, senão o que sobra é ar no meio de uma coisa só. */}
-              <p className="mx-auto mt-3 max-w-lg text-[14px] text-white/85 sm:mt-5 sm:text-[16px] md:text-[17px]">
+                  E os dois números voltaram a subir na rodada seguinte, com o
+                  dono olhando o bloco pronto: 14px eram pouco embaixo de um
+                  título que entretanto crescera 1,5x, e 12 pixels de vão
+                  colavam o subtítulo nele. 16 e 24 devolvem os dois degraus.
+ 
+                  O ritmo do bloco tem de acompanhar o tamanho dele — é a mesma
+                  regra que fez os números descerem antes e subirem agora. */}
+              <p className="mx-auto mt-6 max-w-lg text-[16px] text-white/85 sm:mt-5 md:text-[17px]">
                 {FECHO.publico}
               </p>
 
               {/* O único ponto clicável do campo. `pointer-events-auto` devolve
                   o clique a ele e a mais nada: em volta, a mão continua
                   arrastando o mosaico. */}
-              {/* `mt-6` no telefone contra os `mt-9` de antes, pela mesma razão do
-                  subtítulo — e com uma a mais: o botão é a AÇÃO, e ar demais
-                  entre a frase e a ação lê como duas seções, não como um pedido
-                  e o seu botão. */}
-              <div className="pointer-events-auto mt-6 flex justify-center sm:mt-9">
+              {/* `mt-9` nas duas larguras. O telefone chegou a ter `mt-6` — e
+                  o argumento era bom: ar demais entre a frase e a ação lê como
+                  duas seções, não como um pedido e o seu botão. Só que com o
+                  título uma vez e meia maior o bloco inteiro cresceu, e 24
+                  pixels debaixo de três linhas de serifa grande pararam de ser
+                  "perto" e viraram "grudado". O mesmo 36 dos dois lados. */}
+              <div className="pointer-events-auto mt-9 flex justify-center">
                 <MotionButton label={FECHO.acao} href={FECHO.destino} />
               </div>
             </motion.div>

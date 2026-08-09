@@ -1567,7 +1567,7 @@ html::-webkit-scrollbar {
     background: radial-gradient(
       ellipse 85% 46% at 50% 50%,
       theme('colors.doxa.stage') 0%,
-      theme('colors.doxa.stage') 55%,
+      theme('colors.doxa.stage') 58%,
       theme('colors.doxa.stage / 0%') 100%
     );
   }
