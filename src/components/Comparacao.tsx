@@ -174,6 +174,39 @@ function Contador({ ate, naTela }: { ate: number; naTela: boolean }) {
   return <motion.span className="tabular-nums">{texto}</motion.span>;
 }
 
+/**
+ * A conta do jeito antigo, e ela vive em DOIS lugares que nunca aparecem juntos.
+ *
+ * Até 640px ela é o ÚLTIMO elemento da coluna, grande, como resposta à pergunta
+ * do alto — pedido do dono. De 640 para cima continua onde sempre esteve, ao
+ * lado do título. As duas instâncias são a mesma função de propósito: são o
+ * mesmo número, e dois trechos de JSX com `CUSTO_DE` dentro divergiriam no dia
+ * em que alguém mexesse num só. A que não é a vez fica em `display: none`, então
+ * o leitor de tela lê o valor uma vez.
+ */
+function Conta({
+  naTela,
+  className,
+  unidade,
+}: {
+  naTela: boolean;
+  className: string;
+  /** O `/mês`, que tem corpo próprio em cada um dos dois lugares. */
+  unidade: string;
+}) {
+  return (
+    <span className={className}>
+      R$ <Contador ate={CUSTO_DE} naTela={naTela} /> a{' '}
+      <Contador ate={CUSTO_ATE} naTela={naTela} />
+      {/* O `/mês` em destaque, a pedido do dono, e o argumento é dele: no fim
+          do dia o que dói não é o valor, é a recorrência dele. Um custo alto se
+          engole uma vez; um custo alto TODO MÊS, sem resultado garantido, é o
+          que faz a pergunta do título doer. */}
+      <span className={`align-baseline text-white/75 ${unidade}`}>{CUSTO_UNIDADE}</span>
+    </span>
+  );
+}
+
 export function Comparacao() {
   const escuroRef = useRef<HTMLDivElement>(null);
   const claroRef = useRef<HTMLDivElement>(null);
@@ -266,29 +299,20 @@ export function Comparacao() {
                 para ocupar o peso que ela dividia. O `/mês` sozinho já diz que
                 é recorrente, e um número desacompanhado bate mais forte do que
                 um número com uma legenda ao lado pedindo atenção. */}
-            {/* 1,5rem e `nowrap` até 640px, a pedido do dono: a conta cabe numa
-                linha só no telefone.
+            {/* ESCONDIDA no telefone, e é uma mudança de ordem, não de peso: a
+                conta desceu para o pé da coluna, onde ela responde a pergunta em
+                vez de dividir a linha com ela. O bloco continua aqui, intacto,
+                de 640px para cima — no desktop a coluna inteira cabe na tela e a
+                pergunta e a resposta lado a lado são uma frase só.
 
-                Ela vinha maior que o título — 41,6px contra 36 — e quebrava em
-                duas linhas, o que custava dois erros de uma vez: a hierarquia
-                invertida, com o número gritando mais alto que a pergunta que ele
-                responde, e cinquenta pixels comidos do vão da lista embaixo.
-                Menor que o título, ela volta a ser a resposta e não a manchete.
-
-                O `nowrap` é o que garante a linha única independente do que o
-                número vier a ser: se `CUSTO_ATE` ganhar uma casa, o corpo é que
-                fica apertado — a quebra não volta pela porta dos fundos. */}
-            <span className="whitespace-nowrap font-serif text-[1.5rem] leading-none text-white sm:whitespace-normal sm:text-[2.6rem] md:text-[4.6rem]">
-              R$ <Contador ate={CUSTO_DE} naTela={contaNaTela} /> a{' '}
-              <Contador ate={CUSTO_ATE} naTela={contaNaTela} />
-              {/* O `/mês` em destaque, a pedido do dono, e o argumento é dele:
-                  no fim do dia o que dói não é o valor, é a recorrência dele.
-                  Um custo alto se engole uma vez; um custo alto TODO MÊS, sem
-                  resultado garantido, é o que faz a pergunta do título doer. */}
-              <span className="ml-1 align-baseline text-[1rem] text-white/75 sm:text-3xl md:text-[3.2rem]">
-                {CUSTO_UNIDADE}
-              </span>
-            </span>
+                Os 48 pixels que ela devolve ao cabeçalho (o próprio corpo e o
+                `gap-y-6` que ela obrigava) voltam para a janela da lista, que é
+                quem estava pagando a conta desta seção no telefone. */}
+            <Conta
+              naTela={contaNaTela}
+              className="hidden whitespace-nowrap font-serif leading-none text-white sm:block sm:whitespace-normal sm:text-[2.6rem] md:text-[4.6rem]"
+              unidade="ml-1 sm:text-3xl md:text-[3.2rem]"
+            />
           </div>
 
           {/* A ladainha desceu de corpo e a frase abaixo dela subiu, e essa
@@ -380,6 +404,46 @@ export function Comparacao() {
             <span className="text-[#F4F1E8]/60">{SEM_GARANTIA[0]}</span>{' '}
             <span className="texto-aceso text-white">{SEM_GARANTIA[1]}</span>
           </motion.p>
+
+          {/* ─── A RESPOSTA, no pé da coluna e só no telefone ─────────────────
+           *
+           * Pedido do dono, e a mudança é de ORDEM: no cabeçalho a conta dividia
+           * a linha com a pergunta e as duas competiam; aqui embaixo ela responde
+           * a pergunta que abre a coluna, depois de a fatura inteira ter sido
+           * somada na frente de quem lê. É a última linha da nota.
+           *
+           * 2,2rem contra os 1,8 do título, e a inversão é de propósito agora:
+           * lado a lado, um número maior que a pergunta é o número gritando por
+           * cima dela; a uma tela de distância, ele é a resposta batendo mais
+           * alto do que a pergunta — que é o que uma resposta deve fazer. Com
+           * `texto-aceso`, o mesmo brilho que a página dá ao que ela quer que
+           * seja lido primeiro.
+           *
+           * O corpo tem teto e o teto é a largura: "R$ 8.000 a 10.500/mês" mede
+           * cerca de 249 pixels a 2,2rem, e o telefone de 320 dá 280 úteis. É a
+           * mesma razão do `nowrap` — se `CUSTO_ATE` ganhar uma casa, aperta o
+           * corpo, não volta a quebrar em duas linhas.
+           *
+           * SEM revelação por rolagem, e é decisão consciente. O fecho acende em
+           * 77% e termina em 92% porque a folga do fim é o painel claro subindo;
+           * uma terceira revelação depois dele acenderia debaixo do papel. Sem
+           * gatilho, a conta fica de pé no pé da coluna o percurso inteiro — a
+           * pergunta lá em cima com a resposta aqui embaixo, e a lista sendo
+           * somada entre as duas.
+           *
+           * ATENÇÃO para quem for mexer: o painel claro entra girado e cobre o
+           * terço de baixo da tela no fim do percurso. Este bloco é o mais baixo
+           * da coluna e é o primeiro que o papel cobre. Ele é lido durante a
+           * contagem, não no último quadro — o último quadro é do fecho, por
+           * desenho. Foi exatamente por isso que a conta subiu para o cabeçalho
+           * um dia; ela só pode descer de novo porque agora fica visível o tempo
+           * todo em vez de acender no fim.
+           */}
+          <Conta
+            naTela={contaNaTela}
+            className="mt-7 block whitespace-nowrap font-serif text-[2.2rem] leading-none text-white texto-aceso sm:hidden"
+            unidade="ml-1 text-[1.2rem]"
+          />
         </div>
       </div>
 
