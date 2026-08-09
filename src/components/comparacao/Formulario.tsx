@@ -499,7 +499,13 @@ export function Formulario({ cartaoRef }: { cartaoRef: RefObject<HTMLDivElement>
       {/* O sinal que chegou pelo fio continua aqui, contornando o cartão. */}
       <BordaViva alvoRef={cartaoRef} />
 
-      <div className="relative p-8 md:p-12">
+      <div className="relative p-6 md:p-12">
+        {/* `p-6` no telefone contra os `p-8` de antes: 216 pixels úteis num
+            aparelho de 320 são estreitos para uma trilha de quatro etapas, uma
+            pergunta em serifa e duas alternativas de linha inteira. Os 16 que
+            o recuo devolve vão para o texto de todas elas. No `md` o recuo
+            continua sendo o dobro — lá a largura nunca foi o problema. */}
+
         {/* ── O NOME DO QUE ESTÁ SENDO PREENCHIDO.
 
             O cartão não se apresentava: quem chegava por um dos botões de CTA
@@ -519,7 +525,7 @@ export function Formulario({ cartaoRef }: { cartaoRef: RefObject<HTMLDivElement>
           initial={parado ? undefined : { opacity: 0, y: -6 }}
           animate={naTela || parado ? { opacity: 1, y: 0 } : undefined}
           transition={{ duration: 0.5, ease: EASE, delay: 0.25 }}
-          className="mb-6"
+          className="mb-7"
         >
           {/* Serifa e a FITA DO FAQ, a pedido do dono — o mesmo
               `texto-aceso-siri` de "Pergunte o que quiser.", que é o efeito que
@@ -532,10 +538,18 @@ export function Formulario({ cartaoRef }: { cartaoRef: RefObject<HTMLDivElement>
               não na tela.
 
               No dobro ele deixou de ser um rótulo acima do formulário e passou
-              a ser o TÍTULO do cartão — que é o que ele sempre disse ser. No
-              telefone a frase ocupa duas linhas nos 216 pixels úteis, e é o
-              certo: duas linhas de serifa grande são um título, uma linha de
-              corpo pequeno era uma etiqueta.
+              a ser o TÍTULO do cartão — que é o que ele sempre disse ser.
+
+              No telefone ele desceu 1,5x depois, a pedido do dono: 40px ali eram
+              duas linhas ocupando 122 pixels de um cartão que ainda tem quatro
+              etapas, uma pergunta e duas alternativas para mostrar. A 27 são as
+              mesmas duas linhas em 58.
+
+              E a ENTRELINHA passou a ser escrita. Sem ela o `<span>` herdava o
+              1,5 do corpo do documento — 60 pixels de altura de linha para uma
+              serifa de 40 —, e o que se via eram duas linhas de título com um
+              vão de parágrafo entre elas. 1,08 é a mesma conta das outras
+              manchetes do cartão.
 
               `sem-halo` desliga a auréola e deixa só a cor, a pedido do dono. É
               o tamanho que pede: o glow é uma auréola por glifo, e em serifa de
@@ -551,7 +565,7 @@ export function Formulario({ cartaoRef }: { cartaoRef: RefObject<HTMLDivElement>
               `.texto-aceso-siri` usa `margin-bottom` negativa para o gradiente
               alcançar as pernas dos glifos, e ela apagaria um `mb-6` posto no
               mesmo elemento. Duas caixas, duas responsabilidades. */}
-          <span className="texto-aceso-siri sem-halo font-serif text-[40px] tracking-[-0.02em] text-[#F4F1E8] md:text-[48px]">
+          <span className="texto-aceso-siri sem-halo font-serif text-[27px] leading-[1.08] tracking-[-0.02em] text-[#F4F1E8] md:text-[48px]">
             {AUDITORIA}
           </span>
         </motion.p>
@@ -658,7 +672,7 @@ export function Formulario({ cartaoRef }: { cartaoRef: RefObject<HTMLDivElement>
         <div className="min-h-[19rem]">
           <AnimatePresence mode="wait" initial={false}>
             {atual != null && (
-              <motion.div key={atual.chave} {...desliza} className="mt-7">
+              <motion.div key={atual.chave} {...desliza} className="mt-8">
                 {/* `<label>` quando há campo, `<div>` quando não há.
 
                     Um rótulo é a etiqueta de um controle e existe para que
@@ -675,7 +689,20 @@ export function Formulario({ cartaoRef }: { cartaoRef: RefObject<HTMLDivElement>
                     >
                       {atual.pergunta}
                     </p>
-                    <p className="mt-2 block text-[15px] text-white/70">{atual.dica}</p>
+                    {/* ── O RITMO DO PASSO, refeito a pedido do dono.
+ 
+                        Os vãos eram 8 · 24 · 12, e o problema não era nenhum
+                        deles isolado: era não haver diferença entre o vão que
+                        JUNTA e o vão que SEPARA. Pergunta e dica são uma coisa
+                        só — uma pede, a outra explica por que — e ficavam a 8
+                        de distância; a lista de alternativas, que é outra coisa,
+                        ficava a 24. Um terço a mais não é uma fronteira.
+ 
+                        Agora são 12 dentro do grupo e 28 entre grupos. O olho
+                        passa a ler dois blocos e não cinco linhas soltas, e é
+                        isso que "hierarquia" quer dizer aqui: não tamanho de
+                        letra, distância. */}
+                    <p className="mt-3 block text-[15px] text-white/70">{atual.dica}</p>
                   </div>
                 ) : (
                   <label htmlFor={`campo-${atual.chave}`} className="block">
@@ -687,7 +714,7 @@ export function Formulario({ cartaoRef }: { cartaoRef: RefObject<HTMLDivElement>
                         você quer isso de mim?" — a única defesa que o formulário
                         tem contra a pessoa desistir de entregar o dado. Escrita
                         em 13px a 45%, ela existia sem ser lida. */}
-                    <span className="mt-2 block text-[15px] text-white/70">{atual.dica}</span>
+                    <span className="mt-3 block text-[15px] text-white/70">{atual.dica}</span>
                   </label>
                 )}
 
@@ -705,7 +732,7 @@ export function Formulario({ cartaoRef }: { cartaoRef: RefObject<HTMLDivElement>
                      aqui como em toda pergunta de toque deste formulário. Ver a
                      nota sobre o avanço automático removido, no alto do
                      arquivo. */
-                  <div className="mt-6">
+                  <div className="mt-7">
                     <Escolha
                       rotuladoPor={`campo-${atual.chave}`}
                       opcoes={atual.opcoes}
