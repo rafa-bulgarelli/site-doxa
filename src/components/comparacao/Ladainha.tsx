@@ -147,6 +147,21 @@ const FREIO_MINIMO = 0.01;
  * componente —, e por isso a fatia dele é exportada em vez de aplicada aqui.
  */
 const FATIA_TOTAL = 0.66;
+
+/**
+ * Onde a CONTA acende, e ela é a linha do meio de uma cascata de três.
+ *
+ * Só existe no telefone: é lá que o valor desceu para o pé da coluna, e a pedido
+ * do dono ele passou a ter revelação como todo o resto. No desktop a conta mora
+ * ao lado do título e está de pé desde o primeiro quadro.
+ *
+ * A ordem é 66 · 70 · 77, e ela é o argumento inteiro desta coluna dito em três
+ * tempos: a soma fecha (o total), a conta aparece (o quanto isso custa), e só
+ * então o soco (que nada disso garante nada). Cada uma entra quando a anterior
+ * terminou de entrar — nenhuma disputa a atenção da outra, e é por isso que os
+ * números são estes e não três valores redondos.
+ */
+export const FATIA_CONTA = 0.7;
 export const FATIA_FECHO = 0.77;
 
 /** Tamanho da lâmina que segue o ponteiro, em pixels. */
@@ -521,9 +536,32 @@ export function Ladainha({
                 numero={String(i + 1).padStart(2, '0')}
                 nome={item.nome}
                 aoApontar={apontar(item)}
+                /*
+                 * BRANCO CHEIO no telefone, a pedido do dono, e ali é a única
+                 * cor que faz sentido.
+                 *
+                 * Os 45% existem para o desktop, onde a lista inteira está à
+                 * vista: apagada, ela é PROVA que sustenta o argumento sem
+                 * disputar com o título, e o branco fica reservado para o item
+                 * sob o ponteiro. No telefone não há ponteiro — `podeSeguir` é
+                 * falso —, então o estado aceso nunca acontece e os 45% deixam
+                 * de ser um degrau de hierarquia para virar simplesmente uma
+                 * lista cinza. Pior: ela corre dentro de uma janela de cinco
+                 * linhas, sobre preto, num aparelho que pode estar no sol.
+                 *
+                 * Os três estados continuam inteiros onde eles significam algo.
+                 */
                 className={`inline-block whitespace-nowrap [word-spacing:normal] transition-colors duration-300 ${
                   podeSeguir ? 'cursor-default' : ''
-                } ${aceso ? 'text-white' : apontado == null ? 'text-white/45' : 'text-white/20'}`}
+                } ${
+                  !isDesktop
+                    ? 'text-white'
+                    : aceso
+                      ? 'text-white'
+                      : apontado == null
+                        ? 'text-white/45'
+                        : 'text-white/20'
+                }`}
               />{' '}
             </Fragment>
           );

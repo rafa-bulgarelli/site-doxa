@@ -111,6 +111,26 @@ export const CUSTO_UNIDADE = '/mês';
 export const PERGUNTA = ['Quanto custa não ter a Doxa', 'na sua empresa?'];
 
 /**
+ * A MESMA pergunta, quebrada para a tela estreita.
+ *
+ * O dono pediu o título uma vez e meia maior no telefone, e a 2,7rem a primeira
+ * linha de `PERGUNTA` mede 385 pixels numa tela que tem 280 úteis. Ela quebra
+ * sozinha, e quebra no pior lugar possível: depois do "a", deixando "Doxa"
+ * órfã numa linha só — que foi exatamente o defeito que ele relatou quando o
+ * título ainda era 36px.
+ *
+ * Então a quebra é escrita, e não deixada para o navegador. As três linhas saem
+ * em 171, 200 e 214 pixels: nenhuma órfã, nenhuma perto do limite, e o corte
+ * cai entre orações em vez de no meio de uma.
+ *
+ * ATENÇÃO: são as MESMAS palavras de `PERGUNTA`, só com outras dobras. Se a
+ * pergunta mudar, as duas mudam no mesmo commit — senão o telefone e o desktop
+ * passam a fazer perguntas diferentes, e é o tipo de divergência que ninguém vê
+ * até um cliente ver.
+ */
+export const PERGUNTA_ESTREITA = ['Quanto custa', 'não ter a Doxa', 'na sua empresa?'];
+
+/**
  * O convite, e a ORDEM dele é o pedido do dono.
  *
  * Era "Pronto para viralizar?", que é o fim da história contada primeiro. Com a

@@ -1,21 +1,22 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   animate,
   motion,
   useInView,
   useMotionValue,
+  useMotionValueEvent,
   useReducedMotion,
   useScroll,
   useTransform,
 } from 'framer-motion';
 import wordmarkUrl from '../../brand/doxa-wordmark-white.png';
 import { ANCORA_FORMS } from '../ancoras';
-import { MANCHETE, TITULO_SECAO } from '../tipografia';
+import { MANCHETE } from '../tipografia';
 import { DotGridSpotlight } from './hero/DotGridSpotlight';
 import { BordaViva } from './comparacao/BordaViva';
 import { FioConvite } from './comparacao/FioConvite';
 import { Formulario } from './comparacao/Formulario';
-import { FATIA_FECHO, Ladainha, useContagem } from './comparacao/Ladainha';
+import { FATIA_CONTA, FATIA_FECHO, Ladainha, useContagem } from './comparacao/Ladainha';
 import { ProvaRotativa } from './comparacao/ProvaRotativa';
 import { useIsDesktop } from '../hooks/useIsDesktop';
 import {
@@ -28,6 +29,7 @@ import {
   NO_AR,
   PARADO,
   PERGUNTA,
+  PERGUNTA_ESTREITA,
   SEM_GARANTIA,
   TROCA_ANTES,
   TROCA_DEPOIS,
@@ -82,10 +84,17 @@ function Selo({ prefixo, escuro = false }: { prefixo: string; escuro?: boolean }
      * aqui" e continua lendo preto e creme.
      */
     <span
-      className="inline-flex w-fit items-center gap-2.5 rounded-full border py-2 pl-3 pr-4"
+      /* METADE do tamanho até 640px, a pedido do dono. Cada medida do selo
+         caiu pela metade — respiro, vãos, ponto, corpo e altura do logo —, e
+         não só o corpo do texto: encolher a letra dentro de uma cápsula do
+         mesmo tamanho não faz a cápsula diminuir, faz ela ficar folgada. O par
+         "Sem"/"Com" encolhe junto porque é um par: os dois painéis se leem em
+         comparação, e um selo maior que o outro vira diferença de importância.
+         `sm:` devolve tudo de 640 para cima. */
+      className="inline-flex w-fit items-center gap-1.5 rounded-full border py-1 pl-1.5 pr-2 sm:gap-2.5 sm:py-2 sm:pl-3 sm:pr-4"
       style={{ borderColor: `${cor}59`, background: `${cor}14` }}
     >
-      <span className="relative flex h-2 w-2 shrink-0" aria-hidden>
+      <span className="relative flex h-1 w-1 shrink-0 sm:h-2 sm:w-2" aria-hidden>
         {/* Dois anéis, e o segundo sai com meio ciclo de atraso: um anel só
             expande, some, e deixa um vão de silêncio antes do próximo — o que
             se vê é um piscar intermitente. Defasados, sempre há um anel
@@ -105,14 +114,16 @@ function Selo({ prefixo, escuro = false }: { prefixo: string; escuro?: boolean }
         {/* O núcleo tem brilho próprio na cor: sem ele o ponto é um adesivo
             colorido, com ele é uma luz acesa. */}
         <span
-          className="relative inline-flex h-2 w-2 rounded-full"
+          className="relative inline-flex h-1 w-1 rounded-full sm:h-2 sm:w-2"
           style={{ background: cor, boxShadow: `0 0 10px ${cor}, 0 0 3px ${cor}` }}
         />
       </span>
 
       {/* Caixa normal, a pedido do dono: em versalete o prefixo competia com o
           logo ao lado, e os dois juntos liam como duas marcas. */}
-      <span className={`text-[13px] tracking-tight ${escuro ? 'text-black/60' : 'text-white/60'}`}>
+      <span
+        className={`text-[7px] tracking-tight sm:text-[13px] ${escuro ? 'text-black/60' : 'text-white/60'}`}
+      >
         {prefixo}
       </span>
       {/* A arte é branca sobre transparente — no painel creme ela vira tinta com
@@ -122,7 +133,7 @@ function Selo({ prefixo, escuro = false }: { prefixo: string; escuro?: boolean }
       <img
         src={wordmarkUrl}
         alt="Doxa"
-        className={`h-[15px] w-auto ${escuro ? 'invert' : ''}`}
+        className={`h-[8px] w-auto sm:h-[15px] ${escuro ? 'invert' : ''}`}
       />
     </span>
   );
@@ -247,6 +258,25 @@ export function Comparacao() {
   const contagem = useContagem(secaoRef);
   /** A caixa em que a ladainha corre no telefone. Ver o bloco que a monta. */
   const janelaLadainhaRef = useRef<HTMLDivElement>(null);
+  /*
+   * A revelação da conta, e o gatilho do contador junto com ela.
+   *
+   * A régua vai de `FATIA_CONTA` até `FATIA_FECHO`: a conta termina de entrar no
+   * quadro exato em que o soco começa. É o que faz a cascata ser lida como três
+   * tempos e não como três coisas piscando.
+   *
+   * `contaAcesa` existe porque o contador e a revelação precisavam ser o MESMO
+   * evento. Preso ao `contaNaTela` do painel, o número subia de zero a dez mil e
+   * quinhentos enquanto ainda estava invisível — a contagem inteira acontecia
+   * atrás de uma opacidade zero, e o que aparecia depois era um número parado.
+   * Aqui ele começa a subir quando a conta começa a aparecer.
+   */
+  const contaOpacity = useTransform(contagem, [FATIA_CONTA, FATIA_FECHO], [0, 1]);
+  const contaY = useTransform(contagem, [FATIA_CONTA, FATIA_FECHO], [10, 0]);
+  const [contaAcesa, setContaAcesa] = useState(false);
+  useMotionValueEvent(contagem, 'change', (valor) => {
+    if (valor >= FATIA_CONTA) setContaAcesa(true);
+  });
   const fechoOpacity = useTransform(contagem, [FATIA_FECHO, 1], [0, 1]);
   const fechoY = useTransform(contagem, [FATIA_FECHO, 1], [10, 0]);
   const giro = useTransform(scrollYProgress, [0, 1], [GIRO, 0]);
@@ -289,10 +319,34 @@ export function Comparacao() {
                 que foi o que o dono leu. A 28px a linha cabe, o `<br>` volta a
                 ser a única quebra que existe, e o título recupera as duas linhas
                 que ele foi escrito para ter. De 640px para cima nada muda. */}
-            <h2 className={`font-serif ${TITULO_SECAO} font-normal leading-[1.05] tracking-[-0.02em] text-white sm:text-4xl md:text-6xl`}>
-              {PERGUNTA[0]}
-              <br />
-              {PERGUNTA[1]}
+            {/* 2,7rem no telefone — uma vez e meia os 1,8 de `TITULO_SECAO`, a
+                pedido do dono, e é uma EXCEÇÃO consciente à padronização que ele
+                pediu duas rodadas atrás.
+
+                O token continua sendo o padrão e continua valendo na parede de
+                prova; aqui ele é sobrescrito porque o dono olhou para esta tela
+                em específico e pediu maior. Fica escrito para a próxima pessoa
+                não "consertar" isto de volta achando que é sobra: é decisão, e a
+                mais recente das duas.
+
+                O preço são as três linhas de `PERGUNTA_ESTREITA` no lugar de
+                duas, e mais 76 pixels comidos da janela da lista — que continua
+                sendo quem paga a conta desta coluna no telefone. */}
+            <h2
+              className="font-serif text-[2.7rem] font-normal leading-[1.05] tracking-[-0.02em] text-white sm:text-4xl md:text-6xl"
+            >
+              <span className="sm:hidden">
+                {PERGUNTA_ESTREITA[0]}
+                <br />
+                {PERGUNTA_ESTREITA[1]}
+                <br />
+                {PERGUNTA_ESTREITA[2]}
+              </span>
+              <span className="hidden sm:inline">
+                {PERGUNTA[0]}
+                <br />
+                {PERGUNTA[1]}
+              </span>
             </h2>
 
             {/* A pílula da recorrência saiu a pedido do dono, e o valor cresceu
@@ -385,6 +439,38 @@ export function Comparacao() {
               sistema, e o escudo cortado como ícone de erro. A frase não precisa
               de moldura — ela é a única coisa em branco cheio depois do título,
               e isso já a torna a segunda voz mais alta da tela. */}
+          {/* ─── A RESPOSTA, antes do soco e só no telefone ──────────────────
+           *
+           * A ordem é do dono e ela mudou duas vezes: a conta desceu do
+           * cabeçalho para o pé da coluna, e agora sobe um degrau para ficar
+           * ANTES do fecho. É a leitura certa das três linhas — a fatura é
+           * somada, a conta responde a pergunta do alto, e o soco vem por cima
+           * do valor já dito. Embaixo do soco, ela era um número depois de um
+           * ponto final.
+           *
+           * E resolve de graça o risco que ficou anotado aqui na rodada
+           * passada: o painel claro entra girado e cobre o terço de baixo da
+           * tela, e o bloco mais baixo da coluna é o primeiro que o papel come.
+           * Esse bloco voltou a ser o fecho, que é quem foi calibrado para
+           * fechar antes do papel subir.
+           *
+           * 2,7rem no título e 2,2 aqui: a pergunta é maior que a resposta na
+           * página, mas a resposta é a única coisa da coluna com `texto-aceso`.
+           * Tamanho e brilho são duas ênfases diferentes, e dar as duas para o
+           * mesmo elemento é o que fazia o número gritar por cima da pergunta
+           * quando os dois dividiam a mesma linha.
+           */}
+          <motion.div
+            style={parado ? undefined : { opacity: contaOpacity, y: contaY }}
+            className="mt-7 sm:hidden"
+          >
+            <Conta
+              naTela={contaAcesa}
+              className="block whitespace-nowrap font-serif text-[2.2rem] leading-none text-white texto-aceso"
+              unidade="ml-1 text-[1.2rem]"
+            />
+          </motion.div>
+
           {/* As duas metades acesas em degraus, como no cartão do outro painel:
               creme fechado na que prepara, branco com brilho na que bate. A
               primeira estava em cinza 40% e lia como rodapé de uma frase que é
@@ -405,45 +491,6 @@ export function Comparacao() {
             <span className="texto-aceso text-white">{SEM_GARANTIA[1]}</span>
           </motion.p>
 
-          {/* ─── A RESPOSTA, no pé da coluna e só no telefone ─────────────────
-           *
-           * Pedido do dono, e a mudança é de ORDEM: no cabeçalho a conta dividia
-           * a linha com a pergunta e as duas competiam; aqui embaixo ela responde
-           * a pergunta que abre a coluna, depois de a fatura inteira ter sido
-           * somada na frente de quem lê. É a última linha da nota.
-           *
-           * 2,2rem contra os 1,8 do título, e a inversão é de propósito agora:
-           * lado a lado, um número maior que a pergunta é o número gritando por
-           * cima dela; a uma tela de distância, ele é a resposta batendo mais
-           * alto do que a pergunta — que é o que uma resposta deve fazer. Com
-           * `texto-aceso`, o mesmo brilho que a página dá ao que ela quer que
-           * seja lido primeiro.
-           *
-           * O corpo tem teto e o teto é a largura: "R$ 8.000 a 10.500/mês" mede
-           * cerca de 249 pixels a 2,2rem, e o telefone de 320 dá 280 úteis. É a
-           * mesma razão do `nowrap` — se `CUSTO_ATE` ganhar uma casa, aperta o
-           * corpo, não volta a quebrar em duas linhas.
-           *
-           * SEM revelação por rolagem, e é decisão consciente. O fecho acende em
-           * 77% e termina em 92% porque a folga do fim é o painel claro subindo;
-           * uma terceira revelação depois dele acenderia debaixo do papel. Sem
-           * gatilho, a conta fica de pé no pé da coluna o percurso inteiro — a
-           * pergunta lá em cima com a resposta aqui embaixo, e a lista sendo
-           * somada entre as duas.
-           *
-           * ATENÇÃO para quem for mexer: o painel claro entra girado e cobre o
-           * terço de baixo da tela no fim do percurso. Este bloco é o mais baixo
-           * da coluna e é o primeiro que o papel cobre. Ele é lido durante a
-           * contagem, não no último quadro — o último quadro é do fecho, por
-           * desenho. Foi exatamente por isso que a conta subiu para o cabeçalho
-           * um dia; ela só pode descer de novo porque agora fica visível o tempo
-           * todo em vez de acender no fim.
-           */}
-          <Conta
-            naTela={contaNaTela}
-            className="mt-7 block whitespace-nowrap font-serif text-[2.2rem] leading-none text-white texto-aceso sm:hidden"
-            unidade="ml-1 text-[1.2rem]"
-          />
         </div>
       </div>
 
