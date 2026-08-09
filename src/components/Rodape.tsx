@@ -298,8 +298,38 @@ export function Rodape() {
                * Sem `whitespace-nowrap`: se a copy crescer e a conta não for
                * refeita, é melhor a frase quebrar do que vazar pela borda —
                * quebra se vê e se conserta, vazamento horizontal rola a página
-               * inteira de lado. */}
-              <h2 className="texto-aceso font-serif text-[min(7.8vw,2.6rem)] leading-[1.08] tracking-[-0.03em] text-[#F4F1E8] md:text-[4.4rem]">
+               * inteira de lado.
+               *
+               * ─── E DEPOIS O DONO PEDIU UMA VEZ E MEIA MAIOR ────────────────
+               *
+               * O que derruba o parágrafo acima, e vale dizer por quê: `7,8vw`
+               * era exatamente o teto em que a frase de 32 caracteres ainda
+               * cabia numa linha. A 11,7vw ela mede 395 pixels nos 280 úteis de
+               * um telefone de 320 — não existe tamanho uma vez e meia maior E
+               * sem quebra com esta copy. As duas coisas que ele pediu, nesta
+               * ordem, se excluem.
+               *
+               * A queixa que veio junto do "sem quebra", porém, não era a
+               * quebra: era "os títulos não estão alinhados". E isso tem
+               * conserto independente do tamanho — o problema era o navegador
+               * escolhendo o ponto de corte, que num bloco CENTRADO produz
+               * linhas de comprimentos aleatórios e um empilhamento torto.
+               *
+               * `text-balance` resolve isso pela raiz: o navegador passa a
+               * distribuir as palavras para as linhas saírem do MESMO
+               * comprimento, em vez de encher a primeira e largar o resto na
+               * segunda. Cada frase é um bloco próprio — a segunda está num
+               * `span` de display block —, então o equilíbrio é calculado para
+               * uma de cada vez, e o par sai como dois trapézios centrados.
+               *
+               * É melhor que quebra escrita à mão aqui: a copy é do dono, muda,
+               * e uma dobra fixa que envelhece numa largura vira o mesmo defeito
+               * de novo. Balanceada, ela se re-equilibra sozinha em toda tela.
+               *
+               * `sm:text-[2.6rem]` devolve o valor antigo de 640 para cima —
+               * este aumento é do telefone, e o teto de 3,9rem só chega a ser
+               * atingido nos ~533px em que a fluida encosta nele. */}
+              <h2 className="texto-aceso text-balance font-serif text-[min(11.7vw,3.9rem)] leading-[1.08] tracking-[-0.03em] text-[#F4F1E8] sm:text-[2.6rem] md:text-[4.4rem]">
                 {FECHO.titulo}
                 <span className="block">{FECHO.linha}</span>
               </h2>

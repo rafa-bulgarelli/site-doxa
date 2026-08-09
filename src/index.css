@@ -1556,14 +1556,16 @@ html::-webkit-scrollbar {
  * largura toda, o degradê que no desktop começava depois do texto começaria no
  * meio dele.
  *
- * A altura DESCE de 45% para 40%: o bloco encolheu junto com o título fluido, e
- * uma elipse alta demais apaga tela sem proteger nada — a periferia é o mosaico,
- * e é ele que faz o rodapé.
+ * A altura ficou em 46%, e ela já foi 40%: o título subiu uma vez e meia a
+ * pedido do dono e voltou a ocupar quatro linhas, o que devolveu ao bloco os
+ * ~85 pixels que o corpo menor tinha economizado. Com 46% o miolo cheio cobre
+ * 287 pixels de altura contra os ~288 do bloco — as pontas do título e o botão
+ * ficam sobre fundo sólido, que é a única coisa que esta peça precisa garantir.
  */
 @media (max-width: 639px) {
   .clareira {
     background: radial-gradient(
-      ellipse 85% 40% at 50% 50%,
+      ellipse 85% 46% at 50% 50%,
       theme('colors.doxa.stage') 0%,
       theme('colors.doxa.stage') 55%,
       theme('colors.doxa.stage / 0%') 100%
