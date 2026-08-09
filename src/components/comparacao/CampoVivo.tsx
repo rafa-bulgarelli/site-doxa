@@ -5,7 +5,7 @@ interface CampoVivoProps {
   id: string;
   valor: string;
   exemplo: string;
-  tipo: 'tel' | 'text';
+  tipo: 'tel' | 'text' | 'email';
   autoComplete: string;
   invalido: boolean;
   descritoPor?: string;
@@ -322,7 +322,10 @@ export function CampoVivo({
           id={id}
           ref={campoRef}
           type={tipo}
-          inputMode={tipo === 'tel' ? 'tel' : 'text'}
+          /* O teclado do celular muda com o tipo, e é o que faz o passo do
+             e-mail custar dois toques a menos: `email` traz o @ e o ponto para
+             a primeira fileira. */
+          inputMode={tipo === 'tel' ? 'tel' : tipo === 'email' ? 'email' : 'text'}
           autoComplete={autoComplete}
           value={valor}
           placeholder={exemplo}

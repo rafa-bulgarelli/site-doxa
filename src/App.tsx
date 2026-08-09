@@ -1,4 +1,4 @@
-import { Suspense, lazy, useEffect } from 'react';
+import { Suspense, lazy, useEffect, useState } from 'react';
 import { ANCORA_FORMS, HREF_FORMS } from './ancoras';
 import { Hero } from './components/Hero';
 import { Rolador } from './components/ui/Rolador';
@@ -30,6 +30,31 @@ const Faq = lazy(() => import('./components/Faq').then((m) => ({ default: m.Faq 
 const Rodape = lazy(() => import('./components/Rodape').then((m) => ({ default: m.Rodape })));
 
 /**
+ * A Central de leads, na rota `/leads`.
+ *
+ * `lazy` como as seções, e por um motivo mais forte do que o delas: ninguém que
+ * veio ver a página de vendas deve baixar um byte do painel interno. Ele só
+ * existe no navegador de quem digitou a rota.
+ */
+const Leads = lazy(() => import('./leads/Rota'));
+
+/**
+ * Qual página está sendo pedida.
+ *
+ * Um `switch` no caminho, e não um roteador: o site tem DUAS rotas, e nenhuma
+ * delas navega para a outra — a Central se chega por URL digitada, não por link.
+ * `react-router` resolveria isto com 12 kB e um provider em volta da página
+ * inteira. Se um dia houver uma terceira rota com navegação de verdade, é o
+ * momento de trocar; hoje seria abstração sem consumidor.
+ *
+ * A `vercel.json` já reescreve tudo para o `index.html`, então `/leads` chega
+ * aqui inteiro depois de um recarregamento ou de um link colado.
+ */
+function ehCentralDeLeads() {
+  return window.location.pathname.replace(/\/+$/, '') === '/leads';
+}
+
+/**
  * O vão que uma seção ocupa enquanto o seu pedaço não chegou.
  *
  * Preto sobre preto, com uma tela de altura: se alguém rolar mais rápido do que
@@ -52,6 +77,11 @@ function Vao() {
  * o mesmo argumento e sem sequestrar o scroll.
  */
 export default function App() {
+  // Lido uma vez: sem navegação entre as duas rotas, o caminho não muda sem um
+  // recarregamento — e um estado que escuta `popstate` seria um ouvinte para um
+  // evento que este site não dispara.
+  const [naCentral] = useState(ehCentralDeLeads);
+
   /**
    * Os pedaços de baixo, buscados assim que o navegador fica ocioso.
    *
@@ -144,6 +174,21 @@ export default function App() {
     document.addEventListener('click', aoClicar);
     return () => document.removeEventListener('click', aoClicar);
   }, []);
+
+  /*
+   * A Central sai antes de tudo que a landing monta.
+   *
+   * Não é otimização: o `Rolador`, o rodapé fixo e as seções `lazy` são peças da
+   * PÁGINA DE VENDAS, e desenhá-las atrás de um painel de trabalho seria um
+   * rodapé aparecendo no meio de uma tabela de leads.
+   */
+  if (naCentral) {
+    return (
+      <Suspense fallback={<div className="min-h-screen bg-doxa-bg" aria-hidden />}>
+        <Leads />
+      </Suspense>
+    );
+  }
 
   return (
     <>

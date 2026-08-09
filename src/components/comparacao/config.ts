@@ -432,6 +432,62 @@ export const FICHA_FIM = {
   corpo: 'O consultor lê isto antes de te chamar. A conversa começa do meio.',
 };
 
+/**
+ * ─── A PERGUNTA DE CORTE ─────────────────────────────────────────────────────
+ *
+ * Quanto a pessoa consegue investir por mês. É a única pergunta do formulário
+ * que pode ENCERRÁ-LO, e é do dono a decisão de tê-la.
+ *
+ * O que ela compra: o consultor deixa de gastar a primeira ligação descobrindo
+ * que não há orçamento. O que ela custa: uma parte das pessoas sai da página
+ * sabendo que não é para elas — e essa é exatamente a intenção, dita na cara em
+ * vez de descoberta depois de duas conversas.
+ *
+ * As faixas são estreitas embaixo e largas em cima porque é embaixo que a
+ * decisão acontece: a diferença entre mil e mil e quinhentos muda a resposta do
+ * consultor, a diferença entre quatro e cinco mil não muda quase nada.
+ *
+ * A ORDEM IMPORTA e é lida por código: a primeira faixa é a que desqualifica —
+ * `CORTE` aponta para ela por índice, então mexer na ordem sem mexer no corte
+ * passa a barrar a faixa errada em silêncio.
+ */
+export const INVESTIMENTO = {
+  rotulo: 'Investimento',
+  pergunta: 'Quanto você consegue investir por mês?',
+  dica: 'Por faixa. É o que define se a Doxa cabe no seu momento.',
+  faixas: [
+    'Abaixo de R$ 1.000',
+    'R$ 1.000 a R$ 1.500',
+    'R$ 1.500 a R$ 2.000',
+    'R$ 2.000 a R$ 2.500',
+    'R$ 2.500 a R$ 3.000',
+    'R$ 3.000 a R$ 4.000',
+    'R$ 4.000 a R$ 5.000',
+    'Mais de R$ 5.000',
+  ],
+} as const;
+
+/** A faixa que encerra o formulário. Índice, e não texto repetido. */
+export const CORTE = 0;
+
+/**
+ * O fim da linha para quem ficou abaixo da faixa.
+ *
+ * PENDENTE-DONO: a redação é minha, e vale a leitura dele — é a única tela do
+ * site que diz não a alguém. Escrita para não humilhar e para não enganar:
+ * agradece, diz que é uma questão de MOMENTO e não de mérito, e não promete
+ * uma ligação que não vai acontecer. A porta fica encostada, não trancada.
+ *
+ * Nenhum botão aqui. Um "voltar" convidaria a pessoa a trocar a resposta para
+ * passar no filtro, e um filtro que se contorna não filtra nada.
+ */
+export const DESQUALIFICADO = {
+  titulo: 'Obrigado pela sinceridade.',
+  corpo:
+    'A Doxa não se encaixa no seu momento — o nosso trabalho começa numa faixa acima dessa, e prometer o contrário seria custar o seu dinheiro para nada.',
+  fecho: 'Quando a operação crescer, a porta continua aqui.',
+};
+
 /** O convite para responder a ficha, na tela de confirmação. */
 export const FICHA_CONVITE = {
   titulo: 'Enquanto isso: cinco perguntas.',
