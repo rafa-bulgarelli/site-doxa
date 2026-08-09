@@ -1788,9 +1788,17 @@ html::-webkit-scrollbar {
 }
 
 /* `focus-within` e não `focus`: quem está com o cursor no campo é o textarea,
-   e é a caixa em volta dele que carrega o anel. */
+   e é a caixa em volta dele que carrega o anel.
+ 
+   `.anel-siri-aceso` é o terceiro gatilho, e ele não é um estado de ponteiro: é
+   "esta caixa foi ESCOLHIDA". Entrou com as alternativas do formulário, onde o
+   dono quis que a selecionada mantivesse o mesmo fundo das outras e se
+   distinguisse só pela borda acesa. Mora nos mesmos seletores das outras duas
+   de propósito — três portas para um efeito só, em vez de uma segunda cópia das
+   cinco regras que ele custa. */
 .anel-siri:hover::before,
-.anel-siri:focus-within::before {
+.anel-siri:focus-within::before,
+.anel-siri-aceso::before {
   opacity: 1;
   /* Os mesmos 2,4s da `.luz-borda`, e não um tempo próprio: os dois desenham a
      MESMA borda, um como fio e o outro como cor. Em tempos diferentes eles se
@@ -1843,7 +1851,8 @@ html::-webkit-scrollbar {
   /* O anel continua acendendo — ele é o estado "esta caixa está sob a sua
      mão", e essa informação não é decoração. O que para é a volta. */
   .anel-siri:hover::before,
-  .anel-siri:focus-within::before {
+  .anel-siri:focus-within::before,
+  .anel-siri-aceso::before {
     animation: none;
   }
 
@@ -1890,7 +1899,8 @@ html::-webkit-scrollbar {
 }
 
 .anel-siri:hover .anel-luz,
-.anel-siri:focus-within .anel-luz {
+.anel-siri:focus-within .anel-luz,
+.anel-siri-aceso .anel-luz {
   opacity: 1;
 }
 
@@ -1973,17 +1983,20 @@ html::-webkit-scrollbar {
    (mesmos 2,4s, mesmo começo) — as duas coladas leem como uma borda só, acesa;
    fora de fase, leem como duas. */
 .anel-siri:hover .luz-borda::before,
-.anel-siri:focus-within .luz-borda::before {
+.anel-siri:focus-within .luz-borda::before,
+.anel-siri-aceso .luz-borda::before {
   animation: anel-siri-gira 2.4s linear infinite;
 }
 
 .anel-siri:hover .luz-halo::before,
-.anel-siri:focus-within .luz-halo::before {
+.anel-siri:focus-within .luz-halo::before,
+.anel-siri-aceso .luz-halo::before {
   animation: anel-siri-gira 3.4s linear infinite reverse;
 }
 
 .anel-siri:hover .luz-halo,
-.anel-siri:focus-within .luz-halo {
+.anel-siri:focus-within .luz-halo,
+.anel-siri-aceso .luz-halo {
   animation: luz-respira 3.6s ease-in-out infinite;
 }
 
@@ -1992,8 +2005,10 @@ html::-webkit-scrollbar {
      e isso não é decoração. O que para é a volta e o pulso. */
   .anel-siri:hover .anel-luz span,
   .anel-siri:focus-within .anel-luz span,
+  .anel-siri-aceso .anel-luz span,
   .anel-siri:hover .anel-luz span::before,
-  .anel-siri:focus-within .anel-luz span::before {
+  .anel-siri:focus-within .anel-luz span::before,
+  .anel-siri-aceso .anel-luz span::before {
     animation: none;
   }
 }

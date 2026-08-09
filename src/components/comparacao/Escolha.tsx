@@ -118,7 +118,31 @@ export function Escolha({
               /* O escalonamento é curto e tem TETO: a oitava pílula não pode
                  chegar meio segundo depois da primeira, senão a lista termina
                  de se montar depois de a pessoa já ter escolhido. */
-              transition={{ duration: 0.34, ease: EASE, delay: Math.min(i * 0.035, 0.28) }}
+              /* ── A BORRACHA DO CLIQUE, a pedido do dono.
+
+                 A pílula afunda sob o dedo e volta PASSANDO do lugar: a mola
+                 tem atrito baixo, então ela ultrapassa o repouso, recua menos e
+                 para. É a mesma física da lâmina da ladainha e do disco de
+                 voltar deste formulário — a página inteira usa esse gesto para
+                 dizer "isto respondeu a você", e uma escolha que agora exige
+                 um "Continuar" precisa mais dele do que precisava: sem o
+                 avanço automático, o toque não tem mais a virada de tela como
+                 confirmação.
+
+                 Sai de graça do `whileTap`: não há estado, contador nem
+                 controles por opção. Apertar leva a 0,96, soltar devolve a 1, e
+                 é a própria mola que faz o repique na volta.
+
+                 A transição de `scale` é escrita à parte porque a do bloco tem
+                 o `delay` da entrada escalonada — herdado, ele atrasaria o
+                 afundar em até 0,28s depois do dedo. */
+              whileTap={parado ? undefined : { scale: 0.96 }}
+              transition={{
+                duration: 0.34,
+                ease: EASE,
+                delay: Math.min(i * 0.035, 0.28),
+                scale: { type: 'spring', stiffness: 520, damping: 11, mass: 0.7 },
+              }}
               /* Sem `whitespace-nowrap`: "Já paguei agência e não deu certo" é
                  mais largo que o cartão no celular, e uma pílula que não quebra
                  estoura a caixa em vez de descer de linha.
@@ -127,18 +151,45 @@ export function Escolha({
                  o dono leu como "muito apagadas" — com razão: uma resposta ainda
                  não escolhida não é uma resposta secundária, é a única coisa que
                  aquela tela pede. O apagado tem lugar numa LISTA de referência,
-                 não num par de alternativas. Branco cheio sobre fio de 30%, com
-                 um fundo de 5% para a pílula existir como superfície antes de
-                 ser tocada. */
-              className={`anel-siri relative flex items-center gap-3 border text-left leading-snug transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black ${
+                 não num par de alternativas. Branco cheio sobre fio de 30%.
+
+                 O FUNDO é `bg-doxa-surface`, a pedido do dono: exatamente o do
+                 campo de pergunta do FAQ. Não é a mesma cor por coincidência de
+                 gosto — as duas caixas fazem o mesmo trabalho na página (uma
+                 superfície escura que espera uma resposta e acende sob a mão), e
+                 a mesma cor é o que faz o visitante reconhecer a segunda por já
+                 ter usado a primeira. O branco a 5% que estava aqui era um
+                 quinto tom de cinza no site, inventado para este botão.
+
+                 E o hover NÃO mexe mais em borda nem em fundo, a pedido do
+                 dono: quem responde ao ponteiro é o anel e as duas faixas de
+                 luz, e mais nada. Um contorno que clareia ao mesmo tempo em que
+                 uma luz colorida acende são dois efeitos disputando o mesmo
+                 gesto — e o que se lê não é ênfase dobrada, é a borda brigando
+                 com a luz.
+
+                 ─── E A ESCOLHIDA TAMBÉM NÃO MUDA DE FUNDO ───────────────────
+
+                 Ela já foi papel creme cheio com halo branco, e o dono desfez:
+                 a selecionada fica com o MESMO fundo das outras e se distingue
+                 só pela borda acesa (`.anel-siri-aceso`, que liga o anel e as
+                 duas luzes fora do hover).
+
+                 A leitura ganha coerência com isso — a luz passa a significar
+                 uma coisa só nesta tela: "é esta". Sob a mão ela diz "é esta se
+                 você clicar", escolhida ela diz "é esta". Com o creme, havia
+                 dois vocabulários para a mesma afirmação.
+
+                 E o estado não depende só de cor nem só de animação: `aria-pressed`
+                 carrega a escolha para quem não vê a borda, e a regra de
+                 `prefers-reduced-motion` mantém a luz ACESA parando apenas a
+                 volta — o que é decisão antiga deste arquivo e agora paga duas
+                 vezes. */
+              className={`anel-siri relative flex items-center border border-white/30 bg-doxa-surface text-left leading-snug text-white transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black ${
                 empilhada
                   ? 'w-full rounded-2xl px-5 py-4 text-[15px]'
                   : 'rounded-full px-4 py-2.5 text-[13px]'
-              } ${
-                marcada
-                  ? 'border-transparent bg-[#F4F1E8] text-[#0B0B0B]'
-                  : 'border-white/30 bg-white/[0.05] text-white hover:border-white/60 hover:bg-white/[0.09]'
-              }`}
+              } ${marcada ? 'anel-siri-aceso' : ''}`}
               /* ── O ANEL DO CAMPO DE PERGUNTA, aqui, a pedido do dono.
 
                  `.anel-siri` é o mesmo efeito do campo do FAQ: um
@@ -155,37 +206,59 @@ export function Escolha({
                  decoração e responde ao mouse também, e quem navega por teclado
                  precisa de um indicador que não dependa de cor nem de
                  animação. */
-              style={
-                marcada
-                  ? /* O mesmo halo da etapa da vez na trilha do topo. A ficha é
-                       a mesma peça do formulário, e o que está aceso se acende
-                       igual. */
-                    { ...ANEL, boxShadow: '0 0 18px -2px rgba(255,255,255,0.55)' }
-                  : ANEL
-              }
+              style={ANEL}
             >
-              {/* O NÚMERO da alternativa, só na versão empilhada.
+              {/* ── AS DUAS FAIXAS DE LUZ, as mesmas do campo do FAQ.
 
-                  Ele existe para a lista ser lida como lista: sem ele, duas
-                  caixas iguais uma sobre a outra são duas caixas, e o olho não
-                  sabe se está diante de uma escolha ou de dois avisos. Em
-                  `tabular-nums` e num tom abaixo do texto, como os números da
-                  ladainha — ele ordena e não compete. */}
-              {empilhada && (
-                <span
-                  aria-hidden
-                  className={`shrink-0 tabular-nums text-[13px] ${
-                    marcada ? 'text-[#0B0B0B]/50' : 'text-white/40'
-                  }`}
-                >
-                  {i + 1}
-                </span>
-              )}
-              {/* O visto só na pergunta de várias respostas. Na de resposta
-                  única ele seria ruído: ali o papel cheio já diz sozinho qual
-                  é, e um visto sugere que dá para juntar mais. */}
-              {multipla && marcada && <Check className="h-3.5 w-3.5 shrink-0" strokeWidth={3} />}
-              {opcao}
+                  `.anel-luz` é a camada, `.luz-halo` o brilho largo que vaza
+                  para fora e `.luz-borda` a cor acesa em cima do contorno. As
+                  três só existem sob a mão ou sob o foco: fora disso a camada
+                  está em `opacity: 0`, nenhuma `animation` está declarada, e um
+                  `blur` de 12 pixels que não está na tela não custa quadro.
+
+                  Em `<span>` e não `<div>` como no FAQ: o conteúdo de um
+                  `<button>` é conteúdo de FRASE, e um `div` aqui dentro é HTML
+                  inválido mesmo o navegador aceitando. As regras casam por
+                  classe e por `.anel-luz span`, então a troca de tag não muda
+                  nada.
+
+                  O `.anel-siri-isca` — o pulso que chama a mão de longe — NÃO
+                  vem junto, e é opt-in por classe própria justamente para isso:
+                  no FAQ há um campo só e ele precisa se anunciar; aqui são duas
+                  a oito alternativas, e oito caixas pulsando em intervalo não é
+                  um chamado, é um alarme. */}
+              <span className="anel-luz" aria-hidden>
+                <span className="luz-halo" />
+                <span className="luz-borda" />
+              </span>
+
+              {/* O conteúdo em `relative` para pintar ACIMA da luz: elementos
+                  posicionados pintam sobre os estáticos, e sem isto o halo
+                  passaria na frente do texto da própria alternativa. */}
+              <span className="relative flex items-center gap-3">
+                {/* O NÚMERO da alternativa, só na versão empilhada.
+
+                    Ele existe para a lista ser lida como lista: sem ele, duas
+                    caixas iguais uma sobre a outra são duas caixas, e o olho não
+                    sabe se está diante de uma escolha ou de dois avisos. Em
+                    `tabular-nums` e num tom abaixo do texto, como os números da
+                    ladainha — ele ordena e não compete. */}
+                {empilhada && (
+                  <span
+                    aria-hidden
+                    className={`shrink-0 tabular-nums text-[13px] ${
+                      marcada ? 'text-white/70' : 'text-white/40'
+                    }`}
+                  >
+                    {i + 1}
+                  </span>
+                )}
+                {/* O visto só na pergunta de várias respostas. Na de resposta
+                    única ele seria ruído: ali o papel cheio já diz sozinho qual
+                    é, e um visto sugere que dá para juntar mais. */}
+                {multipla && marcada && <Check className="h-3.5 w-3.5 shrink-0" strokeWidth={3} />}
+                {opcao}
+              </span>
             </motion.button>
           );
         })}
