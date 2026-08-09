@@ -1,8 +1,24 @@
-import { useLayoutEffect, useState, type RefObject } from 'react';
+import { useLayoutEffect, useState } from 'react';
 
 interface BordaVivaProps {
-  /** O cartão cuja borda o sinal percorre. */
-  alvoRef: RefObject<HTMLElement>;
+  /**
+   * O cartão cuja borda o sinal percorre — o NÓ, e não uma `ref`.
+   *
+   * A troca conserta um defeito que só existia no site publicado, e o custo
+   * dele era o contorno inteiro: o React prende as `ref` de fora para dentro
+   * DEPOIS de rodar os efeitos de quem está dentro, e este componente é
+   * desenhado dentro do próprio cartão que ele mede. Com `ref`, o efeito
+   * acordava com `null` na mão, desistia na primeira linha, e a lista de
+   * dependências — uma `ref`, que nunca muda de identidade — jamais o acordava
+   * de novo. `caixa` ficava em zero e o `return null` abaixo tirava o SVG da
+   * página para sempre.
+   *
+   * Medido no publicado antes da correção: zero SVG dentro do painel claro e
+   * nenhum `ResizeObserver` observando o cartão. No mesmo bundle rodando local,
+   * os dois apareciam — é a pior espécie de defeito, o que só acontece na
+   * máquina do visitante. A nota completa está no `CLAUDE.md`.
+   */
+  alvo: HTMLElement | null;
   /**
    * Qual trecho do percurso este contorno é.
    *
@@ -117,7 +133,7 @@ function meiaVolta(largura: number, altura: number, topo: boolean, raio: number)
  * ser um raio e viraria uma elipse.
  */
 export function BordaViva({
-  alvoRef,
+  alvo,
   trecho = 'pedido',
   raio = RAIO_PADRAO,
   moldura = true,
@@ -125,15 +141,14 @@ export function BordaViva({
   const [caixa, setCaixa] = useState({ largura: 0, altura: 0 });
 
   useLayoutEffect(() => {
-    const alvo = alvoRef.current;
-    if (!alvo) return;
+    if (alvo == null) return;
 
     const medir = () => setCaixa({ largura: alvo.offsetWidth, altura: alvo.offsetHeight });
     medir();
     const observador = new ResizeObserver(medir);
     observador.observe(alvo);
     return () => observador.disconnect();
-  }, [alvoRef]);
+  }, [alvo]);
 
   if (!caixa.largura || !caixa.altura) return null;
 
