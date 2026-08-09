@@ -74,6 +74,19 @@ raciocínio). Detalhes e trade-off em `.claude/TOWER-ROLES.md`.
   - **A escala de opacidade do Tailwind vai de 5 em 5.** `bg-x/78` não gera regra nenhuma
     — a classe não existe e o elemento fica sem fundo, de novo em silêncio. Fora da
     escala, só na forma `bg-x/[0.78]`.
+  - **`ref` de elemento do PAI lida no efeito do FILHO chega `null` — e o
+    sintoma só aparece no site publicado.** O React prende as `ref` de fora para
+    dentro *depois* de rodar os efeitos de quem está dentro: um filho que faz
+    `if (paiRef.current == null) return` na montagem desiste, e como `ref` não
+    muda de identidade, `[paiRef]` nunca mais acorda o efeito. A feature morre em
+    silêncio — sem erro, sem console, só um `transform` que nunca sai de `none`.
+    Custou caro em `Ladainha.tsx`: a lista da comparação ficou congelada no
+    celular e a conta serrada na borda, com o MESMO bundle (hash idêntico)
+    funcionando em `vite preview` local e quebrado na Vercel — a diferença era o
+    instante da montagem. Diagnóstico rápido: instrumentar `ResizeObserver` com
+    `Page.addScriptToEvaluateOnNewDocument` e conferir se o alvo é observado.
+    Correção: passar o **nó** por estado (`useState` + ref de callback), não a
+    `ref` — o nó chega numa renderização e o efeito acorda com ele na mão.
   - **Página "rolando sozinha" depois de carregar = um `focus()` na montagem.** As seções
     são `lazy` em `App.tsx`, então uma delas monta depois do primeiro desenho; um
     `useEffect` que foca um campo ao montar faz o navegador rolar até esse campo, e o
