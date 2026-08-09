@@ -82,9 +82,18 @@ const COLUNA_ESTREITA = '(max-width: 639px)';
  * acender. A frase mais alta da coluna aparecia no pior lugar possível e no pior
  * momento possível.
  *
- * Um quarto de tela é o que leva o fecho dos 87% para os 62% — a marca que o
- * dono desenhou de verde, logo abaixo do vigésimo quinto item. Ele chega lá com
- * o papel ainda inteiro fora do quadro.
+ * Um quarto de tela levava o fecho dos 87% para os 62% — a marca que o dono
+ * desenhou de verde, logo abaixo do vigésimo quinto item. Visto na tela, ele
+ * pediu mais vinte por cento: a frase PASSA da marca e assenta perto da metade
+ * da altura, com o papel ainda inteiro fora do quadro.
+ *
+ * Quarenta e cinco é o total, e ele não anda sozinho — a régua da subida cresceu
+ * junto, e tem de crescer. A distância é percorrida num trecho de rolagem fixo:
+ * subir mais no mesmo trecho é subir MAIS RÁPIDO, e passar da velocidade do dedo
+ * é exatamente o que faz uma coluna deixar de acompanhar a mão e começar a fugir
+ * dela. O dono pediu rolagem mais lenta uma mensagem antes; um número mudado
+ * sozinho aqui teria desfeito aquilo em silêncio, no trecho mais visível da
+ * seção.
  *
  * Sobe a COLUNA, e não só a frase: mover uma peça sozinha abriria um buraco no
  * meio de uma composição que foi afinada junta, e a janela da fatura ficaria
@@ -93,7 +102,7 @@ const COLUNA_ESTREITA = '(max-width: 639px)';
  * acende, a pergunta já esteve em pé por duas telas de rolagem, e o que ela
  * cede é lugar para a resposta dela.
  */
-const SUBIDA = 25;
+const SUBIDA = 45;
 
 /**
  * O logo no lugar da palavra: "Sem [DOXA]" e "Com [DOXA]", com o ponto de
@@ -353,20 +362,25 @@ export function Comparacao() {
    * antes do que a caixa reta sugere. A subida acaba no quadro anterior ao
    * primeiro pixel de papel.
    *
-   * Começa em 150%, que é onde o fecho começa a acender: a frase sobe enquanto
-   * aparece, em vez de aparecer e depois se mudar de lugar. São 38% de tela de
-   * rolagem para 25% de subida — mais devagar do que o dedo, que é o que
-   * distingue uma coluna subindo de uma coluna pulando.
+   * Começa em 170%, logo depois de a lista estacionar e um pouco antes de o
+   * fecho acender: a frase sobe enquanto aparece, em vez de aparecer e depois
+   * se mudar de lugar. São 58% de tela de rolagem para 45% de subida — 0,78 do
+   * dedo, mais devagar do que a mão, que é o que distingue uma coluna subindo
+   * de uma coluna fugindo.
    *
-   * Eram 33%, e os cinco pontos a mais são os mesmos quinze por cento que o
-   * dono pediu no resto do trecho: esta régua é medida em TELAS e não em
-   * frações da seção, então ela não pegaria carona no fôlego que cresceu — o
-   * único trecho que continuaria na velocidade antiga seria justamente o que
-   * ele estava olhando quando pediu.
+   * Essa PROPORÇÃO é o que se preserva quando a distância muda, e não os
+   * números. A régua já foi 33% para 25% de subida (0,76 do dedo) e 38% para os
+   * mesmos 25% (0,66), quando o dono pediu tudo mais devagar. Ao subir a
+   * distância para 45, manter os 38% teria dado 1,18 — a coluna passaria a
+   * andar mais que a mão. Quem mexer em `SUBIDA` mexe aqui na mesma linha.
+   *
+   * Ela precisa de ajuste próprio porque é medida em TELAS, contra a
+   * aproximação do papel, e não em fração da seção: ela não pega carona no
+   * fôlego quando ele cresce.
    */
   const { scrollYProgress: chegadaDoPapel } = useScroll({
     target: claroRef,
-    offset: ['start 150%', 'start 112%'],
+    offset: ['start 170%', 'start 112%'],
   });
   const estreita = useColunaEstreita();
   const subida = useTransform(chegadaDoPapel, [0, 1], ['0vh', `-${SUBIDA}vh`]);
