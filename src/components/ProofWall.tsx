@@ -295,26 +295,40 @@ const HOVER_INSTANT = { stiffness: 1000, damping: 100 };
 const CLIENTES = '1.500';
 
 /**
- * Os dois números do alto, e agora eles contam a história em vez de listar
- * estatísticas.
+ * Os dois números do alto — a ESCALA da operação, por decisão do dono.
  *
- * Eram "Milhares de clientes atendidos" e "Centenas de vídeos novos por dia":
- * dois fatos verdadeiros sobre o tamanho da operação e nenhum deles sobre o
- * visitante. O dono leu como desconexo e estava certo — eles falavam da Doxa
- * numa seção cujo trabalho é falar do que ele vai receber.
+ * A dupla já foi por três lugares diferentes, e vale saber onde ela esteve
+ * porque a terceira volta ao território da primeira.
  *
- * Agora são a promessa e o método, nas palavras exatas em que o hero já os deu:
- * um milhão de views ou o dinheiro de volta, sessenta conteúdos em noventa dias
- * a partir de uma foto e um áudio. Repetidos aqui, em cima da prova publicada,
- * deixam de ser promessa e viram legenda do que está passando na tela.
+ * Primeiro foi "Milhares de clientes atendidos" e "Centenas de vídeos novos por
+ * dia": tamanho de operação, dito em adjetivo. O dono leu como desconexo e
+ * estava certo — falavam da Doxa numa seção cujo trabalho é falar do visitante.
+ *
+ * Depois viraram a promessa e o método, nas palavras do hero: um milhão de views
+ * ou o dinheiro de volta, sessenta conteúdos em noventa dias. Em cima da prova
+ * publicada, a promessa deixava de ser promessa e virava legenda.
+ *
+ * Agora são escala de novo, e é o dono quem trocou — mas com a diferença que
+ * derrubava a primeira versão: são NÚMEROS, e não "milhares" e "centenas". Dez
+ * bilhões de views e novecentos vídeos por dia dizem o tamanho da máquina que
+ * está por trás dos reels passando na tela, que é uma coisa que a parede não
+ * contava em lugar nenhum.
+ *
+ * ATENÇÃO, e é o custo desta troca: a GARANTIA saiu daqui. "ou seu dinheiro de
+ * volta" estava nesta linha e não está mais. Ela continua no hero e no painel
+ * claro da comparação (`GARANTIA`, em `comparacao/config.ts`), então a página
+ * não perdeu a promessa — mas esta seção, que é a da prova, deixou de repeti-la
+ * ao lado dos números. Se a intenção era somar e não trocar, o lugar de devolver
+ * a garantia é aqui.
+ *
+ * PENDENTE-DONO: os dois números são afirmações públicas e verificáveis por
+ * quem quiser conferir — "+10B" é uma ordem de grandeza que muito poucas
+ * operações de conteúdo no país sustentam, e "+900 por dia" implica capacidade
+ * instalada. São dele para afirmar; ficam registrados aqui como o que são.
  */
 const SCALE_CLAIMS = [
-  { value: '1 milhão', label: 'de views somadas, ou seu dinheiro de volta' },
-  /* "virais" entrou a pedido do dono, e é a única palavra desta seção que NÃO
-     está no hero (lá são "60 conteúdos · 90 dias"). Fica registrado porque a
-     nota acima diz que estas são as palavras exatas do hero: agora são as
-     palavras do hero mais uma, e a diferença é uma escolha e não um descuido. */
-  { value: '60 vídeos virais', label: 'em 90 dias, de uma foto e um áudio' },
+  { value: '+10B', label: 'de views orgânicas geradas' },
+  { value: '+900', label: 'vídeos gerados por dia' },
 ];
 
 /**
@@ -1171,8 +1185,22 @@ export function ProofWall() {
                valendo em tudo que não é telefone estreito. Os 32 pixels que esta
                faixa devolve vão inteiros para o vão do cartão, e numa tela de
                568 de altura eles são a diferença entre o cartão caber e o cartão
-               ser reduzido para caber. */
-            className="pointer-events-none absolute inset-x-0 top-0 z-20 flex flex-wrap items-end justify-between gap-x-10 gap-y-8 px-5 py-8 sm:py-12 md:px-10 md:py-24"
+               ser reduzido para caber.
+
+               `md:pt-14` no lugar do `md:py-24`, a pedido do dono: mais ar
+               entre a tipografia e o cartão de fecho. O espaço tinha de sair
+               DAQUI, e não de baixar o cartão — ele pousa no centro do palco 3D,
+               que é a origem em torno da qual os dezesseis reels são colocados;
+               mover a origem é mover a trajetória inteira do voo, e já foi o que
+               quebrou o ponteiro na metade de trás desta seção uma vez (a nota
+               sobre `offset` em `usePlacement` conta a história).
+
+               Com a faixa 40px mais alta, o vão entre o pé do título e o topo do
+               cartão passa de 63 para 103 pixels numa tela de 940 — e o `pb-24`
+               fica onde estava porque ele não é visível: a faixa é transparente
+               e `pointer-events-none`, então o que se vê é onde o TEXTO termina,
+               não onde a caixa dele acaba. */
+            className="pointer-events-none absolute inset-x-0 top-0 z-20 flex flex-wrap items-end justify-between gap-x-10 gap-y-8 px-5 py-8 sm:py-12 md:px-10 md:pb-24 md:pt-14"
           >
             {/* O número primeiro, e a promessa do hero no passado.
 
