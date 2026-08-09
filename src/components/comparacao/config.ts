@@ -236,6 +236,27 @@ export const FILTRO = {
 export const PAGAMENTO_TITULO = 'Falta marcar a reunião.';
 
 /**
+ * O rótulo do botão que cobra, e a redação é do dono.
+ *
+ * Era "Pagar R$ 100 e agendar" — o botão dizia o preço e o que acontecia. Agora
+ * diz o DESEJO, que é o registro do resto da página.
+ *
+ * ATENÇÃO, e fica registrado porque não é detalhe: este é o último elemento que
+ * a pessoa toca antes de ser cobrada, e ele deixou de nomear a cobrança. O que
+ * segura a transparência agora é a vizinhança — o `FILTRO` mostra "R$ 100" em
+ * serifa de 2,4rem logo acima, e o `PAGAMENTO_CHAMADA` diz "complete o
+ * pagamento" entre os dois. Se um dia o valor sair de perto do botão, este
+ * rótulo volta a precisar do número.
+ *
+ * SEGUNDO PENDENTE: "meu perfil" fala com quem escolheu "Quero viralizar minha
+ * empresa" no primeiro passo. Para quem escolheu "Quero ser uma agência
+ * licenciada", a frase não descreve o que a pessoa quer. O formulário já sabe a
+ * resposta (`dados.caminho`) — se o dono quiser, o rótulo passa a ter duas
+ * versões pelo mesmo caminho que separa as duas conversas.
+ */
+export const PAGAMENTO_ACAO = 'Viralizar meu perfil';
+
+/**
  * O nome do que a pessoa está preenchendo, decidido pelo dono.
  *
  * Em caixa de frase, a pedido dele — só a primeira letra, e o nome próprio. Ele

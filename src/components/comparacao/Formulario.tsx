@@ -18,6 +18,7 @@ import {
   FILTRO,
   NO_AR,
   OUTRO,
+  PAGAMENTO_ACAO,
   PAGAMENTO_CHAMADA,
   PAGAMENTO_TITULO,
   PAGAMENTOS,
@@ -877,11 +878,24 @@ export function Formulario({ cartaoRef }: { cartaoRef: RefObject<HTMLDivElement>
                 <p className="mt-3 text-[15px] leading-snug text-white/70">{PAGAMENTO_CHAMADA}</p>
 
                 <div className="mt-6 rounded-2xl border border-white/[0.09] bg-white/[0.04] p-5">
-                  <div className="flex items-baseline gap-2">
+                  {/* Empilhado no telefone, a pedido do dono: o valor em cima,
+                      o que ele compra embaixo.
+
+                      Lado a lado, os dois disputavam os 243 pixels úteis de um
+                      aparelho de 375 — o número ficava com 100 e a frase
+                      quebrava em três linhas ao lado dele, alinhadas pela base
+                      da PRIMEIRA. O que se lia era um número com um parágrafo
+                      pendurado no ombro. Em coluna, o número é o número e a
+                      frase é a legenda dele.
+
+                      De 640 para cima a linha volta: lá a caixa tem 530 de
+                      largura e os dois cabem no mesmo verso, que é mais forte
+                      quando cabe. */}
+                  <div className="flex flex-col sm:flex-row sm:items-baseline sm:gap-2">
                     <span className="font-serif text-[2.4rem] leading-none text-white">
                       {FILTRO.valor}
                     </span>
-                    <span className="text-[15px] text-white/50">{FILTRO.titulo}</span>
+                    <span className="mt-2 text-[15px] text-white/50 sm:mt-0">{FILTRO.titulo}</span>
                   </div>
                   <p className="mt-3 text-[13px] leading-snug text-white/50">{FILTRO.corpo}</p>
 
@@ -904,7 +918,7 @@ export function Formulario({ cartaoRef }: { cartaoRef: RefObject<HTMLDivElement>
 
                 <div className="mt-6">
                   <MotionButton
-                    label={`Pagar ${FILTRO.valor} e agendar`}
+                    label={PAGAMENTO_ACAO}
                     onClick={pagar}
                     busy={enviando}
                     fullWidth
