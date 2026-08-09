@@ -1,0 +1,18 @@
+# ─── FORA DO ÍNDICE ATÉ O FORMULÁRIO FUNCIONAR ───────────────────────────────
+#
+# `Disallow: /` bloqueia a indexação do site inteiro, e é de propósito: hoje o
+# formulário não manda os dados para lugar nenhum e o passo do pagamento é
+# simulado. Uma página que promete "Recebemos" sem receber nada não pode receber
+# gente do Google — e uma URL indexada demora para sair do índice, enquanto uma
+# que nunca entrou não precisa sair.
+#
+# PARA LANÇAR DE VERDADE: apague as duas linhas abaixo e troque por
+#
+#   User-agent: *
+#   Allow: /
+#   Sitemap: https://SEU-DOMINIO/sitemap.xml
+#
+# Isso é UMA linha de deploy, e é a última coisa a fazer — depois de o lead
+# chegar em algum lugar e de o checkout estar de pé.
+User-agent: *
+Disallow: /
