@@ -59,6 +59,12 @@ function posicao(elemento: HTMLElement, container: HTMLElement) {
  * Sem laço de animação: aqui nada é arrastável e nada flutua. Um `ResizeObserver`
  * nas duas pontas cobre tudo que pode mover as âncoras — o passo do formulário
  * trocando de altura, a fonte carregando, a janela mudando de tamanho.
+ *
+ * Ele desce quando as colunas empilham, e sobe atrás do conteúdo delas: o SVG é
+ * irmão ESTÁTICO das duas colunas posicionadas, então elas pintam por cima. No
+ * telefone isso importa mais do que no desktop — o caminho de descida passa por
+ * trás da prova rotativa, e é passando por trás que ele lê como cabo em vez de
+ * risco em cima do texto.
  */
 export function FioConvite({ containerRef, deRef, paraRef }: FioConviteProps) {
   const [caixa, setCaixa] = useState({ largura: 0, altura: 0 });
@@ -85,14 +91,49 @@ export function FioConvite({ containerRef, deRef, paraRef }: FioConviteProps) {
        */
       const origem = posicao(de, container);
       const destino = posicao(para, container);
+
+      /*
+       * ─── DUAS GEOMETRIAS, E QUEM ESCOLHE É O LAYOUT ────────────────────────
+       *
+       * O fio só sabia sair pela DIREITA da frase e entrar pela ESQUERDA do
+       * cartão — a única geometria que existe quando as duas colunas estão lado
+       * a lado. Nas telas em que elas empilham, o componente simplesmente não
+       * era desenhado, e o dono pediu a ligação lá também.
+       *
+       * O teste não é a largura da janela: é onde as duas pontas realmente
+       * caíram. Se o cartão começa ABAIXO do fim da frase, as colunas
+       * empilharam, e o fio desce — do pé da frase ao topo do cartão, pelo
+       * meio de cada um. Um `matchMedia` aqui seria uma segunda opinião sobre o
+       * que o `grid` já decidiu, e as duas divergiriam na largura exata da
+       * virada.
+       *
+       * As alças da curva viram junto com o eixo: na horizontal elas empurram em
+       * x, na vertical em y. É a mesma curva, girada — e é por isso que o
+       * `CURVA_MINIMA` serve para as duas sem número novo.
+       */
+      const empilhado = destino.y >= origem.y + de.offsetHeight;
+
+      if (empilhado) {
+        const x1 = origem.x + de.offsetWidth / 2;
+        const y1 = origem.y + de.offsetHeight;
+        const x2 = destino.x + para.offsetWidth / 2;
+        const y2 = destino.y;
+        if (y2 <= y1) {
+          setTraco('');
+          return;
+        }
+        const alca = Math.max((y2 - y1) * 0.5, CURVA_MINIMA);
+        setTraco(`M ${x1} ${y1} C ${x1} ${y1 + alca}, ${x2} ${y2 - alca}, ${x2} ${y2}`);
+        return;
+      }
+
       const x1 = origem.x + de.offsetWidth;
       const y1 = origem.y + de.offsetHeight / 2;
       const x2 = destino.x;
       const y2 = destino.y + para.offsetHeight / 2;
 
-      // Uma ponta à direita da outra é a única geometria que este fio tem: nas
-      // telas em que as colunas empilham ele não é renderizado. Se a medida vier
-      // invertida, é layout em trânsito — melhor nenhum fio do que um laço.
+      // Lado a lado, uma ponta tem de estar à direita da outra. Medida
+      // invertida aqui é layout em trânsito — melhor nenhum fio do que um laço.
       if (x2 <= x1) {
         setTraco('');
         return;

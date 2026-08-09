@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 import {
   animate,
   motion,
@@ -24,7 +24,6 @@ import {
   useContagem,
 } from './comparacao/Ladainha';
 import { ProvaRotativa } from './comparacao/ProvaRotativa';
-import { useIsDesktop } from '../hooks/useIsDesktop';
 import {
   CONVITE,
   CUSTO_ATE,
@@ -191,6 +190,49 @@ function Contador({ ate, naTela }: { ate: number; naTela: boolean }) {
 }
 
 /**
+ * Um pedaço de texto com o risco desenhado por cima.
+ *
+ * Dois pixels de barra absoluta, e não `line-through`: o risco é um GESTO e
+ * precisa ser traçado da esquerda para a direita quando o painel chega.
+ * Decoração de texto não anima.
+ *
+ * E é por isso que ele passou a ser por PEDAÇO. Uma barra só, esticada sobre a
+ * frase inteira, funciona enquanto a frase couber numa linha — no desktop cabe.
+ * No telefone a frase quebra em duas, e `top: 50%` de uma caixa de duas linhas é
+ * o vão ENTRE elas: o dono via um traço no meio da frase sem cortar nada, que é
+ * a única coisa que um risco não pode ser. Com um risco por pedaço, cada linha
+ * ganha o seu, e o gesto continua sendo um gesto.
+ */
+function Riscado({
+  children,
+  className,
+  ativo,
+  parado,
+  atraso,
+}: {
+  children: ReactNode;
+  className: string;
+  /** O painel chegou: é a hora de riscar. */
+  ativo: boolean;
+  parado: boolean;
+  /** Segundos de espera. Os pedaços entram em ordem, como uma caneta passando. */
+  atraso: number;
+}) {
+  return (
+    <span className={`relative ${className}`}>
+      {children}
+      <motion.span
+        aria-hidden
+        className="absolute left-0 top-1/2 h-[2px] w-full -translate-y-1/2 origin-left bg-black/45"
+        initial={{ scaleX: 0 }}
+        animate={{ scaleX: parado || ativo ? 1 : 0 }}
+        transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1], delay: atraso }}
+      />
+    </span>
+  );
+}
+
+/**
  * A conta do jeito antigo, e ela vive em DOIS lugares que nunca aparecem juntos.
  *
  * Até 640px ela é o ÚLTIMO elemento da coluna, grande, como resposta à pergunta
@@ -231,7 +273,6 @@ export function Comparacao() {
   const faltaRef = useRef<HTMLDivElement>(null);
   const cartaoRef = useRef<HTMLDivElement>(null);
   const parado = useReducedMotion() === true;
-  const isDesktop = useIsDesktop();
   const contaNaTela = useInView(escuroRef, { amount: 0.4, once: true });
   /**
    * Quando o painel claro chega — o que dispara o risco sobre o custo antigo.
@@ -650,8 +691,17 @@ export function Comparacao() {
             {CONVITE[0]}
             {/* A quebra só existe onde a frase não cabe numa linha. No
                 desktop ela sai, e o espaço que a substitui tem de ser
-                explícito — o JSX come o espaço em branco entre linhas. */}
-            <br className="lg:hidden" />{' '}
+                explícito — o JSX come o espaço em branco entre linhas.
+
+                E ela sai no TELEFONE também, a pedido do dono. Ali as duas
+                frases já quebram sozinhas, então a quebra forçada não estava
+                separando linha de linha: estava separando dois BLOCOS de duas
+                linhas cada, com o segundo começando numa linha nova só pela
+                metade. Sem ela, as duas correm como a frase única que são — de
+                quatro linhas para três, e a virada de uma para a outra acontece
+                no meio de uma linha, que é onde uma vírgula de sentido cai
+                quando ninguém força nada. */}
+            <br className="hidden sm:inline lg:hidden" />{' '}
             <span className="texto-aceso-tinta">{CONVITE[1]}</span>
           </h2>
         </div>
@@ -677,11 +727,14 @@ export function Comparacao() {
               caixas voltam a se resolver pela ordem do documento — o fio embaixo,
               o argumento e o cartão em cima.
 
-              Desktop apenas: empilhado, as duas pontas ficam uma embaixo da
-              outra e o fio seria um laço em volta do próprio argumento. */}
-          {isDesktop && (
-            <FioConvite containerRef={gradeRef} deRef={faltaRef} paraRef={cartaoRef} />
-          )}
+              E ele deixou de ser só do desktop, a pedido do dono: empilhado,
+              as duas pontas ficam uma embaixo da outra, e o `FioConvite` agora
+              tem a geometria vertical para esse caso — desce do pé da frase ao
+              topo do cartão em vez de tentar sair pela direita e voltar. Quem
+              escolhe qual das duas curvas usar é a POSIÇÃO medida das pontas, e
+              não a largura da janela: o `grid` já decidiu se empilhou, e um
+              segundo teste discordaria dele na largura exata da virada. */}
+          <FioConvite containerRef={gradeRef} deRef={faltaRef} paraRef={cartaoRef} />
 
           <div className="relative flex flex-col">
             {/* A garantia saiu do selo lateral e virou a maior coisa depois do
@@ -711,20 +764,50 @@ export function Comparacao() {
                 uma unidade, e não como o parágrafo seguinte. Ar entre coisas é
                 o que diz que elas são coisas diferentes. */}
             <div className="mt-8 lg:mt-12">
-              <span className="relative inline-block font-serif text-[1.5rem] leading-tight text-black/35 md:text-[1.9rem]">
+              {/* ── O MESMO RISCO EM DUAS MONTAGENS.
+
+                  Até 640px a frase vira dois pedaços empilhados, cada um com o
+                  seu risco: o valor numa linha, o que se paga por ele na outra.
+                  Os dois cabem inteiros nos 280 pixels úteis de um telefone de
+                  320 — 166 e 230 —, então nenhum risco volta a cair num vão.
+
+                  De 640 para cima é uma linha só e um risco só, exatamente como
+                  era: ali a frase cabe, e dois riscos vizinhos deixariam uma
+                  falha visível no espaço entre eles.
+
+                  O segundo pedaço entra 0,25s depois do primeiro. Não é enfeite:
+                  são dois traços da MESMA caneta, e traços simultâneos leriam
+                  como duas riscas de duas mãos. */}
+              <span className="block font-serif text-[1.5rem] leading-tight text-black/35 sm:hidden">
+                <Riscado
+                  className="inline-block"
+                  ativo={conviteNaTela}
+                  parado={parado}
+                  atraso={0.35}
+                >
+                  R$ {CUSTO_DE.toLocaleString('pt-BR')} a {CUSTO_ATE.toLocaleString('pt-BR')}
+                  {CUSTO_UNIDADE}
+                </Riscado>
+                <br />
+                <Riscado
+                  className="mt-1 inline-block"
+                  ativo={conviteNaTela}
+                  parado={parado}
+                  atraso={0.6}
+                >
+                  em {TROCA_ANTES}
+                </Riscado>
+              </span>
+
+              <Riscado
+                className="hidden font-serif text-[1.5rem] leading-tight text-black/35 sm:inline-block md:text-[1.9rem]"
+                ativo={conviteNaTela}
+                parado={parado}
+                atraso={0.35}
+              >
                 R$ {CUSTO_DE.toLocaleString('pt-BR')} a {CUSTO_ATE.toLocaleString('pt-BR')}
                 {CUSTO_UNIDADE} em {TROCA_ANTES}
-                {/* Dois pixels, e não um `line-through`: o risco é um gesto e
-                    precisa ser desenhado da esquerda para a direita. Decoração
-                    de texto não anima. */}
-                <motion.span
-                  aria-hidden
-                  className="absolute left-0 top-1/2 h-[2px] w-full -translate-y-1/2 origin-left bg-black/45"
-                  initial={{ scaleX: 0 }}
-                  animate={{ scaleX: parado || conviteNaTela ? 1 : 0 }}
-                  transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1], delay: 0.35 }}
-                />
-              </span>
+              </Riscado>
 
               <p className="mt-2 font-serif text-[1.9rem] leading-tight tracking-[-0.02em] text-[#0B0B0B] md:text-[2.4rem]">
                 {TROCA_DEPOIS}
