@@ -64,6 +64,38 @@ const RESPIRO = 'mt-7 md:mt-10';
 const GIRO = 30;
 
 /**
+ * A coluna estreita — o mesmo ponto em que `sm:` vira a chave no resto desta
+ * seção.
+ *
+ * Não é o `lg` do `useIsDesktop`: quem decide aqui é a JANELA da fatura, e ela
+ * existe só abaixo de 640 (`sm:flex-initial`). Dois pontos de corte para uma
+ * decisão só é um deles estando errado em alguma largura.
+ */
+const COLUNA_ESTREITA = '(max-width: 639px)';
+
+/**
+ * Quanto a coluna escura SOBE antes de o papel chegar, em alturas de tela.
+ *
+ * O defeito, medido em 390 por 844: o fecho — "E ainda assim, nenhuma garantia
+ * de viralizar." — vive entre 87% e 95% da tela, encostado na borda de baixo, e
+ * o papel branco começa a comê-lo poucos pixels de rolagem depois de ele
+ * acender. A frase mais alta da coluna aparecia no pior lugar possível e no pior
+ * momento possível.
+ *
+ * Um quarto de tela é o que leva o fecho dos 87% para os 62% — a marca que o
+ * dono desenhou de verde, logo abaixo do vigésimo quinto item. Ele chega lá com
+ * o papel ainda inteiro fora do quadro.
+ *
+ * Sobe a COLUNA, e não só a frase: mover uma peça sozinha abriria um buraco no
+ * meio de uma composição que foi afinada junta, e a janela da fatura ficaria
+ * pendurada. Subindo tudo, a leitura é a que o dono descreveu — a seção rola —,
+ * e o preço é o título saindo por cima. É preço e não perda: quando o fecho
+ * acende, a pergunta já esteve em pé por duas telas de rolagem, e o que ela
+ * cede é lugar para a resposta dela.
+ */
+const SUBIDA = 25;
+
+/**
  * O logo no lugar da palavra: "Sem [DOXA]" e "Com [DOXA]", com o ponto de
  * estado na frente.
  *
@@ -266,6 +298,21 @@ function Conta({
   );
 }
 
+/** Se a seção está no layout de uma coluna só. Ver `COLUNA_ESTREITA`. */
+function useColunaEstreita() {
+  const [estreita, setEstreita] = useState(() => window.matchMedia(COLUNA_ESTREITA).matches);
+
+  useEffect(() => {
+    const consulta = window.matchMedia(COLUNA_ESTREITA);
+    const atualizar = () => setEstreita(consulta.matches);
+    atualizar();
+    consulta.addEventListener('change', atualizar);
+    return () => consulta.removeEventListener('change', atualizar);
+  }, []);
+
+  return estreita;
+}
+
 export function Comparacao() {
   const escuroRef = useRef<HTMLDivElement>(null);
   const claroRef = useRef<HTMLDivElement>(null);
@@ -290,6 +337,33 @@ export function Comparacao() {
     target: claroRef,
     offset: ['start end', 'start 25%'],
   });
+
+  /**
+   * A APROXIMAÇÃO do papel, que é a régua da subida — ver `SUBIDA`.
+   *
+   * Medida contra o painel claro e não contra a seção, e é o ponto todo: o que
+   * a subida precisa vencer é a CHEGADA DELE, e só ele sabe onde está. Contra a
+   * seção, o mesmo número acertaria numa altura de tela e erraria na seguinte,
+   * porque a seção tem alturas fixas somadas a um painel que cresce com o
+   * conteúdo.
+   *
+   * Termina em 112% — o topo do papel a doze por cento de tela abaixo da dobra
+   * — e não em 100%: o painel entra GIRADO trinta graus sobre o canto inferior
+   * esquerdo, e a aresta de cima dele aparece cerca de doze centésimos de tela
+   * antes do que a caixa reta sugere. A subida acaba no quadro anterior ao
+   * primeiro pixel de papel.
+   *
+   * Começa em 145%, que é onde o fecho começa a acender: a frase sobe enquanto
+   * aparece, em vez de aparecer e depois se mudar de lugar. São 33% de tela de
+   * rolagem para 25% de subida — mais devagar do que o dedo, que é o que
+   * distingue uma coluna subindo de uma coluna pulando.
+   */
+  const { scrollYProgress: chegadaDoPapel } = useScroll({
+    target: claroRef,
+    offset: ['start 145%', 'start 112%'],
+  });
+  const estreita = useColunaEstreita();
+  const subida = useTransform(chegadaDoPapel, [0, 1], ['0vh', `-${SUBIDA}vh`]);
 
   /** O envelope da seção, emprestado à ladainha para ela medir a rolagem. */
   const secaoRef = useRef<HTMLElement>(null);
@@ -358,7 +432,14 @@ export function Comparacao() {
             texto — nos outros a grade preenche o vazio em volta do conteúdo,
             aqui não há vazio. */}
 
-        <div className="relative mx-auto flex h-full w-full max-w-screen-2xl flex-col">
+        {/* A coluna inteira sobe no fim, e só no telefone — ver `SUBIDA`.
+            No layout largo a coluna cabe na tela com folga e o papel nunca
+            chegou perto do fecho: `y` fica em zero e esta é a mesma `div` de
+            sempre. */}
+        <motion.div
+          style={estreita ? { y: subida } : undefined}
+          className="relative mx-auto flex h-full w-full max-w-screen-2xl flex-col"
+        >
           <Selo prefixo="Sem" />
 
           {/* A pergunta à esquerda, a CONTA à direita — foi para cá que o número
@@ -546,7 +627,7 @@ export function Comparacao() {
             <span className="texto-aceso text-white">{SEM_GARANTIA[1]}</span>
           </motion.p>
 
-        </div>
+        </motion.div>
       </div>
 
       {/* ── O FÔLEGO DO PAINEL ESCURO, e por que ele DOBROU ─────────────────
