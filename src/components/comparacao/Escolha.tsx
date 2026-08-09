@@ -1,9 +1,27 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, type CSSProperties } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { Check } from 'lucide-react';
 import { OUTRO } from './config';
+// A paleta da fita, e ela é da MARCA e não do FAQ apesar da pasta: é a mesma
+// sequência que o `texto-aceso-siri` desenha nas letras e que o anel do campo de
+// pergunta gira na borda. Importada em vez de repetida — três listas de sete
+// cores divergem na primeira vez que alguém troca um tom.
+import { CORES } from '../faq/cores';
 
 const EASE = [0.16, 1, 0.3, 1] as const;
+
+/**
+ * As cores do anel, entregues ao CSS.
+ *
+ * A primeira volta no fim: um `conic-gradient` não fecha sozinho, e sem repetir
+ * a cor inicial haveria uma emenda dura entre o último e o primeiro tom —
+ * girando, ela apareceria como uma costura dando voltas na borda. É a mesma
+ * observação que o campo do FAQ faz, e a mesma conta: se ela mudar, muda nos
+ * dois.
+ */
+const ANEL: CSSProperties = {
+  ['--anel-siri-cores' as string]: [...CORES, CORES[0]].join(', '),
+};
 
 interface EscolhaProps {
   /** O `id` do enunciado, para o grupo herdar o nome dele. */
@@ -112,7 +130,7 @@ export function Escolha({
                  não num par de alternativas. Branco cheio sobre fio de 30%, com
                  um fundo de 5% para a pílula existir como superfície antes de
                  ser tocada. */
-              className={`flex items-center gap-3 border text-left leading-snug transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black ${
+              className={`anel-siri relative flex items-center gap-3 border text-left leading-snug transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black ${
                 empilhada
                   ? 'w-full rounded-2xl px-5 py-4 text-[15px]'
                   : 'rounded-full px-4 py-2.5 text-[13px]'
@@ -121,9 +139,30 @@ export function Escolha({
                   ? 'border-transparent bg-[#F4F1E8] text-[#0B0B0B]'
                   : 'border-white/30 bg-white/[0.05] text-white hover:border-white/60 hover:bg-white/[0.09]'
               }`}
-              /* O mesmo halo da etapa da vez na trilha do topo. A ficha é a
-                 mesma peça do formulário, e o que está aceso se acende igual. */
-              style={marcada ? { boxShadow: '0 0 18px -2px rgba(255,255,255,0.55)' } : undefined}
+              /* ── O ANEL DO CAMPO DE PERGUNTA, aqui, a pedido do dono.
+
+                 `.anel-siri` é o mesmo efeito do campo do FAQ: um
+                 `conic-gradient` de um pixel correndo pela borda, e ele SÓ
+                 existe sob a mão ou sob o foco — fora disso não há `animation`
+                 declarada e o navegador não calcula quadro nenhum. É por isso
+                 que dá para pôr em duas, cinco ou oito pílulas sem custo.
+
+                 `relative` porque o anel é um `::before` em `inset: -1px`, e
+                 `border-radius: inherit` faz ele copiar o raio de cada forma —
+                 a mesma classe serve a pílula redonda e ao cartão empilhado.
+
+                 O `focus-visible:ring` branco continua por cima: o anel é
+                 decoração e responde ao mouse também, e quem navega por teclado
+                 precisa de um indicador que não dependa de cor nem de
+                 animação. */
+              style={
+                marcada
+                  ? /* O mesmo halo da etapa da vez na trilha do topo. A ficha é
+                       a mesma peça do formulário, e o que está aceso se acende
+                       igual. */
+                    { ...ANEL, boxShadow: '0 0 18px -2px rgba(255,255,255,0.55)' }
+                  : ANEL
+              }
             >
               {/* O NÚMERO da alternativa, só na versão empilhada.
 

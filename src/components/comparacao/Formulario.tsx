@@ -163,16 +163,21 @@ const PASSOS: readonly Passo[] = [
  */
 const SEM_PERFIL = 'ainda não tenho';
 
-/**
- * O respiro entre tocar numa resposta e a tela virar, em milissegundos.
+/*
+ * ─── O AVANÇO AUTOMÁTICO SAIU, e com ele o `RESPIRO_TOQUE` ───────────────────
  *
- * As perguntas de resposta única avançam sozinhas — é o que torna a ficha um
- * minuto em vez de três. Mas virar no mesmo quadro do toque apaga a única
- * confirmação de que a escolha foi registrada, e a pessoa chega na pergunta
- * seguinte sem saber se acertou o alvo. Este intervalo é o tempo de a pílula
- * acender e ser vista, e não mais que isso.
+ * As perguntas de resposta única viravam a tela sozinhas, um terço de segundo
+ * depois do toque. A intenção era boa e é a de todo formulário rápido: menos um
+ * clique por pergunta. O dono desligou, e a razão dele vale mais do que o
+ * clique economizado — uma tela que vira sozinha tira da pessoa a chance de
+ * reler o que escolheu, e nesta o que ela está escolhendo é por qual porta vai
+ * entrar. Errar e só descobrir na tela seguinte é pior do que tocar em
+ * "Continuar".
+ *
+ * Agora TODA passagem é deliberada: escolhe-se, confere-se, avança-se. O
+ * `relogio` continua existindo para a espera do pagamento, que é o único
+ * adiamento que sobrou nesta tela.
  */
-const RESPIRO_TOQUE = 340;
 
 /**
  * Os passos que vêm depois das perguntas, na ordem em que acontecem.
@@ -315,10 +320,10 @@ export function Formulario({ cartaoRef }: { cartaoRef: RefObject<HTMLDivElement>
   };
 
   const voltar = (destino: number) => {
-    // O avanço automático da ficha fica pendurado por um terço de segundo, e
-    // nesse intervalo dá tempo de tocar em "voltar". Sem esta linha, o relógio
-    // dispara depois e joga a pessoa para a frente logo depois de ela ter
-    // pedido para ir para trás — o pior tipo de defeito, o que desfaz a ação.
+    // Cinto de segurança: qualquer adiamento pendurado morre aqui. Hoje só a
+    // espera do pagamento usa o relógio, e ela não convive com o voltar — mas um
+    // temporizador que dispara DEPOIS de a pessoa pedir para ir para trás é o
+    // pior tipo de defeito, o que desfaz a ação, e a linha custa nada.
     window.clearTimeout(relogio.current);
     setErro(null);
     setSentido(-1);
@@ -404,10 +409,9 @@ export function Formulario({ cartaoRef }: { cartaoRef: RefObject<HTMLDivElement>
   /**
    * O toque numa resposta da ficha.
    *
-   * A de várias respostas junta e tira, e espera o botão. A de resposta única
-   * avança sozinha, que é o que faz cinco perguntas caberem num minuto — menos
-   * quando a escolha foi `OUTRO`, porque aí a pessoa ainda vai escrever, e
-   * virar a tela levaria embora o campo que o toque dela acabou de abrir.
+   * A de várias respostas junta e tira; a de resposta única substitui. Nenhuma
+   * das duas avança sozinha — ver a nota do `RESPIRO_TOQUE` removido, lá em
+   * cima. O botão é a única passagem, aqui e no primeiro passo.
    */
   const escolher = (pergunta: PerguntaFicha, opcao: string) => {
     if (pergunta.multipla === true) {
@@ -427,9 +431,6 @@ export function Formulario({ cartaoRef }: { cartaoRef: RefObject<HTMLDivElement>
       return;
     }
     setRespostas((r) => ({ ...r, [pergunta.chave]: [opcao] }));
-    if (opcao === OUTRO && pergunta.livre != null) return;
-    window.clearTimeout(relogio.current);
-    relogio.current = window.setTimeout(seguir, RESPIRO_TOQUE);
   };
 
   const pagar = () => {
@@ -700,9 +701,10 @@ export function Formulario({ cartaoRef }: { cartaoRef: RefObject<HTMLDivElement>
                      de pílula divergiria no primeiro ajuste de espessura de
                      borda.
 
-                     Escolher avança sozinho, com o mesmo respiro do toque das
-                     outras: o `RESPIRO_TOQUE` é o tempo de a pílula acender e
-                     ser vista antes de a tela virar. */
+                     Escolher NÃO avança: a passagem é o botão "Continuar",
+                     aqui como em toda pergunta de toque deste formulário. Ver a
+                     nota sobre o avanço automático removido, no alto do
+                     arquivo. */
                   <div className="mt-6">
                     <Escolha
                       rotuladoPor={`campo-${atual.chave}`}
@@ -714,8 +716,6 @@ export function Formulario({ cartaoRef }: { cartaoRef: RefObject<HTMLDivElement>
                       aoEscolher={(opcao) => {
                         setDados((d) => ({ ...d, [atual.chave]: opcao }));
                         setErro(null);
-                        window.clearTimeout(relogio.current);
-                        relogio.current = window.setTimeout(seguir, RESPIRO_TOQUE);
                       }}
                       aoEscreverLivre={() => {}}
                       aoConfirmarLivre={avancar}
