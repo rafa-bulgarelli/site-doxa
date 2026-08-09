@@ -52,6 +52,33 @@ const DORMIR = 1100;
 const VIVA_ALTURA = 148;
 
 /**
+ * ─── O CARTÃO UM TERÇO MENOR NA JANELA ESTREITA ──────────────────────────────
+ *
+ * Pedido do dono, e o caso é mais estreito do que parece: num TELEFONE de
+ * verdade esta peça não existe — o CSS a esconde inteira em `@media (hover:
+ * none)`, porque lá o polegar cobre a barra e o sistema já desenha o próprio
+ * indicador. O que sobra é a janela estreita COM ponteiro: um navegador puxado
+ * para 320 de largura, que é onde o dono está olhando. Ali o painel aberto
+ * ocupava 236 dos 320 pixels — três quartos da tela para um atalho.
+ *
+ * `ENCOLHE` mora aqui e o CSS repete a mesma fração em `calc()`, sempre visível
+ * como conta e nunca como número pronto. As duas linguagens não têm como
+ * compartilhar a constante, mas têm como mostrar a mesma origem: quem mudar uma
+ * acha a outra procurando por "2 / 3".
+ *
+ * `ESTREITO` é o `sm` do Tailwind pela borda de baixo — o mesmo limite de 640
+ * que separa telefone de resto no site inteiro. Um segundo limite só para esta
+ * peça seria uma segunda opinião sobre o que é estreito.
+ */
+const ESTREITO = '(max-width: 639px)';
+const ENCOLHE = 2 / 3;
+
+/** As duas alturas fixas, já na escala da janela em que a peça está. */
+function alturaFixa(cheia: number) {
+  return window.matchMedia(ESTREITO).matches ? Math.round(cheia * ENCOLHE) : cheia;
+}
+
+/**
  * A altura do painel, e ela é uma CONTA e não um gosto.
  *
  * O botão estava saindo pela borda de baixo porque a soma do conteúdo passava da
@@ -202,9 +229,9 @@ export function Rolador() {
          numa e vazia na outra. O que informa a posição, aí, é a porcentagem. */
       const alturaDormindo = Math.max(MINIMO, pista * (janela / total));
       const altura = abertaRef.current
-        ? ILHA_ALTURA
+        ? alturaFixa(ILHA_ALTURA)
         : acordadaRef.current
-          ? VIVA_ALTURA
+          ? alturaFixa(VIVA_ALTURA)
           : alturaDormindo;
 
       /* Aberta e acordada, ela é CENTRADA na posição que teria como barra — é
@@ -444,7 +471,7 @@ export function Rolador() {
       const total = doc.scrollHeight;
       const pista = janela - MARGEM * 2;
       const altura = acordadaRef.current
-        ? VIVA_ALTURA
+        ? alturaFixa(VIVA_ALTURA)
         : Math.max(MINIMO, pista * (janela / total));
       const andar = pista - altura;
       if (andar <= 0) return;

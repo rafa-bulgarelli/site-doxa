@@ -592,6 +592,62 @@ html::-webkit-scrollbar {
   }
 }
 
+/*
+ * ─── UM TERÇO MENOR NA JANELA ESTREITA ───────────────────────────────────────
+ *
+ * Pedido do dono. A regra acima já esconde a peça no telefone de verdade, então
+ * o que esta atende é a janela estreita COM ponteiro — um navegador puxado para
+ * 320 de largura. Ali o painel aberto ocupava 236 dos 320 pixels: três quartos
+ * da tela para um atalho que a pessoa nem pediu.
+ *
+ * A fração aparece como `calc(... * 2 / 3)` em toda regra, e o JS guarda a mesma
+ * conta em `ENCOLHE` — as duas linguagens não compartilham a constante, mas
+ * mostram a mesma origem. Quem mudar uma acha a outra procurando por "2 / 3".
+ *
+ * O MIOLO encolhe por `scale` e não por uma segunda tabela de corpos e recuos.
+ * São nove medidas lá dentro — a capa em serifa de 52px, dois níveis de texto, a
+ * trilha, o botão, três vãos e o recuo — e elas foram afinadas JUNTAS: a altura
+ * de 358 é a soma exata delas, documentada em `ILHA_ALTURA`. Reescrever cada uma
+ * por conta própria desmancharia a soma e o sintoma seria o botão saindo pela
+ * borda de baixo, que é justamente o defeito que aquela conta existe para
+ * impedir. Com a escala, a composição é a mesma; só o tamanho dela muda.
+ *
+ * O truque é dar ao miolo o tamanho de PROJETO e reduzi-lo dentro da caixa já
+ * reduzida — por isso `right`/`bottom` voltam a `auto`: com `inset: 0` ele
+ * herdaria a caixa pequena e a escala o encolheria uma segunda vez.
+ */
+@media (max-width: 639px) {
+  .rolador-viva {
+    width: calc(34px * 2 / 3);
+  }
+
+  .rolador-ilha {
+    width: calc(236px * 2 / 3);
+  }
+
+  .rolador-ilha::before {
+    border-radius: calc(30px * 2 / 3);
+  }
+
+  .rolador-viva-corpo,
+  .rolador-ilha-corpo {
+    right: auto;
+    bottom: auto;
+    transform: scale(0.6667);
+    transform-origin: top left;
+  }
+
+  .rolador-viva-corpo {
+    width: 34px;
+    height: 148px;
+  }
+
+  .rolador-ilha-corpo {
+    width: 236px;
+    height: 358px;
+  }
+}
+
 /* O esticão é a única coisa aqui que se move sem ninguém pedir, e é justamente
    o que a preferência manda desligar — a ilha continua inteira, apenas sem
    deformar e sem inflar com overshoot. */
