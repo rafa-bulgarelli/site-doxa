@@ -603,17 +603,30 @@ function ScaleClaims() {
     <>
       {SCALE_CLAIMS.map(({ value, label }) => (
         <div key={label} className="flex flex-col gap-1">
-          {/* Um degrau abaixo até 640px, e é dieta com destinatário.
+          {/* ── A DIETA FOI DESFEITA, e o registro das duas decisões fica.
 
-              No telefone estreito estas duas cifras e o título ocupavam dois
-              terços da altura da tela, e o terço que sobrava era o vão em que o
-              cartão de fecho tem de caber. A 30px, "60 vídeos virais" quebra em
-              duas linhas dentro de uma coluna de 134px e cobra sessenta pixels
-              do meio da tela por um número que continua legível a 22. */}
-          <span className="font-serif text-[1.4rem] leading-none text-white sm:text-3xl lg:text-[2.6rem]">
+              Estas cifras estiveram em 1,4rem e 13px por uma razão minha, não
+              do dono: no telefone o título e elas ocupavam dois terços da altura
+              da tela, e o terço restante é o vão em que o cartão de fecho tem de
+              caber. Encolhê-las devolvia vão ao cartão.
+
+              O dono olhou o resultado e pediu maior — e é uma troca legítima,
+              porque quem paga não é conteúdo cortado: o cartão se REDUZ sozinho
+              ao vão que sobrar (`caberCartao`). Cifra maior aqui é cartão um
+              pouco menor ali, e mais nada.
+
+              O custo real é pequeno, e vale saber por quê: os rótulos já
+              quebravam em duas linhas numa coluna de 134px, então os dois
+              pixels a mais de corpo não acrescentam linha nenhuma — a faixa
+              cresce cerca de doze pixels no total, não sessenta.
+
+              A copy mudou desde aquela nota: eram "1 milhão" e "60 vídeos
+              virais", hoje são "+10B" e "+900". Números curtos, que é o que
+              torna 2rem seguro numa coluna estreita. */}
+          <span className="font-serif text-[2rem] leading-none text-white lg:text-[2.6rem]">
             {value}
           </span>
-          <span className="text-[13px] leading-snug text-white/60 lg:text-[15px]">{label}</span>
+          <span className="text-[14px] leading-snug text-white/60 lg:text-[15px]">{label}</span>
         </div>
       ))}
     </>
