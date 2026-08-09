@@ -327,9 +327,20 @@ export function Rodape() {
                * de novo. Balanceada, ela se re-equilibra sozinha em toda tela.
                *
                * `sm:text-[2.6rem]` devolve o valor antigo de 640 para cima —
-               * este aumento é do telefone, e o teto de 3,9rem só chega a ser
-               * atingido nos ~533px em que a fluida encosta nele. */}
-              <h2 className="texto-aceso text-balance font-serif text-[min(11.7vw,3.9rem)] leading-[1.08] tracking-[-0.03em] text-[#F4F1E8] sm:text-[2.6rem] md:text-[4.4rem]">
+               * este aumento é do telefone, e o teto só chega a ser atingido
+               * nos ~533px em que a fluida encosta nele.
+               *
+               * O par final saiu de três decisões encadeadas do dono, e vale
+               * deixar a conta à vista para a próxima não recomeçar do zero:
+               * 7,8vw era o teto do "sem quebra"; ×1,5 levou a 11,7; ×0,85, um
+               * quarto de hora depois, trouxe a 9,95. O teto em rem seguiu a
+               * mesma cadeia — 2,6 · 3,9 · 3,32.
+               *
+               * A 9,95vw a frase de 32 caracteres mede 335 pixels nos 280 úteis
+               * de um telefone de 320: continua em duas linhas, e continua
+               * equilibrada pelo `text-balance`. A redução tirou 25 pixels de
+               * altura do bloco, que a clareira já cobria com folga. */}
+              <h2 className="texto-aceso text-balance font-serif text-[min(9.95vw,3.32rem)] leading-[1.08] tracking-[-0.03em] text-[#F4F1E8] sm:text-[2.6rem] md:text-[4.4rem]">
                 {FECHO.titulo}
                 <span className="block">{FECHO.linha}</span>
               </h2>
