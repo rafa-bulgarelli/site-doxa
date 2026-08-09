@@ -122,13 +122,27 @@ export const DUVIDAS: readonly Duvida[] = [
   },
   {
     chave: 'como-gera',
-    atalho: 'Como vocês geram',
+    /* "Como vocês viralizam?" e não "Como vocês geram", a pedido do dono. O
+       rótulo passou a usar o verbo da página inteira — a manchete promete
+       viralizar, o botão do hero diz "Quero viralizar", e o atalho que pergunta
+       COMO isso acontece falava de "gerar". Duas palavras para a mesma coisa,
+       com a segunda mais fraca. */
+    atalho: 'Como vocês viralizam?',
     pergunta: 'Como a Doxa gera tantas visualizações?',
     resposta: [
       'Construímos uma operação proprietária de conteúdo baseada em volume, testes constantes, análise de dados e otimização.',
       'Em vez de depender de um único vídeo viral, criamos um sistema contínuo para aumentar as chances de distribuição e crescimento.',
     ],
-    ancoras: ['como voces geram', 'como geram', 'como funciona', 'metodo', 'operacao', 'sistema'],
+    ancoras: [
+      'como voces viralizam',
+      'como viralizam',
+      'como voces geram',
+      'como geram',
+      'como funciona',
+      'metodo',
+      'operacao',
+      'sistema',
+    ],
     termos: ['processo', 'etapas', 'estrategia', 'segredo', 'algoritmo'],
   },
   {
