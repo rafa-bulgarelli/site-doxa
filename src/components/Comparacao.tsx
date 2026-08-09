@@ -353,14 +353,20 @@ export function Comparacao() {
    * antes do que a caixa reta sugere. A subida acaba no quadro anterior ao
    * primeiro pixel de papel.
    *
-   * Começa em 145%, que é onde o fecho começa a acender: a frase sobe enquanto
-   * aparece, em vez de aparecer e depois se mudar de lugar. São 33% de tela de
+   * Começa em 150%, que é onde o fecho começa a acender: a frase sobe enquanto
+   * aparece, em vez de aparecer e depois se mudar de lugar. São 38% de tela de
    * rolagem para 25% de subida — mais devagar do que o dedo, que é o que
    * distingue uma coluna subindo de uma coluna pulando.
+   *
+   * Eram 33%, e os cinco pontos a mais são os mesmos quinze por cento que o
+   * dono pediu no resto do trecho: esta régua é medida em TELAS e não em
+   * frações da seção, então ela não pegaria carona no fôlego que cresceu — o
+   * único trecho que continuaria na velocidade antiga seria justamente o que
+   * ele estava olhando quando pediu.
    */
   const { scrollYProgress: chegadaDoPapel } = useScroll({
     target: claroRef,
-    offset: ['start 145%', 'start 112%'],
+    offset: ['start 150%', 'start 112%'],
   });
   const estreita = useColunaEstreita();
   const subida = useTransform(chegadaDoPapel, [0, 1], ['0vh', `-${SUBIDA}vh`]);
@@ -654,7 +660,21 @@ export function Comparacao() {
        * painel claro gira em torno do canto inferior esquerdo, e trinta graus
        * baixam a aresta de cima dele em cerca de doze centésimos da altura da
        * tela. O papel aparece um pouco ANTES do que este número sugere. */}
-      <div className="h-screen" aria-hidden />
+      {/* 130vh no telefone, a pedido do dono: o trecho escuro inteiro — a tela
+          grudada mais este fôlego — vai de 200vh para 230vh, que são os quinze
+          por cento de rolagem a mais que ele pediu. O que se ganha é dedo, não
+          conteúdo: a mesma fatura, a mesma conta e o mesmo fecho, atravessados
+          mais devagar.
+
+          Tudo que é medido em FRAÇÃO DA SEÇÃO desacelera junto e de graça — a
+          régua da ladainha é uma delas —, e é por isso que o ajuste dela ao
+          lado é de um ponto e meio, e não de quinze por cento.
+
+          `sm:h-screen` porque o pedido é do telefone. No layout largo a coluna
+          cabe na tela com folga, o dono não reclamou de lá, e uma seção que
+          fica meia tela mais longa no desktop "por via das dúvidas" é uma
+          mudança de desktop disfarçada de segurança. */}
+      <div className="h-[130vh] sm:h-screen" aria-hidden />
 
       {/* ─── `#forms`: A MARCA DO SALTO, e por que ela é uma caixa VAZIA ──────
        *

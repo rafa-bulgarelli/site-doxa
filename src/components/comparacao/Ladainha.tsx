@@ -78,7 +78,21 @@ import { Icone } from './icones';
  * que o componente recebe de fora.
  */
 const ABRE = 'start start';
-const FECHA = '26% start';
+/*
+ * 27,5% e não 26%, a pedido do dono: mais dedo para atravessar a mesma fatura.
+ *
+ * O número é uma fração da SEÇÃO, e a seção do telefone cresceu quinze por
+ * cento no mesmo pedido (ver o fôlego, em `Comparacao`). Só o fôlego já traria
+ * a lista para mais perto disso; este ponto e meio é o que fecha os quinze por
+ * cento em cima da altura nova — de 756 para 869 pixels de rolagem num 390 por
+ * 844, que é o que a lista leva para se escrever inteira.
+ *
+ * No layout largo a seção não mudou de altura, então o mesmo ajuste vale menos
+ * — cerca de seis por cento mais lento para as palavras acenderem. É a mesma
+ * direção que o dono pediu, num lugar em que ele não vai notar: lá a lista não
+ * corre, só acende.
+ */
+const FECHA = '27.5% start';
 
 /**
  * O percurso da contagem, medido na SEÇÃO e entregue a quem precisar dele.
