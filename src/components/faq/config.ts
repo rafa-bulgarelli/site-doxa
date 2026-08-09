@@ -39,8 +39,24 @@
 
 export interface Duvida {
   chave: string;
-  /** O rótulo do atalho. Curto: é um botão, não uma frase. */
-  atalho: string;
+  /**
+   * O rótulo do atalho. Curto: é um botão, não uma frase.
+   *
+   * OPCIONAL, e a ausência é o que separa as duas metades deste arquivo.
+   *
+   * Com atalho, a dúvida vira um botão na bandeja do campo — são as seis "que
+   * todo mundo tem", exatamente como a linha acima do campo promete. Sem atalho,
+   * ela existe SÓ para a busca: ninguém a vê, e quem digita a pergunta recebe a
+   * resposta.
+   *
+   * A distinção resolve uma tensão real. Vinte e três botões não são atalhos,
+   * são um índice — e um índice na frente de um campo de conversa diz à pessoa
+   * para procurar em vez de perguntar, que é o contrário do que esta seção faz.
+   * Mas as dezessete de baixo respondem coisas que custam venda quando ficam
+   * sem resposta. As duas coisas ao mesmo tempo: seis na tela, vinte e três no
+   * que o campo sabe.
+   */
+  atalho?: string;
   /** A pergunta como uma pessoa a faria — é ela que aparece na conversa. */
   pergunta: string;
   /** A resposta, em parágrafos. Dois, no máximo: isto é um FAQ, não um artigo. */
@@ -119,19 +135,33 @@ export const DUVIDAS: readonly Duvida[] = [
     chave: 'organico',
     atalho: 'É orgânico?',
     pergunta: 'As visualizações são orgânicas?',
+    /* ── NENHUMA RESPOSTA COMEÇA COM UM "SIM" SOLTO, e este arquivo aprendeu
+       isso do jeito caro.
+
+       Ela abria com "Sim. As visualizações geradas pela Doxa são 100%
+       orgânicas". Perfeito para a pergunta escrita aqui — e o dono digitou
+       "Preciso de tráfego pago?", que a busca mandou para cá pela âncora
+       `trafego pago`. O que apareceu na tela foi "Sim." embaixo de "Preciso de
+       tráfego pago?": a resposta exatamente invertida, dita pela própria marca.
+
+       A causa não é a frase, é a arquitetura: UMA resposta serve MUITAS
+       formulações, e "sim" só significa alguma coisa colado na pergunta que o
+       autor tinha em mente. A regra que fica: a primeira frase de toda resposta
+       carrega o próprio sujeito e se sustenta sozinha, lida debaixo de qualquer
+       pergunta que a busca tenha roteado para ela.
+
+       E as âncoras de mídia paga saíram daqui inteiras — foram para
+       `midia-extra`, que é onde "preciso de tráfego pago" pertence. Esta
+       pergunta é sobre a ORIGEM das views; aquela é sobre o que o cliente
+       precisa gastar. As palavras que sobraram aqui são as da desconfiança:
+       quem duvida não digita "orgânico", digita a acusação. */
     resposta: [
-      'Sim. As visualizações geradas pela Doxa são 100% orgânicas, provenientes da distribuição dos conteúdos produzidos dentro da nossa operação.',
+      'As visualizações contabilizadas nas metas da Doxa são 100% orgânicas, provenientes da distribuição dos conteúdos produzidos dentro da nossa operação.',
       'Sem depender da compra de mídia para atingir as metas contratadas.',
     ],
-    /* `bot`, `robo` e `comprada` são âncoras de propósito, e são a razão de esta
-       pergunta existir: quem desconfia não digita "orgânico", digita a acusação.
-       A resposta tem de estar do outro lado da palavra que a pessoa realmente
-       escreve. */
     ancoras: [
       'organico',
       'organicas',
-      'trafego pago',
-      'midia paga',
       'comprada',
       'compradas',
       'bot',
@@ -140,8 +170,9 @@ export const DUVIDAS: readonly Duvida[] = [
       'fake',
       'falsa',
       'falsas',
+      'sao reais',
     ],
-    termos: ['anuncio', 'anuncios', 'impulsionamento', 'verdadeira', 'real'],
+    termos: ['verdadeira', 'real', 'de verdade'],
   },
   {
     chave: 'prova',
@@ -151,7 +182,18 @@ export const DUVIDAS: readonly Duvida[] = [
       'A tecnologia e a operação da Doxa já foram utilizadas por mais de 1.500 clientes, incluindo empresas e marcas como Magalu, G4 e Natália Beauty.',
       'Além de operações no Brasil e nos Estados Unidos.',
     ],
-    ancoras: ['quem usou', 'quem ja usou', 'cliente', 'clientes', 'caso', 'casos', 'exemplo'],
+    ancoras: [
+      'quem usou',
+      'quem ja usou',
+      'quais empresas',
+      'que empresas',
+      'trabalharam com voces',
+      'cliente',
+      'clientes',
+      'caso',
+      'casos',
+      'exemplo',
+    ],
     termos: ['prova', 'resultado', 'funciona mesmo', 'confiavel', 'referencia'],
   },
   {
@@ -162,7 +204,16 @@ export const DUVIDAS: readonly Duvida[] = [
       'Os primeiros resultados podem aparecer já nas primeiras semanas, mas nossa estratégia é construída para performance consistente ao longo de todo o período contratado.',
       'Quanto mais conteúdo é publicado, mais dados temos para identificar os formatos com maior potencial e escalar os resultados.',
     ],
-    ancoras: ['quanto tempo', 'prazo', 'demora', 'quando', 'primeiras semanas', 'resultados'],
+    ancoras: [
+      'quanto tempo',
+      'prazo',
+      'demora',
+      'quando',
+      'primeiras semanas',
+      'resultados',
+      'comeco a ver resultado',
+      'ver resultado',
+    ],
     termos: ['rapido', 'comeca', 'inicio', 'primeiro video'],
   },
   {
@@ -184,7 +235,344 @@ export const DUVIDAS: readonly Duvida[] = [
     ],
     termos: ['pequena', 'pequenas', 'grande', 'iniciante', 'atendem'],
   },
+
+  /*
+   * ─── AS DEZESSETE SEM ATALHO: o que o campo sabe e não mostra ───────────────
+   *
+   * Ditadas pelo dono, e nenhuma delas vira botão. Elas existem para o momento
+   * em que a pessoa DIGITA — e é o momento que mais importa, porque quem digita
+   * já tem uma objeção formada, enquanto quem toca num atalho ainda está
+   * passeando.
+   *
+   * Todas obedecem a regra que a `organico` pagou caro para escrever: a primeira
+   * frase carrega o próprio sujeito. "Sim" e "Não" sozinhos são respostas à
+   * pergunta que o autor imaginou, não à que a busca roteou.
+   *
+   * Três das vinte que ele mandou não estão aqui, e é de propósito: "em quanto
+   * tempo começo a ver resultado", "as views vêm de tráfego pago" e "quais
+   * empresas já trabalharam com vocês" repetem as visíveis palavra por palavra.
+   * O que entrou dessas três foram as ÂNCORAS, nas entradas de cima — duas
+   * respostas quase iguais disputando a mesma pergunta é como uma busca começa a
+   * devolver a errada.
+   */
+  {
+    chave: 'preco',
+    pergunta: 'Quanto custa para contratar a Doxa?',
+    resposta: [
+      'O investimento varia de acordo com o volume de conteúdo, a meta de visualizações e o tamanho da operação.',
+      'A Doxa desenvolve uma estratégia personalizada para cada empresa e, depois de entendermos seus objetivos, nosso time apresenta o plano mais adequado.',
+    ],
+    ancoras: [
+      'quanto custa',
+      'preco',
+      'valor',
+      'mensalidade',
+      'orcamento',
+      'investimento',
+      'quanto e',
+      'quanto fica',
+    ],
+    termos: ['plano', 'pacote', 'contratar', 'caro', 'barato'],
+  },
+  {
+    chave: 'nao-bater',
+    pergunta: 'O que acontece se vocês não baterem a quantidade de views prometida?',
+    resposta: [
+      'A Doxa trabalha com metas de performance definidas em contrato. Caso a quantidade de visualizações acordada não seja atingida dentro do período estabelecido, são aplicadas as condições de garantia previstas no contrato.',
+      'A garantia existe justamente para alinhar o nosso resultado ao resultado do cliente.',
+    ],
+    ancoras: [
+      'nao bater',
+      'nao baterem',
+      'nao atingir',
+      'nao alcancar',
+      'nao entregar',
+      'nao der certo',
+      'e se nao',
+    ],
+    termos: ['falhar', 'furar', 'prometida'],
+  },
+  {
+    chave: 'viralizar-garantido',
+    pergunta: 'Vocês conseguem garantir que meu conteúdo vai viralizar?',
+    resposta: [
+      'Não garantimos que um vídeo específico vai viralizar. O que fazemos é construir uma operação com volume, dados e testes suficientes para aumentar significativamente as chances de alcançar grandes audiências.',
+      'Nossa garantia está relacionada à performance total contratada, e não ao desempenho de um único conteúdo.',
+    ],
+    ancoras: [
+      'garantir que vai viralizar',
+      'vai viralizar',
+      'viraliza mesmo',
+      'garantem viralizacao',
+      'todo video viraliza',
+    ],
+    termos: ['certeza', 'promete', 'prometem'],
+  },
+  {
+    chave: 'midia-extra',
+    pergunta: 'Preciso investir em mídia além do valor pago para a Doxa?',
+    /* As âncoras de tráfego pago moram AQUI, e não em `organico`. Ver a nota
+       lá em cima: "preciso de tráfego pago?" é uma pergunta sobre o que o
+       cliente vai gastar, e mandá-la para a resposta sobre a origem das views
+       foi o que produziu um "Sim." embaixo dela. */
+    resposta: [
+      'Para atingir as metas orgânicas contratadas com a Doxa, não é preciso investir em mídia. Nossa operação é desenvolvida para gerar distribuição sem depender de mídia paga.',
+      'Se a empresa quiser complementar a estratégia com anúncios, isso pode ser feito separadamente.',
+    ],
+    ancoras: [
+      'trafego pago',
+      'midia paga',
+      'preciso de trafego',
+      'preciso investir',
+      'preciso pagar',
+      'alem do valor',
+      'investir em midia',
+      'gastar com anuncio',
+      'verba',
+    ],
+    termos: ['anuncio', 'anuncios', 'impulsionamento', 'impulsionar', 'ads'],
+  },
+  {
+    chave: 'pequenas',
+    pergunta: 'A Doxa funciona para empresas pequenas também?',
+    resposta: [
+      'Empresas pequenas também podem trabalhar com a Doxa, desde que exista potencial para transformar conteúdo em um canal relevante de crescimento.',
+      'O mais importante não é o tamanho da empresa, e sim os objetivos, o mercado, o produto e a capacidade de aproveitar a audiência gerada pela operação.',
+    ],
+    ancoras: [
+      'empresa pequena',
+      'empresas pequenas',
+      'pequeno negocio',
+      'sou pequeno',
+      'sou pequena',
+      'microempresa',
+      'mei',
+    ],
+    termos: ['iniciante', 'comecando', 'pouco faturamento'],
+  },
+  {
+    chave: 'b2b',
+    pergunta: 'Minha empresa é B2B, a Doxa funciona para mim?',
+    resposta: [
+      'Empresas B2B também podem usar conteúdo para construir autoridade, gerar reconhecimento, educar o mercado e alcançar potenciais clientes.',
+      'A estratégia, a linguagem e os formatos são adaptados ao público e ao processo comercial de cada negócio.',
+    ],
+    ancoras: ['b2b', 'business to business', 'vendo para empresas', 'industria', 'atacado'],
+    termos: ['corporativo', 'servico para empresas'],
+  },
+  {
+    chave: 'redes',
+    pergunta: 'Em quais redes sociais vocês publicam os conteúdos?',
+    resposta: [
+      'A estratégia pode envolver TikTok, Instagram, YouTube e outras redes relevantes para o público da empresa.',
+      'A distribuição é definida de acordo com o comportamento da audiência e os objetivos de cada operação.',
+    ],
+    ancoras: [
+      'quais redes',
+      'redes sociais',
+      'tiktok',
+      'instagram',
+      'youtube',
+      'shorts',
+      'reels',
+      'onde publica',
+      'onde posta',
+      'plataformas',
+    ],
+    termos: ['publicam', 'canais', 'rede'],
+  },
+  {
+    chave: 'volume',
+    pergunta: 'Quantos vídeos vocês produzem por mês?',
+    resposta: [
+      'O volume depende do plano contratado. A Doxa trabalha com operações de alta frequência, podendo produzir e publicar múltiplos conteúdos por dia.',
+      'O volume exato é definido de acordo com a estratégia e a meta de performance de cada cliente.',
+    ],
+    ancoras: [
+      'quantos videos',
+      'quantos conteudos',
+      'quantos posts',
+      'por mes',
+      'por dia',
+      'volume',
+      'frequencia',
+    ],
+    termos: ['producao', 'quantidade', 'quantos'],
+  },
+  {
+    chave: 'gravar',
+    pergunta: 'Eu preciso gravar os vídeos ou vocês fazem tudo?',
+    resposta: [
+      'A Doxa consegue assumir grande parte da operação de conteúdo. No onboarding entendemos quais materiais — imagens, vídeos, áudios ou participações — serão necessários.',
+      'A necessidade de gravação do cliente varia conforme o formato escolhido para a marca.',
+    ],
+    ancoras: [
+      'preciso gravar',
+      'eu gravo',
+      'quem grava',
+      'aparecer no video',
+      'mostrar o rosto',
+      'gravacao',
+      'nao gosto de aparecer',
+    ],
+    termos: ['camera', 'filmar', 'estudio', 'rosto'],
+  },
+  {
+    chave: 'escala',
+    pergunta: 'Como vocês conseguem produzir tanto conteúdo para uma empresa?',
+    resposta: [
+      'Usamos tecnologia, inteligência artificial, processos próprios e uma operação especializada em produção de conteúdo em escala.',
+      'Isso permite criar, testar e otimizar diferentes formatos muito mais rápido do que uma operação tradicional de conteúdo.',
+    ],
+    ancoras: [
+      'produzir tanto',
+      'tanto conteudo',
+      'inteligencia artificial',
+      'ia',
+      'como produzem',
+      'em escala',
+    ],
+    termos: ['tecnologia', 'rapido', 'equipe', 'time'],
+  },
+  {
+    chave: 'aprovacao',
+    pergunta: 'Os vídeos precisam ser aprovados por mim antes de serem publicados?',
+    resposta: [
+      'Quando o fluxo do cliente exige aprovação, os conteúdos passam por etapas de validação antes da publicação.',
+      'A empresa pode acompanhar temas, roteiros, versões e materiais para garantir que tudo esteja alinhado às diretrizes da marca.',
+    ],
+    ancoras: [
+      'aprovar',
+      'aprovacao',
+      'aprovado',
+      'aprovados',
+      'antes de publicar',
+      'antes de postar',
+      'validar',
+      'reviso',
+    ],
+    termos: ['publicacao', 'controle', 'aprovo'],
+  },
+  {
+    chave: 'tom-de-voz',
+    pergunta: 'A Doxa consegue seguir a identidade e o tom de voz da minha marca?',
+    resposta: [
+      'No início da operação, nosso time entende a identidade, o posicionamento, o público, a linguagem e as restrições da empresa.',
+      'Essas informações passam a orientar a produção, para que o conteúdo mantenha consistência com a marca.',
+    ],
+    ancoras: [
+      'tom de voz',
+      'identidade',
+      'identidade visual',
+      'minha marca',
+      'posicionamento',
+      'branding',
+      'manual da marca',
+    ],
+    termos: ['linguagem', 'estilo', 'cara da marca'],
+  },
+  {
+    chave: 'direitos',
+    pergunta: 'Quem é dono dos conteúdos produzidos pela Doxa?',
+    resposta: [
+      'Os conteúdos são desenvolvidos exclusivamente para a operação da marca.',
+      'Os direitos de utilização, propriedade e demais condições são estabelecidos no contrato de cada cliente, de acordo com o escopo contratado.',
+    ],
+    ancoras: [
+      'dono dos videos',
+      'dono do conteudo',
+      'direitos',
+      'direito autoral',
+      'propriedade',
+      'quem e dono',
+    ],
+    termos: ['posse', 'meu ou de voces', 'autoral'],
+  },
+  {
+    chave: 'reuso',
+    pergunta: 'Posso usar os vídeos produzidos por vocês em outras redes ou campanhas?',
+    resposta: [
+      'Em geral sim: os conteúdos produzidos para a marca podem ser aproveitados em diferentes canais próprios, respeitando as condições estabelecidas no contrato.',
+      'Um mesmo conteúdo também pode ser adaptado para diferentes plataformas e formatos.',
+    ],
+    ancoras: [
+      'usar em outras redes',
+      'outras campanhas',
+      'reaproveitar',
+      'posso usar',
+      'reutilizar',
+      'usar em anuncio',
+    ],
+    termos: ['campanha', 'aproveitar', 'republicar'],
+  },
+  {
+    chave: 'processo',
+    pergunta: 'Como funciona o processo depois que eu contrato?',
+    resposta: [
+      'O processo começa com um onboarding, para entendermos a empresa, os objetivos, o público, o posicionamento e as referências. Em seguida estruturamos a estratégia, iniciamos a produção, passamos pelas aprovações necessárias e começamos a publicar.',
+      'A partir daí, os resultados são analisados continuamente para orientar os próximos conteúdos.',
+    ],
+    ancoras: [
+      'depois que eu contrato',
+      'depois de contratar',
+      'onboarding',
+      'como comeca',
+      'primeiros passos',
+      'passo a passo',
+    ],
+    termos: ['processo', 'etapas', 'inicio', 'comeco'],
+  },
+  {
+    chave: 'acompanhar',
+    pergunta: 'Eu consigo acompanhar quantas visualizações os conteúdos estão tendo?',
+    resposta: [
+      'A performance é acompanhada durante toda a operação: visualizações e outros indicadores relevantes são monitorados o tempo todo.',
+      'Assim, tanto a Doxa quanto o cliente acompanham a evolução da estratégia e o progresso em relação às metas contratadas.',
+    ],
+    ancoras: [
+      'acompanhar',
+      'relatorio',
+      'relatorios',
+      'dashboard',
+      'metricas',
+      'ver os numeros',
+      'como sei',
+    ],
+    termos: ['transparencia', 'monitorar', 'painel'],
+  },
+  {
+    chave: 'primeiros-videos',
+    pergunta: 'E se os primeiros vídeos não performarem bem?',
+    resposta: [
+      'Os primeiros conteúdos que performam abaixo do esperado fazem parte do processo: eles geram dados sobre audiência, temas, formatos, hooks e narrativas. A estratégia da Doxa não depende de acertar todos os vídeos.',
+      'Quando identificamos padrões de maior performance, aumentamos a produção em torno do que funciona e descartamos rápido o que não funciona.',
+    ],
+    ancoras: [
+      'primeiros videos',
+      'nao performarem',
+      'nao performar',
+      'flopar',
+      'nao viralizar no comeco',
+      'comeco ruim',
+    ],
+    termos: ['ruim', 'fracasso', 'nao funcionar'],
+  },
 ];
+
+/**
+ * As que viram BOTÃO. O resto responde, mas não aparece.
+ *
+ * Derivado e não escrito à mão: uma segunda lista com as seis repetidas seria
+ * uma promessa de manter duas coisas em sincronia, e é exatamente o tipo de
+ * promessa que este arquivo já quebrou uma vez.
+ *
+ * A ordem importa e ela é a de `DUVIDAS`: as seis com atalho vêm PRIMEIRO no
+ * array, e é isso que faz o índice de uma dúvida em `DESTAQUES` ser o mesmo que
+ * em `DUVIDAS`. As cores dos pontos do cabeçalho e a cor da resposta na conversa
+ * saem desse índice — separadas, o ponto sairia âmbar e a bolha coral para a
+ * mesma pergunta.
+ */
+export const DESTAQUES: readonly Duvida[] = DUVIDAS.filter((d) => d.atalho != null);
 
 /**
  * O que o campo responde quando não reconhece a pergunta.

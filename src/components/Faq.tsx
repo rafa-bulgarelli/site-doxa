@@ -5,7 +5,7 @@ import { Bolinhas, type Ponto } from './faq/Bolinhas';
 import { CARGA, CampoPergunta, MOLA } from './faq/CampoPergunta';
 import { Revela } from './faq/Revela';
 import { encontra } from './faq/busca';
-import { ABERTURA, DUVIDAS, ESPERA, SEM_RESPOSTA, type Duvida } from './faq/config';
+import { ABERTURA, DESTAQUES, DUVIDAS, ESPERA, SEM_RESPOSTA, type Duvida } from './faq/config';
 import { CORES, SEM_COR, corDaDuvida } from './faq/cores';
 import { MotionButton } from './ui/MotionButton';
 import { ANCORA_FAQ, HREF_FORMS, ID_CARTAO_PEDIDO } from '../ancoras';
@@ -382,16 +382,21 @@ export function Faq() {
 
   // Os atalhos somem conforme são usados: um botão que devolve a resposta que já
   // está na tela é um botão que não faz nada.
+  /* `DESTAQUES` e não `DUVIDAS` daqui para baixo, e a diferença é o que
+     mantém a bandeja com seis botões enquanto o campo sabe responder vinte e
+     três. A régua e os pontos medem as SEIS — são elas que a linha acima do
+     campo chama de "as dúvidas que todo mundo tem", e uma régua com denominador
+     23 mal sairia do lugar depois de a pessoa ler três respostas. */
   const respondidas = new Set(trocas.map((t) => t.pergunta));
-  const atalhos = DUVIDAS.filter((d) => !respondidas.has(d.pergunta));
-  const cobertas = DUVIDAS.length - atalhos.length;
+  const atalhos = DESTAQUES.filter((d) => !respondidas.has(d.pergunta));
+  const cobertas = DESTAQUES.length - atalhos.length;
 
   /* Os pontos do cabeçalho, na ordem DO ARQUIVO e não na ordem em que foram
      perguntados: é essa ordem que faz o âmbar vir sempre antes do coral,
      independentemente de por onde a pessoa começou. Os pontos se acumulam da
      esquerda para a direita como uma régua que se preenche, e não como um
      histórico embaralhado. */
-  const lidas: readonly Ponto[] = DUVIDAS.map((duvida, i) => ({ duvida, i }))
+  const lidas: readonly Ponto[] = DESTAQUES.map((duvida, i) => ({ duvida, i }))
     .filter(({ duvida }) => respondidas.has(duvida.pergunta))
     .map(({ duvida, i }) => ({ chave: duvida.chave, cor: corDaDuvida(i) }));
 
@@ -560,7 +565,7 @@ export function Faq() {
                       backgroundSize: '13rem 100%',
                     }}
                     initial={false}
-                    animate={{ width: `${(cobertas / DUVIDAS.length) * 100}%` }}
+                    animate={{ width: `${(cobertas / DESTAQUES.length) * 100}%` }}
                     transition={parado ? { duration: 0 } : { duration: 0.55, ease: EASE }}
                   />
                 </motion.span>
@@ -657,10 +662,12 @@ export function Faq() {
             >
               <CampoPergunta
                 valor={rascunho}
-                /* As perguntas de verdade, na ordem do arquivo. O campo passa o
-                   tempo todo dizendo o que ele sabe responder — e as seis frases
-                   que ele escreve são exatamente as seis que têm resposta. */
-                exemplos={[ABERTURA.exemplo, ...DUVIDAS.map((d) => d.pergunta)]}
+                /* As SEIS em destaque, na ordem do arquivo, e não as vinte e
+                   três. O campo passa o tempo todo escrevendo sozinho o que
+                   sabe responder — com vinte e três, o ciclo fica longo demais
+                   para alguém chegar a ver o próprio começo, e a frase que
+                   aparece deixa de casar com o botão logo abaixo dela. */
+                exemplos={[ABERTURA.exemplo, ...DESTAQUES.map((d) => d.pergunta)]}
                 carregando={cargas > 0}
                 aoDigitar={setRascunho}
                 aoEnviar={enviar}
@@ -959,6 +966,10 @@ export function Faq() {
           __html: JSON.stringify({
             '@context': 'https://schema.org',
             '@type': 'FAQPage',
+            /* Aqui vão as VINTE E TRÊS, e é o único lugar em que a distinção
+               não vale: quem lê isto é o buscador, e ele não tem bandeja de
+               atalhos para lotar. Cada resposta escondida é uma pergunta a mais
+               pela qual a página pode ser encontrada. */
             mainEntity: DUVIDAS.map((duvida) => ({
               '@type': 'Question',
               name: duvida.pergunta,
