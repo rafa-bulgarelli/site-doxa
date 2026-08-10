@@ -68,6 +68,10 @@ raciocínio). Detalhes e trade-off em `.claude/TOWER-ROLES.md`.
   (`.vercel/project.json`). Produção em **`www.doxaviral.com`** — *doxaviral*, com **L**.
   As funções serverless vivem em `api/` (hoje só `api/lead.ts`); o `vercel.json` está
   comentado em `vercel.README.md`, porque o schema da Vercel recusa comentário no JSON.
+  As env vars de produção são do tipo **Sensitive**: `vercel env pull` devolve o literal
+  `"[SENSITIVE]"` no lugar do valor, não o segredo. Não insista — nenhum caminho da CLI
+  lê de volta uma var Sensitive. Quem precisa da `service_role` ou da `TURNSTILE_SECRET`
+  pega no painel do Supabase/Cloudflare, ou o passo é executado por quem já tem.
 - **Banco:** Supabase (projeto `ezgxlrqpahnmfafdnttr`), acesso por MCP. O esquema mora em
   `supabase/schema.sql` e é aplicado **à mão pelo SQL Editor** — `list_migrations` vem
   vazio de propósito, não há histórico de migration. Consequência: o arquivo e o banco
