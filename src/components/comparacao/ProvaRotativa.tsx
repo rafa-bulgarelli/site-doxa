@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { usarNaTela } from '../../hooks/usarNaTela';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { BadgeCheck } from 'lucide-react';
 import { REELS } from '../proof/reels';
@@ -67,21 +68,26 @@ function Perfil({ handle, verificado }: { handle: string; verificado: boolean })
 export function ProvaRotativa() {
   const parado = useReducedMotion() === true;
   const [indice, setIndice] = useState(0);
+  const [caixa, setCaixa] = useState<HTMLDivElement | null>(null);
+  const naTela = usarNaTela(caixa);
 
+  /* Fora da tela o turno não corre. A faixa fica no cliente em que estava e
+     recomeça a contar quando volta a ser vista — trocar de cliente para uma
+     tela que ninguém está olhando é trabalho que só aparece na conta da CPU. */
   useEffect(() => {
-    if (parado || COM_NUMERO.length < 2) return;
+    if (parado || !naTela || COM_NUMERO.length < 2) return;
     const relogio = window.setInterval(() => {
       setIndice((atual) => (atual + 1) % COM_NUMERO.length);
     }, TURNO);
     return () => window.clearInterval(relogio);
-  }, [parado]);
+  }, [parado, naTela]);
 
   if (COM_NUMERO.length === 0) return null;
 
   const atual = COM_NUMERO[indice];
 
   return (
-    <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+    <div ref={setCaixa} className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
       {/* Caixa normal, a pedido do dono: em versalete o rótulo grita mais alto
           que o dado que ele apresenta, e é o dado que interessa. */}
       <span className="text-[12px] font-medium tracking-[0.06em] text-black/60">Já publicados</span>

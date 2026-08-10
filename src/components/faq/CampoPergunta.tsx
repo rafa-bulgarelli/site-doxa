@@ -10,6 +10,7 @@ import {
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { ArrowUp } from 'lucide-react';
 import { ExemploVivo } from './ExemploVivo';
+import { usarNaTela } from '../../hooks/usarNaTela';
 import { CORES } from './cores';
 
 /**
@@ -240,12 +241,43 @@ export function CampoPergunta({
 }: CampoPerguntaProps) {
   const parado = useReducedMotion() === true;
   const campoRef = useRef<HTMLTextAreaElement>(null);
-  const cascaRef = useRef<HTMLDivElement>(null);
+  /* `HTMLDivElement | null` e não `useRef<HTMLDivElement>(null)`: quem escreve
+     nesta `ref` é a nossa própria callback abaixo, e não o React — e a versão
+     que o React preenche é declarada como somente-leitura. */
+  const cascaRef = useRef<HTMLDivElement | null>(null);
   const veuAltoRef = useRef<HTMLDivElement>(null);
   const veuBaixoRef = useRef<HTMLDivElement>(null);
 
   const gavetaRef = useRef<HTMLDivElement>(null);
   const bandejaRef = useRef<HTMLDivElement>(null);
+
+  const [caixaNo, setCaixaNo] = useState<HTMLDivElement | null>(null);
+  /*
+   * O exemplo só se escreve com o FAQ na tela.
+   *
+   * Ele era o gasto mais caro da página inteira: 2341 mutações de estilo a cada
+   * cinco segundos, mais 63 layouts forçados, correndo enquanto o visitante
+   * preenchia o formulário numa seção acima. Cada letra do exemplo é um
+   * `setState` que redesenha este componente inteiro — a casca, a gaveta, os
+   * atalhos — e cada redesenho paga as três medidas do `ExemploVivo`.
+   *
+   * Parado, ele congela na letra em que estava e retoma dali quando o FAQ volta
+   * à tela. A frase não recomeça: quem rolou de volta encontra a demonstração no
+   * meio, que é exatamente o que encontraria se ela nunca tivesse parado.
+   *
+   * ─── E A MARGEM É CURTA, AO CONTRÁRIO DO PADRÃO ────────────────────────────
+   *
+   * A meia tela de antecedência que o `usarNaTela` dá por padrão existe para o
+   * movimento já estar em curso quando aparece. Aqui ela custava caro demais:
+   * MEDIDO, com o formulário na tela e este campo a 151 pixels abaixo da dobra —
+   * fora da vista —, a demonstração continuava escrevendo 2223 vezes a cada
+   * cinco segundos, e era o gasto mais alto da página inteira.
+   *
+   * Uma demonstração não deve nada a quem não pode vê-la, e esta retoma no meio
+   * da frase: um décimo de tela de antecedência já entrega o texto se escrevendo
+   * antes de qualquer olho chegar nele.
+   */
+  const faqNaTela = usarNaTela(caixaNo, '10%');
 
   const [aberto, setAberto] = useState(false);
   /** Se a mudança de altura é a caixa crescendo com o texto, e não abrindo. */
@@ -255,7 +287,7 @@ export function CampoPergunta({
   const [rolando, setRolando] = useState(false);
 
   const vazio = valor.trim().length === 0;
-  const exemplo = useExemploVivo(exemplos, !aberto && !parado);
+  const exemplo = useExemploVivo(exemplos, !aberto && !parado && faqNaTela);
 
   /*
    * Os véus de cima e de baixo: o texto se apagando nas duas pontas quando há
@@ -393,7 +425,15 @@ export function CampoPergunta({
 
   return (
     <div
-      ref={cascaRef}
+      /* Uma `ref` de callback porque a casca é lida de duas formas: pelo
+         `cascaRef`, que só é consultado dentro de um evento, e por estado, que é
+         o que faz o efeito do observador ACORDAR quando o nó chega. Guardar só a
+         `ref` deixaria o observador sem alvo na montagem e ele nunca mais seria
+         chamado — a armadilha do `CLAUDE.md`, de novo. */
+      ref={(no) => {
+        cascaRef.current = no;
+        setCaixaNo(no);
+      }}
       onBlur={aoSair}
       style={ACESO}
       /* A ISCA só existe FECHADO. Aberto, a pessoa já está com o cursor dentro

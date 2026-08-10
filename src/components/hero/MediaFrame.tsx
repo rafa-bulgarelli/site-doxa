@@ -1,4 +1,5 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { usarNaTela } from '../../hooks/usarNaTela';
 import { ImageOff, Volume2, VolumeX } from 'lucide-react';
 
 interface FrameProps {
@@ -61,8 +62,34 @@ export function ClientPhoto({ ratio, src }: FrameProps) {
  * frame later, outside the gesture, and the browser would refuse it.
  */
 function VideoFrame({ ratio, src, poster }: { ratio: string; src: string; poster: string | null }) {
-  const videoRef = useRef<HTMLVideoElement>(null);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
   const [muted, setMuted] = useState(true);
+  const [no, setNo] = useState<HTMLVideoElement | null>(null);
+  const naTela = usarNaTela(no);
+
+  /*
+   * O vídeo para quando sai da tela.
+   *
+   * `autoPlay loop` sem freio é um decodificador de vídeo ligado para sempre:
+   * medido no telefone, o vídeo do hero continuava rodando quadro a quadro
+   * enquanto o visitante preenchia o formulário oito mil pixels abaixo — e
+   * decodificar vídeo não aparece como JavaScript em perfil nenhum, aparece como
+   * o telefone inteiro ficando lento.
+   *
+   * Volta de onde parou, e não do começo: `pause()` guarda o tempo. Quem rola de
+   * volta encontra a cena adiante, que é o que encontraria se ela nunca tivesse
+   * parado — e é por isso que aqui não há `load()` nem `currentTime = 0`.
+   *
+   * O `play()` pode ser recusado (economia de bateria, por exemplo). Recusado,
+   * fica o pôster, que é exatamente o que já acontece quando o autoplay é
+   * bloqueado na chegada.
+   */
+  useEffect(() => {
+    const video = videoRef.current;
+    if (video == null) return;
+    if (naTela) void video.play().catch(() => undefined);
+    else video.pause();
+  }, [naTela]);
 
   const toggleMuted = () => {
     const video = videoRef.current;
@@ -74,7 +101,10 @@ function VideoFrame({ ratio, src, poster }: { ratio: string; src: string; poster
   return (
     <div className={`relative ${ratio} w-full overflow-hidden bg-doxa-raised`}>
       <video
-        ref={videoRef}
+        ref={(elemento) => {
+          videoRef.current = elemento;
+          setNo(elemento);
+        }}
         src={src}
         poster={poster ?? undefined}
         className={MEDIA_CLASS}

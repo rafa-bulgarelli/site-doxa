@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { usarNaTela } from '../../hooks/usarNaTela';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 
 const EASE = [0.22, 1, 0.36, 1] as const;
@@ -21,13 +22,29 @@ interface WordRotatorProps {
 export function WordRotator({ words, className = '' }: WordRotatorProps) {
   const [index, setIndex] = useState(0);
   const reduceMotion = useReducedMotion();
+  /* O nó, e não a `ref`: uma `ref` do pai lida no efeito do filho chega `null`
+     e nunca mais acorda — ver a armadilha no `CLAUDE.md`. Aqui o dono do nó é
+     este mesmo componente, mas o estado é o que faz o efeito ACORDAR quando o
+     elemento aparece, e é disso que o observador precisa. */
+  const [caixa, setCaixa] = useState<HTMLSpanElement | null>(null);
+  const naTela = usarNaTela(caixa);
 
+  /*
+   * O relógio para quando a palavra sai da tela.
+   *
+   * Ele girava para sempre: no formulário, a oito mil pixels daqui, esta linha
+   * ainda gastava 182 mutações de estilo a cada cinco segundos para trocar uma
+   * palavra que ninguém tinha como ler. Fora da tela não há o que mostrar, e o
+   * ciclo recomeça inteiro quando ela volta — a palavra que aparece é a que
+   * estava, e o giro seguinte é um turno cheio.
+   */
   useEffect(() => {
+    if (!naTela) return;
     const id = window.setInterval(() => {
       setIndex((current) => (current + 1) % words.length);
     }, INTERVAL_MS);
     return () => window.clearInterval(id);
-  }, [words.length]);
+  }, [words.length, naTela]);
 
   // The longest word reserves the track width so the rest of the line never
   // reflows mid-rotation; the animated copy is laid over that spacer.
@@ -38,6 +55,7 @@ export function WordRotator({ words, className = '' }: WordRotatorProps) {
     <>
       <span className="sr-only">{words.join(', ')}</span>
       <span
+        ref={setCaixa}
         aria-hidden="true"
         className={`relative inline-grid overflow-hidden align-bottom ${className}`}
       >

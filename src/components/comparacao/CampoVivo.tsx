@@ -1,4 +1,4 @@
-import { useLayoutEffect, useRef, useState, type RefObject } from 'react';
+import { useCallback, useLayoutEffect, useRef, useState, type RefObject } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
 
 interface CampoVivoProps {
@@ -99,6 +99,12 @@ export function CampoVivo({
   const [baseY, setBaseY] = useState(0);
   /** Quanta entrelinha sobra ABAIXO da linha de base, em pixels. */
   const [sobra, setSobra] = useState(0);
+  /* Espelhos dos dois valores que a medida precisa ler sem virar dependência
+     dela. Fossem dependências, a medida mudaria de identidade a cada tecla e
+     levaria junto o `ResizeObserver`, que é o que se está consertando. */
+  const escalaRef = useRef(1);
+  const cursorRef = useRef(0);
+  cursorRef.current = cursor;
 
   /**
    * Onde o cursor está no texto.
@@ -113,82 +119,100 @@ export function CampoVivo({
     if (campo != null) setCursor(campo.selectionStart ?? campo.value.length);
   };
 
+  /*
+   * ─── UMA MEDIDA POR TECLA, E NÃO QUATRO ──────────────────────────────────────
+   *
+   * Isto eram três `useLayoutEffect` encadeados: um calculava a escala, e os
+   * outros dois dependiam dela. O React roda um efeito, deixa o React desenhar,
+   * roda o próximo — e cada um começava LENDO o DOM logo depois de o anterior ter
+   * ESCRITO nele. Ler depois de escrever obriga o navegador a refazer o layout na
+   * hora, parado, antes de devolver o número.
+   *
+   * MEDIDO no telefone com a CPU quatro vezes mais lenta, digitando 22 letras:
+   *
+   *     11,5 layouts forçados e 21,3 recálculos de estilo POR TECLA
+   *
+   * Não era uma conta cara repetida — era a MESMA conta paga quatro vezes, mais o
+   * preço de intercalar leitura e escrita. Numa medida só, tudo que se lê é lido
+   * de uma vez, tudo que se escreve é escrito de uma vez, e os quatro estados vão
+   * num lote só do React: um desenho em vez de três.
+   *
+   * A ordem aqui é lei. Ler → escrever a escala no nó → ler o resto. A escala
+   * muda o corpo do texto, e o corpo muda a linha de base, a sobra e a largura do
+   * cursor: medir essas três ANTES de aplicá-la devolve os números do quadro
+   * anterior, e o cursor fica meio caractere atrás do que se digitou.
+   */
+  const medirTudo = useCallback(() => {
+    const caixa = caixaRef.current;
+    const corpo = corpoRef.current;
+    const medidor = medidorRef.current;
+    const medidorCursor = medidorCursorRef.current;
+    const marcador = baseRef.current;
+    if (!caixa || !corpo || !medidor || !medidorCursor || !marcador) return;
+
+    // ── LER. O medidor vive fora da caixa reduzida e sempre no corpo cheio:
+    //    medido dentro dela, cada redução mudaria a própria medida e o campo
+    //    entraria num laço de encolhimento.
+    const disponivel = caixa.clientWidth;
+    const natural = medidor.scrollWidth;
+
+    // ── ESCREVER. Só quando há o que medir: com o campo vazio o natural é zero,
+    //    e uma escala tirada de zero seria uma divisão sem sentido. A escala
+    //    vigente continua valendo, que é o que este campo sempre fez.
+    //    Um fio de folga para a última letra não encostar na borda enquanto se
+    //    digita — sem ele, a escala fica oscilando no limite exato.
+    let escalaAgora = escalaRef.current;
+    if (disponivel > 0 && natural > 0) {
+      escalaAgora = Math.min(1, (disponivel - 2) / natural);
+      escalaRef.current = escalaAgora;
+      // No nó, e AGORA: as três medidas abaixo dependem deste corpo. Esperar o
+      // React reaplicar o mesmo valor no próximo desenho é esperar um quadro,
+      // e um quadro aqui é o cursor atrasado em relação à letra.
+      corpo.style.fontSize = `${escalaAgora * 100}%`;
+      setEscala(escalaAgora);
+    }
+
+    // ── LER O RESTO, num bloco só. O `em` do corpo já vem reduzido pela escala:
+    //    o respiro encolhe junto.
+    const larguraCursor = medidorCursor.scrollWidth * escalaAgora;
+    const em = parseFloat(getComputedStyle(corpo).fontSize);
+    const linhaDeBase = marcador.offsetTop;
+    const abaixoDaBase = corpo.clientHeight - linhaDeBase;
+
+    // O respiro entra AQUI, dentro do número que a mola persegue, e não como
+    // margem no traço: como margem ele apareceria de um quadro para o outro na
+    // primeira tecla, enquanto o resto do movimento é mola. E não existe no campo
+    // vazio — ali não há letra anterior de que se afastar, e o cursor tem de
+    // nascer exatamente onde a primeira letra vai cair.
+    setCursorX(cursorRef.current > 0 ? larguraCursor + RESPIRO_CURSOR * em : 0);
+    setBaseY(linhaDeBase);
+    setSobra(abaixoDaBase);
+  }, []);
+
+  useLayoutEffect(medirTudo, [valor, cursor, medirTudo]);
+
+  /*
+   * O observador nasce UMA vez.
+   *
+   * Ele estava num efeito com `[valor]`: cada letra digitada desmontava o
+   * `ResizeObserver` e montava outro, para observar o mesmo elemento. Fora o
+   * desperdício, um observador recém-criado dispara na primeira entrega — ou
+   * seja, cada tecla também agendava uma medição extra.
+   *
+   * A medida corrente é lida de uma `ref` em vez de entrar nas dependências: com
+   * `medirTudo` na lista, o efeito voltaria a renascer a cada tecla, que é
+   * exatamente o que se está tirando daqui.
+   */
+  const medirRef = useRef(medirTudo);
+  medirRef.current = medirTudo;
+
   useLayoutEffect(() => {
     const caixa = caixaRef.current;
-    const medidor = medidorRef.current;
-    if (!caixa || !medidor) return;
-
-    const medir = () => {
-      const disponivel = caixa.clientWidth;
-      // O medidor vive fora da caixa reduzida e sempre no corpo cheio: medido
-      // dentro dela, cada redução mudaria a própria medida e o campo entraria
-      // num laço de encolhimento.
-      const natural = medidor.scrollWidth;
-      if (!disponivel || !natural) return;
-      // Um fio de folga para a última letra não encostar na borda enquanto se
-      // digita — sem ele, a escala fica oscilando no limite exato.
-      setEscala(Math.min(1, (disponivel - 2) / natural));
-    };
-
-    medir();
-    const observador = new ResizeObserver(medir);
+    if (caixa == null) return;
+    const observador = new ResizeObserver(() => medirRef.current());
     observador.observe(caixa);
     return () => observador.disconnect();
-  }, [valor]);
-
-  /*
-   * Onde desenhar o cursor, em pixels.
-   *
-   * Medido no corpo CHEIO e multiplicado pela escala, e não medido já reduzido:
-   * o medidor tem de ficar fora da caixa que encolhe, senão o valor que ele
-   * devolve depende do valor que ele mesmo produziu no quadro anterior.
-   *
-   * O respiro entra AQUI, dentro do número que a mola persegue, e não como
-   * margem no traço: como margem ele apareceria de um quadro para o outro na
-   * primeira tecla, enquanto o resto do movimento é mola. E não existe no campo
-   * vazio — ali não há letra anterior de que se afastar, e o cursor tem de
-   * nascer exatamente onde a primeira letra vai cair.
-   */
-  useLayoutEffect(() => {
-    const medidor = medidorCursorRef.current;
-    const corpo = corpoRef.current;
-    if (medidor == null || corpo == null) return;
-    const largura = medidor.scrollWidth * escala;
-    // O `em` do corpo já vem reduzido pela escala: o respiro encolhe junto.
-    const em = parseFloat(getComputedStyle(corpo).fontSize);
-    setCursorX(cursor > 0 ? largura + RESPIRO_CURSOR * em : 0);
-  }, [valor, cursor, escala]);
-
-  /*
-   * Onde está a linha de base do texto — MEDIDA, e não calculada.
-   *
-   * Centrar o cursor na altura da caixa parecia certo e não é: a caixa de uma
-   * linha é maior que a letra, e o glifo não fica no meio dela — ele se assenta
-   * na linha de base, com o vão da entrelinha dividido acima e abaixo. Um
-   * cursor centrado na caixa nasce alguns pixels abaixo do texto, que foi
-   * exatamente o que o dono viu.
-   *
-   * O truque é o marcador: um `inline-block` de altura zero alinha a própria
-   * borda inferior com a linha de base da linha em que está. O `offsetTop` dele
-   * É a linha de base, sem precisar saber nada sobre as métricas da fonte — o
-   * que também significa que isto continua certo se a fonte mudar.
-   *
-   * E ele só funciona DENTRO DE UMA LINHA. Num container `flex` o marcador
-   * deixa de ser caixa inline e vira item de flex: `align-items: center` o
-   * centra, e o `offsetTop` passa a devolver metade da altura da caixa em vez
-   * da linha de base — uns treze pixels acima dela, que foi o cursor alto que o
-   * dono viu. Por isso a camada das letras é bloco comum, e não flex.
-   *
-   * A sobra é a mesma medida pela outra ponta: o que existe de entrelinha
-   * embaixo da linha de base. É com ela que o filete sobe até o texto.
-   */
-  useLayoutEffect(() => {
-    const marcador = baseRef.current;
-    const corpo = corpoRef.current;
-    if (marcador == null || corpo == null) return;
-    setBaseY(marcador.offsetTop);
-    setSobra(corpo.clientHeight - marcador.offsetTop);
-  }, [escala, valor]);
+  }, []);
 
   const letras = [...valor];
 
@@ -331,7 +355,17 @@ export function CampoVivo({
           placeholder={exemplo}
           aria-invalid={invalido}
           aria-describedby={descritoPor}
-          onChange={(evento) => aoDigitar(evento.target.value)}
+          /* A posição do cursor é lida AQUI, junto com o valor.
+             `onSelect` também a atualiza, e continua atualizando — mas ele chega
+             como um SEGUNDO evento, e um segundo evento é um segundo desenho do
+             campo para chegar ao mesmo lugar. Lidos no mesmo lote, o React
+             desenha uma vez; depois disso o `onSelect` traz o número que já
+             está lá, o React o descarta, e sobra ele fazendo o que só ele sabe:
+             as setas, o clique no meio da frase, a seleção arrastada. */
+          onChange={(evento) => {
+            setCursor(evento.target.selectionStart ?? evento.target.value.length);
+            aoDigitar(evento.target.value);
+          }}
           onKeyDown={aoTeclar}
           onSelect={sincronizarCursor}
           /* O exemplo a 35% e não a 20%. Ele é o que diz o FORMATO esperado — o
