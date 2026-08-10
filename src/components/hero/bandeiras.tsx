@@ -77,9 +77,13 @@ const DESENHOS: Readonly<Record<Idioma, { titulo: string; formas: JSX.Element }>
  */
 export function Bandeira({ idioma }: { idioma: Idioma }) {
   return (
+    /* `rounded-[5px]` num retângulo de 20 × 14 é bastante canto — mais do que
+       isso e a bandeira vira uma pastilha que não se identifica mais. O corte
+       precisa de `overflow-hidden` explícito: as formas de dentro são `rect` de
+       borda viva, e sem ele elas passam por cima do arredondamento do `svg`. */
     <svg
       viewBox="0 0 20 14"
-      className="h-3.5 w-5 shrink-0 rounded-[2px]"
+      className="h-3.5 w-5 shrink-0 overflow-hidden rounded-[5px]"
       aria-hidden
       focusable="false"
     >

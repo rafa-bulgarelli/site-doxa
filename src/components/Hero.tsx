@@ -106,62 +106,42 @@ export function Hero() {
           />
         </a>
 
-        {/* TUDO à direita, na ordem que o dono pediu: as duas ações e depois o
-            menu, na ponta.
+        {/* ─── O CABEÇALHO É O LOGO E O MENU, E MAIS NADA ────────────────────
+            Aqui havia "Falar com a gente" e "Quero viralizar". Os dois saíram a
+            pedido do dono: o topo é o logo de um lado e a pílula do outro, em
+            toda largura.
 
-            No celular sobram o logo e o menu. Os dois botões saem, e o custo
-            disso é menor do que parece: a CTA da primeira dobra continua lá, no
-            `MotionButton` do meio da coluna, que num telefone é maior e está
-            mais perto do polegar do que qualquer pílula do topo estaria. O que
-            se ganha é um cabeçalho que não disputa 375 px com três elementos. */}
-        <div className="flex items-center gap-2 md:gap-3">
-          {/* As duas ações do topo vão para o MESMO lugar, e é de propósito:
-              "falar com a gente" e "quero viralizar" são a mesma intenção dita
-              em dois tons, e o site tem uma porta só. Elas apontavam para `#`
-              (rola zero pixel) e para `/empresas` (uma rota que não existe neste
-              app) — os dois botões da primeira dobra não levavam a lugar
-              nenhum. */}
-          <a
-            href={HREF_FORMS}
-            className="hidden rounded-full border border-white/[0.11] bg-white/[0.06] px-4 py-2 text-xs text-white backdrop-blur-md transition-colors hover:bg-white/[0.12] md:block md:text-sm"
-          >
-            Falar com a gente
-          </a>
-          <a
-            href={HREF_FORMS}
-            className="hidden rounded-full bg-white px-4 py-2 text-xs font-medium text-black transition-transform hover:scale-[1.03] md:block md:px-5 md:text-sm"
-          >
-            Quero viralizar
-          </a>
+            A conversão não foi jogada fora com eles. Ela mudou de lugar duas
+            vezes: o botão branco no PÉ DO PAINEL (ver `MenuDoxa.tsx`) e o
+            `MotionButton` do meio desta coluna, que num telefone é maior e está
+            mais perto do polegar do que qualquer pílula do topo estaria.
 
-          {/* ─── O BURACO E A PEÇA ────────────────────────────────────────────
-              Duas caixas para uma pílula, e as duas são necessárias.
+            ─── O BURACO E A PEÇA ─────────────────────────────────────────────
+            Duas caixas para uma pílula, e as duas são necessárias.
 
-              A de fora é o BURACO: ela tem o tamanho da pílula FECHADA e é a
-              única coisa que existe no fluxo do cabeçalho. É ela que reserva o
-              espaço e mantém os botões parados.
+            A de fora é o BURACO: ela tem o tamanho da pílula FECHADA e é a única
+            coisa que existe no fluxo do cabeçalho. É ela que reserva o espaço.
 
-              A de dentro está fora do fluxo, ancorada à direita, e é mais larga
-              que o buraco de propósito — é o espaço para onde a pílula cresce
-              quando abre. Crescer no fluxo empurraria os dois botões para a
-              esquerda a cada passada de cursor, e um cabeçalho que se reorganiza
-              sozinho no hover é um cabeçalho quebrado.
+            A de dentro está fora do fluxo, ancorada à direita, e é mais larga
+            que o buraco de propósito — é o espaço para onde a pílula cresce
+            quando abre. Crescer no fluxo mexeria no cabeçalho a cada passada de
+            cursor, e um cabeçalho que se reorganiza sozinho no hover é um
+            cabeçalho quebrado.
 
-              `pointer-events-none` nela, e `auto` de volta na pílula: essa caixa
-              larga passa POR CIMA dos dois botões, e sem isso a área vazia dela
-              engoliria o clique deles.
+            `pointer-events-none` nela, e `auto` de volta na pílula: essa caixa
+            larga cobre um pedaço do topo, e sem isso a área vazia dela engoliria
+            o clique do que estivesse embaixo.
 
-              A largura aqui e a que a `MenuDoxa` passa ao componente são a mesma
-              medida escrita em dois lugares — `w-[min(...)]` de um lado,
-              `max-w-[min(...)]` do outro. Divergindo, a pílula não cabe no
-              buraco e o cabeçalho ganha um degrau. De onde saiu o número está
-              em `MenuDoxa.tsx`.
+            A largura aqui e a que a `MenuDoxa` passa ao componente são a mesma
+            medida escrita em dois lugares — `w-[min(...)]` de um lado,
+            `max-w-[min(...)]` do outro. Divergindo, a pílula não cabe no buraco
+            e o cabeçalho ganha um degrau. De onde saiu o número está em
+            `MenuDoxa.tsx`.
 
-              A altura é 52: 40 do disco mais 6 de recuo em cima e embaixo. */}
-          <div className="relative h-[3.25rem] w-[min(13rem,calc(100vw-9rem))] shrink-0">
-            <div className="pointer-events-none absolute right-0 top-0 flex w-80 max-w-[calc(100vw-2.5rem)] justify-end">
-              <MenuDoxa />
-            </div>
+            A altura é 52: 40 do disco mais 6 de recuo em cima e embaixo. */}
+        <div className="relative h-[3.25rem] w-[min(13rem,calc(100vw-9rem))] shrink-0">
+          <div className="pointer-events-none absolute right-0 top-0 flex w-[21rem] max-w-[calc(100vw-2.5rem)] justify-end">
+            <MenuDoxa />
           </div>
         </div>
       </header>

@@ -1,5 +1,15 @@
+import {
+  ArrowRight,
+  BadgeCheck,
+  House,
+  MessageCircleQuestion,
+  Send,
+  Tag,
+  Workflow,
+} from 'lucide-react';
 import { CommandMenu, type SecaoDeMenu } from '../ui/CommandMenu';
 import { IDIOMAS, useIdioma, type Idioma, type PorIdioma } from '../../idioma';
+import { HREF_FORMS } from '../../ancoras';
 import { Bandeira } from './bandeiras';
 
 /**
@@ -87,6 +97,8 @@ interface TextoDoMenu {
   nav: string;
   /** Só para leitor de tela: o "+" é forma, e forma não se anuncia. */
   abrir: string;
+  /** O botão branco no pé do painel. */
+  cta: string;
   rotulos: Readonly<Record<Secao, string>>;
 }
 
@@ -98,6 +110,7 @@ const TEXTO: PorIdioma<TextoDoMenu> = {
     idiomas: 'Idiomas',
     nav: 'Menu principal',
     abrir: 'Abrir o menu',
+    cta: 'Quero viralizar',
     rotulos: {
       'Início': 'Início',
       'Como funciona': 'Como funciona',
@@ -114,6 +127,7 @@ const TEXTO: PorIdioma<TextoDoMenu> = {
     idiomas: 'Languages',
     nav: 'Main menu',
     abrir: 'Open menu',
+    cta: 'I want to go viral',
     rotulos: {
       'Início': 'Home',
       'Como funciona': 'How it works',
@@ -130,6 +144,7 @@ const TEXTO: PorIdioma<TextoDoMenu> = {
     idiomas: 'Idiomas',
     nav: 'Menú principal',
     abrir: 'Abrir el menú',
+    cta: 'Quiero viralizar',
     rotulos: {
       'Início': 'Inicio',
       'Como funciona': 'Cómo funciona',
@@ -140,6 +155,32 @@ const TEXTO: PorIdioma<TextoDoMenu> = {
     },
   },
 };
+
+/**
+ * O ícone de cada seção.
+ *
+ * Ícone aqui não é enfeite: seis linhas de texto puro num painel escuro é uma
+ * lista, e uma lista não tem hierarquia — o olho tem de LER as seis para achar
+ * a que quer. Com marca, cada linha vira uma coisa reconhecível de relance, e a
+ * seta que entra na linha da vez diz que aquilo leva a algum lugar.
+ *
+ * `strokeWidth` 1.75 e não o 2 padrão do lucide: a 16 px, o traço cheio do
+ * lucide fica pesado ao lado de um texto de 14 px em peso normal, e o ícone
+ * grita mais alto do que a palavra que ele acompanha.
+ */
+const ICONES: Readonly<Record<Secao, typeof House>> = {
+  'Início': House,
+  'Como funciona': Workflow,
+  'Prova': BadgeCheck,
+  'Quanto custa': Tag,
+  'Perguntas': MessageCircleQuestion,
+  'Contato': Send,
+};
+
+function Icone({ secao }: { secao: Secao }) {
+  const Marca = ICONES[secao];
+  return <Marca aria-hidden className="h-4 w-4" strokeWidth={1.75} />;
+}
 
 /** Como cada idioma se chama na própria língua. */
 const NOME_DO_IDIOMA: PorIdioma<string> = {
@@ -163,23 +204,30 @@ export function MenuDoxa() {
 
   const secoes: SecaoDeMenu[] = [
     {
+      // `id` fixo, e o rótulo ao lado dele traduzido: é essa separação que
+      // impede o React de desmontar a seção inteira a cada troca de idioma.
+      // `CommandMenu.tsx` conta o defeito que isso causava.
+      id: 'secoes',
       rotulo: texto.secoes,
       itens: SECOES.map((secao) => ({
+        id: secao,
         nome: texto.rotulos[secao],
+        icone: <Icone secao={secao} />,
         aoEscolher: () => rolarPara(secao),
       })),
     },
     {
+      id: 'idiomas',
       rotulo: texto.idiomas,
       grade: true,
       itens: IDIOMAS.map((valor: Idioma) => ({
+        id: valor,
         nome: NOME_DO_IDIOMA[valor],
         icone: <Bandeira idioma={valor} />,
-        centrado: true,
         ativo: valor === idioma,
-        // O painel fica aberto: a única confirmação de que o clique valeu é o
-        // contorno mudando de lugar e o texto do menu virando outro idioma, e
-        // fechar na hora esconderia as duas coisas.
+        // O painel fica aberto: a confirmação de que o clique valeu é a ficha
+        // mudando de lugar e o menu inteiro virando outro idioma, e fechar na
+        // hora esconderia as duas coisas.
         mantemAberto: true,
         aoEscolher: () => trocarIdioma(valor),
       })),
@@ -208,9 +256,32 @@ export function MenuDoxa() {
          mantém os 208 acima disso. Abaixo, quem cede é a linha de status, que
          tem reticências e não corte seco. */
       larguraFechada="max-w-[min(13rem,calc(100vw-9rem))]"
-      larguraAberta="max-w-[min(20rem,calc(100vw-2.5rem))]"
+      larguraAberta="max-w-[min(21rem,calc(100vw-2.5rem))]"
       titulo={texto.titulo}
       secoes={secoes}
+      /* ─── A CTA QUE VOLTOU PARA DENTRO DO MENU ──────────────────────────────
+         Os dois botões saíram do cabeçalho a pedido do dono, e com eles saiu a
+         única porta de conversão da primeira dobra no desktop. Ela volta aqui,
+         onde o menu virou a navegação inteira do topo.
+
+         E resolve de quebra a esquisitice da linha de status: "Viralize agora"
+         estava escrito com cara de botão sem ser um. Agora o menu tem o botão
+         de verdade, e a linha de cima volta a ser o que ela é — um sinal de
+         "no ar", não uma promessa de clique. */
+      acao={
+        <a
+          href={HREF_FORMS}
+          data-acao-menu
+          tabIndex={-1}
+          className="group flex w-full items-center justify-center gap-2 rounded-xl bg-white px-4 py-2.5 text-sm font-medium tracking-tight text-zinc-900 transition-colors duration-200 hover:bg-zinc-200"
+        >
+          {texto.cta}
+          <ArrowRight
+            aria-hidden
+            className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5"
+          />
+        </a>
+      }
       avatar={<DiscoLaranja />}
       status={[
         <span key="viralize" className="flex min-w-0 items-center gap-1.5">

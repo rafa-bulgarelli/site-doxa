@@ -1,5 +1,6 @@
 import { Fragment, useEffect, useLayoutEffect, useRef, useState, type ReactNode } from 'react';
 import { motion, useReducedMotion, type Variants } from 'framer-motion';
+import { ChevronRight } from 'lucide-react';
 
 /**
  * ─── A PÍLULA QUE VIRA PAINEL ────────────────────────────────────────────────
@@ -39,44 +40,72 @@ import { motion, useReducedMotion, type Variants } from 'framer-motion';
  *
  *  3. O PAINEL FECHADO SAI DA ORDEM DE TABULAÇÃO. `grid-rows-[0fr]` com
  *     `overflow-hidden` esconde aos olhos e não ao teclado: sem isto, quem
- *     navega com Tab atravessa nove botões invisíveis no meio do cabeçalho.
+ *     navega com Tab atravessa dez controles invisíveis no meio do cabeçalho.
  *
  *  4. ESCOLHER FECHA. No original nada fecha o painel porque o demo dá `alert`.
  *     Aqui um item leva a pessoa a outro lugar da página, e o painel tem de sair
  *     da frente — salvo quem pede `mantemAberto`, como a troca de idioma, que
  *     precisa ser vista acontecendo.
  *
- *  5. O SINAL É UM "+", E NÃO A TECLA. O original anuncia `⌘K` numa `kbd`, o que
+ *  5. IDENTIDADE ESTÁVEL, e esta é a correção de um defeito CARO. Ver o bloco
+ *     logo abaixo.
+ *
+ *  6. O SINAL É UM "+", E NÃO A TECLA. O original anuncia `⌘K` numa `kbd`, o que
  *     é a coisa certa numa paleta de comandos e a errada aqui: uma tecla não diz
  *     "isto é um menu", diz "isto é para quem já sabe". Um "+" que gira para "×"
  *     é o convite que funciona igual no cursor e no dedo — e o celular, onde não
  *     há tecla nenhuma para apertar, ficava sem convite algum. O ATALHO continua
  *     ligado; o que saiu foi o anúncio dele.
  *
- *  6. O CONTEÚDO ENTRA DE BORRACHA. Uma mola com passagem do ponto, item a item,
+ *  7. O CONTEÚDO ENTRA DE BORRACHA. Uma mola com passagem do ponto, item a item,
  *     em vez do fade do original.
  */
 
+/**
+ * ─── POR QUE `id` EXISTE, SEPARADO DO TEXTO ──────────────────────────────────
+ *
+ * O original usa o NOME como `key` do React. Aqui isso causava um defeito que
+ * parecia mágica negra: clicar numa bandeira FECHAVA o menu.
+ *
+ * A corrente era esta. Trocar de idioma reescreve todo rótulo do painel —
+ * "Seções" vira "Sections", "Início" vira "Home". Com o texto servindo de
+ * `key`, o React não vê a mesma lista noutra língua: vê uma lista NOVA. Ele
+ * desmonta a antiga inteira e monta outra. O botão que estava debaixo do cursor
+ * deixa de existir no meio do clique, o Chrome recalcula quem está sob o
+ * ponteiro, não acha nada montado ali e dispara `mouseleave` — que é
+ * exatamente o gatilho que fecha esta pílula.
+ *
+ * Não aparecia em teste com `element.click()`: o clique sintético não move
+ * cursor, e sem cursor não há hover para perder. Só apareceu com
+ * `Input.dispatchMouseEvent` de verdade, e o sintoma no navegador era
+ * `elementFromPoint` devolvendo vazio logo depois do clique.
+ *
+ * Com `id`, a identidade não fala idioma: o React reconhece os mesmos nove
+ * botões, troca só o texto dentro deles, e nada é desmontado. De quebra, o
+ * painel parou de reanimar a mola inteira a cada troca de idioma.
+ */
 export interface ItemDeMenu {
+  /** Identidade que NÃO muda com o idioma. É a `key` do React. */
+  id: string;
   nome: string;
   icone?: ReactNode;
-  /** Desenha um contorno — para o que já está escolhido, como o idioma atual. */
+  /** Desenha o item como escolhido — para o idioma atual, por exemplo. */
   ativo?: boolean;
-  /** Centra o rótulo. É o que as seções em grade usam. */
-  centrado?: boolean;
   /**
    * Deixa o painel aberto depois do clique.
    *
-   * Para a escolha que MUDA o próprio painel: fechar na hora esconderia o
-   * contorno mudando de lugar, que é a única confirmação de que o clique valeu.
+   * Para a escolha que MUDA o próprio painel: fechar na hora esconderia a
+   * confirmação de que o clique valeu.
    */
   mantemAberto?: boolean;
   aoEscolher(): void;
 }
 
 export interface SecaoDeMenu {
+  /** @see ItemDeMenu.id */
+  id: string;
   rotulo: string;
-  /** Três colunas em vez de lista. */
+  /** Três colunas de fichas em vez de lista. */
   grade?: boolean;
   itens: ItemDeMenu[];
 }
@@ -89,6 +118,8 @@ interface CommandMenuProps {
   status?: ReactNode[];
   intervaloStatus?: number;
   secoes?: SecaoDeMenu[];
+  /** Fecha o painel por baixo de tudo. Costuma ser a ação principal da página. */
+  acao?: ReactNode;
   /** Combinada com ⌘ no Apple e Ctrl no resto. Não é anunciada na pílula. */
   tecla?: string;
   /** Rótulo do `<nav>` para quem navega por leitor de tela. */
@@ -125,17 +156,17 @@ const SEM_CURSOR = 480;
  * voltar, em vez de frear nele. Sem a passagem não é borracha, é só um fade
  * rápido — e o pedido era o vaivém que o resto do site já faz.
  *
- * O escalonamento é curto de propósito. Nove itens a 35 ms somam 315 ms até o
- * último entrar, o que ainda cabe dentro dos 400 ms em que o painel abre; mais
- * do que isso e a última linha chega depois de o painel já estar parado, que é
- * quando a animação deixa de ser entrada e vira espera.
+ * O escalonamento é curto de propósito. Doze linhas a 30 ms somam 360 ms até a
+ * última entrar, o que ainda cabe dentro dos 400 ms em que o painel abre; mais
+ * do que isso e a última chega depois de o painel já estar parado, que é quando
+ * a animação deixa de ser entrada e vira espera.
  *
  * Fechando, o escalonamento se inverte e encurta — sair é o movimento que
  * ninguém pediu para ver.
  */
 const CONTEUDO: Variants = {
-  fechado: { transition: { staggerChildren: 0.015, staggerDirection: -1 } },
-  aberto: { transition: { staggerChildren: 0.035, delayChildren: 0.03 } },
+  fechado: { transition: { staggerChildren: 0.012, staggerDirection: -1 } },
+  aberto: { transition: { staggerChildren: 0.03, delayChildren: 0.03 } },
 };
 
 const LINHA: Variants = {
@@ -161,6 +192,7 @@ export function CommandMenu({
   status = [],
   intervaloStatus = 4000,
   secoes = [],
+  acao,
   tecla = 'k',
   rotuloNav,
   rotuloAbrir,
@@ -335,12 +367,13 @@ export function CommandMenu({
   const linha = semMovimento ? LINHA_PARADA : LINHA;
   const estado = aberto ? 'aberto' : 'fechado';
 
-  /** Um botão do painel. Igual na lista e na grade, menos pelo alinhamento. */
-  const desenharItem = (item: ItemDeMenu) => {
+  /** Uma linha da lista: ícone, rótulo e a seta que entra quando ela é a da vez. */
+  const desenharLinha = (item: ItemDeMenu) => {
     const indice = itens.indexOf(item);
+    const naVez = aberto && selecionado === indice;
     return (
       <motion.button
-        key={item.nome}
+        key={item.id}
         variants={linha}
         ref={(no: HTMLButtonElement | null) => {
           itemRefs.current[indice] = no;
@@ -353,12 +386,58 @@ export function CommandMenu({
           item.aoEscolher();
           if (!item.mantemAberto) setAberto(false);
         }}
-        className={`relative z-10 flex items-center gap-2 rounded-lg p-2 text-zinc-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white/50 ${
-          item.centrado ? 'justify-center text-xs' : 'text-sm'
-        } ${item.ativo ? 'outline outline-1 outline-zinc-100/25' : ''}`}
+        className="relative z-10 flex items-center gap-3 rounded-xl px-2.5 py-2 text-left text-sm text-zinc-300 transition-colors duration-200 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white/50"
+      >
+        {item.icone && (
+          <span
+            className={`grid h-6 w-6 shrink-0 place-items-center rounded-lg transition-colors duration-200 ${
+              naVez ? 'bg-zinc-100/10 text-white' : 'text-zinc-500'
+            }`}
+          >
+            {item.icone}
+          </span>
+        )}
+        <span className={`flex-1 transition-colors duration-200 ${naVez ? 'text-white' : ''}`}>
+          {item.nome}
+        </span>
+        {/* A seta é o que diz "isto leva a algum lugar". Ela não pisca: entra
+            deslizando junto com o realce, e some do mesmo jeito. */}
+        <ChevronRight
+          aria-hidden
+          className={`h-4 w-4 shrink-0 text-zinc-400 transition-all duration-200 ${
+            naVez ? 'translate-x-0 opacity-100' : '-translate-x-1 opacity-0'
+          }`}
+        />
+      </motion.button>
+    );
+  };
+
+  /** Uma ficha da grade: bandeira e nome, e o preenchido é o escolhido. */
+  const desenharFicha = (item: ItemDeMenu) => {
+    const indice = itens.indexOf(item);
+    return (
+      <motion.button
+        key={item.id}
+        variants={linha}
+        ref={(no: HTMLButtonElement | null) => {
+          itemRefs.current[indice] = no;
+        }}
+        type="button"
+        data-item-menu
+        tabIndex={aberto ? 0 : -1}
+        onMouseEnter={() => setSelecionado(indice)}
+        onClick={() => {
+          item.aoEscolher();
+          if (!item.mantemAberto) setAberto(false);
+        }}
+        /* Preenchido, e não contornado: um contorno de 1px marcava o idioma
+           atual tão discretamente que ele não se distinguia do hover. */
+        className={`relative z-10 flex items-center justify-center gap-1.5 rounded-xl px-1.5 py-2 text-xs transition-colors duration-200 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white/50 ${
+          item.ativo ? 'bg-zinc-100/[0.14] font-medium text-white' : 'text-zinc-400'
+        }`}
       >
         {item.icone}
-        {item.nome}
+        <span className="truncate">{item.nome}</span>
       </motion.button>
     );
   };
@@ -371,7 +450,7 @@ export function CommandMenu({
       onMouseLeave={() => !emTransicao.current && setAberto(false)}
       onTouchEnd={(evento) => {
         // Só o cabeçalho alterna — ver a nota 2 no topo do arquivo.
-        if ((evento.target as HTMLElement).closest('[data-item-menu]')) return;
+        if ((evento.target as HTMLElement).closest('[data-item-menu],[data-acao-menu]')) return;
         evento.preventDefault();
         if (!emTransicao.current) setAberto((valor) => !valor);
       }}
@@ -382,17 +461,15 @@ export function CommandMenu({
          o clique dos botões do cabeçalho. */
       className={`pointer-events-auto w-full rounded-[1.6rem] bg-zinc-800 text-white transition-[max-width,border-radius,box-shadow] duration-[400ms] ease-out ${
         aberto
-          ? `${larguraAberta} rounded-b-2xl shadow-2xl shadow-black/60`
+          ? `${larguraAberta} rounded-b-[1.4rem] shadow-2xl shadow-black/60`
           : `${larguraFechada} shadow-lg shadow-black/40`
       }`}
     >
       <div className="flex items-center overflow-hidden p-1.5">
         {avatar}
-        <div className="flex w-full items-center justify-between whitespace-nowrap pl-2 pr-1">
-          <div className="flex w-full flex-col">
-            {/* Serifado: é o título do menu, e a serifa é a voz que o site usa
-                para o que TITULA — a manchete do hero é a mesma família. */}
-            <span className="font-serif text-base leading-5">{titulo}</span>
+        <div className="flex w-full items-center justify-between whitespace-nowrap pl-2.5 pr-1">
+          <div className="flex w-full flex-col gap-px">
+            <span className="text-sm font-medium leading-4 tracking-tight">{titulo}</span>
             {status.length > 0 && (
               <span className="relative w-full text-xs leading-4 text-zinc-400">
                 {/* Um caractere invisível segura a altura da linha: sem ele a
@@ -415,8 +492,8 @@ export function CommandMenu({
               a pílula acabava sem nada que dissesse "abre". */}
           <span
             aria-hidden
-            className={`ml-auto grid h-7 w-7 shrink-0 place-items-center rounded-full bg-zinc-100/10 text-zinc-300 transition-transform duration-[400ms] ease-out ${
-              aberto ? 'rotate-[135deg]' : ''
+            className={`ml-auto grid h-8 w-8 shrink-0 place-items-center rounded-full bg-zinc-100/[0.08] text-zinc-300 transition-[transform,background-color] duration-[400ms] ease-out ${
+              aberto ? 'rotate-[135deg] bg-zinc-100/[0.14] text-white' : ''
             }`}
           >
             <svg viewBox="0 0 24 24" className="h-4 w-4" aria-hidden>
@@ -445,7 +522,7 @@ export function CommandMenu({
             variants={conteudo}
             initial={false}
             animate={estado}
-            className="relative flex flex-col gap-1.5 p-1.5 pt-0"
+            className="relative flex flex-col gap-1 px-1.5 pb-1.5"
           >
             {/* Um realce para o painel inteiro: ele desliza entre os itens da
                 lista e entra na grade de idiomas na diagonal. */}
@@ -457,7 +534,7 @@ export function CommandMenu({
                   width: realce.width,
                   height: realce.height,
                 }}
-                className={`pointer-events-none absolute left-0 top-0 rounded-lg bg-zinc-100/10 ${
+                className={`pointer-events-none absolute left-0 top-0 rounded-xl bg-zinc-100/[0.07] ${
                   realceViaja
                     ? 'transition-[transform,width,height,opacity] duration-300 ease-[cubic-bezier(0.32,0.72,0,1)]'
                     : 'transition-opacity duration-150'
@@ -469,25 +546,30 @@ export function CommandMenu({
                 quanto para o `flex` que os empilha. Um `div` no meio quebraria
                 as duas coisas de uma vez. */}
             {secoes.map((secao) => (
-              <Fragment key={secao.rotulo}>
-                <motion.hr variants={linha} className="-mx-1.5 border-zinc-100/10" />
-                {/* Serifado e com peso, como o título da pílula: é o que separa
-                    um grupo do outro, e em cinza-40% ele não separava nada. */}
+              <Fragment key={secao.id}>
+                {/* Micro-rótulo em caixa alta, não um título. Ele existe para
+                    separar dois grupos e sair da frente — a serifa grande que
+                    esteve aqui competia com os próprios itens que anunciava. */}
                 <motion.span
                   variants={linha}
-                  className="pl-2 pt-1 font-serif text-sm text-zinc-300"
+                  className="px-2.5 pb-0.5 pt-2 text-[0.625rem] font-semibold uppercase tracking-[0.16em] text-zinc-500"
                 >
                   {secao.rotulo}
                 </motion.span>
                 {secao.grade ? (
-                  <motion.div className="grid grid-cols-3 gap-1.5">
-                    {secao.itens.map(desenharItem)}
+                  <motion.div className="grid grid-cols-3 gap-1">
+                    {secao.itens.map(desenharFicha)}
                   </motion.div>
                 ) : (
-                  secao.itens.map(desenharItem)
+                  secao.itens.map(desenharLinha)
                 )}
               </Fragment>
             ))}
+            {acao && (
+              <motion.div variants={linha} className="pt-2">
+                {acao}
+              </motion.div>
+            )}
           </motion.div>
         </div>
       </div>
