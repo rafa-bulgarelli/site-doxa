@@ -1,18 +1,20 @@
-# ─── FORA DO ÍNDICE ATÉ O FORMULÁRIO FUNCIONAR ───────────────────────────────
+# ─── NO ÍNDICE, DESDE 10/08/2026 ─────────────────────────────────────────────
 #
-# `Disallow: /` bloqueia a indexação do site inteiro, e é de propósito: hoje o
-# formulário não manda os dados para lugar nenhum e o passo do pagamento é
-# simulado. Uma página que promete "Recebemos" sem receber nada não pode receber
-# gente do Google — e uma URL indexada demora para sair do índice, enquanto uma
-# que nunca entrou não precisa sair.
+# Este arquivo passou meses com `Disallow: /`, e o motivo estava escrito aqui: o
+# formulário não mandava os dados para lugar nenhum e o passo do pagamento era
+# simulado. Uma página que promete "Recebemos" sem receber nada não podia receber
+# gente do Google.
 #
-# PARA LANÇAR DE VERDADE: apague as duas linhas abaixo e troque por
+# As duas condições caíram. O formulário grava de verdade — `POST /api/lead`
+# escreve no Supabase com a chave de servidor, atrás de Turnstile e de limite por
+# IP. E o passo do pagamento não é mais simulado porque não existe mais: o funil
+# termina em conversa humana ("o time chama você em até 24 horas"), sem checkout
+# e sem cobrança dentro do site.
 #
-#   User-agent: *
-#   Allow: /
-#   Sitemap: https://SEU-DOMINIO/sitemap.xml
-#
-# Isso é UMA linha de deploy, e é a última coisa a fazer — depois de o lead
-# chegar em algum lugar e de o checkout estar de pé.
+# ATENÇÃO ao caminho de volta: tirar uma URL do índice é lento e não depende de
+# nós. Se o site precisar sair do ar para o Google, `Disallow: /` aqui só impede
+# NOVOS rastreios — o que já entrou sai no tempo do buscador.
 User-agent: *
-Disallow: /
+Allow: /
+
+Sitemap: https://www.doxaviral.com/sitemap.xml

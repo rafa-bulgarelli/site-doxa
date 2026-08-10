@@ -218,7 +218,18 @@ function StepCard({
       onFocus={isDesktop ? onEnter : undefined}
       onBlur={isDesktop ? onLeave : undefined}
       tabIndex={isDesktop ? 0 : undefined}
-      aria-expanded={isDesktop ? open : undefined}
+      // SEM `aria-expanded` aqui, e não é esquecimento. Ele esteve neste
+      // elemento e reprovava "Elements must only use supported ARIA attributes"
+      // no Lighthouse: o atributo só é válido em papéis como `button` ou
+      // `combobox`, e isto é uma `div` sem `role`. Dar-lhe `role="button"` para
+      // calar o aviso seria pior — anunciaria aos leitores de tela um botão que
+      // não faz nada ao ser acionado, já que o card não tem `onClick`.
+      //
+      // A verdade é que aqui não há revelação nenhuma a anunciar: o card
+      // fechado continua inteiro no DOM e legível, só com `opacity` em 0,7 e
+      // menos `flex`. Nada é escondido, então não há estado expandido/recolhido
+      // que uma pessoa usando leitor de tela precise ouvir — é ênfase visual, e
+      // ênfase visual não se descreve em ARIA.
       // The open card is told apart by its edge as well as by its size: a
       // brighter border and a lift off the black. The retracted ones come back
       // up from 45% — far enough down to be clearly waiting, but they are still
