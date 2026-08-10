@@ -1,5 +1,6 @@
 import { Suspense, lazy, useEffect, useState, type ReactNode } from 'react';
 import { ANCORA_FORMS, HREF_FORMS } from './ancoras';
+import { ProvedorDeIdioma } from './idioma';
 import { usarNaTela } from './hooks/usarNaTela';
 import { Hero } from './components/Hero';
 import { Rolador } from './components/ui/Rolador';
@@ -252,8 +253,13 @@ export default function App() {
     );
   }
 
+  /* O provedor de idioma abraça a página inteira, e não só o cabeçalho.
+     Hoje quem lê são duas peças do topo — o menu e o relógio —, e as duas
+     PRECISAM ver o mesmo valor: com o estado solto em cada uma, trocar de
+     idioma no menu deixaria o relógio em português para sempre. Amanhã, quando
+     as seções forem traduzidas, elas já encontram o valor aqui. */
   return (
-    <>
+    <ProvedorDeIdioma>
       {/*
        * O `<main>` é OPACO e vem por cima, e é só isso que faz o rodapé se
        * revelar.
@@ -317,6 +323,6 @@ export default function App() {
           primeira dobra, e um pedaço separado só para ela chegaria depois da
           primeira rolagem, que é justamente quando ela deveria aparecer. */}
       <Rolador />
-    </>
+    </ProvedorDeIdioma>
   );
 }

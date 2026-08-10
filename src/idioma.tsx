@@ -1,4 +1,12 @@
-import { useCallback, useEffect, useState } from 'react';
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+  type ReactNode,
+} from 'react';
 
 /**
  * ─── O IDIOMA DA PÁGINA ──────────────────────────────────────────────────────
@@ -99,14 +107,46 @@ export function idiomaInicial(): Idioma {
 }
 
 /**
+ * ─── POR QUE ISTO VIROU CONTEXTO ─────────────────────────────────────────────
+ *
+ * Aqui havia um `useState` solto, com o comentário dizendo que existia UM
+ * consumidor e que o dia de pagar por um contexto seria quando aparecesse o
+ * segundo. Ele apareceu: o relógio do cabeçalho também fala o idioma escolhido.
+ *
+ * E com `useState` isso NÃO funcionaria — cada chamada do hook cria o seu
+ * próprio estado. O menu trocaria para inglês, o relógio continuaria em
+ * português, e os dois estariam certos do seu lado. O defeito seria mudo: nada
+ * quebra, nada avisa, metade do cabeçalho simplesmente não obedece.
+ *
+ * O provedor mora em `App.tsx`, em volta das duas rotas. As seções, quando
+ * forem traduzidas, só chamam `useIdioma()` e já encontram o valor.
+ */
+type Contexto = readonly [Idioma, (proximo: Idioma) => void];
+
+const ContextoDoIdioma = createContext<Contexto | null>(null);
+
+export function ProvedorDeIdioma({ children }: { children: ReactNode }) {
+  const valor = useIdiomaLocal();
+  return <ContextoDoIdioma.Provider value={valor}>{children}</ContextoDoIdioma.Provider>;
+}
+
+/**
  * O idioma corrente e como trocá-lo.
  *
- * Um `useState` e não um contexto: hoje existe UM consumidor, o menu do topo, e
- * um provider em volta da página inteira para servir um componente seria
- * abstração sem consumidor. Quando as seções traduzirem, aí o estado sobe — e
- * sobe para um contexto, que é o momento certo de pagar por ele.
+ * LANÇA fora do provedor em vez de devolver um padrão silencioso: um componente
+ * que caísse fora da árvore mostraria português para sempre sem nunca reclamar,
+ * e o dia em que alguém movesse uma seção para fora do `App` levaria horas para
+ * ser diagnosticado. Melhor a tela branca na primeira renderização.
  */
-export function useIdioma(): [Idioma, (proximo: Idioma) => void] {
+export function useIdioma(): Contexto {
+  const valor = useContext(ContextoDoIdioma);
+  if (valor == null) {
+    throw new Error('useIdioma() foi chamado fora do <ProvedorDeIdioma>.');
+  }
+  return valor;
+}
+
+function useIdiomaLocal(): Contexto {
   const [idioma, setIdioma] = useState(idiomaInicial);
 
   /*
@@ -132,5 +172,7 @@ export function useIdioma(): [Idioma, (proximo: Idioma) => void] {
     }
   }, []);
 
-  return [idioma, trocar];
+  // Memorizado: sem isto o par muda de identidade a cada renderização do
+  // provedor e todo consumidor do contexto redesenha junto, de graça.
+  return useMemo(() => [idioma, trocar] as const, [idioma, trocar]);
 }

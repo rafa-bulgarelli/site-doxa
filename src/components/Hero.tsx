@@ -9,6 +9,7 @@ import { ConnectorLines } from './hero/ConnectorLines';
 import { WordRotator } from './hero/WordRotator';
 import { DotGridSpotlight } from './hero/DotGridSpotlight';
 import { MenuDoxa } from './hero/MenuDoxa';
+import { Relogio } from './hero/Relogio';
 import { MotionButton } from './ui/MotionButton';
 import { HREF_FORMS } from '../ancoras';
 import { useIsDesktop } from '../hooks/useIsDesktop';
@@ -96,15 +97,22 @@ export function Hero() {
       <div className="pointer-events-none absolute inset-x-0 bottom-0 hidden h-1/2 bg-gradient-to-b from-transparent from-70% to-black lg:block" />
 
       <header className="relative z-30 flex items-center justify-between px-5 py-5 md:px-10 md:py-7">
-        <a href="#" className="shrink-0">
-          <img
-            src={wordmarkUrl}
-            alt="Doxa"
-            className="h-6 w-auto md:h-7"
-            width={364}
-            height={96}
-          />
-        </a>
+        {/* O logo e o relógio andam JUNTOS, num grupo só.
+            Soltos como irmãos do `justify-between`, o relógio seria empurrado
+            para o meio do vão e leria como um terceiro elemento perdido; colado
+            ao logo, ele é a assinatura de quem está do outro lado. */}
+        <div className="flex items-center gap-4 md:gap-5">
+          <a href="#" className="shrink-0">
+            <img
+              src={wordmarkUrl}
+              alt="Doxa"
+              className="h-6 w-auto md:h-7"
+              width={364}
+              height={96}
+            />
+          </a>
+          <Relogio />
+        </div>
 
         {/* ─── O CABEÇALHO É O LOGO E O MENU, E MAIS NADA ────────────────────
             Aqui havia "Falar com a gente" e "Quero viralizar". Os dois saíram a
@@ -133,13 +141,12 @@ export function Hero() {
             o clique do que estivesse embaixo.
 
             A largura aqui e a que a `MenuDoxa` passa ao componente são a mesma
-            medida escrita em dois lugares — `w-[min(...)]` de um lado,
-            `max-w-[min(...)]` do outro. Divergindo, a pílula não cabe no buraco
-            e o cabeçalho ganha um degrau. De onde saiu o número está em
-            `MenuDoxa.tsx`.
+            medida escrita em dois lugares — `w-28` de um lado, `max-w-28` do
+            outro. Divergindo, a pílula não cabe no buraco e o cabeçalho ganha um
+            degrau. De onde saiu o número está em `MenuDoxa.tsx`.
 
-            A altura é 52: 40 do disco mais 6 de recuo em cima e embaixo. */}
-        <div className="relative h-[3.25rem] w-[min(13rem,calc(100vw-9rem))] shrink-0">
+            A altura é 44: 32 do "+" mais 6 de recuo em cima e embaixo. */}
+        <div className="relative h-11 w-28 shrink-0">
           <div className="pointer-events-none absolute right-0 top-0 flex w-[21rem] max-w-[calc(100vw-2.5rem)] justify-end">
             <MenuDoxa />
           </div>

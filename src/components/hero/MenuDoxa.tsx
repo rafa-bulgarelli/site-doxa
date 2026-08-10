@@ -7,6 +7,7 @@ import {
   Tag,
   Workflow,
 } from 'lucide-react';
+import { motion } from 'framer-motion';
 import { CommandMenu, type SecaoDeMenu } from '../ui/CommandMenu';
 import { IDIOMAS, useIdioma, type Idioma, type PorIdioma } from '../../idioma';
 import { HREF_FORMS } from '../../ancoras';
@@ -242,37 +243,36 @@ export function MenuDoxa() {
       /* Fechada, ela é o buraco que `Hero.tsx` reservou no cabeçalho — as duas
          medidas têm de bater. Aberta, cresce para a ESQUERDA, porque o
          contêiner que a segura é ancorado à direita: é assim que o painel ganha
-         largura para a grade de três idiomas sem empurrar botão nenhum.
+         largura para a grade de três idiomas sem mexer no cabeçalho.
 
-         Os números saíram de MEDIÇÃO, não de estimativa. A frase mais comprida
-         dos três idiomas é o espanhol "Hazte viral ahora": 88 px na Almarai e
-         91 px na reserva sans-serif, medidos no Chrome. Com o disco de 40 px, o
-         "+" de 28 e os recuos, o conteúdo pede 195 px — daí os 208 (13rem).
+         112 px fechada. A conta encolheu muito quando o disco de 40 px e a
+         linha de status saíram: recuo de 22, a palavra (36) e o "+" (32) dão
+         90 px de conteúdo. Antes eram 208, e a essa altura o `min()` que
+         protegia o telefone de 320 px virou proteção contra um problema que não
+         existe mais — agora sobram 77 px na tela mais estreita.
 
-         O `min()` é o que salva o telefone estreito. 208 px fixos somados ao
-         logo (91), aos recuos (40) e ao vão (8) dão 347, e uma tela de 320 px
-         ganharia rolagem HORIZONTAL — o defeito mais feio que um cabeçalho pode
-         ter. Com o `calc`, a pílula cede o que falta abaixo de 352 px de tela e
-         mantém os 208 acima disso. Abaixo, quem cede é a linha de status, que
-         tem reticências e não corte seco. */
-      larguraFechada="max-w-[min(13rem,calc(100vw-9rem))]"
+         Foram 128 por um instante, e a folga de 38 px abria um vão entre a
+         palavra e o "+" que fazia a pílula parecer meio vazia. 112 deixa 22 px,
+         que é respiro e não buraco.
+
+         MEDIDO, e não estimado: "Menu" e "Menú" dão os mesmos 35 px na Almarai
+         e 36 px na reserva sans-serif. Os três idiomas cabem na mesma medida,
+         sem variante e sem risco de corte enquanto a webfont não chega. */
+      larguraFechada="max-w-28"
       larguraAberta="max-w-[min(21rem,calc(100vw-2.5rem))]"
       titulo={texto.titulo}
       secoes={secoes}
       /* ─── A CTA QUE VOLTOU PARA DENTRO DO MENU ──────────────────────────────
          Os dois botões saíram do cabeçalho a pedido do dono, e com eles saiu a
          única porta de conversão da primeira dobra no desktop. Ela volta aqui,
-         onde o menu virou a navegação inteira do topo.
-
-         E resolve de quebra a esquisitice da linha de status: "Viralize agora"
-         estava escrito com cara de botão sem ser um. Agora o menu tem o botão
-         de verdade, e a linha de cima volta a ser o que ela é — um sinal de
-         "no ar", não uma promessa de clique. */
+         onde o menu virou a navegação inteira do topo. */
       acao={
-        <a
+        <motion.a
           href={HREF_FORMS}
           data-acao-menu
           tabIndex={-1}
+          whileTap={{ scale: 0.98 }}
+          transition={{ type: 'spring', stiffness: 700, damping: 26 }}
           className="group flex w-full items-center justify-center gap-2 rounded-xl bg-white px-4 py-2.5 text-sm font-medium tracking-tight text-zinc-900 transition-colors duration-200 hover:bg-zinc-200"
         >
           {texto.cta}
@@ -280,40 +280,8 @@ export function MenuDoxa() {
             aria-hidden
             className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5"
           />
-        </a>
+        </motion.a>
       }
-      avatar={<DiscoLaranja />}
-      status={[
-        <span key="viralize" className="flex min-w-0 items-center gap-1.5">
-          <span className="h-1.5 w-1.5 shrink-0 animate-pulse rounded-full bg-doxa-sinal" />
-          {/* `truncate` e `min-w-0` juntos, e os dois são necessários: um item
-              de flex não encolhe abaixo do próprio conteúdo sem o `min-w-0`, e
-              sem ele o `truncate` nunca teria o que truncar. É o que troca o
-              corte no meio da letra por reticências, no telefone estreito onde
-              a pílula cede largura. */}
-          <span className="truncate">{texto.viralize}</span>
-        </span>,
-      ]}
-    />
-  );
-}
-
-/**
- * O disco laranja, exatamente o do demo do 21st.
- *
- * Aqui estava a foto do cliente do case ativo, trocando junto com o deck. Saiu
- * a pedido do dono: era mais uma coisa se mexendo num cabeçalho que já tem uma
- * bolinha pulsando, e o menu não precisa provar nada — a prova é a seção
- * inteira lá embaixo.
- *
- * Sem conteúdo e sem rótulo: é forma, não informação. Um `aria-label` aqui
- * faria o leitor de tela anunciar uma decoração antes do nome do menu.
- */
-function DiscoLaranja() {
-  return (
-    <span
-      aria-hidden
-      className="block h-10 w-10 shrink-0 rounded-full bg-gradient-to-br from-orange-300 to-red-500"
     />
   );
 }

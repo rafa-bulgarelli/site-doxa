@@ -5,8 +5,8 @@ import { ChevronRight } from 'lucide-react';
 /**
  * ─── A PÍLULA QUE VIRA PAINEL ────────────────────────────────────────────────
  *
- * Uma cápsula que carrega título, uma linha de status e um painel que desce no
- * hover, no toque ou no ⌘K. Adaptada da `command-menu` do 21st.dev.
+ * Uma cápsula com um título e um "+", que vira painel no hover, no toque ou no
+ * ⌘K. Adaptada da `command-menu` do 21st.dev.
  *
  * A peça é BURRA de propósito: ela não sabe o que é uma seção do site nem o que
  * é um idioma, só desenha grupos de itens selecionáveis. Quem dá sentido a isso
@@ -111,12 +111,18 @@ export interface SecaoDeMenu {
 }
 
 interface CommandMenuProps {
+  /**
+   * A única coisa escrita na pílula fechada.
+   *
+   * Aqui houve um disco de 40 px e uma linha de status por baixo do título. Os
+   * dois saíram a pedido do dono, e a razão vale registro: num telefone o disco
+   * sozinho ocupava um quinto da largura da tela, e a pílula — que é a
+   * navegação inteira do site ali — parecia um cartão de perfil. O que ficou é
+   * a palavra e o "+". O sinal de "no ar" não foi perdido: mudou para o relógio
+   * do cabeçalho (`hero/Relogio.tsx`), onde ele tem contexto e não disputa
+   * espaço com o menu.
+   */
   titulo: ReactNode;
-  /** O disco à esquerda. */
-  avatar?: ReactNode;
-  /** A linha de baixo. Mais de uma gira, e para enquanto o painel está aberto. */
-  status?: ReactNode[];
-  intervaloStatus?: number;
   secoes?: SecaoDeMenu[];
   /** Fecha o painel por baixo de tudo. Costuma ser a ação principal da página. */
   acao?: ReactNode;
@@ -188,9 +194,6 @@ const LINHA_PARADA: Variants = {
 
 export function CommandMenu({
   titulo,
-  avatar,
-  status = [],
-  intervaloStatus = 4000,
   secoes = [],
   acao,
   tecla = 'k',
@@ -203,7 +206,6 @@ export function CommandMenu({
   const [ehApple, setEhApple] = useState(false);
   const [aberto, setAberto] = useState(false);
   const [selecionado, setSelecionado] = useState(0);
-  const [indiceStatus, setIndiceStatus] = useState(0);
   const emTransicao = useRef(false);
   const semMovimento = useReducedMotion();
 
@@ -281,15 +283,6 @@ export function CommandMenu({
     const nav = navigator as Navigator & { userAgentData?: { platform?: string } };
     setEhApple(/mac|iphone|ipad|ipod/i.test(nav.userAgentData?.platform || navigator.platform));
   }, []);
-
-  /* A linha de status gira, e para com o painel aberto ou a aba escondida. */
-  useEffect(() => {
-    if (aberto || status.length < 2) return;
-    const intervalo = setInterval(() => {
-      if (!document.hidden) setIndiceStatus((valor) => (valor + 1) % status.length);
-    }, intervaloStatus);
-    return () => clearInterval(intervalo);
-  }, [aberto, status.length, intervaloStatus]);
 
   /*
    * O atalho alterna o painel, e a bandeira impede o hover de desfazer isso no
@@ -386,16 +379,24 @@ export function CommandMenu({
           item.aoEscolher();
           if (!item.mantemAberto) setAberto(false);
         }}
+        /* O aperto. Um botão que não afunda sob o dedo não parece um botão —
+           e num painel onde o realce já responde ao hover, o toque ficava sem
+           resposta NENHUMA no celular, que é onde este menu é a navegação
+           inteira. `whileTap` cobre dedo e cursor com o mesmo gesto. */
+        whileTap={semMovimento ? undefined : { scale: 0.975 }}
+        transition={{ type: 'spring', stiffness: 700, damping: 26 }}
         className="relative z-10 flex items-center gap-3 rounded-xl px-2.5 py-2 text-left text-sm text-zinc-300 transition-colors duration-200 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white/50"
       >
         {item.icone && (
-          <span
+          <motion.span
+            animate={semMovimento ? undefined : { scale: naVez ? 1.06 : 1 }}
+            transition={{ type: 'spring', stiffness: 480, damping: 16 }}
             className={`grid h-6 w-6 shrink-0 place-items-center rounded-lg transition-colors duration-200 ${
               naVez ? 'bg-zinc-100/10 text-white' : 'text-zinc-500'
             }`}
           >
             {item.icone}
-          </span>
+          </motion.span>
         )}
         <span className={`flex-1 transition-colors duration-200 ${naVez ? 'text-white' : ''}`}>
           {item.nome}
@@ -430,6 +431,8 @@ export function CommandMenu({
           item.aoEscolher();
           if (!item.mantemAberto) setAberto(false);
         }}
+        whileTap={semMovimento ? undefined : { scale: 0.95 }}
+        transition={{ type: 'spring', stiffness: 700, damping: 26 }}
         /* Preenchido, e não contornado: um contorno de 1px marcava o idioma
            atual tão discretamente que ele não se distinguia do hover. */
         className={`relative z-10 flex items-center justify-center gap-1.5 rounded-xl px-1.5 py-2 text-xs transition-colors duration-200 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white/50 ${
@@ -465,50 +468,40 @@ export function CommandMenu({
           : `${larguraFechada} shadow-lg shadow-black/40`
       }`}
     >
-      <div className="flex items-center overflow-hidden p-1.5">
-        {avatar}
-        <div className="flex w-full items-center justify-between whitespace-nowrap pl-2.5 pr-1">
-          <div className="flex w-full flex-col gap-px">
-            <span className="text-sm font-medium leading-4 tracking-tight">{titulo}</span>
-            {status.length > 0 && (
-              <span className="relative w-full text-xs leading-4 text-zinc-400">
-                {/* Um caractere invisível segura a altura da linha: sem ele a
-                    caixa do status tem altura zero, porque o texto de verdade é
-                    absoluto — e a pílula encolheria meia linha a cada troca. */}
-                <span className="opacity-0" aria-hidden>
-                  _
-                </span>
-                <span
-                  key={indiceStatus}
-                  className="menu-status absolute inset-0 flex items-center gap-1.5"
-                >
-                  {status[indiceStatus]}
-                </span>
-              </span>
-            )}
-          </div>
-          {/* O "+" que vira "×". É o único convite que existe, então ele
-              aparece em toda largura — no celular a tecla não fazia sentido e
-              a pílula acabava sem nada que dissesse "abre". */}
-          <span
-            aria-hidden
-            className={`ml-auto grid h-8 w-8 shrink-0 place-items-center rounded-full bg-zinc-100/[0.08] text-zinc-300 transition-[transform,background-color] duration-[400ms] ease-out ${
-              aberto ? 'rotate-[135deg] bg-zinc-100/[0.14] text-white' : ''
-            }`}
-          >
-            <svg viewBox="0 0 24 24" className="h-4 w-4" aria-hidden>
-              <path
-                d="M12 5v14M5 12h14"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-              />
-            </svg>
-          </span>
-          {/* O nome do controle para quem não vê o "+". A pílula inteira reage a
-              hover e a toque, mas nada disso é anunciável — isto é. */}
-          <span className="sr-only">{rotuloAbrir}</span>
-        </div>
+      {/* Título e "+", e mais nada. Ver a nota em `titulo`, nas props. */}
+      <div className="flex items-center gap-3 overflow-hidden p-1.5 pl-4">
+        <span className="whitespace-nowrap text-sm font-medium tracking-tight text-white">
+          {titulo}
+        </span>
+        {/* O "+" que vira "×". É o único convite que existe, então ele aparece
+            em toda largura — no celular a tecla nunca fez sentido, e a pílula
+            ficava sem nada que dissesse "abre".
+
+            `motion` e não CSS: o giro precisa da mesma mola do resto do painel
+            para o "+" e o conteúdo parecerem uma coisa só entrando. */}
+        <motion.span
+          aria-hidden
+          animate={
+            semMovimento
+              ? { rotate: aberto ? 135 : 0 }
+              : { rotate: aberto ? 135 : 0, scale: aberto ? 1 : 1 }
+          }
+          transition={
+            semMovimento
+              ? { duration: 0 }
+              : { type: 'spring', stiffness: 420, damping: 18, mass: 0.6 }
+          }
+          className={`ml-auto grid h-8 w-8 shrink-0 place-items-center rounded-full transition-colors duration-300 ${
+            aberto ? 'bg-white text-zinc-900' : 'bg-zinc-100/[0.08] text-zinc-300'
+          }`}
+        >
+          <svg viewBox="0 0 24 24" className="h-4 w-4" aria-hidden>
+            <path d="M12 5v14M5 12h14" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+          </svg>
+        </motion.span>
+        {/* O nome do controle para quem não vê o "+". A pílula inteira reage a
+            hover e a toque, mas nada disso é anunciável — isto é. */}
+        <span className="sr-only">{rotuloAbrir}</span>
       </div>
 
       <div
