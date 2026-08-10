@@ -485,6 +485,24 @@ export function Formulario({
    * terminaria sem entregar nada.
    */
   const seguir = () => {
+    /*
+     * "Outro" marcado obriga o campo, e o motivo é o que ele custa depois.
+     *
+     * Sem esta trava, quem toca em "Outro" e não escreve nada tem a resposta
+     * DESCARTADA em silêncio — `respostaFinal` filtra texto vazio —, e o
+     * consultor recebe uma ficha em que o nicho simplesmente não existe. Pior
+     * do que não ter perguntado: a pessoa acredita que respondeu.
+     *
+     * A trava é só para quem ESCOLHEU o "Outro". Pular a pergunta inteira
+     * continua livre: a ficha é um favor, e um favor não se cobra com trava.
+     */
+    if (fichaAtual?.livre != null && (respostas[fichaAtual.chave] ?? []).includes(OUTRO)) {
+      if ((livres[fichaAtual.chave] ?? '').trim().length === 0) {
+        setErro('Escreve qual é — ou tira o "Outro" e segue.');
+        return;
+      }
+    }
+    setErro(null);
     if (passo === TOTAL - 1) {
       concluir(false);
       return;
@@ -588,6 +606,10 @@ export function Formulario({
    * cima. O botão é a única passagem, aqui e no primeiro passo.
    */
   const escolher = (pergunta: PerguntaFicha, opcao: string) => {
+    // Mexer nas marcações limpa o aviso: tirar o "Outro" é uma das duas formas
+    // de resolver o que ele está cobrando, e o aviso não pode sobreviver à
+    // correção dele.
+    if (erro != null) setErro(null);
     if (pergunta.multipla === true) {
       // A lista sai de dentro do próprio `set`, e não da leitura do desenho:
       // dois toques na mesma passagem — que é o que acontece quando alguém
@@ -1215,14 +1237,24 @@ export function Formulario({
                     livre={fichaAtual.livre}
                     textoLivre={livres[fichaAtual.chave] ?? ''}
                     aoEscolher={(opcao) => escolher(fichaAtual, opcao)}
-                    aoEscreverLivre={(valor) =>
-                      setLivres((l) => ({ ...l, [fichaAtual.chave]: valor }))
-                    }
+                    aoEscreverLivre={(valor) => {
+                      setLivres((l) => ({ ...l, [fichaAtual.chave]: valor }));
+                      if (erro != null) setErro(null);
+                    }}
                     aoConfirmarLivre={seguir}
                   />
                 </div>
 
-                <div className="mt-8 flex items-center gap-3">
+                {/* A mesma linha de erro dos passos de digitar, e com a mesma
+                    altura reservada: sem ela o botão salta quando a validação
+                    fala, e ele é justamente o alvo que a pessoa está mirando. */}
+                <div className="mt-3 min-h-[1.5rem]">
+                  <span role="alert" className="text-[13px]" style={{ color: ERRO }}>
+                    {erro}
+                  </span>
+                </div>
+
+                <div className="mt-5 flex items-center gap-3">
                   <button
                     type="button"
                     onClick={() => voltar(passo - 1)}

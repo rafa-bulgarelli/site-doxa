@@ -375,7 +375,7 @@ export const FICHA: readonly PerguntaFicha[] = [
       'Serviços para empresas',
       OUTRO,
     ],
-    livre: 'O que a sua empresa vende',
+    livre: 'Qual é o nicho da sua empresa',
   },
   {
     chave: 'faturamento',
