@@ -302,7 +302,16 @@ export const PAGAMENTOS = ['Pix', 'Cartão', 'Apple Pay', 'Google Pay'];
 export const OUTRO = 'Outro';
 
 export interface PerguntaFicha {
-  chave: 'segmento' | 'faturamento' | 'objetivo' | 'trava' | 'aparece';
+  /*
+   * Três perguntas de contexto, e eram cinco.
+   *
+   * Saíram "o que você quer que os vídeos façam?" e "você aparece nos vídeos?",
+   * a pedido do dono. As duas eram boas perguntas de BRIEFING e ruins de
+   * qualificação: a resposta muda o roteiro, não muda se a conversa acontece —
+   * e cada pergunta no meio do funil custa gente que desiste. As duas voltam a
+   * ser feitas pelo consultor, na ligação, onde elas valem mais.
+   */
+  chave: 'segmento' | 'faturamento' | 'trava';
   /** O rótulo curto da resposta guardada. */
   rotulo: string;
   pergunta: string;
@@ -353,8 +362,8 @@ export interface PerguntaFicha {
 export const FICHA: readonly PerguntaFicha[] = [
   {
     chave: 'segmento',
-    rotulo: 'Segmento',
-    pergunta: 'O que a sua empresa vende?',
+    rotulo: 'Nicho',
+    pergunta: 'Qual é o nicho da sua empresa?',
     dica: 'Para o consultor chegar sabendo do que se trata.',
     opcoes: [
       'Advocacia',
@@ -366,31 +375,33 @@ export const FICHA: readonly PerguntaFicha[] = [
       'Serviços para empresas',
       OUTRO,
     ],
-    livre: 'O que a sua empresa vende',
+    livre: 'Qual é o nicho da sua empresa',
   },
   {
     chave: 'faturamento',
     rotulo: 'Faturamento',
     pergunta: 'Quanto a empresa fatura hoje?',
     dica: 'Por faixa, e fica entre nós. É o que dimensiona a proposta.',
+    /*
+     * A escada do faturamento, refeita a pedido do dono.
+     *
+     * Saiu o "até 20 mil" — abaixo do budget mínimo, essa empresa já não passa
+     * do corte — e saiu o "prefiro não dizer", que era uma saída sem custo para
+     * a única pergunta que dimensiona a proposta.
+     *
+     * E o topo deixou de ser um teto: "mais de 200 mil" juntava numa pílula só
+     * a empresa de trezentos mil e a de cinco milhões, que são duas conversas
+     * comerciais completamente diferentes. Agora a escada sobe até "mais de 5
+     * milhões", e é lá em cima que ela ganha degraus.
+     */
     opcoes: [
-      'Até R$ 20 mil',
-      'R$ 20 a 50 mil',
+      'Até R$ 50 mil',
       'R$ 50 a 200 mil',
-      'Mais de R$ 200 mil',
-      'Prefiro não dizer',
-    ],
-  },
-  {
-    chave: 'objetivo',
-    rotulo: 'Objetivo',
-    pergunta: 'O que você quer que os vídeos façam?',
-    dica: 'A resposta muda o roteiro antes de mudar qualquer outra coisa.',
-    opcoes: [
-      'Vender mais',
-      'Autoridade no meu nicho',
-      'Lançar algo novo',
-      'Atrair gente boa para a equipe',
+      'R$ 200 a 500 mil',
+      'R$ 500 mil a R$ 1 milhão',
+      'R$ 1 a 3 milhões',
+      'R$ 3 a 5 milhões',
+      'Mais de R$ 5 milhões',
     ],
   },
   {
@@ -407,29 +418,80 @@ export const FICHA: readonly PerguntaFicha[] = [
     ],
     multipla: true,
   },
-  {
-    chave: 'aparece',
-    rotulo: 'Aparecer',
-    /*
-     * A pergunta que nenhum formulário de qualificação padrão tem, e a mais
-     * desta empresa que existe na lista.
-     *
-     * As outras quatro serviriam a qualquer fornecedor de qualquer coisa. Esta
-     * é sobre a ENTREGA: a oferta da página é "uma foto e um áudio", e se a
-     * pessoa não quer aparecer, muda o que se produz, muda o preço e muda a
-     * conversa inteira. É também a objeção mais silenciosa do mercado — quem
-     * tem vergonha de câmera não escreve isso em lugar nenhum, e some.
-     */
-    pergunta: 'Você aparece nos vídeos?',
-    dica: 'Não aparecer é uma resposta comum aqui, e tem caminho.',
-    opcoes: ['Apareço', 'Prefiro não aparecer', 'Tanto faz'],
-  },
 ];
 
 /** O fecho da ficha, depois da última pergunta. */
 export const FICHA_FIM = {
   titulo: 'Agora sim.',
   corpo: 'O consultor lê isto antes de te chamar. A conversa começa do meio.',
+};
+
+/**
+ * ─── A PERGUNTA DE CORTE ─────────────────────────────────────────────────────
+ *
+ * Quanto a pessoa consegue investir por mês. É a única pergunta do formulário
+ * que pode ENCERRÁ-LO, e é do dono a decisão de tê-la.
+ *
+ * O que ela compra: o consultor deixa de gastar a primeira ligação descobrindo
+ * que não há orçamento. O que ela custa: uma parte das pessoas sai da página
+ * sabendo que não é para elas — e essa é exatamente a intenção, dita na cara em
+ * vez de descoberta depois de duas conversas.
+ *
+ * As faixas são estreitas embaixo e largas em cima porque é embaixo que a
+ * decisão acontece: a diferença entre mil e mil e quinhentos muda a resposta do
+ * consultor, a diferença entre quatro e cinco mil não muda quase nada.
+ *
+ * A ORDEM IMPORTA e é lida por código: a primeira faixa é a que desqualifica —
+ * `CORTE` aponta para ela por índice, então mexer na ordem sem mexer no corte
+ * passa a barrar a faixa errada em silêncio.
+ */
+export const INVESTIMENTO = {
+  rotulo: 'Budget',
+  pergunta: 'Qual é o seu budget mensal?',
+  dica: 'Por faixa. É o que define se a Doxa cabe no seu momento.',
+  /*
+   * CINCO faixas, a pedido do dono, e com um buraco fechado.
+   *
+   * Ele ditou "abaixo de 1000, entre 1000 e 2000, entre 3000 e 4000, entre
+   * 4000 e 5000, acima de 5k" — cinco itens, mas com a faixa dos dois aos três
+   * mil faltando. Uma escada com degrau faltando não é detalhe: quem consegue
+   * dois mil e quinhentos não tem em que clicar, e o formulário trava no passo
+   * que existe para não travar ninguém.
+   *
+   * Fechado esticando a faixa do meio até quatro mil. Quatro dos cinco rótulos
+   * são os dele, palavra por palavra; o terceiro é o que cobre o vão. Se a
+   * intenção era outra — separar 2–3 e 3–4 e juntar em cima —, é trocar esta
+   * lista e a tabela de `INVESTIMENTO` em `leads/score.ts`, que lê os mesmos
+   * textos.
+   */
+  faixas: [
+    'Abaixo de R$ 1.000',
+    'R$ 1.000 a R$ 2.000',
+    'R$ 2.000 a R$ 4.000',
+    'R$ 4.000 a R$ 5.000',
+    'Mais de R$ 5.000',
+  ],
+} as const;
+
+/** A faixa que encerra o formulário. Índice, e não texto repetido. */
+export const CORTE = 0;
+
+/**
+ * O fim da linha para quem ficou abaixo da faixa.
+ *
+ * PENDENTE-DONO: a redação é minha, e vale a leitura dele — é a única tela do
+ * site que diz não a alguém. Escrita para não humilhar e para não enganar:
+ * agradece, diz que é uma questão de MOMENTO e não de mérito, e não promete
+ * uma ligação que não vai acontecer. A porta fica encostada, não trancada.
+ *
+ * Nenhum botão aqui. Um "voltar" convidaria a pessoa a trocar a resposta para
+ * passar no filtro, e um filtro que se contorna não filtra nada.
+ */
+export const DESQUALIFICADO = {
+  titulo: 'Obrigado pela sinceridade.',
+  corpo:
+    'A Doxa não se encaixa no seu momento — o nosso trabalho começa numa faixa acima dessa, e prometer o contrário seria custar o seu dinheiro para nada.',
+  fecho: 'Quando a operação crescer, a porta continua aqui.',
 };
 
 /** O convite para responder a ficha, na tela de confirmação. */
