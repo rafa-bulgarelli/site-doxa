@@ -23,6 +23,7 @@ import {
 } from './config';
 import { gravarLead } from '../../leads/deposito';
 import { ARMADILHA, type ProvaDeHumano } from '../../leads/antibot';
+import { usarTurnstile } from '../../leads/usarTurnstile';
 import type { LeadNovo } from '../../leads/tipos';
 
 const EASE = [0.16, 1, 0.3, 1] as const;
@@ -629,12 +630,23 @@ export function Formulario({
   /** O campo-armadilha. Vazio é o esperado; qualquer coisa aqui é robô. */
   const [armadilha, setArmadilha] = useState('');
 
+  /*
+   * O Turnstile só começa a carregar quando a pessoa SAI do primeiro passo.
+   *
+   * São 70 kB de script de terceiro, e a página de vendas não pode pagá-los na
+   * primeira dobra por causa de um formulário que a maioria dos visitantes nem
+   * abre. Do passo dois até o envio sobram sete perguntas de folga — tempo de
+   * sobra para a Cloudflare resolver o desafio em silêncio.
+   */
+  const turnstile = usarTurnstile(passo > 0);
+
   const provaDeHumano = (): ProvaDeHumano => ({
     armadilha,
     levou: Date.now() - nasceuEm.current,
-    // PENDENTE: o token do Turnstile entra aqui quando a chave existir. Nulo, o
-    // endpoint pula a camada — ele sabe que ela está desligada.
-    token: null,
+    // Lido no INSTANTE do envio, e não guardado: o token da Cloudflare vale
+    // cinco minutos, e este formulário tem nove passos — quem demora mandaria
+    // um token vencido se ele fosse capturado no começo.
+    token: turnstile.token,
   });
 
   /**
@@ -1345,6 +1357,18 @@ export function Formulario({
           campo" encontrava — meu próprio teste automatizado digitou nele e
           travou o formulário no passo dois. Robô que varre campos acha em
           qualquer posição; gente e ferramenta que chutam a primeira, não. */}
+      {/* A caixa do Turnstile.
+
+          Em `interaction-only` ela fica com altura zero na esmagadora maioria
+          das visitas — a Cloudflare só desenha alguma coisa quando precisa
+          perguntar, e aí o widget aparece aqui, no pé do cartão, sem empurrar
+          nada que a pessoa esteja lendo.
+
+          Fora do fluxo do formulário de propósito: se ela ficasse entre a
+          pergunta e o botão, um desafio raro deslocaria o alvo do dedo no
+          instante do toque. */}
+      <div ref={turnstile.ancorar} className="px-6 pb-4 empty:hidden md:px-12" />
+
       <div className="pointer-events-none absolute -left-[9999px] top-0 h-0 w-0 overflow-hidden">
         <label htmlFor={ARMADILHA} aria-hidden>
           Não preencha este campo
