@@ -680,6 +680,34 @@ html::-webkit-scrollbar {
   }
 }
 
+/* A linha de status do menu do topo, entrando quando a anterior sai.
+
+   Mora aqui e não num `<style>` dentro do componente porque o componente
+   redesenha a cada troca de status — e uma tag de estilo remontada a cada quatro
+   segundos é trabalho de layout pago para reinstalar a mesma regra.
+
+   Só a chegada é animada: quem sai é removido do DOM pela troca de `key`, e não
+   há como despedir um elemento que já não existe. `backwards` é o que segura o
+   primeiro quadro no estado inicial em vez de piscar o texto inteiro antes de
+   começar. */
+.menu-status {
+  animation: menu-status-entra 0.5s ease-out backwards;
+}
+
+@keyframes menu-status-entra {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+    filter: blur(2px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .menu-status {
+    animation: none;
+  }
+}
+
 /* Connector curves draw themselves in. `pathLength` from framer-motion can't be
    used here: it emits a dasharray in viewBox units, which smears once the
    viewBox is measured in pixels. A plain dash animation is exact. */

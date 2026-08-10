@@ -1,6 +1,5 @@
 import { useMemo, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
-import { ChevronDown } from 'lucide-react';
 import { CanvasCard } from './hero/CanvasCard';
 import { ClientPhoto, ViralVideo } from './hero/MediaFrame';
 import { CASES } from './hero/cases';
@@ -9,6 +8,7 @@ import { AudioPlayer } from './hero/AudioPlayer';
 import { ConnectorLines } from './hero/ConnectorLines';
 import { WordRotator } from './hero/WordRotator';
 import { DotGridSpotlight } from './hero/DotGridSpotlight';
+import { MenuDoxa } from './hero/MenuDoxa';
 import { MotionButton } from './ui/MotionButton';
 import { HREF_FORMS } from '../ancoras';
 import { useIsDesktop } from '../hooks/useIsDesktop';
@@ -16,12 +16,6 @@ import { TOOLS } from './tools';
 // Bitmap wordmark — the only form the owner has. Card 002 wants this vectorised
 // and signed off before it counts as official; until then this is the asset.
 import wordmarkUrl from '../../brand/doxa-wordmark-white-96.avif';
-
-const NAV_ITEMS = [
-  { label: 'Produto', hasMenu: true },
-  { label: 'Como funciona', hasMenu: false },
-  { label: 'Empresa', hasMenu: true },
-];
 
 /**
  * The three platforms the guarantee counts together. Literal owner content —
@@ -112,19 +106,14 @@ export function Hero() {
           />
         </a>
 
-        <nav className="hidden items-center gap-8 md:flex">
-          {NAV_ITEMS.map(({ label, hasMenu }) => (
-            <a
-              key={label}
-              href="#"
-              className="flex items-center gap-1 text-sm text-white/80 transition-colors hover:text-white"
-            >
-              {label}
-              {hasMenu && <ChevronDown className="h-3.5 w-3.5 opacity-70" />}
-            </a>
-          ))}
-        </nav>
+        {/* TUDO à direita, na ordem que o dono pediu: as duas ações e depois o
+            menu, na ponta.
 
+            No celular sobram o logo e o menu. Os dois botões saem, e o custo
+            disso é menor do que parece: a CTA da primeira dobra continua lá, no
+            `MotionButton` do meio da coluna, que num telefone é maior e está
+            mais perto do polegar do que qualquer pílula do topo estaria. O que
+            se ganha é um cabeçalho que não disputa 375 px com três elementos. */}
         <div className="flex items-center gap-2 md:gap-3">
           {/* As duas ações do topo vão para o MESMO lugar, e é de propósito:
               "falar com a gente" e "quero viralizar" são a mesma intenção dita
@@ -134,16 +123,48 @@ export function Hero() {
               nenhum. */}
           <a
             href={HREF_FORMS}
-            className="hidden rounded-full border border-white/[0.11] bg-white/[0.06] px-4 py-2 text-xs text-white backdrop-blur-md transition-colors hover:bg-white/[0.12] sm:block md:text-sm"
+            className="hidden rounded-full border border-white/[0.11] bg-white/[0.06] px-4 py-2 text-xs text-white backdrop-blur-md transition-colors hover:bg-white/[0.12] md:block md:text-sm"
           >
             Falar com a gente
           </a>
           <a
             href={HREF_FORMS}
-            className="rounded-full bg-white px-4 py-2 text-xs font-medium text-black transition-transform hover:scale-[1.03] md:px-5 md:text-sm"
+            className="hidden rounded-full bg-white px-4 py-2 text-xs font-medium text-black transition-transform hover:scale-[1.03] md:block md:px-5 md:text-sm"
           >
             Quero viralizar
           </a>
+
+          {/* ─── O BURACO E A PEÇA ────────────────────────────────────────────
+              Duas caixas para uma pílula, e as duas são necessárias.
+
+              A de fora é o BURACO: ela tem o tamanho da pílula FECHADA e é a
+              única coisa que existe no fluxo do cabeçalho. É ela que reserva o
+              espaço e mantém os botões parados.
+
+              A de dentro está fora do fluxo, ancorada à direita, e é mais larga
+              que o buraco de propósito — é o espaço para onde a pílula cresce
+              quando abre. Crescer no fluxo empurraria os dois botões para a
+              esquerda a cada passada de cursor, e um cabeçalho que se reorganiza
+              sozinho no hover é um cabeçalho quebrado.
+
+              `pointer-events-none` nela, e `auto` de volta na pílula: essa caixa
+              larga passa POR CIMA dos dois botões, e sem isso a área vazia dela
+              engoliria o clique deles.
+
+              As larguras aqui e as que a `MenuDoxa` passa ao componente são o
+              mesmo par de medidas em dois lugares — `w-44/md:w-56` de um lado,
+              `max-w-44/md:max-w-56` do outro. Divergindo, a pílula não cabe no
+              buraco e o cabeçalho ganha um degrau. De onde saíram os dois
+              números, e por que são diferentes, está em `MenuDoxa.tsx`.
+
+              176 px cabem no telefone mais estreito que ainda importa: 20 de
+              recuo + 91 do logo + 8 de vão + 176 + 20 dão 315, contra os 320 de
+              um iPhone SE. */}
+          <div className="relative h-12 w-44 shrink-0 md:w-56">
+            <div className="pointer-events-none absolute right-0 top-0 flex w-80 max-w-[calc(100vw-2.5rem)] justify-end">
+              <MenuDoxa caso={activeCase} />
+            </div>
+          </div>
         </div>
       </header>
 

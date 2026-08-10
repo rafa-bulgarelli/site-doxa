@@ -39,6 +39,25 @@ export default {
           // with the tile black going from 60% back to 50%, because a darker
           // floor under the same veil was dimming each video twice.
           stage: '#0E0E0E',
+
+          // ─── A ÚNICA EXCEÇÃO À REGRA ACIMA ────────────────────────────────
+          //
+          // Todo valor deste objeto tem R=G=B. Este não tem, e é o único do
+          // site que não tem: um ponto de 6 px na pílula do menu do topo, antes
+          // de "Viralize agora".
+          //
+          // A exceção foi pedida pelo dono e ela se paga porque verde ali não é
+          // decoração, é VOCABULÁRIO — a bolinha verde diz "no ar, agora" numa
+          // linguagem que ninguém precisa aprender, e o site inteiro não tem
+          // outra forma de dizer isso sem gastar uma frase. Foi considerada a
+          // alternativa monocromática (bolinha branca pulsando) e ela perde por
+          // um motivo simples: branco já é a cor de tudo neste menu, então o
+          // ponto não se destacaria de nada.
+          //
+          // O escopo é o ponto e nada mais. Isto NÃO é um token de acento à
+          // disposição: se aparecer uma segunda peça verde, a regra monocromática
+          // deixou de existir na prática e a conversa é outra — é com o dono.
+          sinal: '#4ADE80',
         },
       },
       fontFamily: {
