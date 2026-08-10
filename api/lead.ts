@@ -110,16 +110,32 @@ function pareceLead(corpo: unknown): corpo is LeadNovo {
   );
 }
 
-/** Quantos envios este IP já fez na janela. Falhar aqui não barra ninguém. */
+/**
+ * Quantos envios este IP já fez na janela. Falhar aqui não barra ninguém.
+ *
+ * ─── ESTA CAMADA DEPENDE DA CHAVE DE SERVIDOR, e isso não é detalhe ──────────
+ *
+ * Contar exige LER, e a chave pública não pode ler — é o desenho inteiro da
+ * segurança do banco. Com ela, a consulta é feita, o Postgres devolve zero por
+ * política, e o limite conclui que ninguém enviou nada: a camada fica de pé
+ * fingindo que funciona, que é pior do que não existir.
+ *
+ * Descoberto no ar, numa rajada de quatro envios seguidos que passaram todos.
+ * Agora a camada declara quando está dormindo, em vez de mentir.
+ */
 async function passouDoLimite(impressao: string, limite: number): Promise<boolean> {
+  if (!CHAVE_SERVIDOR) {
+    console.warn('limite por IP dormindo: sem SUPABASE_SERVICE_ROLE não há como contar');
+    return false;
+  }
   try {
     const desde = new Date(Date.now() - JANELA_MINUTOS * 60_000).toISOString();
     const resposta = await fetch(
       `${URL_BASE}/rest/v1/leads?select=id&ip_hash=eq.${impressao}&criado_em=gte.${desde}`,
       {
         headers: {
-          apikey: CHAVE_DE_ESCRITA!,
-          Authorization: `Bearer ${CHAVE_DE_ESCRITA}`,
+          apikey: CHAVE_SERVIDOR,
+          Authorization: `Bearer ${CHAVE_SERVIDOR}`,
           // `count=exact` com faixa vazia devolve só o total, sem trazer linha.
           Prefer: 'count=exact',
           Range: '0-0',
