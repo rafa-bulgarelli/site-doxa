@@ -40,8 +40,20 @@ import { useEffect, useState } from 'react';
  * preciso, porque a pergunta que ele responde é do presente: "vale a pena gastar
  * CPU com isto AGORA?". Para revelar algo uma vez só, o certo é o `whileInView`
  * do framer-motion, que já está no bundle.
+ *
+ * ─── O LIMIAR ────────────────────────────────────────────────────────────────
+ *
+ * `limiar` é QUANTO do elemento precisa aparecer para valer como "na tela".
+ * Zero — o padrão — é o comportamento normal: um pixel basta.
+ *
+ * Ele existe para os efeitos caros. Um halo desfocado, que borra a frase inteira
+ * a cada quadro, não deve esse trabalho a uma borda de texto espiando dois
+ * pixels no pé da janela: ali ninguém o aprecia, e o custo é o mesmo de quando a
+ * frase está no meio da tela sendo lida. Com `limiar: 0.5` o efeito acende
+ * quando metade dela está à vista — que é quando ele passa a ser um efeito, em
+ * vez de um rumor no canto do olho.
  */
-export function usarNaTela(alvo: Element | null, margem = '50%'): boolean {
+export function usarNaTela(alvo: Element | null, margem = '50%', limiar = 0): boolean {
   /*
    * Começa LIGADO, e é deliberado.
    *
@@ -62,11 +74,11 @@ export function usarNaTela(alvo: Element | null, margem = '50%'): boolean {
 
     const olho = new IntersectionObserver(
       ([entrada]) => setNaTela(entrada?.isIntersecting ?? true),
-      { rootMargin: margem },
+      { rootMargin: margem, threshold: limiar },
     );
     olho.observe(alvo);
     return () => olho.disconnect();
-  }, [alvo, margem]);
+  }, [alvo, margem, limiar]);
 
   return naTela;
 }
