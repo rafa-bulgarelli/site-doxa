@@ -745,37 +745,6 @@ export function Formulario({
       {/* O sinal que chegou pelo fio continua aqui, contornando o cartão. */}
       <BordaViva alvo={cartao} />
 
-      {/* ── O CAMPO-ARMADILHA ────────────────────────────────────────────────
-
-          Um `input` de verdade, com nome de campo comum, fora da vista e fora
-          do leitor de tela. Gente nunca o preenche porque nunca o vê; robô que
-          varre campos e preenche todos se entrega no primeiro envio.
-
-          `aria-hidden` mais `tabIndex={-1}` mais `autoComplete="off"` são as
-          três coisas que o mantêm invisível para quem importa: leitor de tela
-          não anuncia, tecla Tab não visita, e o navegador não oferece
-          preenchimento automático — que seria a única forma de uma pessoa real
-          cair nele.
-
-          Escondido por posição e não por `display: none` ou `hidden`: robô bom
-          ignora campo com display nenhum, e o que se quer é justamente que ele
-          ache este aqui. */}
-      <div className="pointer-events-none absolute -left-[9999px] top-0 h-0 w-0 overflow-hidden">
-        <label htmlFor={ARMADILHA} aria-hidden>
-          Não preencha este campo
-        </label>
-        <input
-          id={ARMADILHA}
-          name={ARMADILHA}
-          type="text"
-          value={armadilha}
-          onChange={(e) => setArmadilha(e.target.value)}
-          tabIndex={-1}
-          autoComplete="off"
-          aria-hidden
-        />
-      </div>
-
       <div className="relative p-6 md:p-12">
         {/* `p-6` no telefone contra os `p-8` de antes: 216 pixels úteis num
             aparelho de 320 são estreitos para uma trilha de quatro etapas, uma
@@ -1353,6 +1322,43 @@ export function Formulario({
 
           </AnimatePresence>
         </div>
+      </div>
+
+      {/* ── O CAMPO-ARMADILHA ────────────────────────────────────────────────
+
+          Um `input` de verdade, com nome de campo comum, fora da vista e fora
+          do leitor de tela. Gente nunca o preenche porque nunca o vê; robô que
+          varre campos e preenche todos se entrega no primeiro envio.
+
+          `aria-hidden` mais `tabIndex={-1}` mais `autoComplete="off"` são as
+          três coisas que o mantêm invisível para quem importa: leitor de tela
+          não anuncia, tecla Tab não visita, e o navegador não oferece
+          preenchimento automático — que seria a única forma de uma pessoa real
+          cair nele.
+
+          Escondido por posição e não por `display: none` ou `hidden`: robô bom
+          ignora campo com display nenhum, e o que se quer é justamente que ele
+          ache este aqui.
+
+          E fica no FIM do cartão, não no começo. Como primeiro `input` do
+          formulário ele era o que qualquer ferramenta que pega "o primeiro
+          campo" encontrava — meu próprio teste automatizado digitou nele e
+          travou o formulário no passo dois. Robô que varre campos acha em
+          qualquer posição; gente e ferramenta que chutam a primeira, não. */}
+      <div className="pointer-events-none absolute -left-[9999px] top-0 h-0 w-0 overflow-hidden">
+        <label htmlFor={ARMADILHA} aria-hidden>
+          Não preencha este campo
+        </label>
+        <input
+          id={ARMADILHA}
+          name={ARMADILHA}
+          type="text"
+          value={armadilha}
+          onChange={(e) => setArmadilha(e.target.value)}
+          tabIndex={-1}
+          autoComplete="off"
+          aria-hidden
+        />
       </div>
     </motion.div>
   );
