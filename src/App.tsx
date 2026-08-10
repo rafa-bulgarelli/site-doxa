@@ -1,8 +1,10 @@
 import { Suspense, lazy, useEffect, useState, type ReactNode } from 'react';
 import { ANCORA_FORMS, HREF_FORMS } from './ancoras';
+import { ProvedorDeIdioma } from './idioma';
 import { usarNaTela } from './hooks/usarNaTela';
 import { Hero } from './components/Hero';
 import { Rolador } from './components/ui/Rolador';
+import { Cabecalho } from './components/Cabecalho';
 
 /**
  * Tudo abaixo da primeira dobra sai do pacote inicial.
@@ -252,8 +254,19 @@ export default function App() {
     );
   }
 
+  /* O provedor de idioma abraça a página inteira, e não só o cabeçalho.
+     Hoje quem lê são duas peças do topo — o menu e o relógio —, e as duas
+     PRECISAM ver o mesmo valor: com o estado solto em cada uma, trocar de
+     idioma no menu deixaria o relógio em português para sempre. Amanhã, quando
+     as seções forem traduzidas, elas já encontram o valor aqui. */
   return (
-    <>
+    <ProvedorDeIdioma>
+      {/* FORA do `<main>`, como o `Rolador`: o cabeçalho é `fixed` e sobrevoa a
+          página inteira. Dentro dele, sumiria junto com a página no reveal do
+          rodapé — e o fim da rolagem é justamente onde alguém pode querer
+          voltar ao topo. */}
+      <Cabecalho />
+
       {/*
        * O `<main>` é OPACO e vem por cima, e é só isso que faz o rodapé se
        * revelar.
@@ -317,6 +330,6 @@ export default function App() {
           primeira dobra, e um pedaço separado só para ela chegaria depois da
           primeira rolagem, que é justamente quando ela deveria aparecer. */}
       <Rolador />
-    </>
+    </ProvedorDeIdioma>
   );
 }

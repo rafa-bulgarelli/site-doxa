@@ -378,6 +378,19 @@ export function Rolador() {
     const abrirIlha = () => {
       avaliarSono();
       window.clearTimeout(relogioIlha);
+      /* ─── NA JANELA ESTREITA A ILHA NÃO ABRE ──────────────────────────────
+         Pedido do dono, olhando a página a 320 de largura.
+
+         Num TELEFONE de verdade esta peça inteira já não existe: o CSS a
+         esconde em `@media (hover: none)`. O que sobrava era a janela estreita
+         COM ponteiro, e ali o painel — mesmo reduzido a dois terços — cobria
+         239 dos 568 pixels de altura da tela. Quase metade do que a pessoa está
+         lendo, para um atalho que ela não pediu.
+
+         A barra continua inteira: ela ainda dorme, acorda com a rolagem,
+         mostra a porcentagem e arrasta. O que some é só o passo de virar
+         cartão, que é o único que precisa de tela sobrando. */
+      if (window.matchMedia(ESTREITO).matches) return;
       if (arrastando || abertaRef.current) return;
       relogioIlha = window.setTimeout(() => {
         if (arrastando) return;

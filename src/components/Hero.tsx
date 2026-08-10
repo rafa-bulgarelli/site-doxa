@@ -1,6 +1,5 @@
 import { useMemo, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
-import { ChevronDown } from 'lucide-react';
 import { CanvasCard } from './hero/CanvasCard';
 import { ClientPhoto, ViralVideo } from './hero/MediaFrame';
 import { CASES } from './hero/cases';
@@ -13,15 +12,6 @@ import { MotionButton } from './ui/MotionButton';
 import { HREF_FORMS } from '../ancoras';
 import { useIsDesktop } from '../hooks/useIsDesktop';
 import { TOOLS } from './tools';
-// Bitmap wordmark — the only form the owner has. Card 002 wants this vectorised
-// and signed off before it counts as official; until then this is the asset.
-import wordmarkUrl from '../../brand/doxa-wordmark-white-96.avif';
-
-const NAV_ITEMS = [
-  { label: 'Produto', hasMenu: true },
-  { label: 'Como funciona', hasMenu: false },
-  { label: 'Empresa', hasMenu: true },
-];
 
 /**
  * The three platforms the guarantee counts together. Literal owner content —
@@ -70,7 +60,11 @@ export function Hero() {
     <section
       ref={sectionRef}
       data-secao="Início"
-      className="relative flex min-h-dvh flex-col overflow-hidden bg-doxa-bg"
+      /* O recuo de topo é o BURACO DO CABEÇALHO, que agora é `fixed` e saiu do
+         fluxo (ver `Cabecalho.tsx`). Sem ele, o canvas subiria por baixo do
+         logo. A conta é a de lá: 44 da pílula mais os recuos verticais — 20+20
+         no telefone, 28+28 do `md` para cima. Mexer numa exige mexer na outra. */
+      className="relative flex min-h-dvh flex-col overflow-hidden bg-doxa-bg pt-[5.25rem] md:pt-[6.25rem]"
     >
       <div className="dot-grid pointer-events-none absolute inset-0" />
       {/* Tracks the cursor across the whole hero, not just the canvas column. */}
@@ -100,52 +94,6 @@ export function Hero() {
           the last third of it. Ramping across the whole band was laying a haze
           over the middle of the fold, where the canvas and the logo row are. */}
       <div className="pointer-events-none absolute inset-x-0 bottom-0 hidden h-1/2 bg-gradient-to-b from-transparent from-70% to-black lg:block" />
-
-      <header className="relative z-30 flex items-center justify-between px-5 py-5 md:px-10 md:py-7">
-        <a href="#" className="shrink-0">
-          <img
-            src={wordmarkUrl}
-            alt="Doxa"
-            className="h-6 w-auto md:h-7"
-            width={364}
-            height={96}
-          />
-        </a>
-
-        <nav className="hidden items-center gap-8 md:flex">
-          {NAV_ITEMS.map(({ label, hasMenu }) => (
-            <a
-              key={label}
-              href="#"
-              className="flex items-center gap-1 text-sm text-white/80 transition-colors hover:text-white"
-            >
-              {label}
-              {hasMenu && <ChevronDown className="h-3.5 w-3.5 opacity-70" />}
-            </a>
-          ))}
-        </nav>
-
-        <div className="flex items-center gap-2 md:gap-3">
-          {/* As duas ações do topo vão para o MESMO lugar, e é de propósito:
-              "falar com a gente" e "quero viralizar" são a mesma intenção dita
-              em dois tons, e o site tem uma porta só. Elas apontavam para `#`
-              (rola zero pixel) e para `/empresas` (uma rota que não existe neste
-              app) — os dois botões da primeira dobra não levavam a lugar
-              nenhum. */}
-          <a
-            href={HREF_FORMS}
-            className="hidden rounded-full border border-white/[0.11] bg-white/[0.06] px-4 py-2 text-xs text-white backdrop-blur-md transition-colors hover:bg-white/[0.12] sm:block md:text-sm"
-          >
-            Falar com a gente
-          </a>
-          <a
-            href={HREF_FORMS}
-            className="rounded-full bg-white px-4 py-2 text-xs font-medium text-black transition-transform hover:scale-[1.03] md:px-5 md:text-sm"
-          >
-            Quero viralizar
-          </a>
-        </div>
-      </header>
 
       {/* Capped, not full-bleed: the nodes are positioned against this box, so
           without a ceiling they ride the viewport edge and the canvas pulls
