@@ -64,8 +64,10 @@ raciocínio). Detalhes e trade-off em `.claude/TOWER-ROLES.md`.
   Node >= 20) — **não é npm**. `pnpm typecheck` (`tsc -b`, projeto composto: `app`,
   `api`, `node`) · `pnpm test` (**vitest**, `vitest run`) · `pnpm build` · dev em
   `pnpm dev` (Vite, porta 5199 nos exemplos abaixo).
-- **Deploy:** **Vercel**, projeto `site-doxa` no time `rafa-bulgarellis-projects`
-  (`.vercel/project.json`). Produção em **`www.doxaviral.com`** — *doxaviral*, com **L**.
+- **Deploy:** **Vercel** atrás de **Cloudflare**, projeto `site-doxa` no time
+  `rafa-bulgarellis-projects` (`.vercel/project.json`). Produção em
+  **`www.doxaviral.com`** — *doxaviral*, com **L**. A resposta traz `server: cloudflare`
+  **e** `x-vercel-cache`: são duas camadas, e a de fora não está no repositório.
   As funções serverless vivem em `api/` (hoje só `api/lead.ts`); o `vercel.json` está
   comentado em `vercel.README.md`, porque o schema da Vercel recusa comentário no JSON.
   As env vars de produção são do tipo **Sensitive**: `vercel env pull` devolve o literal
@@ -116,6 +118,18 @@ raciocínio). Detalhes e trade-off em `.claude/TOWER-ROLES.md`.
     com `200` e `content-type: application/octet-stream`. Ou seja: **`curl` no domínio
     errado devolve 200** e engana quem está validando um deploy — confira o `<title>`, não
     o status. Ele foi tirado da conta da Vercel em 10/08/2026 justamente por isso.
+  - **O `robots.txt` servido NÃO é o `public/robots.txt`.** O Cloudflare prepende um
+    bloco "Cloudflare Managed content" ao arquivo do repositório: content signals
+    (`search=yes, ai-train=no, use=reference`) e `Disallow: /` para uma lista de
+    rastreadores de IA — Amazonbot, Applebot-Extended, Bytespider, CCBot, **ClaudeBot**,
+    Google-Extended, GPTBot, meta-externalagent. São 2955 bytes no ar contra 1119 no
+    repositório, e o arquivo local aparece **no fim**, depois da injeção. Quem editar
+    `public/robots.txt` e conferir com `curl` vai ver regras que não escreveu e achar
+    que enlouqueceu: `diff public/robots.txt <(curl -s .../robots.txt)` mostra a
+    fronteira. Googlebot e Bingbot **não** são bloqueados, então a busca comum passa —
+    o bloqueio é só dos rastreadores de treino/IA. Isso convive com o `llms.txt`, que
+    serve o agente que busca a pedido de uma pessoa, não o que raspa para treinar. Para
+    mudar a lista, é no painel do Cloudflare; não adianta mexer no repositório.
   - **`CONTA_DO_TIME` e o usuário no Supabase Auth são UM passo, nunca dois.** A constante
     em `src/leads/dados/supabase.ts` não é uma caixa de e-mail: é a chave primária do
     login do time. Se ela e o e-mail do usuário no Auth divergirem por uma letra, a
