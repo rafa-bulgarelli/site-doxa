@@ -1,5 +1,6 @@
 import { ImageOff, Pause, Play } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
+import { usarNaTela } from '../../hooks/usarNaTela';
 import { CASES } from './cases';
 
 interface CaseSwitcherProps {
@@ -31,6 +32,18 @@ export function CaseSwitcher({ activeIndex, onSelect }: CaseSwitcherProps) {
   const [paused, setPaused] = useState(false);
   const barRef = useRef<HTMLDivElement>(null);
   const elapsedRef = useRef(0);
+  const [caixa, setCaixa] = useState<HTMLDivElement | null>(null);
+  /*
+   * O relógio também para quando o deck sai da tela.
+   *
+   * Ele é um `requestAnimationFrame` que escreve `scaleX` na barra a cada
+   * quadro: medido no telefone, 476 mutações de estilo a cada cinco segundos,
+   * correndo enquanto o visitante preenchia o formulário oito mil pixels
+   * abaixo. É o mesmo contrato do botão de pausa — o tempo decorrido fica onde
+   * está e continua de onde parou —, e é por isso que o freio entra aqui, junto
+   * com `paused`, e não numa lógica à parte.
+   */
+  const naTela = usarNaTela(caixa);
 
   // Declared before the ticking effect so it runs first on an index change:
   // whichever case we just landed on gets the full hold, whether the deck
@@ -41,7 +54,7 @@ export function CaseSwitcher({ activeIndex, onSelect }: CaseSwitcherProps) {
   }, [activeIndex]);
 
   useEffect(() => {
-    if (paused) return;
+    if (paused || !naTela) return;
 
     let frame = 0;
     let previous = performance.now();
@@ -72,14 +85,14 @@ export function CaseSwitcher({ activeIndex, onSelect }: CaseSwitcherProps) {
 
     frame = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(frame);
-  }, [paused, activeIndex, onSelect]);
+  }, [paused, naTela, activeIndex, onSelect]);
 
   return (
     /* The deck sets the width and the controls stretch to it, so the timer is
        always exactly as wide as the row it belongs to — including while the
        deck is fanning out on hover, since the bar takes whatever the button
        leaves and the deck's margins are what animate. */
-    <div className="flex flex-col gap-2.5">
+    <div ref={setCaixa} className="flex flex-col gap-2.5">
       <div className="group flex w-fit items-center">
         {CASES.map((heroCase, index) => {
           const isActive = index === activeIndex;
