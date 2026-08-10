@@ -126,6 +126,40 @@ export default function App() {
    * fica ociosa, o navegador é obrigado a chamar assim mesmo.
    */
   useEffect(() => {
+    /**
+     * ─── QUEM PAGA A CONTA DECIDE ────────────────────────────────────────────
+     *
+     * O adiantamento acima assume uma rede com folga: cinco pedidos que não
+     * servem à tela atual, disparados de graça porque a banda estava sobrando.
+     * Num 3G ou num plano com economia de dados ligada, essa premissa se
+     * inverte — os cinco pedidos passam a disputar banda com o que a primeira
+     * dobra ainda está baixando, e o visitante paga em segundos de espera por
+     * uma seção que talvez nunca role até ver.
+     *
+     * `saveData` é o pedido explícito de quem ligou a economia no aparelho, e
+     * recusá-lo seria gastar dado alheio contra a vontade declarada. O
+     * `effectiveType` cobre a rede que está ruim sem ninguém ter pedido nada.
+     *
+     * Sem o adiantamento, cada seção volta a ser buscada quando a rolagem
+     * chega nela — mais lento no meio do caminho, e é exatamente a troca certa
+     * aqui: numa rede ruim, um atraso no meio da rolagem é melhor do que um
+     * atraso na primeira tela, que é a única que todo mundo vê.
+     *
+     * A API não existe no Safari, e `undefined` cai no caminho generoso de
+     * propósito: na dúvida, o comportamento é o de antes desta linha.
+     */
+    const rede = (
+      navigator as Navigator & {
+        connection?: { saveData?: boolean; effectiveType?: string };
+      }
+    ).connection;
+    const apertada =
+      rede?.saveData === true ||
+      rede?.effectiveType === 'slow-2g' ||
+      rede?.effectiveType === '2g' ||
+      rede?.effectiveType === '3g';
+    if (apertada) return;
+
     const puxar = () => {
       void import('./components/HowItWorks');
       void import('./components/ProofWall');
