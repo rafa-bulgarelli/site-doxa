@@ -122,5 +122,38 @@ export function usarTurnstile(ligado: boolean) {
     caixa.current = no;
   }, []);
 
-  return { ancorar, token, ativo: temTurnstile };
+  /*
+   * O token guardado num ref, além do estado.
+   *
+   * O estado desenha; o ref é lido por `esperarToken`, que roda dentro de uma
+   * promessa e não enxergaria o estado novo — ela nasceu com o valor de quando
+   * foi criada. É a diferença entre esperar de verdade e esperar por um valor
+   * que nunca muda.
+   */
+  const atual = useRef<string | null>(null);
+  atual.current = token;
+
+  /**
+   * Espera o token até `limite`, e desiste em silêncio.
+   *
+   * MEDIDO num navegador de verdade: a Cloudflare leva cerca de cinco segundos
+   * para resolver sozinha. O formulário tem nove passos e o script começa a
+   * carregar no segundo, então na prática o token já está pronto muito antes do
+   * envio — este espera existe para o caso raro de alguém atravessar o
+   * formulário depressa.
+   *
+   * Desistir é deliberado: um bloqueador de anúncio que impeça o script da
+   * Cloudflare não pode custar o lead de uma pessoa real. Quem chega sem token
+   * é julgado pelas outras camadas, com a régua mais dura — ver `/api/lead`.
+   */
+  const esperarToken = useCallback(async (limite = 6000): Promise<string | null> => {
+    if (!temTurnstile) return null;
+    const ate = Date.now() + limite;
+    while (atual.current == null && Date.now() < ate) {
+      await new Promise((r) => setTimeout(r, 150));
+    }
+    return atual.current;
+  }, []);
+
+  return { ancorar, token, esperarToken, ativo: temTurnstile };
 }

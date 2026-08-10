@@ -38,6 +38,8 @@ export const config = { runtime: 'edge' };
 import {
   JANELA_MINUTOS,
   LIMITE_POR_IP,
+  LIMITE_POR_IP_SEM_TOKEN,
+  TEMPO_MINIMO_SEM_TOKEN,
   julgarSemRede,
   type ProvaDeHumano,
 } from '../src/leads/antibot';
@@ -109,7 +111,7 @@ function pareceLead(corpo: unknown): corpo is LeadNovo {
 }
 
 /** Quantos envios este IP já fez na janela. Falhar aqui não barra ninguém. */
-async function passouDoLimite(impressao: string): Promise<boolean> {
+async function passouDoLimite(impressao: string, limite: number): Promise<boolean> {
   try {
     const desde = new Date(Date.now() - JANELA_MINUTOS * 60_000).toISOString();
     const resposta = await fetch(
@@ -126,7 +128,7 @@ async function passouDoLimite(impressao: string): Promise<boolean> {
     );
     const faixa = resposta.headers.get('content-range');
     const total = Number(faixa?.split('/')[1] ?? 0);
-    return Number.isFinite(total) && total >= LIMITE_POR_IP;
+    return Number.isFinite(total) && total >= limite;
   } catch {
     /* Sem a coluna `ip_hash`, ou sem permissão de leitura, esta conta não
        acontece — e a resposta certa é DEIXAR PASSAR. Um limite que barra
@@ -136,10 +138,21 @@ async function passouDoLimite(impressao: string): Promise<boolean> {
   }
 }
 
-/** Pergunta à Cloudflare se o token é de gente. Sem segredo, não pergunta. */
-async function turnstileAprova(token: string | null, ip: string | null): Promise<boolean> {
-  if (!TURNSTILE) return true;
-  if (!token) return false;
+/**
+ * Pergunta à Cloudflare se o token é de gente.
+ *
+ * Três respostas, e a do meio é a que importa:
+ *   'ok'      — token válido, ou a camada está desligada
+ *   'ausente' — não veio token: julgado pela régua dura, não recusado
+ *   'falso'   — veio um token e ele NÃO vale. Aí é recusa: token inválido não
+ *               acontece por acaso, é alguém tentando forjar ou reusar.
+ */
+async function turnstileJulga(
+  token: string | null,
+  ip: string | null,
+): Promise<'ok' | 'ausente' | 'falso'> {
+  if (!TURNSTILE) return 'ok';
+  if (!token) return 'ausente';
   try {
     const corpo = new FormData();
     corpo.append('secret', TURNSTILE);
@@ -150,12 +163,12 @@ async function turnstileAprova(token: string | null, ip: string | null): Promise
       body: corpo,
     });
     const dados = (await resposta.json()) as { success?: boolean };
-    return dados.success === true;
+    return dados.success === true ? 'ok' : 'falso';
   } catch {
-    // A Cloudflare fora do ar não pode derrubar o formulário. As três camadas
-    // baratas continuam valendo, e um lead a mais é melhor do que um lead a
-    // menos — a decisão oposta transformaria um problema deles num nosso.
-    return true;
+    // A Cloudflare fora do ar não pode derrubar o formulário. As outras camadas
+    // continuam valendo, e um lead a mais é melhor do que um lead a menos — a
+    // decisão oposta transformaria um problema deles num nosso.
+    return 'ok';
   }
 }
 
@@ -184,11 +197,23 @@ export default async function handler(pedido: Request): Promise<Response> {
     null;
   const impressao = await impressaoDoIp(pedido);
 
-  // 3 — a rajada.
-  if (impressao && (await passouDoLimite(impressao))) return recusa(429, 'limite por ip');
+  // 4 antes da 3, porque o veredito do captcha decide a régua da 3.
+  const captcha = await turnstileJulga(prova.token ?? null, ipCru);
+  if (captcha === 'falso') return recusa(403, 'turnstile recusou o token');
 
-  // 4 — o captcha, se ele existir.
-  if (!(await turnstileAprova(prova.token ?? null, ipCru))) return recusa(403, 'turnstile');
+  /*
+   * Sem token, a régua endurece em vez de fechar — ver `TEMPO_MINIMO_SEM_TOKEN`.
+   * Quem chega aqui sem token costuma ser gente com bloqueador de anúncio, e
+   * mandar essa pessoa embora custa mais do que engolir um spam.
+   */
+  const semToken = captcha === 'ausente';
+  if (semToken && prova.levou < TEMPO_MINIMO_SEM_TOKEN) {
+    return recusa(429, 'sem token e rapido demais');
+  }
+
+  // 3 — a rajada, com o limite que o veredito do captcha determinou.
+  const limite = semToken ? LIMITE_POR_IP_SEM_TOKEN : LIMITE_POR_IP;
+  if (impressao && (await passouDoLimite(impressao, limite))) return recusa(429, 'limite por ip');
 
   /**
    * Insere, e sobrevive a um banco que ainda não tem a coluna `ip_hash`.

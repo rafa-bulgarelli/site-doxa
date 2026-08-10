@@ -44,6 +44,27 @@ export const TEMPO_MINIMO = 8000;
 export const LIMITE_POR_IP = 5;
 export const JANELA_MINUTOS = 10;
 
+/**
+ * ─── A RÉGUA DURA, para quem chega SEM token ─────────────────────────────────
+ *
+ * Quem não traz token do Turnstile é uma de três coisas: um robô que pulou o
+ * navegador, alguém com bloqueador de anúncio que matou o script da Cloudflare,
+ * ou a própria Cloudflare fora do ar.
+ *
+ * Recusar os três é o caminho fácil e o errado: o segundo é uma pessoa de
+ * verdade, com dinheiro para investir, sendo mandada embora por causa de uma
+ * extensão do navegador dela. Perder esse lead custa mais do que engolir um
+ * spam.
+ *
+ * Então sem token o lead não é recusado — ele passa por uma régua mais dura:
+ * três vezes mais tempo de preenchimento e um terço do limite de rajada. Um
+ * robô que pule o captcha precisa também fingir vinte e cinco segundos de
+ * leitura e não repetir do mesmo endereço. O humano com bloqueador passa sem
+ * perceber que houve régua nenhuma.
+ */
+export const TEMPO_MINIMO_SEM_TOKEN = 25_000;
+export const LIMITE_POR_IP_SEM_TOKEN = 2;
+
 /** O que o navegador manda junto com o lead, para o endpoint julgar. */
 export interface ProvaDeHumano {
   /** O conteúdo do campo-armadilha. Vazio é o esperado. */
