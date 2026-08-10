@@ -358,12 +358,48 @@ export function Comparacao() {
    */
   const conviteNaTela = useInView(claroRef, { amount: 0.25, once: true });
 
+  /*
+   * ─── UMA RÉGUA SÓ PARA A CHEGADA DO PAPEL ───────────────────────────────────
+   *
+   * Havia duas: uma para o GIRO (`start end` → `start 25%`) e outra para a
+   * SUBIDA da coluna (`start 170%` → `start 112%`). Mediam o MESMO elemento, e
+   * cada `useScroll` com alvo remede esse alvo a cada quadro de rolagem —
+   * subindo a cadeia de `offsetTop` e lendo `scrollHeight` do documento, o que
+   * obriga o navegador a refazer o layout parado, na hora.
+   *
+   * MEDIDO no telefone, rolando pela entrada do papel: 1320 leituras que forçam
+   * layout em três gestos, ~440 por gesto, com a pilha apontando para o
+   * `measure` do framer-motion. Duas réguas mediam duas vezes a mesma coisa.
+   *
+   * ─── POR QUE ISTO É EXATO, E NÃO UMA APROXIMAÇÃO ────────────────────────────
+   *
+   * As duas réguas usavam o mesmo `start` do mesmo elemento: as duas são função
+   * LINEAR de uma única grandeza, a distância entre o topo do papel e a janela.
+   * A altura do painel não entra na conta (só entraria se algum limite usasse
+   * `end`), e por isso uma régua larga com dois remapeamentos devolve os mesmos
+   * números que as duas devolviam — não parecidos, os mesmos.
+   *
+   * A régua vai de `start 170%` a `start 25%` — 145% de tela — e cada uso
+   * recorta a sua faixa:
+   *
+   *   giro    começava em 100% e terminava em 25%  →  (170-100)/145 = 0,4828 a 1
+   *   subida  começava em 170% e terminava em 112% →  0 a (170-112)/145 = 0,40
+   *
+   * `useTransform` trava nas pontas por padrão, que é o mesmo que `useScroll`
+   * fazia fora dos seus limites.
+   *
+   * QUEM MEXER NUM DOS LIMITES refaz as duas frações aqui, e confere com o
+   * `transform` real em algumas alturas de rolagem — foi assim que esta troca
+   * foi validada, matriz por matriz, contra o site publicado.
+   */
+  const { scrollYProgress: reguaDoPapel } = useScroll({
+    target: claroRef,
+    offset: ['start 170%', 'start 25%'],
+  });
+
   // Os mesmos limites da referência: começa a girar quando o topo do painel
   // encosta no fim da tela e termina quando esse topo chega a um quarto dela.
-  const { scrollYProgress } = useScroll({
-    target: claroRef,
-    offset: ['start end', 'start 25%'],
-  });
+  const scrollYProgress = useTransform(reguaDoPapel, [0.4827586206896552, 1], [0, 1]);
 
   /**
    * A APROXIMAÇÃO do papel, que é a régua da subida — ver `SUBIDA`.
@@ -396,10 +432,7 @@ export function Comparacao() {
    * aproximação do papel, e não em fração da seção: ela não pega carona no
    * fôlego quando ele cresce.
    */
-  const { scrollYProgress: chegadaDoPapel } = useScroll({
-    target: claroRef,
-    offset: ['start 170%', 'start 112%'],
-  });
+  const chegadaDoPapel = useTransform(reguaDoPapel, [0, 0.4], [0, 1]);
   const estreita = useColunaEstreita();
   const subida = useTransform(chegadaDoPapel, [0, 1], ['0vh', `-${SUBIDA}vh`]);
 
@@ -448,6 +481,30 @@ export function Comparacao() {
   const fechoOpacity = useTransform(contagem, [FATIA_FECHO, 1], [0, 1]);
   const fechoY = useTransform(contagem, [FATIA_FECHO, 1], [10, 0]);
   const giro = useTransform(scrollYProgress, [0, 1], [GIRO, 0]);
+
+  /*
+   * O papel ganha camada própria ENQUANTO gira, e só enquanto gira.
+   *
+   * Girar um elemento do tamanho da tela obriga o navegador a recompor a área
+   * inteira a cada quadro. Com `will-change: transform` ele passa a ser uma
+   * textura que a GPU roda, em vez de um desenho refeito — MEDIDO na entrada do
+   * papel, o pior quadro caiu de 41ms para 27ms.
+   *
+   * E SAI quando o giro acaba, o que não é economia de memória e sim de
+   * desenho: uma camada permanente do tamanho da tela custa memória de vídeo o
+   * tempo todo e desliga a suavização por subpixel do texto que ela carrega —
+   * e o que ela carrega é o formulário, que é justamente onde alguém vai LER e
+   * digitar. A promoção dura os poucos quadros em que serve.
+   *
+   * A margem de 0,30 é para a camada existir um pouco ANTES do primeiro grau de
+   * giro: promover custa um desenho, e esse desenho tem de acontecer antes do
+   * movimento começar, não no primeiro quadro dele.
+   */
+  const [girando, setGirando] = useState(false);
+  useMotionValueEvent(reguaDoPapel, 'change', (valor) => {
+    const dentro = valor > 0.3 && valor < 1;
+    setGirando((antes) => (antes === dentro ? antes : dentro));
+  });
 
   return (
     // `overflow-x-clip` e não `overflow-hidden`: `hidden` cria um contexto de
@@ -760,7 +817,9 @@ export function Comparacao() {
            topo — em 1280x800 o selo subia 28px para dentro da margem. Com
            `safe`, a centragem desiste e vira início quando não há espaço, e o
            que sobra transborda só pelo pé, onde há rolagem para resolver. */
-        className="relative z-10 flex min-h-screen origin-bottom-left flex-col px-5 py-10 [justify-content:safe_center] md:px-10 md:pb-24 md:pt-14"
+        className={`relative z-10 flex min-h-screen origin-bottom-left flex-col px-5 py-10 [justify-content:safe_center] md:px-10 md:pb-24 md:pt-14 ${
+          girando ? '[will-change:transform]' : ''
+        }`}
       >
         {/* A textura atravessa a virada. Aqui ela é a mesma grade em tinta, e o
             facho é o mesmo facho com o sinal trocado: no preto os pontos

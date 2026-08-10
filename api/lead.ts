@@ -104,6 +104,7 @@ function pareceLead(corpo: unknown): corpo is LeadNovo {
     texto(l.arroba, 80) &&
     texto(l.investimento, 60) &&
     texto(l.segmento, 200) &&
+    texto(l.objetivo, 200) &&
     texto(l.faturamento, 60) &&
     texto(l.origem, 60) &&
     (l.trava == null || (Array.isArray(l.trava) && l.trava.length <= 12))
@@ -241,17 +242,22 @@ export default async function handler(pedido: Request): Promise<Response> {
   if (impressao && (await passouDoLimite(impressao, limite))) return recusa(429, 'limite por ip');
 
   /**
-   * Insere, e sobrevive a um banco que ainda não tem a coluna `ip_hash`.
+   * Insere, e sobrevive a um banco que ainda não tem as colunas mais novas.
    *
    * O endpoint NÃO pode depender de uma migração para funcionar: se ele subir
    * antes de o `alter table` ser rodado — e essa é exatamente a ordem segura,
    * porque o contrário derruba o formulário —, o PostgREST recusa a linha
-   * inteira por causa de uma coluna que só serve ao limite de rajada.
+   * INTEIRA por causa de uma coluna que ele não conhece.
    *
-   * Então tenta com, e se o erro for esse, tenta sem. O lead entra do mesmo
-   * jeito; o que se perde até a migração é só o limite por IP, que é a mais
-   * dispensável das quatro camadas.
+   * Então tenta com tudo, e vai tirando a coluna que o banco citar, uma por vez,
+   * até a linha entrar. O lead nunca se perde por causa de uma migração
+   * atrasada: o que se perde é o campo, e só até o `alter table` rodar.
+   *
+   * A lista é só das colunas DISPENSÁVEIS. Nome e WhatsApp não estão aqui — se
+   * o banco recusar um deles, é defeito de verdade e tem de aparecer como erro,
+   * não virar um lead pela metade gravado em silêncio.
    */
+  const DISPENSAVEIS = ['ip_hash', 'objetivo'] as const;
   const inserir = (corpoDoLead: unknown) =>
     fetch(`${URL_BASE}/rest/v1/leads`, {
       method: 'POST',
@@ -265,24 +271,22 @@ export default async function handler(pedido: Request): Promise<Response> {
     });
 
   const lead = corpo.lead as LeadNovo;
-  let resposta = await inserir({ ...lead, ip_hash: impressao });
+  const paraGravar: Record<string, unknown> = { ...lead, ip_hash: impressao };
+  let resposta = await inserir(paraGravar);
 
-  if (!resposta.ok) {
+  while (!resposta.ok) {
     /* O corpo do erro do PostgREST cita nome de coluna e constraint — mapa do
        banco para quem estiver sondando. Nunca volta para quem chamou. */
     const texto = await resposta.text();
-    if (texto.includes('ip_hash')) {
-      console.warn('sem a coluna ip_hash — rode o alter table de supabase/schema.sql');
-      resposta = await inserir(lead);
-    } else {
+    const culpada = DISPENSAVEIS.find((c) => c in paraGravar && texto.includes(c));
+    if (culpada == null) {
       console.error('falha ao gravar lead', resposta.status, texto);
       return recusa(502, 'banco recusou');
     }
-  }
-
-  if (!resposta.ok) {
-    console.error('falha ao gravar lead', resposta.status, await resposta.text());
-    return recusa(502, 'banco recusou');
+    console.warn(`sem a coluna ${culpada} — rode o alter table de supabase/schema.sql`);
+    delete paraGravar[culpada];
+    // Termina sempre: cada volta apaga uma chave de uma lista finita.
+    resposta = await inserir(paraGravar);
   }
 
   return new Response(JSON.stringify({ ok: true }), {

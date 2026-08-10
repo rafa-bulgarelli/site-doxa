@@ -79,6 +79,10 @@ const SEGMENTOS = [
   'Advocacia', 'Saúde e estética', 'Imóveis', 'Educação e cursos',
   'Alimentação', 'Varejo e e-commerce', 'Serviços para empresas',
 ];
+const OBJETIVOS = [
+  'Vender mais', 'Gerar leads para o time comercial', 'Virar autoridade no meu nicho',
+  'Fazer a marca ser conhecida', 'Lançar um produto ou serviço',
+];
 const FATURAMENTOS = [
   'Até R$ 50 mil', 'R$ 50 a 200 mil', 'R$ 200 a 500 mil', 'R$ 500 mil a R$ 1 milhão',
   'R$ 1 a 3 milhões', 'R$ 3 a 5 milhões', 'Mais de R$ 5 milhões',
@@ -130,6 +134,11 @@ function inventar(i: number): Lead {
     desqualificado,
     origem: i % 6 === 1 ? 'Campanha Meta' : 'Formulário do site',
     segmento: semFicha ? null : pega(SEGMENTOS, i * 2),
+    /* Um a cada nove vem SEM objetivo mesmo tendo ficha: é o retrato do banco
+       de verdade, onde todo lead anterior a esta pergunta tem `null` aqui. É
+       com esses que se confere se a régua lê o que sobrou em vez de descontar
+       pontos por uma pergunta que ninguém teve como responder. */
+    objetivo: semFicha || i % 9 === 4 ? null : pega(OBJETIVOS, i * 13),
     faturamento: semFicha ? null : pega(FATURAMENTOS, i * 11),
     trava: semFicha ? null : TRAVAS.filter((_, t) => semente(i * 17 + t) > 0.55),
   };

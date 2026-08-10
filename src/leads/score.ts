@@ -48,7 +48,7 @@ export const ROTULO: Record<Eixo, string> = {
  * vez de só exibi-lo. Um score que ninguém sabe de onde veio não é usado.
  */
 export const EXPLICACAO: Record<Eixo, string> = {
-  fit: 'O quanto o nicho vive de vídeo curto.',
+  fit: 'O quanto o nicho vive de vídeo curto, cruzado com o objetivo declarado.',
   dor: 'O tamanho e o tipo do que trava a empresa hoje.',
   verba: 'O budget mensal declarado — o faturamento entra só se ele faltar.',
   escala: 'O tamanho da operação, pela faixa de faturamento.',
@@ -135,6 +135,26 @@ const TRAVA: Record<string, number> = {
   'Não gosto de aparecer': 5,
 };
 
+/**
+ * Objetivo → fit.
+ *
+ * O quanto vídeo curto entrega DIRETO o que a pessoa pediu. Vender e gerar lead
+ * são o que este produto faz por construção; "fazer a marca ser conhecida" é
+ * verdade e é mais lento, e por isso vale menos numa régua que existe para
+ * ordenar uma fila de ligações.
+ *
+ * "Outro" — e todo texto livre — não está aqui, e cai no `undefined`: uma
+ * resposta que ninguém previu não pode ser pontuada por chute, e a régua
+ * simplesmente lê o que sobrou.
+ */
+const OBJETIVO: Record<string, number> = {
+  'Vender mais': 10,
+  'Gerar leads para o time comercial': 10,
+  'Virar autoridade no meu nicho': 9,
+  'Lançar um produto ou serviço': 8,
+  'Fazer a marca ser conhecida': 7,
+};
+
 const limita = (n: number) => Math.max(0, Math.min(10, Math.round(n)));
 
 /** Os seis eixos de um lead, cada um de 0 a 10. */
@@ -176,8 +196,30 @@ export function eixosDo(lead: LeadNovo): Record<Eixo, number> {
    * que a ficha sabe sobre presença digital é se existe um perfil para o
    * consultor abrir antes da conversa. Existe ou não existe.
    */
+  /*
+   * ─── FIT LÊ AS DUAS FONTES, E A MÉDIA É SÓ DAS QUE EXISTEM ─────────────────
+   *
+   * Nicho e objetivo dizem a mesma coisa por dois lados: um é o mercado em que
+   * a pessoa está, o outro é o que ela quer que o vídeo faça ali. Advocacia
+   * querendo autoridade e advocacia querendo vender não são o mesmo lead.
+   *
+   * A média é das fontes PRESENTES, e é isso que impede a pergunta nova de
+   * rebaixar quem chegou antes dela. Um lead antigo não tem objetivo: ele
+   * continua sendo lido só pelo nicho, exatamente como era. Somar zero pela
+   * ausência seria cortar pela metade o score de todo mundo que já está no
+   * banco, sem que nada tivesse piorado — foi o erro que este comentário já
+   * evitou uma vez, quando duas perguntas SAÍRAM do formulário.
+   */
+  const fontesDeFit = [
+    seg?.fit,
+    lead.objetivo != null ? OBJETIVO[lead.objetivo] : undefined,
+  ].filter((n): n is number => n != null);
+  const fit = fontesDeFit.length === 0
+    ? 0
+    : fontesDeFit.reduce((soma, n) => soma + n, 0) / fontesDeFit.length;
+
   return {
-    fit: limita(seg?.fit ?? 0),
+    fit: limita(fit),
     dor: limita(dor),
     verba: limita(verba ?? 0),
     escala: limita(fat?.escala ?? 0),

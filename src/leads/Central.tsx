@@ -28,7 +28,25 @@ import { Chip, Contador, Estrelas, Presenca, quandoFoi } from './central/pecas';
 function Linha({ lead, aoAbrir }: { lead: Lead; aoAbrir: () => void }) {
   const { estrelas } = scoreDo(lead);
   return (
-    <tr className="border-t border-white/[0.06] transition-colors hover:bg-white/[0.02]">
+    /*
+     * A LINHA INTEIRA abre o lead, a pedido do dono.
+     *
+     * Mirar num botão de oitenta pixels no fim de uma linha de novecentos é o
+     * gesto mais caro de uma tabela, e a linha toda já era o alvo que a mão
+     * procurava — o `hover` acendendo a linha inteira prometia isso e só o botão
+     * cumpria.
+     *
+     * O botão FICA. Ele não é redundância: é o que um leitor de tela anuncia e o
+     * que o teclado alcança com `Tab`. Uma `tr` com `onClick` é invisível para os
+     * dois — e `role="button"` numa linha de tabela custaria a semântica da
+     * tabela para devolver um foco que o botão já dá de graça.
+     *
+     * `cursor-pointer` porque a mão precisa saber ANTES de clicar; sem ele, a
+     * linha só revela que é clicável depois que já foi clicada.
+     */
+    <tr
+      onClick={aoAbrir}
+      className="cursor-pointer border-t border-white/[0.06] transition-colors hover:bg-white/[0.02]">
       <td className="max-w-[220px] px-4 py-4">
         <p className="truncate text-[15px] text-white" title={lead.nome}>
           {lead.nome}
@@ -57,7 +75,12 @@ function Linha({ lead, aoAbrir }: { lead: Lead; aoAbrir: () => void }) {
       <td className="px-4 py-4 text-right">
         <button
           type="button"
-          onClick={aoAbrir}
+          /* O clique não sobe para a `tr`: sem isto o mesmo gesto abre o
+             diálogo duas vezes — uma pelo botão, outra pela linha. */
+          onClick={(evento) => {
+            evento.stopPropagation();
+            aoAbrir();
+          }}
           className="rounded-full border border-white/[0.14] px-4 py-2 text-[13px] text-white/85 transition-colors hover:bg-white/[0.08] hover:text-white"
         >
           Visualizar

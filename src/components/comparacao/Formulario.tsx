@@ -603,6 +603,7 @@ export function Formulario({
          outras, uma lista de um item seria uma armadilha para quem for ler
          depois — e um `[]` que significa "não respondeu" é pior ainda. */
       segmento: uma(ficha.segmento),
+      objetivo: uma(ficha.objetivo),
       faturamento: uma(ficha.faturamento),
       trava: ficha.trava.length > 0 ? ficha.trava : null,
     };

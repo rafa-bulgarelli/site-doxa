@@ -28,6 +28,15 @@ export type Caminho = 'empresa' | 'agencia';
  */
 export interface Ficha {
   segmento: string | null;
+  /**
+   * Para onde a pessoa quer que os vídeos levem.
+   *
+   * Anulável como as outras, e por um motivo a mais: ela entrou no formulário
+   * depois de o banco já ter leads. Todo lead anterior a ela tem `null` aqui, e
+   * a régua trata isso lendo o que sobrou em vez de descontar pontos por uma
+   * pergunta que ninguém teve a chance de responder — ver `score.ts`.
+   */
+  objetivo: string | null;
   faturamento: string | null;
   trava: string[] | null;
 }
@@ -83,6 +92,7 @@ export interface Lead extends LeadNovo {
 /** O molde vazio, para o formulário começar de algum lugar. */
 export const LEAD_VAZIO: Ficha = {
   segmento: null,
+  objetivo: null,
   faturamento: null,
   trava: null,
 };

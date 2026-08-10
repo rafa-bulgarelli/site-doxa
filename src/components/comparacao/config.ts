@@ -311,7 +311,7 @@ export interface PerguntaFicha {
    * e cada pergunta no meio do funil custa gente que desiste. As duas voltam a
    * ser feitas pelo consultor, na ligação, onde elas valem mais.
    */
-  chave: 'segmento' | 'faturamento' | 'trava';
+  chave: 'segmento' | 'objetivo' | 'faturamento' | 'trava';
   /** O rótulo curto da resposta guardada. */
   rotulo: string;
   pergunta: string;
@@ -376,6 +376,37 @@ export const FICHA: readonly PerguntaFicha[] = [
       OUTRO,
     ],
     livre: 'Qual é o nicho da sua empresa',
+  },
+  {
+    chave: 'objetivo',
+    rotulo: 'Objetivo',
+    pergunta: 'Qual o seu objetivo com nossos vídeos?',
+    dica: 'É o que decide o roteiro. Uma resposta só.',
+    /*
+     * Objetivos de NEGÓCIO, e não de vaidade.
+     *
+     * Nenhuma opção fala em views, seguidor ou alcance — a página inteira
+     * promete um milhão de views, e repetir isso aqui devolveria como pergunta
+     * o que já foi dado como garantia. O que o consultor não sabe é para ONDE a
+     * pessoa quer que essas views vão, e é isso que muda o roteiro: quem quer
+     * vender pede prova e oferta; quem quer autoridade pede opinião e rosto.
+     *
+     * Uma só, e não múltipla como a trava: perguntar "o objetivo" e aceitar
+     * quatro devolve uma lista de desejos em vez de uma prioridade — e é a
+     * prioridade que o roteirista precisa para escolher o que fica de fora.
+     *
+     * PENDENTE-DONO: a lista é minha, tirada do que a página promete. Ele vai
+     * saber a certa depois de cinquenta leads, e `OUTRO` é a válvula até lá.
+     */
+    opcoes: [
+      'Vender mais',
+      'Gerar leads para o time comercial',
+      'Virar autoridade no meu nicho',
+      'Fazer a marca ser conhecida',
+      'Lançar um produto ou serviço',
+      OUTRO,
+    ],
+    livre: 'Qual é o seu objetivo',
   },
   {
     chave: 'faturamento',
