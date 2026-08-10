@@ -66,8 +66,18 @@
 
     <!-- A foto do primeiro case do hero: é ela que o navegador mede como maior
          elemento da dobra, e sem isto ele só a descobre depois de baixar,
-         parsear e executar o JS que a monta. -->
-    <link rel="preload" as="image" type="image/avif" href="/media/magalu-foto.avif"
+         parsear e executar o JS que a monta.
+
+         O `imagesrcset` tem de repetir o `srcSet` do `ClientPhoto` LETRA POR
+         LETRA. Um preload que não bate com o que o componente pede não acelera
+         nada: o navegador busca o arquivo daqui, o React monta a imagem
+         pedindo outro, e o telefone baixa OS DOIS — o preload deixa de ser
+         adiantamento e vira peso extra em cima do LCP que ele existe para
+         proteger. Mexeu num, mexe no outro; ver `midSrc` em `MediaFrame`. -->
+    <link rel="preload" as="image" type="image/avif"
+      imagesrcset="/media/magalu-foto-480.avif 480w, /media/magalu-foto.avif 888w"
+      imagesizes="(min-width: 768px) 21vw, 150px"
+      href="/media/magalu-foto.avif"
       fetchpriority="high" />
   </head>
   <body>

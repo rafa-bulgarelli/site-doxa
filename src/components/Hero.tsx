@@ -15,7 +15,7 @@ import { useIsDesktop } from '../hooks/useIsDesktop';
 import { TOOLS } from './tools';
 // Bitmap wordmark — the only form the owner has. Card 002 wants this vectorised
 // and signed off before it counts as official; until then this is the asset.
-import wordmarkUrl from '../../brand/doxa-wordmark-white.png';
+import wordmarkUrl from '../../brand/doxa-wordmark-white-96.avif';
 
 const NAV_ITEMS = [
   { label: 'Produto', hasMenu: true },
@@ -107,8 +107,8 @@ export function Hero() {
             src={wordmarkUrl}
             alt="Doxa"
             className="h-6 w-auto md:h-7"
-            width={657}
-            height={173}
+            width={364}
+            height={96}
           />
         </a>
 
@@ -183,7 +183,11 @@ export function Hero() {
                 draggable
                 dragConstraints={canvasRef}
               >
-                <ClientPhoto ratio="aspect-square" src={activeCase.photoUrl} />
+                <ClientPhoto
+                  ratio="aspect-square"
+                  src={activeCase.photoUrl}
+                  midSrc={activeCase.photoMidUrl}
+                />
               </CanvasCard>
             </div>
 
@@ -328,7 +332,11 @@ export function Hero() {
                         driftDelay={0}
                         bodyRef={photoRef}
                       >
-                        <ClientPhoto ratio="aspect-square" src={activeCase.photoUrl} />
+                        <ClientPhoto
+                          ratio="aspect-square"
+                          src={activeCase.photoUrl}
+                          midSrc={activeCase.photoMidUrl}
+                        />
                       </CanvasCard>
                     </div>
 

@@ -10,7 +10,7 @@ import {
   useScroll,
   useTransform,
 } from 'framer-motion';
-import wordmarkUrl from '../../brand/doxa-wordmark-white.png';
+import wordmarkUrl from '../../brand/doxa-wordmark-white-96.avif';
 import { ANCORA_FORMS } from '../ancoras';
 import { MANCHETE, TITULO_SECAO } from '../tipografia';
 import { DotGridSpotlight } from './hero/DotGridSpotlight';

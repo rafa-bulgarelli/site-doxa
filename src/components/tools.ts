@@ -16,7 +16,7 @@ export interface Tool {
 
 /** The stack behind the pipeline, in the order the owner listed it. */
 export const TOOLS: readonly Tool[] = [
-  { name: 'HeyGen', logoUrl: '/logos/heygen.png' },
+  { name: 'HeyGen', logoUrl: '/logos/heygen.avif' },
   { name: 'ChatGPT', logoUrl: '/logos/openai.svg' },
   { name: 'Claude', logoUrl: '/logos/claude.svg' },
   { name: 'Meta', logoUrl: '/logos/meta.svg' },

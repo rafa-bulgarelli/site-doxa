@@ -123,12 +123,18 @@ export function CaseSwitcher({ activeIndex, onSelect }: CaseSwitcherProps) {
                   : 'h-12 w-12 border-white/20 opacity-60 hover:opacity-90'
               } ${index === 0 ? '' : 'ml-2 lg:-ml-6 lg:group-hover:ml-2'}`}
             >
-              {heroCase.photoUrl ? (
+              {/* A MINIATURA, e não `photoUrl`: este quadrado tem 48 ou 56
+                  pixels, e a foto original tem 652. Ver `photoThumbUrl` em
+                  `cases.ts` — a troca vale 130 KB no telefone. */}
+              {heroCase.photoThumbUrl ? (
                 <img
-                  src={heroCase.photoUrl}
+                  src={heroCase.photoThumbUrl}
                   alt=""
                   className="pointer-events-none h-full w-full select-none object-cover"
                   draggable={false}
+                  width={168}
+                  height={286}
+                  decoding="async"
                 />
               ) : (
                 <span className="flex h-full w-full items-center justify-center bg-doxa-raised">

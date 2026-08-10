@@ -1,6 +1,6 @@
 import { useRef } from 'react';
 import { motion, useInView, useReducedMotion } from 'framer-motion';
-import wordmarkUrl from '../../brand/doxa-wordmark-white.png';
+import wordmarkUrl from '../../brand/doxa-wordmark-white-96.avif';
 import { useIsDesktop } from '../hooks/useIsDesktop';
 import { ArrastoInfinito } from './rodape/ArrastoInfinito';
 import { Peca, usePalco } from './rodape/Peca';
@@ -428,8 +428,8 @@ export function Rodape() {
               src={wordmarkUrl}
               alt="Doxa"
               className="h-[min(5vw,1.25rem)] w-auto shrink-0 sm:h-5 md:h-6"
-              width={657}
-              height={173}
+              width={364}
+              height={96}
             />
 
             <nav className="flex flex-nowrap items-center gap-x-[min(3.5vw,1.75rem)] sm:gap-x-7">
