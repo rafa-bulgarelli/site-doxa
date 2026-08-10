@@ -10,7 +10,7 @@
 -- que qualquer visitante baixa, e num site estático não existe onde escondê-la.
 -- Então ela não pode poder LER.
 --
---   INSERT  →  anônimo      (o formulário do site grava)
+--   INSERT  →  NINGUÉM      (só o endpoint, que usa a chave de servidor)
 --   SELECT  →  autenticado  (a Central lê)
 --   UPDATE  →  autenticado  (marcar como baixado)
 --   DELETE  →  ninguém      (nem o time; lead não se apaga por engano)
@@ -75,12 +75,23 @@ create index if not exists leads_ip_hash_idx on public.leads (ip_hash, criado_em
 -- tudo para quem tiver qualquer chave.
 alter table public.leads enable row level security;
 
--- O formulário do site grava, e só isso.
-drop policy if exists "anonimo grava" on public.leads;
-create policy "anonimo grava"
-  on public.leads for insert
-  to anon
-  with check (true);
+-- ── NENHUMA POLÍTICA DE INSERT. Não é esquecimento.
+--
+-- Existiu uma, `"anonimo grava"`, enquanto o formulário falava direto com o
+-- PostgREST. Ela foi derrubada em 09/08/2026, quando o `/api/lead` entrou no ar
+-- e as quatro camadas foram provadas em produção. O endpoint grava com a
+-- `service_role`, que ignora RLS — e é por isso que ele não precisa de política.
+--
+-- RECRIAR ESTA POLÍTICA REABRE A PORTA e anula o anti-bot inteiro: a chave
+-- pública está dentro do bundle que qualquer visitante baixa, e com um INSERT
+-- liberado ela é um endpoint de escrita aberto ao mundo, sem armadilha, sem
+-- tempo mínimo, sem limite por IP e sem Turnstile. Este arquivo é idempotente
+-- de propósito, e a linha de `drop` foi retirada junto com a de `create`
+-- justamente para que rodá-lo de novo NÃO desfaça o fechamento.
+--
+-- PROVADO no dia em que fechou: um POST direto no PostgREST com a chave pública
+-- devolve 401 `new row violates row-level security policy`, e o mesmo lead pelo
+-- `/api/lead` devolve 201.
 
 -- O time lê tudo. Uma conta só, compartilhada — ver `CONTA_DO_TIME` no código.
 drop policy if exists "time le" on public.leads;
@@ -110,16 +121,13 @@ create policy "time marca"
 --   create index if not exists leads_ip_hash_idx on public.leads (ip_hash, criado_em desc);
 --
 -- ─────────────────────────────────────────────────────────────────────────────
--- E QUANDO O ENDPOINT `/api/lead` ESTIVER NO AR E CONFERIDO, a porta fecha:
+-- A PORTA JÁ ESTÁ FECHADA (09/08/2026). Se um dia alguém precisar conferir:
 --
---   drop policy if exists "anonimo grava" on public.leads;
+--   select policyname, roles, cmd from pg_policies where tablename = 'leads';
 --
--- A partir daí NÃO EXISTE caminho de escrita fora do endpoint — a chave pública
--- do bundle deixa de poder inserir, e o formulário passa obrigatoriamente pelo
--- julgamento da armadilha, do tempo, do limite por IP e do Turnstile.
---
--- A ORDEM IMPORTA: rodar esta linha ANTES de o endpoint estar no ar derruba o
--- formulário do site, e o lead de quem tentar nesse intervalo se perde.
+-- Tem de devolver DUAS linhas, ambas para `authenticated`: `time le` (select) e
+-- `time marca` (update). Qualquer linha com `anon` significa que a porta foi
+-- reaberta por engano.
 --
 -- ─────────────────────────────────────────────────────────────────────────────
 -- DEPOIS DE RODAR ISTO, FALTAM DOIS PASSOS NO PAINEL DO SUPABASE:
