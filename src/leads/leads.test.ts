@@ -10,6 +10,7 @@
  */
 import { describe, expect, it } from 'vitest';
 import { derivar, simplificar } from './filtrar';
+import { TEMPO_MINIMO, julgarSemRede } from './antibot';
 import { montarCsv } from './csv';
 import { eixosDo, estrelasDe, pontosDe, scoreDo } from './score';
 import { CORTE, FICHA, INVESTIMENTO } from '../components/comparacao/config';
@@ -238,5 +239,32 @@ describe('csv', () => {
     const colunas = texto.split('\n')[0].split(',');
     expect(colunas).toContain('Score');
     expect(colunas).toContain('Estrelas');
+  });
+});
+
+describe('anti-bot', () => {
+  const humano = { armadilha: '', levou: TEMPO_MINIMO + 5000, token: null };
+
+  it('deixa passar quem levou tempo e não tocou na armadilha', () => {
+    expect(julgarSemRede(humano)).toEqual({ ok: true });
+  });
+
+  it('barra quem preencheu o campo escondido', () => {
+    expect(julgarSemRede({ ...humano, armadilha: 'x' }).ok).toBe(false);
+    // Espaço em branco não é preenchimento: um autofill desastrado que deixa um
+    // espaço no campo não pode custar o lead de uma pessoa real.
+    expect(julgarSemRede({ ...humano, armadilha: '   ' }).ok).toBe(true);
+  });
+
+  it('barra quem respondeu nove perguntas rápido demais', () => {
+    expect(julgarSemRede({ ...humano, levou: 200 }).ok).toBe(false);
+    expect(julgarSemRede({ ...humano, levou: TEMPO_MINIMO - 1 }).ok).toBe(false);
+    expect(julgarSemRede({ ...humano, levou: TEMPO_MINIMO }).ok).toBe(true);
+  });
+
+  it('barra tempo impossível — sem número, negativo ou infinito', () => {
+    for (const levou of [NaN, -1, Infinity, undefined as unknown as number]) {
+      expect(julgarSemRede({ ...humano, levou }).ok, `passou com ${levou}`).toBe(false);
+    }
   });
 });

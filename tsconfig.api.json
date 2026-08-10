@@ -1,0 +1,27 @@
+{
+  /*
+   * O endpoint tem projeto próprio de TypeScript.
+   *
+   * Ele não é código de navegador nem de build: roda no runtime de borda da
+   * Vercel, onde existem `Request`, `Response`, `crypto.subtle` e `process.env`
+   * — e não existe `document`. Deixá-lo no projeto do `src` o faria compilar
+   * contra as tipagens de DOM completas e aceitar, sem reclamar, uma linha que
+   * quebra em produção.
+   */
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["ES2022", "DOM"],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "types": ["node"],
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "noEmit": true,
+    "skipLibCheck": true,
+    "isolatedModules": true,
+    "verbatimModuleSyntax": true
+  },
+  "include": ["api", "src/leads/antibot.ts", "src/leads/tipos.ts"]
+}

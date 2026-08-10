@@ -198,6 +198,9 @@ export function portaSimulada(cenario: Cenario = cenarioDaUrl()): PortaDeLeads {
       localStorage.removeItem(CHAVE_SESSAO);
     },
 
+    // A prova é ignorada aqui: o modo simulado não tem servidor para julgá-la,
+    // e fingir um julgamento no navegador ensinaria a confiar num teste que não
+    // existe.
     async gravar(lead) {
       await espera(200);
       const novo: Lead = {

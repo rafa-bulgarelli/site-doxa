@@ -41,6 +41,14 @@ create table if not exists public.leads (
   faturamento text,
   trava text[],
 
+  -- ── A impressão do IP, para o limite de rajada do endpoint.
+  --
+  -- HASH, nunca o IP. O endereço cru é dado pessoal e não tem por que existir
+  -- aqui: o que o limite precisa é de um identificador estável, e um SHA-256
+  -- com tempero do servidor entrega isso sem guardar quem é a pessoa. Não
+  -- aparece no painel nem no CSV — é infraestrutura, não informação de lead.
+  ip_hash text,
+
   -- ── O estado na Central. Um lead vira "baixado" quando sai num CSV.
   baixado boolean not null default false,
   baixado_em timestamptz,
@@ -58,6 +66,9 @@ create table if not exists public.leads (
 create index if not exists leads_criado_em_idx on public.leads (criado_em desc);
 create index if not exists leads_baixado_idx on public.leads (baixado, criado_em desc);
 create index if not exists leads_origem_idx on public.leads (origem);
+-- O limite por IP consulta por hash dentro de uma janela de minutos. Sem este
+-- índice, cada envio de formulário varreria a tabela inteira.
+create index if not exists leads_ip_hash_idx on public.leads (ip_hash, criado_em desc);
 
 -- ── ROW LEVEL SECURITY
 -- Sem esta linha, as políticas abaixo não valem NADA: o RLS desligado libera
@@ -92,6 +103,24 @@ create policy "time marca"
 -- Nenhuma política de DELETE, de propósito: ninguém apaga lead pelo painel. Se
 -- um dia for preciso, que seja aqui no SQL Editor, com intenção.
 
+-- ─────────────────────────────────────────────────────────────────────────────
+-- PARA UM BANCO QUE JÁ EXISTE, o que muda é só isto (o resto acima é idempotente):
+--
+--   alter table public.leads add column if not exists ip_hash text;
+--   create index if not exists leads_ip_hash_idx on public.leads (ip_hash, criado_em desc);
+--
+-- ─────────────────────────────────────────────────────────────────────────────
+-- E QUANDO O ENDPOINT `/api/lead` ESTIVER NO AR E CONFERIDO, a porta fecha:
+--
+--   drop policy if exists "anonimo grava" on public.leads;
+--
+-- A partir daí NÃO EXISTE caminho de escrita fora do endpoint — a chave pública
+-- do bundle deixa de poder inserir, e o formulário passa obrigatoriamente pelo
+-- julgamento da armadilha, do tempo, do limite por IP e do Turnstile.
+--
+-- A ORDEM IMPORTA: rodar esta linha ANTES de o endpoint estar no ar derruba o
+-- formulário do site, e o lead de quem tentar nesse intervalo se perde.
+--
 -- ─────────────────────────────────────────────────────────────────────────────
 -- DEPOIS DE RODAR ISTO, FALTAM DOIS PASSOS NO PAINEL DO SUPABASE:
 --

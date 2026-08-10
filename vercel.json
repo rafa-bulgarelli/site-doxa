@@ -1,6 +1,9 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }],
+  "//": "A reescrita manda tudo para o index.html porque o site e uma SPA: qualquer caminho tem de servir a mesma pagina. A EXCLUSAO de /api e obrigatoria — sem ela o endpoint serverless nunca seria alcancado, o POST receberia o HTML da landing de volta, e o formulario falharia com um erro de JSON que nao explica nada.",
+  "rewrites": [
+    { "source": "/((?!api/).*)", "destination": "/index.html" }
+  ],
   "headers": [
     {
       "source": "/fonts/(.*)",

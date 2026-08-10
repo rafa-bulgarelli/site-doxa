@@ -96,14 +96,22 @@ export function portaSupabase(url: string, chave: string): PortaDeLeads {
       localStorage.removeItem(SESSAO);
     },
 
-    async gravar(lead: LeadNovo) {
-      const resposta = await fetch(`${url}/rest/v1/leads`, {
+    /**
+     * A gravação NÃO fala com o Supabase — fala com `/api/lead`.
+     *
+     * É a mudança que fecha o buraco: a chave pública está dentro do bundle, e
+     * enquanto ela pudesse inserir, qualquer um enchia a tabela com um `curl`
+     * sem nunca abrir a página. Agora quem grava é o endpoint, que julga a
+     * prova antes e usa uma chave que o navegador nunca vê.
+     *
+     * O caminho é relativo de propósito: a mesma origem do site, sem CORS e sem
+     * um domínio a mais para configurar.
+     */
+    async gravar(lead: LeadNovo, prova) {
+      const resposta = await fetch('/api/lead', {
         method: 'POST',
-        // `return=minimal` não é economia: pedir a linha de volta exigiria
-        // SELECT, e o anônimo não tem — o insert falharia inteiro por causa do
-        // retorno.
-        headers: { ...cabecalho(), Prefer: 'return=minimal' },
-        body: JSON.stringify(lead),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ lead, prova }),
       });
       if (!resposta.ok) throw new Error('rede');
     },
