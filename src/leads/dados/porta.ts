@@ -8,6 +8,7 @@
  * Trocar de banco é escrever outra implementação desta interface e apontar a
  * fachada para ela. Nenhum componente muda.
  */
+import type { ProvaDeHumano } from '../antibot';
 import type { Lead, LeadNovo } from '../tipos';
 
 export interface PortaDeLeads {
@@ -28,8 +29,14 @@ export interface PortaDeLeads {
 
   sair(): void;
 
-  /** Grava um lead novo. É a única operação que o visitante anônimo pode fazer. */
-  gravar(lead: LeadNovo): Promise<void>;
+  /**
+   * Grava um lead novo.
+   *
+   * A PROVA viaja junto: o campo-armadilha, o tempo que o preenchimento levou e
+   * o token do captcha. Quem julga é o servidor — o navegador só carrega o
+   * envelope, e por isso ele pode ser mentiroso sem estragar nada.
+   */
+  gravar(lead: LeadNovo, prova: ProvaDeHumano): Promise<void>;
 
   /**
    * A lista inteira, do mais novo para o mais velho.

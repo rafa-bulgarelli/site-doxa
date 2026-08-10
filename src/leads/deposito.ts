@@ -12,9 +12,11 @@
  * um lead que falha por rede não pode simplesmente sumir. Ele fica guardado e
  * vai junto na próxima tentativa.
  */
+import { TEMPO_MINIMO } from './antibot';
 import { portaSimulada } from './dados/simulado';
 import { portaSupabase } from './dados/supabase';
 import type { PortaDeLeads } from './dados/porta';
+import type { ProvaDeHumano } from './antibot';
 import type { Lead, LeadNovo } from './tipos';
 
 const URL_BASE = import.meta.env.VITE_SUPABASE_URL as string | undefined;
@@ -69,7 +71,15 @@ export async function escoarFila(): Promise<void> {
     // Em série e não em paralelo: são poucos, e uma rajada de POSTs numa rede
     // que acabou de voltar é a melhor forma de falhar de novo.
     try {
-      await portaDeLeads().gravar(lead);
+      /*
+       * O que ficou preso vai com uma prova SINTÉTICA, e ela é honesta.
+       *
+       * O lead na fila já foi julgado uma vez, quando a pessoa apertou o botão
+       * — o que falhou depois disso foi a rede. Exigir uma prova nova aqui
+       * seria pedir um captcha a quem já não está na frente da tela, e o
+       * resultado seria perder o lead para sempre.
+       */
+      await portaDeLeads().gravar(lead, { armadilha: '', levou: TEMPO_MINIMO, token: null });
     } catch {
       presos.push(lead);
     }
@@ -84,10 +94,10 @@ export async function escoarFila(): Promise<void> {
  * formulário costuma recuperá-la antes de fechar a aba, e a segunda gravação (a
  * da ficha completa) é a chance de levar as duas.
  */
-export async function gravarLead(lead: LeadNovo): Promise<void> {
+export async function gravarLead(lead: LeadNovo, prova: ProvaDeHumano): Promise<void> {
   await escoarFila();
   try {
-    await portaDeLeads().gravar(lead);
+    await portaDeLeads().gravar(lead, prova);
   } catch {
     gravaFila([...leFila(), lead]);
   }

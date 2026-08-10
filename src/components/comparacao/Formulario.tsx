@@ -22,6 +22,7 @@ import {
   type PerguntaFicha,
 } from './config';
 import { gravarLead } from '../../leads/deposito';
+import { ARMADILHA, type ProvaDeHumano } from '../../leads/antibot';
 import type { LeadNovo } from '../../leads/tipos';
 
 const EASE = [0.16, 1, 0.3, 1] as const;
@@ -616,6 +617,27 @@ export function Formulario({
   const jaMandou = useRef(false);
 
   /**
+   * Quando este formulário nasceu na tela.
+   *
+   * A distância até o envio é uma das provas que o endpoint pede: nove
+   * perguntas, quatro delas digitadas, não se respondem em duzentos
+   * milissegundos. `useRef` e não `useState` porque o valor não desenha nada —
+   * guardá-lo em estado custaria um render a cada leitura.
+   */
+  const nasceuEm = useRef(Date.now());
+
+  /** O campo-armadilha. Vazio é o esperado; qualquer coisa aqui é robô. */
+  const [armadilha, setArmadilha] = useState('');
+
+  const provaDeHumano = (): ProvaDeHumano => ({
+    armadilha,
+    levou: Date.now() - nasceuEm.current,
+    // PENDENTE: o token do Turnstile entra aqui quando a chave existir. Nulo, o
+    // endpoint pula a camada — ele sabe que ela está desligada.
+    token: null,
+  });
+
+  /**
    * O toque numa resposta da ficha.
    *
    * A de várias respostas junta e tira; a de resposta única substitui. Nenhuma
@@ -665,7 +687,7 @@ export function Formulario({
     if (jaMandou.current) return;
     jaMandou.current = true;
     setEnviando(true);
-    void gravarLead(montarLead(cortado)).finally(() => setEnviando(false));
+    void gravarLead(montarLead(cortado), provaDeHumano()).finally(() => setEnviando(false));
     setSentido(1);
     setPasso(cortado ? CORTADO : RECEBIDO);
   };
@@ -722,6 +744,37 @@ export function Formulario({
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(85%_55%_at_50%_0%,rgba(255,255,255,0.07),transparent_70%)]" />
       {/* O sinal que chegou pelo fio continua aqui, contornando o cartão. */}
       <BordaViva alvo={cartao} />
+
+      {/* ── O CAMPO-ARMADILHA ────────────────────────────────────────────────
+
+          Um `input` de verdade, com nome de campo comum, fora da vista e fora
+          do leitor de tela. Gente nunca o preenche porque nunca o vê; robô que
+          varre campos e preenche todos se entrega no primeiro envio.
+
+          `aria-hidden` mais `tabIndex={-1}` mais `autoComplete="off"` são as
+          três coisas que o mantêm invisível para quem importa: leitor de tela
+          não anuncia, tecla Tab não visita, e o navegador não oferece
+          preenchimento automático — que seria a única forma de uma pessoa real
+          cair nele.
+
+          Escondido por posição e não por `display: none` ou `hidden`: robô bom
+          ignora campo com display nenhum, e o que se quer é justamente que ele
+          ache este aqui. */}
+      <div className="pointer-events-none absolute -left-[9999px] top-0 h-0 w-0 overflow-hidden">
+        <label htmlFor={ARMADILHA} aria-hidden>
+          Não preencha este campo
+        </label>
+        <input
+          id={ARMADILHA}
+          name={ARMADILHA}
+          type="text"
+          value={armadilha}
+          onChange={(e) => setArmadilha(e.target.value)}
+          tabIndex={-1}
+          autoComplete="off"
+          aria-hidden
+        />
+      </div>
 
       <div className="relative p-6 md:p-12">
         {/* `p-6` no telefone contra os `p-8` de antes: 216 pixels úteis num
