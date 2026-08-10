@@ -128,6 +128,15 @@ interface CommandMenuProps {
   acao?: ReactNode;
   /** Combinada com ⌘ no Apple e Ctrl no resto. Não é anunciada na pílula. */
   tecla?: string;
+  /**
+   * Avisa o pai a cada abre-e-fecha.
+   *
+   * Existe por causa do cabeçalho fixo: ele se esconde quando a pessoa rola
+   * para baixo, e esconder-se com o painel ABERTO levaria embora justamente o
+   * que ela está usando. Quem decide isso é o pai; esta peça só conta o que
+   * aconteceu.
+   */
+  aoAlternar?: (aberto: boolean) => void;
   /** Rótulo do `<nav>` para quem navega por leitor de tela. */
   rotuloNav: string;
   /** O que o leitor de tela chama o botão de abrir. */
@@ -196,6 +205,7 @@ export function CommandMenu({
   titulo,
   secoes = [],
   acao,
+  aoAlternar,
   tecla = 'k',
   rotuloNav,
   rotuloAbrir,
@@ -261,6 +271,10 @@ export function CommandMenu({
       };
     });
   }, [aberto, selecionado]);
+
+  useEffect(() => {
+    aoAlternar?.(aberto);
+  }, [aberto, aoAlternar]);
 
   /*
    * DUAS armadilhas aqui, e as duas dão o mesmo sintoma discreto: um Mac que
@@ -470,7 +484,17 @@ export function CommandMenu({
     >
       {/* Título e "+", e mais nada. Ver a nota em `titulo`, nas props. */}
       <div className="flex items-center gap-3 overflow-hidden p-1.5 pl-4">
-        <span className="whitespace-nowrap text-sm font-medium tracking-tight text-white">
+        {/* ─── SERIFADO, E NO PESO 400 ────────────────────────────────────
+            A Instrument Serif tem UM peso só — 400 — e isso não é uma falta do
+            repositório: a família não desenha outro. Pedir `font-bold` aqui não
+            traz um negrito, faz o navegador FABRICAR um, engordando o contorno
+            do 400. Numa serifada de display isso empasta as hastes finas, que
+            são justamente o que dá o desenho dela.
+
+            O que dá presença sem fabricar nada é o tamanho: 18 px contra os 14
+            que a sans usava. A serifa a esse corpo já pesa mais na linha do que
+            a sans em `medium`, e continua sendo a letra que a fonte desenhou. */}
+        <span className="whitespace-nowrap font-serif text-lg leading-none text-white">
           {titulo}
         </span>
         {/* O "+" que vira "×". É o único convite que existe, então ele aparece

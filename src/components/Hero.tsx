@@ -8,15 +8,10 @@ import { AudioPlayer } from './hero/AudioPlayer';
 import { ConnectorLines } from './hero/ConnectorLines';
 import { WordRotator } from './hero/WordRotator';
 import { DotGridSpotlight } from './hero/DotGridSpotlight';
-import { MenuDoxa } from './hero/MenuDoxa';
-import { Relogio } from './hero/Relogio';
 import { MotionButton } from './ui/MotionButton';
 import { HREF_FORMS } from '../ancoras';
 import { useIsDesktop } from '../hooks/useIsDesktop';
 import { TOOLS } from './tools';
-// Bitmap wordmark — the only form the owner has. Card 002 wants this vectorised
-// and signed off before it counts as official; until then this is the asset.
-import wordmarkUrl from '../../brand/doxa-wordmark-white-96.avif';
 
 /**
  * The three platforms the guarantee counts together. Literal owner content —
@@ -65,7 +60,11 @@ export function Hero() {
     <section
       ref={sectionRef}
       data-secao="Início"
-      className="relative flex min-h-dvh flex-col overflow-hidden bg-doxa-bg"
+      /* O recuo de topo é o BURACO DO CABEÇALHO, que agora é `fixed` e saiu do
+         fluxo (ver `Cabecalho.tsx`). Sem ele, o canvas subiria por baixo do
+         logo. A conta é a de lá: 44 da pílula mais os recuos verticais — 20+20
+         no telefone, 28+28 do `md` para cima. Mexer numa exige mexer na outra. */
+      className="relative flex min-h-dvh flex-col overflow-hidden bg-doxa-bg pt-[5.25rem] md:pt-[6.25rem]"
     >
       <div className="dot-grid pointer-events-none absolute inset-0" />
       {/* Tracks the cursor across the whole hero, not just the canvas column. */}
@@ -95,63 +94,6 @@ export function Hero() {
           the last third of it. Ramping across the whole band was laying a haze
           over the middle of the fold, where the canvas and the logo row are. */}
       <div className="pointer-events-none absolute inset-x-0 bottom-0 hidden h-1/2 bg-gradient-to-b from-transparent from-70% to-black lg:block" />
-
-      <header className="relative z-30 flex items-center justify-between px-5 py-5 md:px-10 md:py-7">
-        {/* O logo e o relógio andam JUNTOS, num grupo só.
-            Soltos como irmãos do `justify-between`, o relógio seria empurrado
-            para o meio do vão e leria como um terceiro elemento perdido; colado
-            ao logo, ele é a assinatura de quem está do outro lado. */}
-        <div className="flex items-center gap-4 md:gap-5">
-          <a href="#" className="shrink-0">
-            <img
-              src={wordmarkUrl}
-              alt="Doxa"
-              className="h-6 w-auto md:h-7"
-              width={364}
-              height={96}
-            />
-          </a>
-          <Relogio />
-        </div>
-
-        {/* ─── O CABEÇALHO É O LOGO E O MENU, E MAIS NADA ────────────────────
-            Aqui havia "Falar com a gente" e "Quero viralizar". Os dois saíram a
-            pedido do dono: o topo é o logo de um lado e a pílula do outro, em
-            toda largura.
-
-            A conversão não foi jogada fora com eles. Ela mudou de lugar duas
-            vezes: o botão branco no PÉ DO PAINEL (ver `MenuDoxa.tsx`) e o
-            `MotionButton` do meio desta coluna, que num telefone é maior e está
-            mais perto do polegar do que qualquer pílula do topo estaria.
-
-            ─── O BURACO E A PEÇA ─────────────────────────────────────────────
-            Duas caixas para uma pílula, e as duas são necessárias.
-
-            A de fora é o BURACO: ela tem o tamanho da pílula FECHADA e é a única
-            coisa que existe no fluxo do cabeçalho. É ela que reserva o espaço.
-
-            A de dentro está fora do fluxo, ancorada à direita, e é mais larga
-            que o buraco de propósito — é o espaço para onde a pílula cresce
-            quando abre. Crescer no fluxo mexeria no cabeçalho a cada passada de
-            cursor, e um cabeçalho que se reorganiza sozinho no hover é um
-            cabeçalho quebrado.
-
-            `pointer-events-none` nela, e `auto` de volta na pílula: essa caixa
-            larga cobre um pedaço do topo, e sem isso a área vazia dela engoliria
-            o clique do que estivesse embaixo.
-
-            A largura aqui e a que a `MenuDoxa` passa ao componente são a mesma
-            medida escrita em dois lugares — `w-28` de um lado, `max-w-28` do
-            outro. Divergindo, a pílula não cabe no buraco e o cabeçalho ganha um
-            degrau. De onde saiu o número está em `MenuDoxa.tsx`.
-
-            A altura é 44: 32 do "+" mais 6 de recuo em cima e embaixo. */}
-        <div className="relative h-11 w-28 shrink-0">
-          <div className="pointer-events-none absolute right-0 top-0 flex w-[21rem] max-w-[calc(100vw-2.5rem)] justify-end">
-            <MenuDoxa />
-          </div>
-        </div>
-      </header>
 
       {/* Capped, not full-bleed: the nodes are positioned against this box, so
           without a ceiling they ride the viewport edge and the canvas pulls

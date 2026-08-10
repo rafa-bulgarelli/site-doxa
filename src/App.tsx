@@ -4,6 +4,7 @@ import { ProvedorDeIdioma } from './idioma';
 import { usarNaTela } from './hooks/usarNaTela';
 import { Hero } from './components/Hero';
 import { Rolador } from './components/ui/Rolador';
+import { Cabecalho } from './components/Cabecalho';
 
 /**
  * Tudo abaixo da primeira dobra sai do pacote inicial.
@@ -260,6 +261,12 @@ export default function App() {
      as seções forem traduzidas, elas já encontram o valor aqui. */
   return (
     <ProvedorDeIdioma>
+      {/* FORA do `<main>`, como o `Rolador`: o cabeçalho é `fixed` e sobrevoa a
+          página inteira. Dentro dele, sumiria junto com a página no reveal do
+          rodapé — e o fim da rolagem é justamente onde alguém pode querer
+          voltar ao topo. */}
+      <Cabecalho />
+
       {/*
        * O `<main>` é OPACO e vem por cima, e é só isso que faz o rodapé se
        * revelar.

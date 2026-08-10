@@ -191,15 +191,16 @@ const NOME_DO_IDIOMA: PorIdioma<string> = {
 };
 
 /**
- * O menu não recebe nada.
+ * O menu do topo.
  *
- * Ele já recebeu: a foto do case ativo entrava aqui como prop e era o único
+ * A única coisa que ele recebe é o aviso de abre-e-fecha, e é para o cabeçalho
+ * fixo saber que não pode se esconder enquanto o painel está aberto.
+ *
+ * Já recebeu mais: a foto do case ativo entrava aqui como prop e era o único
  * motivo de esta peça saber que existe um deck de clientes lá embaixo. Saiu a
- * pedido do dono — "menos é mais" —, e com ela saiu o acoplamento inteiro. O
- * `Hero` deixou de precisar passar o case adiante, e o menu passou a ser uma
- * peça que só depende do idioma.
+ * pedido do dono — "menos é mais" —, e com ela saiu o acoplamento inteiro.
  */
-export function MenuDoxa() {
+export function MenuDoxa({ aoAlternar }: { aoAlternar?: (aberto: boolean) => void }) {
   const [idioma, trocarIdioma] = useIdioma();
   const texto = TEXTO[idioma];
 
@@ -238,6 +239,7 @@ export function MenuDoxa() {
   return (
     <CommandMenu
       id="menu-doxa"
+      aoAlternar={aoAlternar}
       rotuloNav={texto.nav}
       rotuloAbrir={texto.abrir}
       /* Fechada, ela é o buraco que `Hero.tsx` reservou no cabeçalho — as duas
