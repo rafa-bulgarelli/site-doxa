@@ -32,8 +32,14 @@ import type { PortaDeLeads } from './porta';
  * O dono pediu SENHA ÚNICA. Por baixo é um usuário de verdade no Supabase —
  * é o que permite ao banco distinguir "anônimo" de "time" sem servidor nosso. O
  * e-mail é fixo e público; o segredo é a senha, e ela nunca entra neste repo.
+ *
+ * Esta string tem de bater LETRA POR LETRA com o e-mail do usuário no Supabase
+ * Auth. Não é uma caixa de e-mail que alguém abre: é a chave primária do login.
+ * Mudar aqui sem renomear o usuário lá — ou o contrário — tranca o time inteiro
+ * fora da Central, e o erro que aparece na tela é só "credenciais inválidas",
+ * que manda todo mundo procurar a senha errada. Os dois passos são um só.
  */
-export const CONTA_DO_TIME = 'equipe@doxavira.com';
+export const CONTA_DO_TIME = 'equipe@doxaviral.com';
 
 const SESSAO = 'doxa.leads.sessao';
 

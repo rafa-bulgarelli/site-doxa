@@ -107,16 +107,17 @@ raciocínio). Detalhes e trade-off em `.claude/TOWER-ROLES.md`.
     bandeira "já montou" não sobrevive ao `StrictMode`, que roda o efeito duas vezes) e
     passe `{ preventScroll: true }`.
   - **Existem DOIS domínios quase iguais, e só um é o site.** O site é
-    **`doxaviral.com`** — *viral*, com **L**. O outro, `doxavira.com` (sem L), está
-    adicionado na conta da Vercel mas **nunca apontou pra lá**: os nameservers são da AWS
-    e quem responde ali é um CloudFront alheio, com `200` e `content-type:
-    application/octet-stream`. Ou seja: **`curl` no domínio errado devolve 200** e engana
-    quem está validando um deploy. Confira o `<title>` de verdade, não o status.
-    A conta do time no Supabase Auth (`CONTA_DO_TIME`, em `src/leads/dados/supabase.ts`)
-    é `equipe@doxavira.com` — **sem L, e não conserte isso sozinho.** Não é uma caixa de
-    e-mail: é o identificador de login de um usuário que já existe no Auth e é usado.
-    Corrigir a string para casar com o domínio do site, sem renomear o usuário no
-    Supabase primeiro, derruba o acesso do time à Central.
+    **`doxaviral.com`** — *viral*, com **L**. O outro, `doxavira.com` (sem L), nunca
+    apontou pra cá: os nameservers são da AWS e quem responde ali é um CloudFront alheio,
+    com `200` e `content-type: application/octet-stream`. Ou seja: **`curl` no domínio
+    errado devolve 200** e engana quem está validando um deploy — confira o `<title>`, não
+    o status. Ele foi tirado da conta da Vercel em 10/08/2026 justamente por isso.
+  - **`CONTA_DO_TIME` e o usuário no Supabase Auth são UM passo, nunca dois.** A constante
+    em `src/leads/dados/supabase.ts` não é uma caixa de e-mail: é a chave primária do
+    login do time. Se ela e o e-mail do usuário no Auth divergirem por uma letra, a
+    Central responde "credenciais inválidas" — o que manda todo mundo caçar a senha
+    errada, e não a letra. Mudou um, muda o outro **na mesma janela**, e o `schema.sql`
+    junto (ele documenta o e-mail no passo 1 do painel).
 
 ## Baseline de sessão
 
