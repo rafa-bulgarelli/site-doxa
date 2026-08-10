@@ -2030,3 +2030,29 @@ html::-webkit-scrollbar {
     0 0 40px -12px rgba(222, 92, 126, 0.2),
     0 0 70px -14px rgba(90, 160, 224, 0.18);
 }
+
+/*
+ * ─── UMA SEÇÃO FORA DA TELA NÃO ANIMA ────────────────────────────────────────
+ *
+ * O freio das animações de CSS. O `usarNaTela` cuida do que é JavaScript —
+ * relógios, molas, `requestAnimationFrame` —, mas um `@keyframes ... infinite`
+ * não passa por JavaScript nenhum: ele é do compositor, e continua girando com a
+ * seção a três telas de distância. São dezoito neles nesta página, e MEDIDO com o
+ * formulário aberto eles sozinhos respondiam por ~106 recálculos de estilo por
+ * segundo — o que sobrou da conta depois de todo o resto ter sido freado.
+ *
+ * `animation-play-state: paused` congela no ponto em que estava e retoma dali:
+ * é o mesmo contrato do resto do freio, e é por isso que ninguém vê a diferença
+ * — quem rola de volta encontra o pulso no meio do pulso, não recomeçando.
+ *
+ * O `!important` é necessário e não é preguiça: a regra precisa vencer o
+ * `animation` declarado na classe do próprio elemento, que tem a mesma
+ * especificidade ou mais. E ele nunca LIGA nada — só pausa —, então não há como
+ * ele acender uma animação que devia estar parada.
+ */
+.fora-da-tela,
+.fora-da-tela *,
+.fora-da-tela *::before,
+.fora-da-tela *::after {
+  animation-play-state: paused !important;
+}

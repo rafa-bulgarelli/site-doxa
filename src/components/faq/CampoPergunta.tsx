@@ -441,7 +441,12 @@ export function CampoPergunta({
          por baixo dele seria a borda piscando durante a digitação. É o mesmo
          raciocínio do exemplo que se escreve sozinho e para no clique: o
          convite serve até o instante em que ele é aceito. */
+      /* `fora-da-tela` pelo mesmo motivo do exemplo que se escreve sozinho: o
+         anel é `@keyframes ... infinite` e gira mesmo com a pastilha abaixo da
+         dobra. A seção do FAQ é alta e o freio do `App` não chega até aqui. */
       className={`anel-siri relative w-full rounded-3xl border border-white/[0.12] bg-doxa-surface focus-within:border-white/30 ${
+        faqNaTela ? '' : 'fora-da-tela'
+      } ${
         aberto ? '' : 'anel-siri-isca'
       }`}
     >

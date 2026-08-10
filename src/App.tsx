@@ -1,5 +1,6 @@
-import { Suspense, lazy, useEffect, useState } from 'react';
+import { Suspense, lazy, useEffect, useState, type ReactNode } from 'react';
 import { ANCORA_FORMS, HREF_FORMS } from './ancoras';
+import { usarNaTela } from './hooks/usarNaTela';
 import { Hero } from './components/Hero';
 import { Rolador } from './components/ui/Rolador';
 
@@ -64,6 +65,33 @@ function ehCentralDeLeads() {
  */
 function Vao() {
   return <div className="min-h-screen" aria-hidden />;
+}
+
+/**
+ * A seção que para de animar quando sai da tela.
+ *
+ * As seções são `lazy` na CHEGADA e nunca na saída: montada uma vez, cada
+ * `@keyframes ... infinite` dentro delas gira para sempre. MEDIDO num telefone
+ * com a CPU quatro vezes mais lenta, com o formulário aberto e ninguém tocando
+ * em nada, era o que sobrava da conta depois de o resto ter sido freado.
+ *
+ * Um `div` simples de propósito. Ele não tem classe, não tem estilo e não cria
+ * contexto de empilhamento nem bloco de contenção — o `sticky` de dentro das
+ * seções continua se agarrando à `section` dele, que é onde sempre esteve.
+ * Precisa ser um elemento COM CAIXA: `display: contents` seria mais discreto e
+ * não serve, porque um elemento sem caixa nunca intersecta nada e o observador
+ * nunca falaria.
+ *
+ * O freio é só de animação — o conteúdo continua montado, medível e rolável.
+ */
+function SecaoViva({ children }: { children: ReactNode }) {
+  const [no, setNo] = useState<HTMLDivElement | null>(null);
+  const naTela = usarNaTela(no);
+  return (
+    <div ref={setNo} className={naTela ? undefined : 'fora-da-tela'}>
+      {children}
+    </div>
+  );
 }
 
 /**
@@ -206,24 +234,34 @@ export default function App() {
        * ele o rodapé fixo ficaria por cima da página inteira.
        */}
       <main className="relative z-10 bg-black">
-        <Hero />
+        <SecaoViva>
+          <Hero />
+        </SecaoViva>
         {/* Um `Suspense` por seção, e não um em volta das três: com um só, a
             seção mais lenta seguraria as outras duas prontas fora da tela. */}
         <Suspense fallback={<Vao />}>
-          <HowItWorks />
+          <SecaoViva>
+            <HowItWorks />
+          </SecaoViva>
         </Suspense>
         <Suspense fallback={<Vao />}>
-          <ProofWall />
+          <SecaoViva>
+            <ProofWall />
+          </SecaoViva>
         </Suspense>
         <Suspense fallback={<Vao />}>
-          <Comparacao />
+          <SecaoViva>
+            <Comparacao />
+          </SecaoViva>
         </Suspense>
         {/* O FAQ vem DEPOIS do pedido, e não antes. Perguntas frequentes antes
             do formulário são uma lista de objeções apresentada a quem ainda não
             objetou nada; depois dele, são a última porta para quem chegou até o
             fim e travou em alguma coisa. */}
         <Suspense fallback={<Vao />}>
-          <Faq />
+          <SecaoViva>
+            <Faq />
+          </SecaoViva>
         </Suspense>
       </main>
 
