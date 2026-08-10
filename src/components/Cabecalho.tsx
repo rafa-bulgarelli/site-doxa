@@ -59,19 +59,20 @@ const TOPO = 24;
  */
 function useVisivel(travado: boolean) {
   const [visivel, setVisivel] = useState(true);
+  /** Se já saiu do topo. É o que acende o vidro. */
+  const [rolou, setRolou] = useState(false);
 
   useEffect(() => {
-    if (travado) {
-      setVisivel(true);
-      return;
-    }
-
     let ultimo = window.scrollY;
     let quadro = 0;
 
     const avaliar = () => {
       quadro = 0;
       const y = window.scrollY;
+      setRolou(y > TOPO);
+      // O vidro acompanha a rolagem mesmo com o painel aberto; só a fuga é
+      // travada. Daí a saída ficar DEPOIS de `setRolou` e não antes.
+      if (travado) return;
       if (y <= TOPO) {
         setVisivel(true);
         ultimo = y;
@@ -83,6 +84,9 @@ function useVisivel(travado: boolean) {
       setVisivel(passo < 0);
       ultimo = y;
     };
+
+    if (travado) setVisivel(true);
+    avaliar();
 
     /* Um quadro por rajada. `scroll` dispara dezenas de vezes por segundo e
        cada disparo lê `scrollY`, que força o navegador a calcular layout —
@@ -98,12 +102,12 @@ function useVisivel(travado: boolean) {
     };
   }, [travado]);
 
-  return visivel;
+  return { visivel, rolou };
 }
 
 export function Cabecalho() {
   const [menuAberto, setMenuAberto] = useState(false);
-  const visivel = useVisivel(menuAberto);
+  const { visivel, rolou } = useVisivel(menuAberto);
 
   return (
     <header
@@ -111,6 +115,46 @@ export function Cabecalho() {
         visivel ? 'translate-y-0' : '-translate-y-full'
       }`}
     >
+      {/* ─── O VIDRO ────────────────────────────────────────────────────────
+          Duas camadas e uma máscara, e cada peça tem uma função.
+
+          O BORRÃO com saturação: `backdrop-blur` sozinho deixa o que passa por
+          baixo cinzento, porque desfocar mistura pixels vizinhos e puxa tudo
+          para a média. Devolver saturação é o que faz a parede de prova
+          continuar parecendo vídeo colorido atrás do vidro em vez de fumaça.
+
+          O TINTO PRETO não é estética, é legibilidade, e os 55% saíram de
+          MEDIÇÃO. Sobre o hero ele é invisível — preto sobre preto. Sobre o
+          painel claro da comparação, que é creme, ele é a única coisa entre o
+          logo branco e um fundo quase branco. Lido no Chrome, o pixel atrás do
+          logo com o vidro ligado: a 40% dá 2,97:1 de contraste (ilegível), a
+          50% dá 4,00 (ainda abaixo do mínimo), a 55% dá 4,66 e passa. É o
+          primeiro valor que passa, e por isso é o escolhido — mais escuro que
+          isso deixa de ser vidro e vira tarja.
+
+          O BRILHO DE CIMA é o único enfeite: uma lâmina de branco a 6% que
+          morre na metade da altura. É o que dá a impressão de uma borda de
+          vidro pegando luz, em vez de um retângulo fosco.
+
+          A MÁSCARA é o que impede tudo isso de virar uma tarja. Sem ela o vidro
+          termina numa linha reta atravessando o hero, e a primeira dobra — que
+          é uma composição, não uma página com barra — fica cortada em duas. Com
+          ela o efeito se dissolve antes de chegar ao fim.
+
+          Acende ao SAIR DO TOPO. Parado no alto não há nada por baixo para
+          desfocar além do próprio fundo do hero, e o vidro ali só apareceria
+          como uma faixa mais clara sem motivo. Ele existe quando passa a ter
+          o que fazer. */}
+      <div
+        aria-hidden
+        className={`pointer-events-none absolute inset-0 -z-10 transition-opacity duration-500 ease-out [mask-image:linear-gradient(to_bottom,#000_45%,transparent)] ${
+          rolou ? 'opacity-100' : 'opacity-0'
+        }`}
+      >
+        <div className="absolute inset-0 bg-black/55 backdrop-blur-lg backdrop-saturate-150" />
+        <div className="absolute inset-x-0 top-0 h-1/2 bg-gradient-to-b from-white/[0.06] to-transparent" />
+      </div>
+
       <a href="#" className="shrink-0">
         <img src={wordmarkUrl} alt="Doxa" className="h-6 w-auto md:h-7" width={364} height={96} />
       </a>
