@@ -142,6 +142,15 @@ async function passouDoLimite(impressao: string, limite: number): Promise<boolea
         },
       },
     );
+    if (!resposta.ok) {
+      /* Conferir o `ok` é o que faltava, e a ausência dele foi o que me custou
+         meia hora: uma consulta recusada não tem `content-range`, o total virava
+         zero, e o limite concluía que ninguém tinha enviado nada. Falha de
+         contagem continua deixando passar — mas agora ela GRITA no log em vez de
+         se disfarçar de "não há rajada". */
+      console.error('limite por IP: consulta recusada', resposta.status, await resposta.text());
+      return false;
+    }
     const faixa = resposta.headers.get('content-range');
     const total = Number(faixa?.split('/')[1] ?? 0);
     return Number.isFinite(total) && total >= limite;
