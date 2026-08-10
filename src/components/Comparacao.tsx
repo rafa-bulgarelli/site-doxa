@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react';
+import { usarNaTela } from '../hooks/usarNaTela';
 import {
   animate,
   motion,
@@ -115,6 +116,8 @@ const SUBIDA = 45;
  */
 function Selo({ prefixo, escuro = false }: { prefixo: string; escuro?: boolean }) {
   const cor = escuro ? NO_AR : PARADO;
+  const [selo, setSelo] = useState<HTMLSpanElement | null>(null);
+  const seloNaTela = usarNaTela(selo);
 
   return (
     /*
@@ -130,6 +133,12 @@ function Selo({ prefixo, escuro = false }: { prefixo: string; escuro?: boolean }
      * aqui" e continua lendo preto e creme.
      */
     <span
+      ref={setSelo}
+      /* Fora da tela, os dois anéis param. A seção é alta — quatro telas —, e o
+         freio de seção do `App` só desliga o que está longe da SEÇÃO INTEIRA;
+         um selo no topo dela continua pulsando com o visitante lá no
+         formulário, no pé. `fora-da-tela` é a mesma regra do `index.css`,
+         aplicada na peça em vez de no bloco. */
       /* METADE do tamanho até 640px, a pedido do dono. Cada medida do selo
          caiu pela metade — respiro, vãos, ponto, corpo e altura do logo —, e
          não só o corpo do texto: encolher a letra dentro de uma cápsula do
@@ -137,7 +146,9 @@ function Selo({ prefixo, escuro = false }: { prefixo: string; escuro?: boolean }
          "Sem"/"Com" encolhe junto porque é um par: os dois painéis se leem em
          comparação, e um selo maior que o outro vira diferença de importância.
          `sm:` devolve tudo de 640 para cima. */
-      className="inline-flex w-fit items-center gap-1.5 rounded-full border py-1 pl-1.5 pr-2 sm:gap-2.5 sm:py-2 sm:pl-3 sm:pr-4"
+      className={`inline-flex w-fit items-center gap-1.5 rounded-full border py-1 pl-1.5 pr-2 sm:gap-2.5 sm:py-2 sm:pl-3 sm:pr-4 ${
+        seloNaTela ? '' : 'fora-da-tela'
+      }`}
       style={{ borderColor: `${cor}59`, background: `${cor}14` }}
     >
       <span className="relative flex h-1 w-1 shrink-0 sm:h-2 sm:w-2" aria-hidden>
