@@ -14,18 +14,22 @@
  * não a dele. Estão todos num lugar só, em português, para ele mexer olhando
  * para os leads reais depois da primeira semana. Nenhum número aqui é sagrado.
  */
-import type { Ficha, LeadNovo } from './tipos';
+import type { LeadNovo } from './tipos';
 
 /** Os sete eixos, na ordem em que o painel os desenha. */
-export const EIXOS = [
-  'fit',
-  'dor',
-  'verba',
-  'escala',
-  'intencao',
-  'presenca',
-  'autoridade',
-] as const;
+/*
+ * SEIS eixos, e eram sete.
+ *
+ * Saiu INTENÇÃO, e não por gosto: ela media quanto da ficha a pessoa se deu ao
+ * trabalho de responder, e o dono tirou o "Pular" do formulário. Sem pulo, todo
+ * lead que chega respondeu tudo — o eixo passaria a valer o mesmo número para
+ * todo mundo, que é um eixo que não separa nada. Um gráfico com uma ponta
+ * constante mente sobre a diferença entre dois leads.
+ *
+ * Os treze pontos de peso dele foram redistribuídos entre os cinco que leem
+ * DINHEIRO e DOR, que é onde a decisão comercial acontece.
+ */
+export const EIXOS = ['fit', 'dor', 'verba', 'escala', 'presenca', 'autoridade'] as const;
 
 export type Eixo = (typeof EIXOS)[number];
 
@@ -35,7 +39,6 @@ export const ROTULO: Record<Eixo, string> = {
   dor: 'DOR',
   verba: 'VERBA',
   escala: 'ESCALA',
-  intencao: 'INTENÇÃO',
   presenca: 'PRESENÇA',
   autoridade: 'AUTORIDADE',
 };
@@ -49,7 +52,6 @@ export const EXPLICACAO: Record<Eixo, string> = {
   dor: 'O tamanho e o tipo do que trava a empresa hoje.',
   verba: 'O budget mensal declarado — o faturamento entra só se ele faltar.',
   escala: 'O tamanho da operação, pela faixa de faturamento.',
-  intencao: 'Quanto a pessoa se deu ao trabalho de responder e de se identificar.',
   presenca: 'Se existe um perfil para o consultor abrir antes de ligar.',
   autoridade: 'O quanto o nicho depende de um rosto conhecido.',
 };
@@ -62,13 +64,12 @@ export const EXPLICACAO: Record<Eixo, string> = {
  * separam quem contrata de quem só quer saber o preço.
  */
 const PESO: Record<Eixo, number> = {
-  fit: 15,
-  dor: 20,
-  verba: 20,
-  escala: 12,
-  intencao: 13,
+  fit: 18,
+  dor: 22,
+  verba: 24,
+  escala: 14,
   presenca: 10,
-  autoridade: 10,
+  autoridade: 12,
 };
 
 /**
@@ -134,27 +135,9 @@ const TRAVA: Record<string, number> = {
   'Não gosto de aparecer': 5,
 };
 
-/** Quantas respostas da ficha existem — o denominador da intenção. */
-const CAMPOS_DA_FICHA = 3;
-
 const limita = (n: number) => Math.max(0, Math.min(10, Math.round(n)));
 
-/**
- * Quantas das cinco perguntas da ficha foram respondidas.
- *
- * `trava` conta pela existência da lista e não pelo tamanho dela: marcar três
- * travas não é mais intenção do que marcar uma, é mais dor — e dor tem eixo
- * próprio.
- */
-function respondidas(ficha: Ficha): number {
-  let n = 0;
-  if (ficha.segmento) n++;
-  if (ficha.faturamento) n++;
-  if (ficha.trava && ficha.trava.length > 0) n++;
-  return n;
-}
-
-/** Os sete eixos de um lead, cada um de 0 a 10. */
+/** Os seis eixos de um lead, cada um de 0 a 10. */
 export function eixosDo(lead: LeadNovo): Record<Eixo, number> {
   const seg = lead.segmento ? SEGMENTO[lead.segmento] : undefined;
   const fat = lead.faturamento ? FATURAMENTO[lead.faturamento] : undefined;
@@ -169,14 +152,6 @@ export function eixosDo(lead: LeadNovo): Record<Eixo, number> {
    */
   const maiorTrava = travas.reduce((maior, t) => Math.max(maior, TRAVA[t] ?? 5), 0);
   const dor = travas.length === 0 ? 0 : maiorTrava + (travas.length - 1);
-
-  /*
-   * A intenção soma três coisas que a pessoa fez, e não que ela é: quanto da
-   * ficha respondeu, se deixou um perfil e se deixou e-mail. É o único eixo que
-   * mede ESFORÇO, e por isso é o que melhor prevê quem atende o telefone.
-   */
-  const intencao =
-    (respondidas(lead) / CAMPOS_DA_FICHA) * 7 + (lead.arroba ? 2 : 0) + (lead.email ? 1 : 0);
 
   /*
    * A verba é o investimento declarado; o faturamento é o plano B.
@@ -206,7 +181,6 @@ export function eixosDo(lead: LeadNovo): Record<Eixo, number> {
     dor: limita(dor),
     verba: limita(verba ?? 0),
     escala: limita(fat?.escala ?? 0),
-    intencao: limita(intencao),
     presenca: limita(lead.arroba ? 9 : 0),
     autoridade: limita(seg?.autoridade ?? 0),
   };

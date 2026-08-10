@@ -485,6 +485,26 @@ export function Formulario({
    * terminaria sem entregar nada.
    */
   const seguir = () => {
+    if (fichaAtual == null) return;
+    const marcadas = respostas[fichaAtual.chave] ?? [];
+
+    /*
+     * ─── NÃO HÁ MAIS "PULAR" ─────────────────────────────────────────────────
+     *
+     * Por decisão do dono: só se passa depois de responder. A ficha deixou de
+     * ser um favor pedido no fim e virou parte do formulário — e uma pergunta
+     * que se pode pular com um toque é, na prática, uma pergunta que a maioria
+     * não responde.
+     *
+     * O custo é real e vale dito: cada pergunta obrigatória é gente que desiste
+     * no meio. A troca é menos leads e fichas completas, em vez de mais leads e
+     * fichas vazias — e quem decide o que vale mais é quem atende o telefone.
+     */
+    if (marcadas.length === 0) {
+      setErro('Escolhe uma para seguir.');
+      return;
+    }
+
     /*
      * "Outro" marcado obriga o campo, e o motivo é o que ele custa depois.
      *
@@ -492,13 +512,10 @@ export function Formulario({
      * DESCARTADA em silêncio — `respostaFinal` filtra texto vazio —, e o
      * consultor recebe uma ficha em que o nicho simplesmente não existe. Pior
      * do que não ter perguntado: a pessoa acredita que respondeu.
-     *
-     * A trava é só para quem ESCOLHEU o "Outro". Pular a pergunta inteira
-     * continua livre: a ficha é um favor, e um favor não se cobra com trava.
      */
-    if (fichaAtual?.livre != null && (respostas[fichaAtual.chave] ?? []).includes(OUTRO)) {
+    if (fichaAtual.livre != null && marcadas.includes(OUTRO)) {
       if ((livres[fichaAtual.chave] ?? '').trim().length === 0) {
-        setErro('Escreve qual é — ou tira o "Outro" e segue.');
+        setErro('Escreve qual é — ou tira o "Outro" e escolhe outra.');
         return;
       }
     }
@@ -1264,27 +1281,14 @@ export function Formulario({
                     <ArrowLeft className="h-5 w-5" strokeWidth={2} />
                   </button>
 
-                  {/* Um botão só, e o RÓTULO dele é que muda.
-
-                      "Pular" ao lado de "Continuar" seriam duas ações do mesmo
-                      peso para a mesma tecla, e obrigariam a pessoa a escolher
-                      entre dois botões em toda pergunta que ela não quisesse
-                      responder. Com um, o cartão sempre tem uma saída para a
-                      frente, e ela diz exatamente o que vai acontecer com o que
-                      está — ou não está — marcado na tela. */}
+                  {/* Um botão só para a frente, como em todo passo deste
+                      formulário. */}
                   <div className="min-w-0 flex-1">
-                    {/* Três rótulos para o mesmo botão, e cada um diz a verdade
-                        do que vai acontecer: "Continuar" com resposta, "Pular"
-                        sem ela, e "Enviar" na última — que é a única que fecha
-                        o formulário, respondida ou não. */}
+                    {/* Dois rótulos, e "Pular" não é mais um deles: sem resposta
+                        o botão não passa, e prometer uma saída que não existe é
+                        pior do que não prometer nada. */}
                     <MotionButton
-                      label={
-                        passo === TOTAL - 1
-                          ? 'Enviar'
-                          : (respostas[fichaAtual.chave] ?? []).length > 0
-                            ? 'Continuar'
-                            : 'Pular'
-                      }
+                      label={passo === TOTAL - 1 ? 'Enviar' : 'Continuar'}
                       onClick={seguir}
                       busy={enviando}
                       fullWidth

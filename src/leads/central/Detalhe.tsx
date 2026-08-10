@@ -166,12 +166,15 @@ export function Detalhe({ lead, aoFechar }: { lead: Lead; aoFechar: () => void }
             )}
           </div>
 
-          {/* Quem saiu antes da ficha é a maioria dos leads, e a Central não pode
-              parecer quebrada por isso: a ausência é dita com todas as letras. */}
+          {/* Desde que o formulário passou a exigir resposta, um lead sem ficha
+              só chega por outra porta — importação, ou uma linha inserida à
+              mão. Continua sendo dito com todas as letras em vez de aparecer
+              como uma tela pela metade. */}
           {lead.segmento == null && (
             <p className="mt-4 rounded-xl border border-white/[0.08] bg-white/[0.02] px-4 py-3 text-[13px] leading-snug text-white/45">
-              Saiu antes de responder a ficha. O contato está completo — o que falta é o
-              contexto, e ele pode ser perguntado na conversa.
+              Chegou sem a ficha de contexto — provavelmente de outra origem que não o
+              formulário do site. O contato está completo, e o resto pode ser perguntado
+              na conversa.
             </p>
           )}
         </section>

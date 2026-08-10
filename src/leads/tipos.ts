@@ -17,9 +17,11 @@ export type Caminho = 'empresa' | 'agencia';
 /**
  * O que a ficha opcional respondeu.
  *
- * Tudo é anulável porque tudo é pulável: a ficha é pedida DEPOIS de o contato
- * já ter chegado, e quem sai antes continua sendo um lead legítimo — com menos
- * informação, e o score dele diz isso.
+ * Tudo continua anulável, e não é mais porque se pode pular: o formulário
+ * passou a exigir resposta em toda pergunta. É anulável porque o BANCO precisa
+ * aceitar o que vier — um lead importado de outra origem, um registro antigo,
+ * uma linha inserida à mão. Nulo aqui significa "não sabemos", e a régua trata
+ * isso como zero em vez de fingir uma média.
  *
  * `trava` é lista porque a pergunta aceita várias marcações. As outras são uma
  * escolha só, mas cabem texto livre quando a pessoa escolheu "Outro".

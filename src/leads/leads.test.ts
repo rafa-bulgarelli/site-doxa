@@ -97,18 +97,30 @@ describe('score', () => {
     expect(duas.dor).toBe(10);
   });
 
-  it('a intenção sobe com o que a pessoa se deu ao trabalho de responder', () => {
-    const cru = eixosDo(base);
-    const completo = eixosDo({
+  it('a presença é binária: existe perfil para abrir, ou não existe', () => {
+    // Ela virou binária quando a pergunta do rosto saiu da ficha. O teste
+    // registra a decisão: se alguém devolver nuance ao eixo, ele acusa.
+    expect(eixosDo({ ...base, arroba: '@x' }).presenca).toBe(9);
+    expect(eixosDo({ ...base, arroba: null }).presenca).toBe(0);
+  });
+
+  it('a régua tem seis eixos, e nenhum deles é constante para todo lead', () => {
+    // O eixo que valia o mesmo para todo mundo (INTENÇÃO, quando o formulário
+    // tinha "Pular") saiu. Este teste impede que outro entre no lugar dele.
+    const magro = eixosDo(base);
+    const cheio = eixosDo({
       ...base,
-      email: 'a@b.com',
       arroba: '@x',
+      investimento: 'Mais de R$ 5.000',
       segmento: 'Advocacia',
-      faturamento: 'R$ 50 a 200 mil',
-      trava: ['Não tenho tempo'],
+      faturamento: 'Mais de R$ 5 milhões',
+      trava: ['Já paguei agência e não deu certo'],
     });
-    expect(cru.intencao).toBe(0);
-    expect(completo.intencao).toBe(10);
+    const eixos = Object.keys(magro) as (keyof typeof magro)[];
+    expect(eixos).toHaveLength(6);
+    for (const eixo of eixos) {
+      expect(cheio[eixo], `eixo constante: ${eixo}`).toBeGreaterThan(magro[eixo]);
+    }
   });
 
   it('todo eixo fica entre 0 e 10, com qualquer combinação', () => {
