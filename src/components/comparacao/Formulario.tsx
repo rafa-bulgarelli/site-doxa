@@ -640,13 +640,23 @@ export function Formulario({
    */
   const turnstile = usarTurnstile(passo > 0);
 
-  const provaDeHumano = (): ProvaDeHumano => ({
+  /*
+   * A prova, montada no instante do envio — e ela ESPERA o token.
+   *
+   * Medido num navegador de verdade: a Cloudflare leva uns cinco segundos para
+   * resolver. Quem atravessar o formulário mais rápido do que isso chegaria ao
+   * envio sem token, e seria recusado por uma camada que existe para barrar
+   * robô. Alguns décimos de segundo de espera valem mais do que um lead
+   * perdido por pressa.
+   *
+   * O token é lido AGORA e não guardado: ele vale cinco minutos, e este
+   * formulário tem nove passos — quem lê com calma mandaria um token vencido se
+   * ele fosse capturado no começo.
+   */
+  const provaDeHumano = async (): Promise<ProvaDeHumano> => ({
     armadilha,
     levou: Date.now() - nasceuEm.current,
-    // Lido no INSTANTE do envio, e não guardado: o token da Cloudflare vale
-    // cinco minutos, e este formulário tem nove passos — quem demora mandaria
-    // um token vencido se ele fosse capturado no começo.
-    token: turnstile.token,
+    token: await turnstile.esperarToken(),
   });
 
   /**
@@ -699,7 +709,15 @@ export function Formulario({
     if (jaMandou.current) return;
     jaMandou.current = true;
     setEnviando(true);
-    void gravarLead(montarLead(cortado), provaDeHumano()).finally(() => setEnviando(false));
+    /*
+     * A tela vira ANTES do envio terminar, e é de propósito: a pessoa já fez a
+     * parte dela, e segurá-la olhando um botão girando por causa de um captcha
+     * e de um banco seria cobrar por um trabalho que é nosso. O que acontecer
+     * daqui para a frente é problema do depósito, que tem fila e nova tentativa.
+     */
+    void provaDeHumano()
+      .then((prova) => gravarLead(montarLead(cortado), prova))
+      .finally(() => setEnviando(false));
     setSentido(1);
     setPasso(cortado ? CORTADO : RECEBIDO);
   };
