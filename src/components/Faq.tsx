@@ -5,6 +5,7 @@ import { Bolinhas, type Ponto } from './faq/Bolinhas';
 import { CARGA, CampoPergunta, MOLA } from './faq/CampoPergunta';
 import { Revela } from './faq/Revela';
 import { encontra } from './faq/busca';
+import { usarNaTela } from '../hooks/usarNaTela';
 import { ABERTURA, DESTAQUES, DUVIDAS, ESPERA, SEM_RESPOSTA, type Duvida } from './faq/config';
 import { CORES, SEM_COR, corDaDuvida } from './faq/cores';
 import { MotionButton } from './ui/MotionButton';
@@ -266,6 +267,11 @@ export function Faq() {
   const arDoPedido = useArDoPedido(secaoRef);
 
   const [rascunho, setRascunho] = useState('');
+  /* O halo desfocado da frase de abertura — ver o comentário na `<p>` lá
+     embaixo. Margem zero e metade da frase à vista: aqui não se quer
+     antecedência nenhuma, quer-se saber se há alguém olhando. */
+  const [dica, setDica] = useState<HTMLParagraphElement | null>(null);
+  const dicaNaTela = usarNaTela(dica, '0px', 0.5);
   const [trocas, setTrocas] = useState<readonly Troca[]>([]);
   // Contador em vez do tamanho da lista: a chave do React tem de ser única para
   // sempre, e um índice se repete assim que a lista muda de forma.
@@ -673,7 +679,31 @@ export function Faq() {
                  * `text-[#F4F1E8]` fica de rede: se o navegador não recortar o
                  * fundo na forma do texto, a frase aparece em creme em vez de
                  * sumir. */}
-                <p className="texto-aceso-siri font-serif text-[24px] leading-none tracking-[-0.02em] text-[#F4F1E8] md:text-[36px]">
+                {/*
+                 * `sem-halo` enquanto a frase não aparece de verdade.
+                 *
+                 * O halo é `filter: drop-shadow` ANIMADO — dois desfoques, de 9 e
+                 * de 22 pixels, redesenhados a cada quadro. Desfoque animado
+                 * sobre texto é a conta mais cara que esta página paga: o
+                 * navegador rasteriza a frase inteira e a borra sessenta vezes
+                 * por segundo, e numa tela de densidade 3 isso é área de sobra.
+                 *
+                 * O FAQ vem logo abaixo do formulário. Preenchendo o pedido, o
+                 * que existe desta frase na tela é a borda de cima — e ela
+                 * cobrava o preço cheio o tempo todo, para ninguém.
+                 *
+                 * A troca é a mesma que o cartão do pedido já faz, e a variante
+                 * já existia no `index.css`: a corrida da cor continua idêntica,
+                 * pixel a pixel; o que sai é o desfoque. Metade da frase à vista
+                 * e o halo volta — quem está LENDO isto vê exatamente o que
+                 * sempre viu.
+                 */}
+                <p
+                  ref={setDica}
+                  className={`texto-aceso-siri font-serif text-[24px] leading-none tracking-[-0.02em] text-[#F4F1E8] md:text-[36px] ${
+                    dicaNaTela ? '' : 'sem-halo'
+                  }`}
+                >
                   {ABERTURA.dica}
                 </p>
               </div>

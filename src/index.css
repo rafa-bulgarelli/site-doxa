@@ -1467,7 +1467,31 @@ html::-webkit-scrollbar {
      não existir no navegador, a frase aparece em creme em vez de sumir. */
   color: transparent;
   -webkit-text-fill-color: transparent;
-  animation: texto-siri 6s linear infinite;
+  /*
+   * ─── VINTE ATUALIZAÇÕES POR SEGUNDO, E NÃO SESSENTA ────────────────────────
+   *
+   * `steps` em vez de `linear`, e é a única otimização desta página que se paga
+   * em pixels em vez de em código.
+   *
+   * Um degradê correndo por dentro de `background-clip: text` REPINTA a frase a
+   * cada mudança de valor: não há como o compositor ajudar, porque o que muda é
+   * a tinta e não a posição do objeto. A sessenta quadros por segundo isso é
+   * sessenta rasterizações de texto por segundo, para sempre, enquanto a frase
+   * estiver na tela.
+   *
+   * A conta do passo: o fundo mede 200% e a posição vai de 0 a 200%, ou seja a
+   * fita anda DUAS larguras do elemento em seis segundos. Numa frase de 300px
+   * são 100px por segundo — a 20 por segundo, cada passo mede 5px. As bandas do
+   * degradê têm 86px, então um passo é 6% de uma banda: a cor de um quadro para
+   * o outro muda menos do que a diferença entre dois tons vizinhos do gradiente.
+   * É por isso que ele não serrilha.
+   *
+   * `steps(20)` e não `steps(120)` porque `texto-siri` tem SETE quadros-chave —
+   * seis intervalos —, e a função vale dentro de cada intervalo: 6 x 20 = 120
+   * passos nos seis segundos. A irmã sem halo tem dois quadros-chave e um
+   * intervalo só, e por isso pede o número cheio, lá embaixo.
+   */
+  animation: texto-siri 6s steps(20) infinite;
 }
 
 /* Sem a corrida, a fita para no começo: a frase continua colorida da esquerda
@@ -1520,6 +1544,9 @@ html::-webkit-scrollbar {
 
 .texto-aceso-siri.sem-halo {
   animation-name: texto-siri-limpo;
+  /* Um intervalo só (`from`/`to`) contra os seis da irmã: o número de passos é o
+     total, e não o de dentro de cada trecho. Os mesmos 20 por segundo. */
+  animation-timing-function: steps(120);
 }
 
 @media (prefers-reduced-motion: reduce) {
