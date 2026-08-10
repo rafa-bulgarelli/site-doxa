@@ -7,6 +7,20 @@ export default {
         primary: '#DEDBC8',
         // Doxa is strictly monochrome: every value here has R=G=B, so no hue
         // can leak into the UI. Colour is only allowed to come from assets.
+        //
+        // ─── A ÚNICA COISA COLORIDA DA INTERFACE, E ELA NÃO MORA AQUI ────────
+        //
+        // São as três bandeiras da linha de idiomas do menu do topo, desenhadas
+        // em `components/cabecalho/bandeiras.tsx` com as cores oficiais de cada
+        // país. Bandeira desbotada não é bandeira discreta, é bandeira errada.
+        //
+        // Houve mais: um ponto verde de "no ar" e um disco laranja na pílula.
+        // Os dois saíram a pedido do dono, e com o verde saiu o token `sinal`
+        // que morava neste objeto — classe que ninguém usa não é reserva para o
+        // futuro, é uma regra falsa que a próxima pessoa lê como permissão.
+        //
+        // A fronteira é o menu. Fora dele o site é monocromático, e cor que
+        // vaze para uma seção, um botão ou um card é conversa com o dono.
         doxa: {
           bg: '#000000',
           surface: '#0D0D0D',
@@ -39,29 +53,6 @@ export default {
           // with the tile black going from 60% back to 50%, because a darker
           // floor under the same veil was dimming each video twice.
           stage: '#0E0E0E',
-
-          // ─── ONDE A REGRA ACIMA NÃO VALE ──────────────────────────────────
-          //
-          // Todo valor deste objeto tem R=G=B, menos este. E ele não está
-          // sozinho: a pílula do menu do topo é o UM lugar do site onde a cor
-          // entra, por decisão do dono, e lá dentro há três coisas coloridas.
-          //
-          //   · este ponto verde, antes de "Viralize agora";
-          //   · o disco laranja da pílula (um degradê do Tailwind, escrito no
-          //     `MenuDoxa`, não aqui);
-          //   · as três bandeiras da linha de idiomas (`hero/bandeiras.tsx`).
-          //
-          // O verde se paga porque ali não é decoração, é VOCABULÁRIO — a
-          // bolinha diz "no ar, agora" numa linguagem que ninguém precisa
-          // aprender, e o site não tem outra forma de dizer isso sem gastar uma
-          // frase. Bandeira desbotada, pela mesma lógica, não é bandeira
-          // discreta: é bandeira errada.
-          //
-          // A FRONTEIRA CONTINUA EXISTINDO, e é o menu. Fora dele o site é
-          // monocromático e nada aqui autoriza um acento numa seção, num botão
-          // ou num card. Cor que vaze da pílula para a página é conversa com o
-          // dono, não decisão de implementação.
-          sinal: '#4ADE80',
         },
       },
       fontFamily: {
