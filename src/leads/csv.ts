@@ -10,7 +10,7 @@ import type { Lead } from './tipos';
 
 const COLUNAS = [
   'Nome', 'WhatsApp', 'E-mail', 'Instagram', 'Caminho', 'Investimento', 'Origem',
-  'Nicho', 'Faturamento', 'Travas', 'Score', 'Estrelas',
+  'Nicho', 'Objetivo', 'Faturamento', 'Travas', 'Score', 'Estrelas',
   'Criado em', 'Baixado', 'Desqualificado',
 ] as const;
 
@@ -43,7 +43,7 @@ export function montarCsv(leads: readonly Lead[]): string {
     return [
       lead.nome, lead.whatsapp, lead.email, lead.arroba,
       lead.caminho === 'agencia' ? 'Agência licenciada' : 'Empresa',
-      lead.investimento, lead.origem, lead.segmento, lead.faturamento,
+      lead.investimento, lead.origem, lead.segmento, lead.objetivo, lead.faturamento,
       lead.trava?.join(' | '), pontos, estrelas,
       data(lead.criado_em), lead.baixado ? 'sim' : 'não', lead.desqualificado ? 'sim' : 'não',
     ].map(celula).join(',');

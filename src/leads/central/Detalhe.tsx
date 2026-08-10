@@ -146,12 +146,23 @@ export function Detalhe({ lead, aoFechar }: { lead: Lead; aoFechar: () => void }
             <Campo rotulo="Instagram" valor={lead.arroba} />
             <Campo rotulo="Investimento por mês" valor={lead.investimento} />
             <Campo rotulo="Nicho" valor={lead.segmento} />
+            <Campo rotulo="Objetivo com os vídeos" valor={lead.objetivo} />
             <Campo rotulo="Faturamento atual" valor={lead.faturamento} />
           </div>
 
-          {/* A trava é lista e ganha a linha inteira: com cinco marcadas, uma
-              coluna de metade da largura quebra cada uma em duas linhas. */}
-          <div className="mt-3">
+          {/*
+           * A trava mora no MESMO cartão dos outros campos, a pedido do dono.
+           *
+           * Ela era a única resposta solta na seção, sem a borda e o fundo que
+           * as seis de cima têm — e uma resposta sem a moldura das outras lê
+           * como observação de rodapé em vez de campo da ficha.
+           *
+           * O que ela mantém é a LINHA INTEIRA (`sm:col-span-2`): são até cinco
+           * marcações, e numa coluna de metade da largura cada uma quebraria em
+           * duas linhas. Mesmo cartão, largura dobrada — que é a diferença entre
+           * ser outra coisa e ser o mesmo tipo de coisa, maior.
+           */}
+          <div className="mt-3 min-w-0 rounded-xl border border-white/[0.08] bg-white/[0.02] px-4 py-3">
             <p className="text-[11px] uppercase tracking-[0.12em] text-white/35">
               O que trava hoje
             </p>

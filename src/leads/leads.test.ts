@@ -13,7 +13,7 @@ import { derivar, simplificar } from './filtrar';
 import { TEMPO_MINIMO, julgarSemRede } from './antibot';
 import { montarCsv } from './csv';
 import { eixosDo, estrelasDe, pontosDe, scoreDo } from './score';
-import { CORTE, FICHA, INVESTIMENTO } from '../components/comparacao/config';
+import { CORTE, FICHA, INVESTIMENTO, OUTRO } from '../components/comparacao/config';
 import type { Lead, LeadNovo } from './tipos';
 
 const base: LeadNovo = {
@@ -26,6 +26,7 @@ const base: LeadNovo = {
   desqualificado: false,
   origem: 'Formulário do site',
   segmento: null,
+  objetivo: null,
   faturamento: null,
   trava: null,
 };
@@ -88,6 +89,44 @@ describe('score', () => {
       expect(verba, `faixa sem nota: ${faixa}`).toBeGreaterThan(0);
       expect(escala, `faixa sem escala: ${faixa}`).toBeGreaterThan(0);
     }
+  });
+
+  it('todo objetivo tem nota — a mesma guarda das duas escadas', () => {
+    // `OUTRO` fica de fora de propósito: ele nunca chega ao lead. O que sai do
+    // formulário quando alguém o marca é o texto que a pessoa escreveu, e texto
+    // livre não tem como estar numa tabela.
+    const objetivos = (FICHA.find((f) => f.chave === 'objetivo')?.opcoes ?? []).filter(
+      (o) => o !== OUTRO,
+    );
+    expect(objetivos.length).toBeGreaterThan(0);
+    for (const objetivo of objetivos) {
+      const { fit } = eixosDo({ ...base, objetivo });
+      expect(fit, `objetivo sem nota na régua: ${objetivo}`).toBeGreaterThan(0);
+    }
+  });
+
+  it('a pergunta nova NÃO rebaixa quem chegou antes dela', () => {
+    /*
+     * A guarda que importa nesta mudança. Todo lead que já está no banco tem
+     * `objetivo: null`, e o `fit` deles não pode mudar por causa de uma pergunta
+     * que ninguém teve como responder. Média das fontes PRESENTES, não das
+     * possíveis.
+     */
+    const antigo = eixosDo({ ...base, segmento: 'Advocacia' });
+    expect(antigo.fit).toBe(9);
+
+    // E com a resposta nova, as duas fontes contam: (9 + 10) / 2 = 9,5 → 10.
+    const novo = eixosDo({ ...base, segmento: 'Advocacia', objetivo: 'Vender mais' });
+    expect(novo.fit).toBe(10);
+
+    // Só o objetivo, sem nicho conhecido: lê o que sobrou, sem dividir por dois.
+    const soObjetivo = eixosDo({ ...base, objetivo: 'Fazer a marca ser conhecida' });
+    expect(soObjetivo.fit).toBe(7);
+  });
+
+  it('texto livre em "Outro" não pontua, e também não derruba o nicho', () => {
+    const comLivre = eixosDo({ ...base, segmento: 'Advocacia', objetivo: 'Quero abrir uma filial' });
+    expect(comLivre.fit).toBe(9);
   });
 
   it('a dor é a maior trava, mais um ponto por trava extra', () => {

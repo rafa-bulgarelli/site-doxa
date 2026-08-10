@@ -38,6 +38,9 @@ create table if not exists public.leads (
   -- ── A ficha opcional. Tudo anulável: ela é pedida DEPOIS do contato e é
   --    pulável inteira, então "não respondeu" é um estado legítimo e comum.
   segmento text,
+  -- O que a pessoa quer que os vídeos façam. Entrou depois dos primeiros leads,
+  -- então `null` aqui não é falha de preenchimento: é lead anterior à pergunta.
+  objetivo text,
   faturamento text,
   trava text[],
 
@@ -119,6 +122,11 @@ create policy "time marca"
 --
 --   alter table public.leads add column if not exists ip_hash text;
 --   create index if not exists leads_ip_hash_idx on public.leads (ip_hash, criado_em desc);
+--   alter table public.leads add column if not exists objetivo text;
+--
+-- O `/api/lead` sobrevive a qualquer uma destas faltando: ele tira a coluna que
+-- o banco não conhece e grava o resto. O lead nunca se perde por migração
+-- atrasada — o que se perde é o campo, e só até a linha acima rodar.
 --
 -- ─────────────────────────────────────────────────────────────────────────────
 -- A PORTA JÁ ESTÁ FECHADA (09/08/2026). Se um dia alguém precisar conferir:
