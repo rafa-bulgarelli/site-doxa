@@ -1,13 +1,13 @@
 import { CommandMenu, type SecaoDeMenu } from '../ui/CommandMenu';
 import { IDIOMAS, useIdioma, type Idioma, type PorIdioma } from '../../idioma';
-import type { HeroCase } from './cases';
+import { Bandeira } from './bandeiras';
 
 /**
  * ─── O MENU DO TOPO ──────────────────────────────────────────────────────────
  *
  * A `CommandMenu` não sabe o que é uma seção do site nem o que é um idioma.
  * Este arquivo é quem sabe: ele traduz a pílula genérica para o vocabulário
- * desta página — as seis seções, os três idiomas, a foto do case que está no ar.
+ * desta página — as seis seções e os três idiomas, com as bandeiras deles.
  *
  * ─── AS SEÇÕES SÃO AS DE VERDADE ─────────────────────────────────────────────
  *
@@ -85,6 +85,8 @@ interface TextoDoMenu {
   secoes: string;
   idiomas: string;
   nav: string;
+  /** Só para leitor de tela: o "+" é forma, e forma não se anuncia. */
+  abrir: string;
   rotulos: Readonly<Record<Secao, string>>;
 }
 
@@ -95,6 +97,7 @@ const TEXTO: PorIdioma<TextoDoMenu> = {
     secoes: 'Seções',
     idiomas: 'Idiomas',
     nav: 'Menu principal',
+    abrir: 'Abrir o menu',
     rotulos: {
       'Início': 'Início',
       'Como funciona': 'Como funciona',
@@ -110,6 +113,7 @@ const TEXTO: PorIdioma<TextoDoMenu> = {
     secoes: 'Sections',
     idiomas: 'Languages',
     nav: 'Main menu',
+    abrir: 'Open menu',
     rotulos: {
       'Início': 'Home',
       'Como funciona': 'How it works',
@@ -125,6 +129,7 @@ const TEXTO: PorIdioma<TextoDoMenu> = {
     secoes: 'Secciones',
     idiomas: 'Idiomas',
     nav: 'Menú principal',
+    abrir: 'Abrir el menú',
     rotulos: {
       'Início': 'Inicio',
       'Como funciona': 'Cómo funciona',
@@ -143,18 +148,16 @@ const NOME_DO_IDIOMA: PorIdioma<string> = {
   es: 'Español',
 };
 
-interface MenuDoxaProps {
-  /**
-   * O case que está no ar no canvas do hero.
-   *
-   * O quadradinho da pílula mostra a foto DESTE cliente e a linha de status diz
-   * quem ele é — então o menu não é enfeite: ele carrega prova, e ela troca
-   * junto com o deck lá embaixo.
-   */
-  caso: HeroCase;
-}
-
-export function MenuDoxa({ caso }: MenuDoxaProps) {
+/**
+ * O menu não recebe nada.
+ *
+ * Ele já recebeu: a foto do case ativo entrava aqui como prop e era o único
+ * motivo de esta peça saber que existe um deck de clientes lá embaixo. Saiu a
+ * pedido do dono — "menos é mais" —, e com ela saiu o acoplamento inteiro. O
+ * `Hero` deixou de precisar passar o case adiante, e o menu passou a ser uma
+ * peça que só depende do idioma.
+ */
+export function MenuDoxa() {
   const [idioma, trocarIdioma] = useIdioma();
   const texto = TEXTO[idioma];
 
@@ -171,6 +174,7 @@ export function MenuDoxa({ caso }: MenuDoxaProps) {
       grade: true,
       itens: IDIOMAS.map((valor: Idioma) => ({
         nome: NOME_DO_IDIOMA[valor],
+        icone: <Bandeira idioma={valor} />,
         centrado: true,
         ativo: valor === idioma,
         // O painel fica aberto: a única confirmação de que o clique valeu é o
@@ -186,71 +190,59 @@ export function MenuDoxa({ caso }: MenuDoxaProps) {
     <CommandMenu
       id="menu-doxa"
       rotuloNav={texto.nav}
+      rotuloAbrir={texto.abrir}
       /* Fechada, ela é o buraco que `Hero.tsx` reservou no cabeçalho — as duas
          medidas têm de bater. Aberta, cresce para a ESQUERDA, porque o
          contêiner que a segura é ancorado à direita: é assim que o painel ganha
          largura para a grade de três idiomas sem empurrar botão nenhum.
 
-         Os dois números saíram de MEDIÇÃO, não de estimativa. A linha do
-         cabeçalho é `overflow-hidden`, então texto que não cabe some sem aviso —
-         e a frase mais comprida dos três idiomas é o espanhol "Hazte viral
-         ahora". Medido no Chrome: 88 px na Almarai e 91 px na reserva
-         sans-serif, o que dá 165 px de conteúdo no celular (sem a tecla) e
-         203 px no desktop (com ela). Daí 176 e 224 — folga de 11 px e de 21 px
-         sobre o PIOR caso, que é o espanhol antes de a webfont chegar.
+         Os números saíram de MEDIÇÃO, não de estimativa. A frase mais comprida
+         dos três idiomas é o espanhol "Hazte viral ahora": 88 px na Almarai e
+         91 px na reserva sans-serif, medidos no Chrome. Com o disco de 40 px, o
+         "+" de 28 e os recuos, o conteúdo pede 195 px — daí os 208 (13rem).
 
-         No celular a folga é vazio no fim da pílula, e por isso ela é curta. No
-         desktop ela é o respiro entre o texto e a tecla, que se encostassem
-         ficariam ilegíveis — ali a folga maior é o ponto. */
-      larguraFechada="max-w-44 md:max-w-56"
+         O `min()` é o que salva o telefone estreito. 208 px fixos somados ao
+         logo (91), aos recuos (40) e ao vão (8) dão 347, e uma tela de 320 px
+         ganharia rolagem HORIZONTAL — o defeito mais feio que um cabeçalho pode
+         ter. Com o `calc`, a pílula cede o que falta abaixo de 352 px de tela e
+         mantém os 208 acima disso. Abaixo, quem cede é a linha de status, que
+         tem reticências e não corte seco. */
+      larguraFechada="max-w-[min(13rem,calc(100vw-9rem))]"
       larguraAberta="max-w-[min(20rem,calc(100vw-2.5rem))]"
       titulo={texto.titulo}
       secoes={secoes}
-      avatar={<AvatarDoCase caso={caso} />}
+      avatar={<DiscoLaranja />}
       status={[
-        <span key="viralize" className="flex items-center gap-1.5">
-          {/* O ÚNICO pixel colorido do site. `tailwind.config.js` explica a
-              exceção; `animate-pulse` é o que diz "agora" sem uma palavra. */}
+        <span key="viralize" className="flex min-w-0 items-center gap-1.5">
           <span className="h-1.5 w-1.5 shrink-0 animate-pulse rounded-full bg-doxa-sinal" />
-          {texto.viralize}
+          {/* `truncate` e `min-w-0` juntos, e os dois são necessários: um item
+              de flex não encolhe abaixo do próprio conteúdo sem o `min-w-0`, e
+              sem ele o `truncate` nunca teria o que truncar. É o que troca o
+              corte no meio da letra por reticências, no telefone estreito onde
+              a pílula cede largura. */}
+          <span className="truncate">{texto.viralize}</span>
         </span>,
-        caso.handle ?? caso.name,
       ]}
     />
   );
 }
 
 /**
- * A foto do cliente, no quadradinho da pílula.
+ * O disco laranja, exatamente o do demo do 21st.
  *
- * `photoThumbUrl` e não `photoUrl`: são 36 pixels na tela, e `cases.ts` conta
- * quanto custou servir o arquivo grande num espaço deste tamanho — 82 KB para
- * pintar 56 px. A miniatura de 168 px é exatamente esta caixa em densidade
- * tripla, e ela já está na rede por causa do deck de cases logo abaixo.
+ * Aqui estava a foto do cliente do case ativo, trocando junto com o deck. Saiu
+ * a pedido do dono: era mais uma coisa se mexendo num cabeçalho que já tem uma
+ * bolinha pulsando, e o menu não precisa provar nada — a prova é a seção
+ * inteira lá embaixo.
  *
- * Sem foto entregue, um degradê monocromático em vez de uma moldura vazia. A
- * pílula não pode encolher meia linha porque um case ainda não tem imagem.
+ * Sem conteúdo e sem rótulo: é forma, não informação. Um `aria-label` aqui
+ * faria o leitor de tela anunciar uma decoração antes do nome do menu.
  */
-function AvatarDoCase({ caso }: { caso: HeroCase }) {
-  if (caso.photoThumbUrl == null) {
-    return (
-      <span
-        aria-hidden
-        className="block h-9 w-9 shrink-0 rounded-2xl bg-gradient-to-br from-white/20 to-white/[0.04]"
-      />
-    );
-  }
-
+function DiscoLaranja() {
   return (
-    <img
-      src={caso.photoThumbUrl}
-      // Decorativa: quem é o cliente já está escrito na linha de status ao lado,
-      // e um `alt` com o nome dele faria o leitor de tela dizer duas vezes.
-      alt=""
+    <span
       aria-hidden
-      width={168}
-      height={168}
-      className="h-9 w-9 shrink-0 rounded-2xl object-cover"
+      className="block h-10 w-10 shrink-0 rounded-full bg-gradient-to-br from-orange-300 to-red-500"
     />
   );
 }

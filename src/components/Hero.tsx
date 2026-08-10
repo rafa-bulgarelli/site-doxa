@@ -151,18 +151,16 @@ export function Hero() {
               larga passa POR CIMA dos dois botões, e sem isso a área vazia dela
               engoliria o clique deles.
 
-              As larguras aqui e as que a `MenuDoxa` passa ao componente são o
-              mesmo par de medidas em dois lugares — `w-44/md:w-56` de um lado,
-              `max-w-44/md:max-w-56` do outro. Divergindo, a pílula não cabe no
-              buraco e o cabeçalho ganha um degrau. De onde saíram os dois
-              números, e por que são diferentes, está em `MenuDoxa.tsx`.
+              A largura aqui e a que a `MenuDoxa` passa ao componente são a mesma
+              medida escrita em dois lugares — `w-[min(...)]` de um lado,
+              `max-w-[min(...)]` do outro. Divergindo, a pílula não cabe no
+              buraco e o cabeçalho ganha um degrau. De onde saiu o número está
+              em `MenuDoxa.tsx`.
 
-              176 px cabem no telefone mais estreito que ainda importa: 20 de
-              recuo + 91 do logo + 8 de vão + 176 + 20 dão 315, contra os 320 de
-              um iPhone SE. */}
-          <div className="relative h-12 w-44 shrink-0 md:w-56">
+              A altura é 52: 40 do disco mais 6 de recuo em cima e embaixo. */}
+          <div className="relative h-[3.25rem] w-[min(13rem,calc(100vw-9rem))] shrink-0">
             <div className="pointer-events-none absolute right-0 top-0 flex w-80 max-w-[calc(100vw-2.5rem)] justify-end">
-              <MenuDoxa caso={activeCase} />
+              <MenuDoxa />
             </div>
           </div>
         </div>

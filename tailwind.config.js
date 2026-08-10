@@ -40,23 +40,27 @@ export default {
           // floor under the same veil was dimming each video twice.
           stage: '#0E0E0E',
 
-          // ─── A ÚNICA EXCEÇÃO À REGRA ACIMA ────────────────────────────────
+          // ─── ONDE A REGRA ACIMA NÃO VALE ──────────────────────────────────
           //
-          // Todo valor deste objeto tem R=G=B. Este não tem, e é o único do
-          // site que não tem: um ponto de 6 px na pílula do menu do topo, antes
-          // de "Viralize agora".
+          // Todo valor deste objeto tem R=G=B, menos este. E ele não está
+          // sozinho: a pílula do menu do topo é o UM lugar do site onde a cor
+          // entra, por decisão do dono, e lá dentro há três coisas coloridas.
           //
-          // A exceção foi pedida pelo dono e ela se paga porque verde ali não é
-          // decoração, é VOCABULÁRIO — a bolinha verde diz "no ar, agora" numa
-          // linguagem que ninguém precisa aprender, e o site inteiro não tem
-          // outra forma de dizer isso sem gastar uma frase. Foi considerada a
-          // alternativa monocromática (bolinha branca pulsando) e ela perde por
-          // um motivo simples: branco já é a cor de tudo neste menu, então o
-          // ponto não se destacaria de nada.
+          //   · este ponto verde, antes de "Viralize agora";
+          //   · o disco laranja da pílula (um degradê do Tailwind, escrito no
+          //     `MenuDoxa`, não aqui);
+          //   · as três bandeiras da linha de idiomas (`hero/bandeiras.tsx`).
           //
-          // O escopo é o ponto e nada mais. Isto NÃO é um token de acento à
-          // disposição: se aparecer uma segunda peça verde, a regra monocromática
-          // deixou de existir na prática e a conversa é outra — é com o dono.
+          // O verde se paga porque ali não é decoração, é VOCABULÁRIO — a
+          // bolinha diz "no ar, agora" numa linguagem que ninguém precisa
+          // aprender, e o site não tem outra forma de dizer isso sem gastar uma
+          // frase. Bandeira desbotada, pela mesma lógica, não é bandeira
+          // discreta: é bandeira errada.
+          //
+          // A FRONTEIRA CONTINUA EXISTINDO, e é o menu. Fora dele o site é
+          // monocromático e nada aqui autoriza um acento numa seção, num botão
+          // ou num card. Cor que vaze da pílula para a página é conversa com o
+          // dono, não decisão de implementação.
           sinal: '#4ADE80',
         },
       },
