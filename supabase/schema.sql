@@ -141,7 +141,7 @@ create policy "time marca"
 -- DEPOIS DE RODAR ISTO, FALTAM DOIS PASSOS NO PAINEL DO SUPABASE:
 --
 -- 1. Authentication → Users → Add user
---    E-mail: equipe@doxavira.com   (tem de bater com `CONTA_DO_TIME` no código)
+--    E-mail: equipe@doxaviral.com  (tem de bater com `CONTA_DO_TIME` no código)
 --    Senha:  a senha do time. Marque "Auto Confirm User".
 --
 -- 2. Authentication → Providers → Email

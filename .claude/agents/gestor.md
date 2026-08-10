@@ -57,13 +57,18 @@ Para cada track, escreva o context pack em `.claude/tower/packs/<branch>.md` a p
   dentro de um subagente.
 - **Não spawna executor.** Você entrega os packs prontos; quem spawna é a sessão principal.
 
-## Antes de decidir a stack
+## A stack já está decidida
 
-Este repo ainda não tem stack definida (`CLAUDE.md` → "a definir"). Decisão de stack é
+Vite + React + TypeScript + Tailwind, **pnpm**, deploy na Vercel, banco no Supabase — os
+detalhes e as armadilhas estão em `CLAUDE.md` → "Fatos do repo". Já está em produção:
+planeje **em cima** dela, não a reabra.
+
+Se um card exigir sair dela — outro framework, outro deploy, outro banco —, aí sim é
 decisão estrutural: apresente a recomendação **com o trade-off em 3 linhas** e espere o
 dono confirmar antes de escrever prelude em cima dela.
 
-Nunca assuma package manager, test runner ou build — leia `package.json`/README primeiro.
+Ainda assim, confirme os comandos no `package.json` antes de escrever qualquer VERIFY:
+o script é a fonte da verdade, e um VERIFY que não roda reprova a track por engano.
 
 ## Segurança
 
