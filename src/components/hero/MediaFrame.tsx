@@ -7,6 +7,15 @@ interface FrameProps {
   ratio: string;
   /** Null while the owner has not supplied this case's file. */
   src: string | null;
+  /**
+   * A mesma foto num tamanho intermediário, quando existe.
+   *
+   * Entra com `src` num `srcSet` para o navegador escolher — no telefone, a
+   * moldura tem cerca de 150 px e o arquivo grande é seis vezes maior do que
+   * cabe nela. Null cai no comportamento antigo, com `src` sozinho: um case
+   * sem variante gerada continua aparecendo, só que pesado.
+   */
+  midSrc?: string | null;
 }
 
 /**
@@ -34,7 +43,7 @@ function PendingFrame({ ratio, raised = false }: { ratio: string; raised?: boole
 }
 
 /** The client's photo — the raw material handed over at the start. */
-export function ClientPhoto({ ratio, src }: FrameProps) {
+export function ClientPhoto({ ratio, src, midSrc }: FrameProps) {
   if (!src) return <PendingFrame ratio={ratio} />;
 
   return (
@@ -42,6 +51,12 @@ export function ClientPhoto({ ratio, src }: FrameProps) {
       <img
         key={src}
         src={src}
+        /* As duas larguras reais dos arquivos, para o navegador escolher pela
+           densidade e pela largura que só ele conhece. O `sizes` descreve o
+           CSS: metade de uma coluna de 310px no telefone, 21% da janela da
+           tela larga em diante — os mesmos números que o `Hero` desenha. */
+        srcSet={midSrc ? `${midSrc} 480w, ${src} 888w` : undefined}
+        sizes={midSrc ? '(min-width: 768px) 21vw, 150px' : undefined}
         alt="Foto base enviada pelo cliente"
         className={MEDIA_CLASS}
         draggable={false}
