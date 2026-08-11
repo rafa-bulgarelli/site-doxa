@@ -116,43 +116,62 @@ export function Cabecalho() {
       }`}
     >
       {/* ─── O VIDRO ────────────────────────────────────────────────────────
-          Duas camadas e uma máscara, e cada peça tem uma função.
+          A faixa INTEIRA do cabeçalho, sempre. Quatro camadas.
 
-          O BORRÃO com saturação: `backdrop-blur` sozinho deixa o que passa por
-          baixo cinzento, porque desfocar mistura pixels vizinhos e puxa tudo
-          para a média. Devolver saturação é o que faz a parede de prova
-          continuar parecendo vídeo colorido atrás do vidro em vez de fumaça.
+          Ele já foi mascarado, dissolvendo na metade da altura para não cortar
+          o hero com uma tarja — e por isso não cobria a faixa toda. O dono
+          pediu a seção inteira, então a máscara saiu e o corte reto ganhou o
+          único remédio que não é esconder: uma linha de luz no pé (a quarta
+          camada), que transforma a borda em aresta de vidro em vez de fim
+          abrupto de retângulo.
 
-          O TINTO PRETO não é estética, é legibilidade, e os 55% saíram de
-          MEDIÇÃO. Sobre o hero ele é invisível — preto sobre preto. Sobre o
-          painel claro da comparação, que é creme, ele é a única coisa entre o
-          logo branco e um fundo quase branco. Lido no Chrome, o pixel atrás do
-          logo com o vidro ligado: a 40% dá 2,97:1 de contraste (ilegível), a
-          50% dá 4,00 (ainda abaixo do mínimo), a 55% dá 4,66 e passa. É o
-          primeiro valor que passa, e por isso é o escolhido — mais escuro que
-          isso deixa de ser vidro e vira tarja.
+          1. O BORRÃO com saturação. `backdrop-blur` sozinho deixa o que passa
+             por baixo cinzento, porque desfocar mistura pixels vizinhos e puxa
+             tudo para a média. Devolver saturação é o que faz o vídeo atrás do
+             vidro continuar parecendo vídeo em vez de fumaça.
 
-          O BRILHO DE CIMA é o único enfeite: uma lâmina de branco a 6% que
-          morre na metade da altura. É o que dá a impressão de uma borda de
-          vidro pegando luz, em vez de um retângulo fosco.
+          2. O TINTO BASE, a 25%. É o vidro EXISTINDO no topo da página, onde
+             não há nada rolando por baixo: sobre o preto do hero ele não
+             escurece nada (preto sobre preto), e o que se vê é o borrão comendo
+             o pontilhado e a luz da camada 3. Presente, e sem virar barra.
 
-          A MÁSCARA é o que impede tudo isso de virar uma tarja. Sem ela o vidro
-          termina numa linha reta atravessando o hero, e a primeira dobra — que
-          é uma composição, não uma página com barra — fica cortada em duas. Com
-          ela o efeito se dissolve antes de chegar ao fim.
+          3. O TINTO DE ROLAGEM, que soma até 55%. Aqui não é estética, é
+             legibilidade, e o número saiu de MEDIÇÃO. Sobre o painel creme da
+             comparação, este tinto é a única coisa entre o logo BRANCO e um
+             fundo quase branco. Lido no Chrome, o pixel atrás do logo: 40% dá
+             2,97:1 de contraste (ilegível), 50% dá 4,00 (ainda abaixo do
+             mínimo), 55% passa.
 
-          Acende ao SAIR DO TOPO. Parado no alto não há nada por baixo para
-          desfocar além do próprio fundo do hero, e o vidro ali só apareceria
-          como uma faixa mais clara sem motivo. Ele existe quando passa a ter
-          o que fazer. */}
-      <div
-        aria-hidden
-        className={`pointer-events-none absolute inset-0 -z-10 transition-opacity duration-500 ease-out [mask-image:linear-gradient(to_bottom,#000_45%,transparent)] ${
-          rolou ? 'opacity-100' : 'opacity-0'
-        }`}
-      >
-        <div className="absolute inset-0 bg-black/55 backdrop-blur-lg backdrop-saturate-150" />
+             Passa com folga MAIOR do que a que este comentário já registrou.
+             Ele dizia 4,66, e dizia a verdade da época: a máscara desbotava o
+             vidro a partir de 45% da altura, e 45% de 100px é exatamente a
+             linha do logo — a medição atravessava um fade parcial. Sem máscara,
+             o mesmo 55% lê 6,02:1. O tinto não mudou; o que mudou foi ele
+             chegar inteiro onde o logo está.
+
+             As duas camadas se COMPÕEM, não se substituem: 25% por baixo e 40%
+             por cima dão 1 − 0,75 × 0,60 = 0,55. É por isso que o segundo valor
+             é 40 e não 55.
+
+          4. AS DUAS LUZES. Uma lâmina de branco a 6% descendo do topo — a borda
+             de vidro pegando luz — e uma linha de 1px no pé, que só acende com
+             a rolagem. No topo da página ela não existe de propósito: é ela que
+             viraria a tarja atravessando a primeira dobra. */}
+      <div aria-hidden className="pointer-events-none absolute inset-0 -z-10">
+        <div className="absolute inset-0 bg-black/25 backdrop-blur-lg backdrop-saturate-150" />
+        <div
+          className={`absolute inset-0 bg-black/40 transition-opacity duration-500 ease-out ${
+            rolou ? 'opacity-100' : 'opacity-0'
+          }`}
+        />
         <div className="absolute inset-x-0 top-0 h-1/2 bg-gradient-to-b from-white/[0.06] to-transparent" />
+        {/* Gradiente e não `border-b`: a linha morre nas pontas em vez de bater
+            nas bordas da tela, que é o que a faz parecer luz e não moldura. */}
+        <div
+          className={`absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-white/[0.14] to-transparent transition-opacity duration-500 ease-out ${
+            rolou ? 'opacity-100' : 'opacity-0'
+          }`}
+        />
       </div>
 
       <a href="#" className="shrink-0">
