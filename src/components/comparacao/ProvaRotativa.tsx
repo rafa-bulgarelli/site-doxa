@@ -3,6 +3,7 @@ import { usarNaTela } from '../../hooks/usarNaTela';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { BadgeCheck } from 'lucide-react';
 import { REELS } from '../proof/reels';
+import { numeroNoIdioma, useIdioma, type PorIdioma } from '../../idioma';
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
@@ -65,7 +66,15 @@ function Perfil({ handle, verificado }: { handle: string; verificado: boolean })
  * pousar depois de terminar a leitura — e é justo aqui que ele termina, ao lado
  * do fio que sai para o formulário.
  */
+const TEXTO_PROVA_ROTATIVA: PorIdioma<{ jaPublicados: string; deViews: string }> = {
+  pt: { jaPublicados: 'Já publicados', deViews: 'de views' },
+  en: { jaPublicados: 'Already published', deViews: 'views' },
+};
+
 export function ProvaRotativa() {
+  const [idioma] = useIdioma();
+  const textoProva = TEXTO_PROVA_ROTATIVA[idioma];
+
   const parado = useReducedMotion() === true;
   const [indice, setIndice] = useState(0);
   const [caixa, setCaixa] = useState<HTMLDivElement | null>(null);
@@ -90,14 +99,14 @@ export function ProvaRotativa() {
     <div ref={setCaixa} className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
       {/* Caixa normal, a pedido do dono: em versalete o rótulo grita mais alto
           que o dado que ele apresenta, e é o dado que interessa. */}
-      <span className="text-[12px] font-medium tracking-[0.06em] text-black/60">Já publicados</span>
+      <span className="text-[12px] font-medium tracking-[0.06em] text-black/60">{textoProva.jaPublicados}</span>
 
       {/* Parado, a faixa não vira uma lista: ela mostra o primeiro e fica. Quem
           pediu menos movimento pediu menos movimento, não menos informação — e a
           lista inteira já está na parede de prova, uma seção acima. */}
       {parado ? (
         <span className="text-[15px] text-black/75">
-          <Perfil handle={atual.handle} verificado={atual.verified} /> · {atual.views} de views
+          <Perfil handle={atual.handle} verificado={atual.verified} /> · {numeroNoIdioma(atual.views ?? '', idioma)} {textoProva.deViews}
         </span>
       ) : (
         // `mode="wait"`: os dois cruzando no mesmo lugar viram um borrão de duas
@@ -111,7 +120,7 @@ export function ProvaRotativa() {
             transition={{ duration: 0.45, ease: EASE }}
             className="text-[15px] text-black/75"
           >
-            <Perfil handle={atual.handle} verificado={atual.verified} /> · {atual.views} de views
+            <Perfil handle={atual.handle} verificado={atual.verified} /> · {numeroNoIdioma(atual.views ?? '', idioma)} {textoProva.deViews}
           </motion.span>
         </AnimatePresence>
       )}

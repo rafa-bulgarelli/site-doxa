@@ -574,7 +574,13 @@ export function CommandMenu({
                   {secao.rotulo}
                 </motion.span>
                 {secao.grade ? (
-                  <motion.div className="grid grid-cols-3 gap-1">
+                  <motion.div
+                    className={
+                      /* O número de colunas é o número de fichas, até três:
+                         duas línguas em três colunas deixariam um vão morto no
+                         fim da linha, e o vão lê como ficha que não carregou. */
+                      secao.itens.length === 2 ? 'grid grid-cols-2 gap-1' : 'grid grid-cols-3 gap-1'
+                    }>
                     {secao.itens.map(desenharFicha)}
                   </motion.div>
                 ) : (

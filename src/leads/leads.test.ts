@@ -57,10 +57,10 @@ describe('score', () => {
     // O teste que teria pego a renomeação das faixas sozinho: se alguém mexer
     // no texto de uma faixa em `config.ts` e esquecer da tabela aqui, a verba
     // do lead vira zero em silêncio.
-    for (const faixa of INVESTIMENTO.faixas) {
+    for (const faixa of INVESTIMENTO.pt.faixas) {
       const { verba } = eixosDo({ ...base, investimento: faixa });
       expect(verba, `faixa sem nota na régua: ${faixa}`).toBeGreaterThanOrEqual(0);
-      if (faixa !== INVESTIMENTO.faixas[CORTE]) expect(verba).toBeGreaterThan(0);
+      if (faixa !== INVESTIMENTO.pt.faixas[CORTE]) expect(verba).toBeGreaterThan(0);
     }
   });
 
@@ -82,7 +82,7 @@ describe('score', () => {
   });
 
   it('toda faixa de faturamento tem nota — a mesma guarda da de investimento', () => {
-    const faixas = FICHA.find((f) => f.chave === 'faturamento')?.opcoes ?? [];
+    const faixas = FICHA.pt.find((f) => f.chave === 'faturamento')?.opcoes ?? [];
     expect(faixas.length).toBeGreaterThan(0);
     for (const faixa of faixas) {
       const { verba, escala } = eixosDo({ ...base, faturamento: faixa });
@@ -92,11 +92,11 @@ describe('score', () => {
   });
 
   it('todo objetivo tem nota — a mesma guarda das duas escadas', () => {
-    // `OUTRO` fica de fora de propósito: ele nunca chega ao lead. O que sai do
+    // `OUTRO.pt` fica de fora de propósito: ele nunca chega ao lead. O que sai do
     // formulário quando alguém o marca é o texto que a pessoa escreveu, e texto
     // livre não tem como estar numa tabela.
-    const objetivos = (FICHA.find((f) => f.chave === 'objetivo')?.opcoes ?? []).filter(
-      (o) => o !== OUTRO,
+    const objetivos = (FICHA.pt.find((f) => f.chave === 'objetivo')?.opcoes ?? []).filter(
+      (o) => o !== OUTRO.pt,
     );
     expect(objetivos.length).toBeGreaterThan(0);
     for (const objetivo of objetivos) {

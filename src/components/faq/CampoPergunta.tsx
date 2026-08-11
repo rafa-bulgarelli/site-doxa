@@ -12,6 +12,7 @@ import { ArrowUp } from 'lucide-react';
 import { ExemploVivo } from './ExemploVivo';
 import { usarNaTela } from '../../hooks/usarNaTela';
 import { CORES } from './cores';
+import { useIdioma, type PorIdioma } from '../../idioma';
 
 /**
  * As cores do campo aceso, entregues ao CSS.
@@ -229,6 +230,26 @@ function useExemploVivo(frases: readonly string[], ativo: boolean) {
  * Enter envia, Shift+Enter quebra linha. É a convenção de todo campo de conversa
  * e não precisa de legenda; o que precisaria de legenda é o contrário.
  */
+const TEXTO_CAMPO: PorIdioma<{
+  escreva: string;
+  escrevaAria: string;
+  abrir: string;
+  enviar: string;
+}> = {
+  pt: {
+    escreva: 'Escreva a sua pergunta…',
+    escrevaAria: 'Escreva a sua pergunta',
+    abrir: 'Escrever uma pergunta',
+    enviar: 'Enviar a pergunta',
+  },
+  en: {
+    escreva: 'Type your question…',
+    escrevaAria: 'Type your question',
+    abrir: 'Write a question',
+    enviar: 'Send the question',
+  },
+};
+
 export function CampoPergunta({
   valor,
   exemplos,
@@ -239,6 +260,9 @@ export function CampoPergunta({
   aoAbrir,
   aoDesistir,
 }: CampoPerguntaProps) {
+  const [idioma] = useIdioma();
+  const texto = TEXTO_CAMPO[idioma];
+
   const parado = useReducedMotion() === true;
   const campoRef = useRef<HTMLTextAreaElement>(null);
   /* `HTMLDivElement | null` e não `useRef<HTMLDivElement>(null)`: quem escreve
@@ -554,8 +578,8 @@ export function CampoPergunta({
             if (evento.key === 'Escape' && vazio) desistir();
           }}
           rows={1}
-          placeholder="Escreva a sua pergunta…"
-          aria-label="Escreva a sua pergunta"
+          placeholder={texto.escreva}
+          aria-label={texto.escrevaAria}
           aria-hidden={!aberto}
           tabIndex={aberto ? undefined : -1}
           style={{
@@ -596,7 +620,7 @@ export function CampoPergunta({
         <button
           type="button"
           onClick={abrir}
-          aria-label="Escrever uma pergunta"
+          aria-label={texto.abrir}
           aria-hidden={aberto}
           tabIndex={aberto ? -1 : undefined}
           style={{ transition: parado ? 'none' : `opacity 300ms ease-out, transform 300ms ${MOLA_CSS}` }}
@@ -643,7 +667,7 @@ export function CampoPergunta({
           type="button"
           onMouseDown={(evento) => evento.preventDefault()}
           onClick={aberto ? enviar : abrir}
-          aria-label={aberto ? 'Enviar a pergunta' : 'Escrever uma pergunta'}
+          aria-label={aberto ? texto.enviar : texto.abrir}
           className="absolute z-[10] flex items-center justify-center bg-[#F4F1E8] text-[#0B0B0B] transition-transform duration-300 hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black motion-reduce:transition-none motion-reduce:hover:scale-100"
           /* Tamanho, posição e RAIO calculados da caixa, a pedido do dono. Em
              classe do Tailwind isto seria `h-9 w-9 top-1.5 rounded-full`,

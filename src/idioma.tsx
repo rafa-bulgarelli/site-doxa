@@ -31,7 +31,7 @@ import {
  *    traz o seu, tipado por `Idioma`, e o compilador cobra os três.
  */
 
-export const IDIOMAS = ['pt', 'en', 'es'] as const;
+export const IDIOMAS = ['pt', 'en'] as const;
 
 export type Idioma = (typeof IDIOMAS)[number];
 
@@ -51,14 +51,34 @@ export type PorIdioma<T> = Readonly<Record<Idioma, T>>;
  * hifenização e a voz que um leitor de tela usa. Inglês e espanhol vão sem
  * região porque não temos preferência entre as variantes — declarar `en-US`
  * seria inventar uma que ninguém escolheu.
+ *
+ * O espanhol EXISTIU aqui e saiu por decisão do dono (10/08/2026): duas
+ * línguas de verdade valem mais que três com uma de mentira. Quem tinha
+ * `es` guardado no localStorage cai na detecção do navegador — `ehIdioma`
+ * recusa o valor velho sozinho.
  */
 const LANG: PorIdioma<string> = {
   pt: 'pt-BR',
   en: 'en',
-  es: 'es',
 };
 
 const CHAVE = 'doxa:idioma';
+
+/**
+ * Um número escrito à brasileira, no idioma pedido.
+ *
+ * Os números do site são STRINGS do dono — "3,4M", "1.300", "1.500" — e o
+ * contrato deles é não serem recalculados (`cases.ts` explica). Só que em
+ * inglês "1.500" lê como um e meio: o separador é informação, e mantê-lo em
+ * pt-BR numa frase em inglês troca o valor aos olhos do leitor.
+ *
+ * A troca é SÓ de pontuação — vírgula vira ponto e ponto vira vírgula — e por
+ * isso preserva o número por construção: nenhum dígito é tocado.
+ */
+export function numeroNoIdioma(numero: string, idioma: Idioma): string {
+  if (idioma !== 'en') return numero;
+  return numero.replace(/[.,]/g, (c) => (c === ',' ? '.' : ','));
+}
 
 function ehIdioma(valor: unknown): valor is Idioma {
   return typeof valor === 'string' && (IDIOMAS as readonly string[]).includes(valor);

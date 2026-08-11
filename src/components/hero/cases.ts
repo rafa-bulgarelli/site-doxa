@@ -1,3 +1,4 @@
+import type { PorIdioma } from '../../idioma';
 /**
  * The client cases the hero canvas cycles through.
  *
@@ -84,7 +85,7 @@ export interface HeroCase {
    * reel are different deliverables, and one label for both would undersell
    * whichever it did not describe.
    */
-  outputLabel: string;
+  outputLabel: PorIdioma<string>;
   /** Null until the owner hands over this case's numbers. */
   stats: CaseStats | null;
   /**
@@ -105,7 +106,7 @@ export const CASES: readonly HeroCase[] = [
     photoMidUrl: '/media/magalu-foto-480.avif',
     videoUrl: '/media/magalu-video.mp4',
     posterUrl: '/media/magalu-poster.avif',
-    outputLabel: 'Vídeo de SKU/Produto',
+    outputLabel: { pt: 'Vídeo de SKU/Produto', en: 'SKU/Product video'},
     stats: null,
     inlineHeader: true,
   },
@@ -117,7 +118,7 @@ export const CASES: readonly HeroCase[] = [
     photoMidUrl: '/media/core-foto-480.avif',
     videoUrl: '/media/core-video.mp4',
     posterUrl: '/media/core-poster.avif',
-    outputLabel: 'Vídeo viral',
+    outputLabel: { pt: 'Vídeo viral', en: 'Viral video'},
     // PENDENTE-DONO: sharpened from '+3M' / '+170k' on the owner's word. These
     // are the figures he gave for this post; they render wherever the case is
     // credited, so the two places that quote them cannot disagree.
@@ -132,7 +133,7 @@ export const CASES: readonly HeroCase[] = [
     photoMidUrl: '/media/uninova-foto-480.avif',
     videoUrl: '/media/uninova-video.mp4',
     posterUrl: '/media/uninova-poster.avif',
-    outputLabel: 'Vídeo viral',
+    outputLabel: { pt: 'Vídeo viral', en: 'Viral video'},
     stats: { views: '+2,5M', likes: '+111k', comments: null, reposts: null },
     inlineHeader: false,
   },

@@ -16,6 +16,7 @@ import { MANCHETE, TITULO_SECAO } from '../tipografia';
 import { DotGridSpotlight } from './hero/DotGridSpotlight';
 import { BordaViva } from './comparacao/BordaViva';
 import { FioConvite } from './comparacao/FioConvite';
+import { useIdioma } from '../idioma';
 import { Formulario } from './comparacao/Formulario';
 import {
   FATIA_CONTA,
@@ -43,6 +44,20 @@ import {
 
 /** A cor do papel — a única superfície clara da página. */
 const PAPEL = '#F4F1E8';
+
+/**
+ * O locale dos números e os conectores da conta riscada.
+ *
+ * "R$ 8.000 a 10.500/mês em uma agência" tem QUATRO peças que mudam de idioma:
+ * o separador de milhar, o "a" do intervalo, o "/mês" e o "em". Traduzir só as
+ * palavras deixaria "R$ 8.000 to 10.500" — número brasileiro em frase inglesa,
+ * que lê como oito ponto zero zero zero. O R$ fica: o custo é brasileiro e a
+ * moeda é um fato, não uma tradução.
+ */
+const CONTA_IDIOMA = {
+  pt: { locale: 'pt-BR', intervalo: 'a', em: 'em' },
+  en: { locale: 'en-US', intervalo: 'to', em: 'on' },
+} as const;
 
 /**
  * O respiro entre os blocos do painel escuro, e ele é UM só.
@@ -225,13 +240,21 @@ function Selo({ prefixo, escuro = false }: { prefixo: string; escuro?: boolean }
  * de milhar tem de existir durante a contagem, senão o valor pisca de quatro
  * para cinco caracteres no meio do caminho e a linha inteira dança.
  */
-function Contador({ ate, naTela }: { ate: number; naTela: boolean }) {
+function Contador({
+  ate,
+  naTela,
+  locale: localeDoContador = 'pt-BR',
+}: {
+  ate: number;
+  naTela: boolean;
+  locale?: string;
+}) {
   const parado = useReducedMotion() === true;
   // Zero, sempre — exceto para quem pediu menos movimento. A versão anterior
   // testava `!naTela` aqui, e `naTela` é falso no primeiro render por
   // construção: o valor nascia já no total e a contagem nunca acontecia.
   const bruto = useMotionValue(parado ? ate : 0);
-  const texto = useTransform(bruto, (v) => Math.round(v).toLocaleString('pt-BR'));
+  const texto = useTransform(bruto, (v) => Math.round(v).toLocaleString(localeDoContador));
 
   useEffect(() => {
     if (!naTela || parado) return;
@@ -305,15 +328,17 @@ function Conta({
   /** O `/mês`, que tem corpo próprio em cada um dos dois lugares. */
   unidade: string;
 }) {
+  const [idioma] = useIdioma();
   return (
     <span className={className}>
-      R$ <Contador ate={CUSTO_DE} naTela={naTela} /> a{' '}
-      <Contador ate={CUSTO_ATE} naTela={naTela} />
+      R$ <Contador ate={CUSTO_DE} naTela={naTela} locale={CONTA_IDIOMA[idioma].locale} />{' '}
+      {CONTA_IDIOMA[idioma].intervalo}{' '}
+      <Contador ate={CUSTO_ATE} naTela={naTela} locale={CONTA_IDIOMA[idioma].locale} />
       {/* O `/mês` em destaque, a pedido do dono, e o argumento é dele: no fim
           do dia o que dói não é o valor, é a recorrência dele. Um custo alto se
           engole uma vez; um custo alto TODO MÊS, sem resultado garantido, é o
           que faz a pergunta do título doer. */}
-      <span className={`align-baseline text-white/75 ${unidade}`}>{CUSTO_UNIDADE}</span>
+      <span className={`align-baseline text-white/75 ${unidade}`}>{CUSTO_UNIDADE[idioma]}</span>
     </span>
   );
 }
@@ -334,6 +359,8 @@ function useColunaEstreita() {
 }
 
 export function Comparacao() {
+  const [idioma] = useIdioma();
+
   const escuroRef = useRef<HTMLDivElement>(null);
   const claroRef = useRef<HTMLDivElement>(null);
   /**
@@ -565,14 +592,14 @@ export function Comparacao() {
               className={`font-serif ${TITULO_SECAO} font-normal leading-[1.05] tracking-[-0.02em] text-white sm:text-4xl md:text-6xl`}
             >
               <span className="sm:hidden">
-                {PERGUNTA_ESTREITA[0]}
+                {PERGUNTA_ESTREITA[idioma][0]}
                 <br />
-                {PERGUNTA_ESTREITA[1]}
+                {PERGUNTA_ESTREITA[idioma][1]}
               </span>
               <span className="hidden sm:inline">
-                {PERGUNTA[0]}
+                {PERGUNTA[idioma][0]}
                 <br />
-                {PERGUNTA[1]}
+                {PERGUNTA[idioma][1]}
               </span>
             </h2>
 
@@ -718,8 +745,8 @@ export function Comparacao() {
             style={parado ? undefined : { opacity: fechoOpacity, y: fechoY }}
             className={`${RESPIRO} font-serif text-3xl leading-[1.1] tracking-[-0.02em] md:text-[3.6rem]`}
           >
-            <span className="text-[#F4F1E8]/60">{SEM_GARANTIA[0]}</span>{' '}
-            <span className="texto-aceso text-white">{SEM_GARANTIA[1]}</span>
+            <span className="text-[#F4F1E8]/60">{SEM_GARANTIA[idioma][0]}</span>{' '}
+            <span className="texto-aceso text-white">{SEM_GARANTIA[idioma][1]}</span>
           </motion.p>
 
         </motion.div>
@@ -895,7 +922,7 @@ export function Comparacao() {
               quebrar sozinha e deixar "viraliza." pendurada — quebra sozinha
               parece de propósito. */}
           <h2 className={`mt-8 font-serif ${MANCHETE} leading-[0.95] tracking-[-0.03em] text-[#0B0B0B] md:text-[4.4rem] lg:whitespace-nowrap lg:text-[clamp(2.8rem,calc(6.13vw_-_4.9px),5.8rem)]`}>
-            {CONVITE[0]}
+            {CONVITE[idioma][0]}
             {/* A quebra só existe onde a frase não cabe numa linha. No
                 desktop ela sai, e o espaço que a substitui tem de ser
                 explícito — o JSX come o espaço em branco entre linhas.
@@ -909,7 +936,7 @@ export function Comparacao() {
                 no meio de uma linha, que é onde uma vírgula de sentido cai
                 quando ninguém força nada. */}
             <br className="hidden sm:inline lg:hidden" />{' '}
-            <span className="texto-aceso-tinta">{CONVITE[1]}</span>
+            <span className="texto-aceso-tinta">{CONVITE[idioma][1]}</span>
           </h2>
         </div>
 
@@ -950,13 +977,13 @@ export function Comparacao() {
                 do mesmo porte da pergunta. Com a manchete promovida à faixa,
                 ela abre a coluna — e é a segunda voz da seção, não a terceira. */}
             <p className="font-serif text-[1.9rem] leading-[1.08] tracking-[-0.02em] text-[#0B0B0B] md:text-[2.7rem]">
-              {GARANTIA[0]}
+              {GARANTIA[idioma][0]}
               <br />
               {/* A segunda linha era a apagada do par, e é ela que carrega a
                   garantia — o número impressiona, "ou seu dinheiro de volta" é
                   o que faz alguém acreditar nele. Em tinta cheia e com o brilho
                   em preto, ela passa a ser a linha mais pesada da coluna. */}
-              <span className="texto-aceso-tinta text-[#0B0B0B]">{GARANTIA[1]}</span>
+              <span className="texto-aceso-tinta text-[#0B0B0B]">{GARANTIA[idioma][1]}</span>
             </p>
 
             {/* ── A troca, e ela é o argumento do painel escuro sendo cancelado.
@@ -992,8 +1019,10 @@ export function Comparacao() {
                   parado={parado}
                   atraso={0.35}
                 >
-                  R$ {CUSTO_DE.toLocaleString('pt-BR')} a {CUSTO_ATE.toLocaleString('pt-BR')}
-                  {CUSTO_UNIDADE}
+                  R$ {CUSTO_DE.toLocaleString(CONTA_IDIOMA[idioma].locale)}{' '}
+                  {CONTA_IDIOMA[idioma].intervalo}{' '}
+                  {CUSTO_ATE.toLocaleString(CONTA_IDIOMA[idioma].locale)}
+                  {CUSTO_UNIDADE[idioma]}
                 </Riscado>
                 <br />
                 <Riscado
@@ -1002,7 +1031,7 @@ export function Comparacao() {
                   parado={parado}
                   atraso={0.6}
                 >
-                  em {TROCA_ANTES}
+                  {CONTA_IDIOMA[idioma].em} {TROCA_ANTES[idioma]}
                 </Riscado>
               </span>
 
@@ -1012,12 +1041,14 @@ export function Comparacao() {
                 parado={parado}
                 atraso={0.35}
               >
-                R$ {CUSTO_DE.toLocaleString('pt-BR')} a {CUSTO_ATE.toLocaleString('pt-BR')}
-                {CUSTO_UNIDADE} em {TROCA_ANTES}
+                R$ {CUSTO_DE.toLocaleString(CONTA_IDIOMA[idioma].locale)}{' '}
+                {CONTA_IDIOMA[idioma].intervalo}{' '}
+                {CUSTO_ATE.toLocaleString(CONTA_IDIOMA[idioma].locale)}
+                {CUSTO_UNIDADE[idioma]} {CONTA_IDIOMA[idioma].em} {TROCA_ANTES[idioma]}
               </Riscado>
 
               <p className="mt-2 font-serif text-[1.9rem] leading-tight tracking-[-0.02em] text-[#0B0B0B] md:text-[2.4rem]">
-                {TROCA_DEPOIS}
+                {TROCA_DEPOIS[idioma]}
               </p>
             </div>
 
@@ -1067,8 +1098,8 @@ export function Comparacao() {
                   pinta por cima de um estático, e sem isto a auréola do sinal
                   passaria na frente da frase a cada volta. */}
               <p className="texto-aceso-fraco relative font-serif text-[1.6rem] leading-tight tracking-[-0.02em] text-[#F4F1E8] md:text-[2rem]">
-                {FALTA[0]}{' '}
-                <span className="texto-aceso text-white">{FALTA[1]}</span>
+                {FALTA[idioma][0]}{' '}
+                <span className="texto-aceso text-white">{FALTA[idioma][1]}</span>
               </p>
             </div>
 

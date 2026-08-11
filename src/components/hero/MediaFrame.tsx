@@ -1,6 +1,28 @@
 import { useEffect, useRef, useState } from 'react';
 import { usarNaTela } from '../../hooks/usarNaTela';
 import { ImageOff, Volume2, VolumeX } from 'lucide-react';
+import { useIdioma, type PorIdioma } from '../../idioma';
+
+/** Os textos que só o leitor de tela e o `alt` veem. */
+const TEXTO_MIDIA: PorIdioma<{
+  fotoAlt: string;
+  videoAlt: string;
+  ligarSom: string;
+  calarSom: string;
+}> = {
+  pt: {
+    fotoAlt: 'Foto base enviada pelo cliente',
+    videoAlt: 'Vídeo vertical produzido para o cliente',
+    ligarSom: 'Ativar som do vídeo',
+    calarSom: 'Silenciar vídeo',
+  },
+  en: {
+    fotoAlt: 'Base photo sent by the client',
+    videoAlt: 'Vertical video produced for the client',
+    ligarSom: 'Unmute video',
+    calarSom: 'Mute video',
+  },
+};
 
 interface FrameProps {
   /** Ratio utility, e.g. `aspect-square` or `aspect-[9/16]`. */
@@ -44,6 +66,7 @@ function PendingFrame({ ratio, raised = false }: { ratio: string; raised?: boole
 
 /** The client's photo — the raw material handed over at the start. */
 export function ClientPhoto({ ratio, src, midSrc }: FrameProps) {
+  const [idioma] = useIdioma();
   if (!src) return <PendingFrame ratio={ratio} />;
 
   return (
@@ -57,7 +80,7 @@ export function ClientPhoto({ ratio, src, midSrc }: FrameProps) {
            tela larga em diante — os mesmos números que o `Hero` desenha. */
         srcSet={midSrc ? `${midSrc} 480w, ${src} 888w` : undefined}
         sizes={midSrc ? '(min-width: 768px) 21vw, 150px' : undefined}
-        alt="Foto base enviada pelo cliente"
+        alt={TEXTO_MIDIA[idioma].fotoAlt}
         className={MEDIA_CLASS}
         draggable={false}
         width={880}
@@ -77,6 +100,7 @@ export function ClientPhoto({ ratio, src, midSrc }: FrameProps) {
  * frame later, outside the gesture, and the browser would refuse it.
  */
 function VideoFrame({ ratio, src, poster }: { ratio: string; src: string; poster: string | null }) {
+  const [idioma] = useIdioma();
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const [muted, setMuted] = useState(true);
   const [no, setNo] = useState<HTMLVideoElement | null>(null);
@@ -128,7 +152,7 @@ function VideoFrame({ ratio, src, poster }: { ratio: string; src: string; poster
         loop
         playsInline
         preload="metadata"
-        aria-label="Vídeo vertical produzido para o cliente"
+        aria-label={TEXTO_MIDIA[idioma].videoAlt}
       />
       <button
         type="button"
@@ -138,7 +162,7 @@ function VideoFrame({ ratio, src, poster }: { ratio: string; src: string; poster
            slides out from under the cursor before the click resolves. */
         onPointerDown={(event) => event.stopPropagation()}
         className="absolute bottom-2 right-2 flex h-8 w-8 items-center justify-center rounded-full border border-white/[0.14] bg-black/50 text-white opacity-80 backdrop-blur-sm transition hover:bg-black/70 hover:opacity-100 focus-visible:opacity-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/60"
-        aria-label={muted ? 'Ativar som do vídeo' : 'Silenciar vídeo'}
+        aria-label={muted ? TEXTO_MIDIA[idioma].ligarSom : TEXTO_MIDIA[idioma].calarSom}
       >
         {muted ? (
           <VolumeX className="h-4 w-4" strokeWidth={1.75} />

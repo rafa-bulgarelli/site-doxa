@@ -1,4 +1,5 @@
 import { HREF_FAQ, HREF_FORMS } from '../../ancoras';
+import type { Idioma, PorIdioma } from '../../idioma';
 import { TROCA_DEPOIS } from '../comparacao/config';
 import { REELS, type Reel } from '../proof/reels';
 
@@ -160,14 +161,43 @@ export const PECAS: readonly { lugar: Lugar; reel: Reel }[] = LUGARES.map(
  *
  * "Entrar em contato" diz o que acontece ao clicar, e não mais que isso.
  */
-export const FECHO = {
-  titulo: 'Ninguém rola até aqui por acaso.',
-  linha: `Falta ${TROCA_DEPOIS.toLowerCase().replace(/\.$/, '')}.`,
-  publico: 'Tem um negócio? Atende vários? A porta é a mesma.',
-  acao: 'Entrar em contato',
+interface Fecho {
+  titulo: string;
+  linha: string;
+  publico: string;
+  acao: string;
   /** Onde o pedido mora — o mesmo destino do escape do FAQ. */
-  destino: HREF_FORMS,
+  destino: string;
+}
+
+/*
+ * A linha do meio continua DERIVADA de `TROCA_DEPOIS`, agora por idioma: a
+ * troca dita no "como funciona" e a dita aqui são a mesma frase, e uma cópia
+ * que o compilador mantém segue melhor que duas que um humano promete manter.
+ * Em inglês a concordância muda de forma — "all that's missing is" — mas o
+ * objeto da frase vem do mesmo lugar.
+ */
+const fechoEm = (idioma: Idioma): Fecho => {
+  const troca = TROCA_DEPOIS[idioma].replace(/\.$/, '');
+  if (idioma === 'en') {
+    return {
+      titulo: 'Nobody scrolls this far by accident.',
+      linha: `All that's missing is ${troca.toLowerCase()}.`,
+      publico: 'Run a business? Serve several? Same door either way.',
+      acao: 'Get in touch',
+      destino: HREF_FORMS,
+    };
+  }
+  return {
+    titulo: 'Ninguém rola até aqui por acaso.',
+    linha: `Falta ${troca.toLowerCase()}.`,
+    publico: 'Tem um negócio? Atende vários? A porta é a mesma.',
+    acao: 'Entrar em contato',
+    destino: HREF_FORMS,
+  };
 };
+
+export const FECHO: PorIdioma<Fecho> = { pt: fechoEm('pt'), en: fechoEm('en')};
 
 /**
  * Os links rápidos: âncoras que EXISTEM.
@@ -178,7 +208,17 @@ export const FECHO = {
  * destinos vêm de `ancoras.ts`, onde a string mora ao lado do elemento que a
  * carrega, em vez de serem escritos à mão aqui.
  */
-export const ATALHOS: readonly { rotulo: string; destino: string }[] = [
+const ATALHOS_PT: readonly { rotulo: string; destino: string }[] = [
   { rotulo: 'Perguntas', destino: HREF_FAQ },
   { rotulo: 'Falar com a gente', destino: HREF_FORMS },
 ];
+
+const ATALHOS_EN: readonly { rotulo: string; destino: string }[] = [
+  { rotulo: 'FAQ', destino: HREF_FAQ },
+  { rotulo: 'Talk to us', destino: HREF_FORMS },
+];
+
+export const ATALHOS: PorIdioma<readonly { rotulo: string; destino: string }[]> = {
+  pt: ATALHOS_PT,
+  en: ATALHOS_EN,
+};

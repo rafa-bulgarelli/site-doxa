@@ -2,6 +2,7 @@ import { useCallback, useRef, useState } from 'react';
 import { motion, useInView, useReducedMotion } from 'framer-motion';
 import { Pause, Play } from 'lucide-react';
 import { useIsDesktop } from '../hooks/useIsDesktop';
+import { useIdioma } from '../idioma';
 import {
   CloneArt,
   OnboardingArt,
@@ -65,7 +66,7 @@ interface Step {
  * from his brief. The wording is mine. Read the sentences as a first pass — the
  * shape of the process is signed off, the phrasing is not.
  */
-const STEPS: readonly Step[] = [
+const STEPS_PT: readonly Step[] = [
   {
     number: '01',
     name: 'Onboarding',
@@ -92,6 +93,52 @@ const STEPS: readonly Step[] = [
     Art: OutputArt,
   },
 ];
+
+/*
+ * Os MESMOS três passos em inglês. `number` e `art` não mudam de idioma — a
+ * arte é a mesma máquina — e a ordem é contrato com o giro automático.
+ */
+const STEPS_EN: readonly Step[] = STEPS_PT.map((step, i) => ({
+  ...step,
+  ...[
+    {
+      name: 'Onboarding',
+      headline: 'We learn your business',
+      body: 'One meeting to map what you do, who you want to reach and what you expect from the videos.',
+    },
+    {
+      name: 'Clone creation',
+      headline: 'One photo and one audio clip become your clone',
+      body: 'You send a photo and a sample of your voice. The platform builds the clone that will record the videos in your place.',
+    },
+    {
+      name: 'Publishing',
+      headline: 'The video, ready to post',
+      body: 'Vertical, captioned, in feed format. You receive it and publish it on your profile.',
+    },
+  ][i],
+}));
+
+const STEPS: { pt: readonly Step[]; en: readonly Step[] } = {
+  pt: STEPS_PT,
+  en: STEPS_EN,
+};
+
+const TEXTO_SECAO = {
+  pt: {
+    titulo: 'Como funciona.',
+    subtitulo: 'Três passos, e só o primeiro pede o seu tempo.',
+    pausar: 'Pausar',
+    retomar: 'Retomar',
+  },
+  en: {
+    titulo: 'How it works.',
+    subtitulo: 'Three steps, and only the first one asks for your time.',
+    pausar: 'Pause',
+    retomar: 'Resume',
+  },
+} as const;
+
 
 /**
  * One panel of the row, and the thing that decides when its artwork plays.
@@ -322,6 +369,10 @@ function StepCard({
  * the honest way to depict a step rather than a filmed claim about one.
  */
 export function HowItWorks() {
+  const [idioma] = useIdioma();
+  const steps = STEPS[idioma];
+  const textoSecao = TEXTO_SECAO[idioma];
+
   const isDesktop = useIsDesktop();
   const [activeIndex, setActiveIndex] = useState(0);
   const [stoppedByVisitor, setStoppedByVisitor] = useState(false);
@@ -391,7 +442,7 @@ export function HowItWorks() {
    * would restart the very timer that is trying to fire it.
    */
   const finishTurn = useCallback(() => {
-    setActiveIndex((current) => (current + 1) % STEPS.length);
+    setActiveIndex((current) => (current + 1) % steps.length);
   }, []);
 
   return (
@@ -418,7 +469,7 @@ export function HowItWorks() {
               animate={parado ? undefined : noCabecalho ? { opacity: 1, y: 0 } : undefined}
               transition={{ ...MOLA, opacity: { duration: 0.7, ease: EASE } }}
             >
-              Como funciona.
+              {textoSecao.titulo}
             </motion.h2>
             <motion.p
               className="mt-4 max-w-xl text-sm text-white/60 md:text-base"
@@ -430,7 +481,7 @@ export function HowItWorks() {
                 opacity: { duration: 0.7, ease: EASE, delay: 0.08 },
               }}
             >
-              Três passos, e só o primeiro pede o seu tempo.
+              {textoSecao.subtitulo}
             </motion.p>
           </div>
 
@@ -461,7 +512,7 @@ export function HowItWorks() {
             ) : (
               <Pause className="h-3.5 w-3.5" strokeWidth={2} />
             )}
-            {stoppedByVisitor ? 'Retomar' : 'Pausar'}
+            {stoppedByVisitor ? textoSecao.retomar : textoSecao.pausar}
           </motion.button>
         </div>
 
@@ -469,7 +520,7 @@ export function HowItWorks() {
             pointer left it and the cycle carries on from there, rather than
             snapping back to a card the visitor has already moved past. */}
         <div ref={rowRef} className="mt-10 flex flex-col gap-4 md:mt-14 lg:h-[700px] lg:flex-row">
-          {STEPS.map((step, index) => (
+          {steps.map((step, index) => (
             <StepCard
               key={step.number}
               step={step}

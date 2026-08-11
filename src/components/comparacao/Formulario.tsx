@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { AnimatePresence, motion, useInView, useReducedMotion } from 'framer-motion';
 import { ArrowLeft, Check } from 'lucide-react';
 import { ID_CARTAO_PEDIDO } from '../../ancoras';
@@ -25,6 +25,7 @@ import { gravarLead } from '../../leads/deposito';
 import { ARMADILHA, type ProvaDeHumano } from '../../leads/antibot';
 import { usarTurnstile } from '../../leads/usarTurnstile';
 import type { LeadNovo } from '../../leads/tipos';
+import { useIdioma, type Idioma, type PorIdioma } from '../../idioma';
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
@@ -89,7 +90,7 @@ function mascaraTelefone(valor: string) {
  * quando a pessoa já não está começando e sim terminando. Perguntado primeiro,
  * ele é uma catraca na porta.
  */
-const PASSOS: readonly Passo[] = [
+const PASSOS_PT: readonly Passo[] = [
   {
     chave: 'caminho',
     rotulo: 'Caminho',
@@ -166,9 +167,9 @@ const PASSOS: readonly Passo[] = [
   },
   {
     chave: 'investimento',
-    rotulo: INVESTIMENTO.rotulo,
-    pergunta: INVESTIMENTO.pergunta,
-    dica: INVESTIMENTO.dica,
+    rotulo: INVESTIMENTO.pt.rotulo,
+    pergunta: INVESTIMENTO.pt.pergunta,
+    dica: INVESTIMENTO.pt.dica,
     /* O CORTE, e ele é o ÚLTIMO passo de propósito.
 
        Perguntado antes do nome, ele filtraria mais cedo e pouparia o tempo de
@@ -181,7 +182,7 @@ const PASSOS: readonly Passo[] = [
        Se o dono preferir poupar o tempo de quem não passa, mover este bloco
        para o topo do array é a mudança inteira — nada mais depende da posição
        dele. */
-    opcoes: INVESTIMENTO.faixas,
+    opcoes: INVESTIMENTO.pt.faixas,
     valida: (v) => (v.length === 0 ? 'Escolhe uma faixa.' : null),
   },
 ];
@@ -210,6 +211,163 @@ const SEM_PERFIL = 'ainda não tenho';
  * no banco vira "origem desconhecida" para sempre.
  */
 const ORIGEM = 'Formulário do site';
+
+/*
+ * ─── O FORMULÁRIO EM TRÊS IDIOMAS, COM UM BANCO SÓ ───────────────────────────
+ *
+ * A regra que governa tudo aqui: o que se GRAVA é sempre o texto canônico em
+ * português. `leads/score.ts` pontua o lead comparando a resposta com a faixa
+ * escrita em `config.ts`, e a Central lê essas mesmas strings — uma resposta
+ * gravada em inglês viraria verba zero em silêncio e uma tabela com dois
+ * vocabulários. Então a tradução acontece SÓ na tela: a opção exibida vem do
+ * idioma corrente, e o clique grava a irmã portuguesa dela, achada pelo índice
+ * (as listas dos três idiomas têm a mesma ordem por contrato, dito em
+ * `config.ts`).
+ *
+ * As mensagens de validação seguem o mesmo desenho ao contrário: `valida`
+ * continua devolvendo a mensagem em português — é UMA lógica, não três — e o
+ * dicionário abaixo a traduz na saída. Mensagem fora do dicionário passa como
+ * está, que é o comportamento de ontem.
+ */
+const ERROS: PorIdioma<Record<string, string>> = {
+  pt: {},
+  en: {
+    'Escolhe uma das duas.': 'Pick one of the two.',
+    'Escreve o seu nome.': 'Type your name.',
+    'Faltam dígitos. Com DDD, por favor.': 'Missing digits. Include the area code, please.',
+    'Número comprido demais.': 'Number is too long.',
+    'Falta o @ do perfil.': "Missing the profile's @.",
+    'Confere o e-mail?': 'Double-check the email?',
+    'Escolhe uma faixa.': 'Pick a range.',
+  },
+};
+
+interface TextoDePasso {
+  rotulo: string;
+  pergunta: string;
+  dica: string;
+  exemplo?: string;
+}
+
+const TEXTO_PASSOS: PorIdioma<Record<Passo['chave'], TextoDePasso>> = {
+  pt: Object.fromEntries(
+    PASSOS_PT.map((p) => [p.chave, { rotulo: p.rotulo, pergunta: p.pergunta, dica: p.dica, exemplo: p.exemplo }]),
+  ) as Record<Passo['chave'], TextoDePasso>,
+  en: {
+    caminho: {
+      rotulo: 'Path',
+      pergunta: 'Which one describes you best?',
+      dica: 'Just so the conversation starts in the right place.',
+    },
+    nome: {
+      rotulo: 'Name',
+      pergunta: 'What should we call you?',
+      dica: "So the first message doesn't start cold.",
+      exemplo: 'Your full name',
+    },
+    whatsapp: {
+      rotulo: 'WhatsApp',
+      pergunta: "What's your WhatsApp?",
+      dica: "That's where the consultant talks to you.",
+      exemplo: '(11) 98765-4321',
+    },
+    arroba: {
+      rotulo: 'Profile',
+      pergunta: "What's your business's @?",
+      dica: 'We look at the profile before we talk.',
+      exemplo: '@yourbusiness',
+    },
+    email: {
+      rotulo: 'Email',
+      pergunta: "What's your email?",
+      dica: "The backup route, for when WhatsApp doesn't answer.",
+      exemplo: 'voce@empresa.com.br',
+    },
+    investimento: {
+      rotulo: INVESTIMENTO.en.rotulo,
+      pergunta: INVESTIMENTO.en.pergunta,
+      dica: INVESTIMENTO.en.dica,
+    },
+  },
+};
+
+/** As opções que cada idioma MOSTRA — o que se grava segue sendo o PT. */
+const OPCOES_EXIBIDAS: PorIdioma<Partial<Record<Passo['chave'], readonly string[]>>> = {
+  pt: {},
+  en: {
+    caminho: ['I want my business to go viral', 'I want to become a licensed agency'],
+    investimento: INVESTIMENTO.en.faixas,
+  },
+};
+
+const TEXTO_UI: PorIdioma<{
+  continuar: string;
+  enviar: string;
+  pular: string;
+  voltarAria: string;
+  semPerfilBotao: string;
+  recebemos: string;
+  noWhats: string;
+  semPerfil: string;
+  escolheUma: string;
+  escreveQual: string;
+}> = {
+  pt: {
+    continuar: 'Continuar',
+    enviar: 'Enviar',
+    pular: 'Pular',
+    voltarAria: 'Voltar para a pergunta anterior',
+    recebemos: 'Recebemos.',
+    noWhats: 'No WhatsApp que você deixou,',
+    semPerfil: SEM_PERFIL,
+    semPerfilBotao: 'Ainda não tenho perfil da empresa',
+    escolheUma: 'Escolhe uma para seguir.',
+    escreveQual: 'Escreve qual é — ou tira o "Outro" e escolhe outra.',
+  },
+  en: {
+    continuar: 'Continue',
+    enviar: 'Submit',
+    pular: 'Skip',
+    voltarAria: 'Back to the previous question',
+    recebemos: 'Received.',
+    noWhats: 'On the WhatsApp you left:',
+    semPerfil: "I don't have one yet",
+    semPerfilBotao: "I don't have a business profile yet",
+    escolheUma: 'Pick one to continue.',
+    escreveQual: 'Type it in — or drop "Other" and pick one.',
+  },
+};
+
+/**
+ * Os passos como a TELA os mostra: a estrutura e a validação são as do
+ * canônico, e só o texto muda de idioma. `valida` devolve português e o
+ * dicionário traduz — uma lógica, três vozes.
+ */
+const passosEm = (idioma: Idioma): readonly Passo[] =>
+  PASSOS_PT.map((p) => {
+    const texto = TEXTO_PASSOS[idioma][p.chave];
+    return {
+      ...p,
+      rotulo: texto.rotulo,
+      pergunta: texto.pergunta,
+      dica: texto.dica,
+      exemplo: texto.exemplo ?? p.exemplo,
+      valida: (v: string) => {
+        const problema = p.valida(v);
+        if (problema == null) return null;
+        return ERROS[idioma][problema] ?? problema;
+      },
+    };
+  });
+
+/** O rótulo exibido para um valor canônico — o inverso do clique. */
+const exibirValor = (idioma: Idioma, chave: Passo['chave'], valor: string): string => {
+  const passo = PASSOS_PT.find((p) => p.chave === chave);
+  const exibidas = OPCOES_EXIBIDAS[idioma][chave];
+  if (passo?.opcoes == null || exibidas == null) return valor;
+  const indice = passo.opcoes.indexOf(valor);
+  return indice >= 0 ? (exibidas[indice] ?? valor) : valor;
+};
 
 /*
  * ─── O AVANÇO AUTOMÁTICO SAIU, e com ele o `RESPIRO_TOQUE` ───────────────────
@@ -264,14 +422,14 @@ const ORIGEM = 'Formulário do site';
  *
  * ── E ISTO CONSERTA UM DEFEITO QUE O DONO ENCONTROU
  *
- * Na estrutura antiga, `CORTADO` caía em `PASSOS.length + 1` — exatamente o
+ * Na estrutura antiga, `CORTADO` caía em `passos.length + 1` — exatamente o
  * índice em que o botão "Responder" da confirmação aterrissava ao avançar um
  * passo. Quem tinha passado no corte e clicava para responder a ficha via a
  * tela de "Obrigado pela sinceridade", que é a recusa. Com uma fila só, não há
  * mais índice entre a confirmação e nada: os dois fins ficam DEPOIS de tudo.
  */
-const TOTAL = PASSOS.length + FICHA.length;
-const FICHA_INICIO = PASSOS.length;
+const TOTAL = PASSOS_PT.length + FICHA.pt.length;
+const FICHA_INICIO = PASSOS_PT.length;
 const RECEBIDO = TOTAL;
 const CORTADO = TOTAL + 1;
 
@@ -354,6 +512,9 @@ export function Formulario({
     },
     [aoPrenderCartao],
   );
+  const [idioma] = useIdioma();
+  const ui = TEXTO_UI[idioma];
+  const passos = useMemo(() => passosEm(idioma), [idioma]);
   const [passo, setPasso] = useState(0);
   // `arroba` nasce com o `@` plantado — ver a nota do passo. Os outros nascem
   // vazios porque campo vazio é o estado honesto de uma pergunta não feita.
@@ -398,16 +559,18 @@ export function Formulario({
    */
   const naTela = useInView(cartaoRef, { amount: 0.5, once: true });
 
-  const atual = PASSOS[passo];
+  const atual = passos[passo];
   const naFicha = passo >= FICHA_INICIO && passo < TOTAL;
   /** O nome da etapa da vez, para a régua do topo. Vale nas duas metades. */
   const rotuloDoPasso =
-    passo < PASSOS.length
-      ? PASSOS[passo]?.rotulo
+    passo < passos.length
+      ? passos[passo]?.rotulo
       : naFicha
-        ? FICHA[passo - FICHA_INICIO]?.rotulo
+        ? FICHA[idioma][passo - FICHA_INICIO]?.rotulo
         : undefined;
-  const fichaAtual = naFicha ? FICHA[passo - FICHA_INICIO] : undefined;
+  const fichaAtual = naFicha ? FICHA[idioma][passo - FICHA_INICIO] : undefined;
+  /** A MESMA pergunta, na lista canônica: é dela que saem os valores gravados. */
+  const fichaCanonica = naFicha ? FICHA.pt[passo - FICHA_INICIO] : undefined;
 
   /*
    * O foco segue o passo — mas SÓ quando o passo muda de verdade.
@@ -459,7 +622,7 @@ export function Formulario({
      * dele já está inteiro — nome, WhatsApp, e-mail e perfil vêm antes —, então
      * o lead é gravado com a bandeira levantada e a tela vira a de recusa.
      */
-    if (atual.chave === 'investimento' && dados.investimento === INVESTIMENTO.faixas[CORTE]) {
+    if (atual.chave === 'investimento' && dados.investimento === INVESTIMENTO.pt.faixas[CORTE]) {
       concluir(true);
       return;
     }
@@ -503,7 +666,7 @@ export function Formulario({
      * fichas vazias — e quem decide o que vale mais é quem atende o telefone.
      */
     if (marcadas.length === 0) {
-      setErro('Escolhe uma para seguir.');
+      setErro(ui.escolheUma);
       return;
     }
 
@@ -515,9 +678,9 @@ export function Formulario({
      * consultor recebe uma ficha em que o nicho simplesmente não existe. Pior
      * do que não ter perguntado: a pessoa acredita que respondeu.
      */
-    if (fichaAtual.livre != null && marcadas.includes(OUTRO)) {
+    if (fichaAtual.livre != null && marcadas.includes(OUTRO.pt)) {
       if ((livres[fichaAtual.chave] ?? '').trim().length === 0) {
-        setErro('Escreve qual é — ou tira o "Outro" e escolhe outra.');
+        setErro(ui.escreveQual);
         return;
       }
     }
@@ -554,10 +717,10 @@ export function Formulario({
    */
   const respostaFinal = () =>
     Object.fromEntries(
-      FICHA.map((pergunta) => {
+      FICHA.pt.map((pergunta) => {
         const marcadas = respostas[pergunta.chave] ?? [];
         const resolvidas = marcadas
-          .map((opcao) => (opcao === OUTRO ? (livres[pergunta.chave] ?? '').trim() : opcao))
+          .map((opcao) => (opcao === OUTRO.pt ? (livres[pergunta.chave] ?? '').trim() : opcao))
           .filter((opcao) => opcao.length > 0);
         return [pergunta.chave, resolvidas];
       }),
@@ -590,7 +753,7 @@ export function Formulario({
     const uma = (lista: string[]) => (lista.length > 0 ? lista[0] : null);
     const arroba = dados.arroba.replace(/[@\s]/g, '');
     return {
-      caminho: dados.caminho === PASSOS[0].opcoes?.[1] ? 'agencia' : 'empresa',
+      caminho: dados.caminho === PASSOS_PT[0].opcoes?.[1] ? 'agencia' : 'empresa',
       nome: dados.nome.trim(),
       whatsapp: dados.whatsapp,
       email: dados.email.trim() || null,
@@ -846,7 +1009,7 @@ export function Formulario({
               alcançar as pernas dos glifos, e ela apagaria um `mb-6` posto no
               mesmo elemento. Duas caixas, duas responsabilidades. */}
           <span className="texto-aceso-siri sem-halo font-serif text-[34px] leading-[1.08] tracking-[-0.02em] text-[#F4F1E8] md:text-[48px]">
-            {AUDITORIA}
+            {AUDITORIA[idioma]}
           </span>
         </motion.p>
 
@@ -909,7 +1072,7 @@ export function Formulario({
             </div>
             <p className="mt-2.5 text-[12px] leading-none text-white/40">
               <span className="tabular-nums">
-                {passo + 1} de {TOTAL}
+                {passo + 1} {idioma === 'en' ? 'of' : 'de'} {TOTAL}
               </span>
               {rotuloDoPasso != null && (
                 <>
@@ -923,7 +1086,7 @@ export function Formulario({
 
         {passo > 0 && passo < RECEBIDO && (
           <div className="mt-5 flex flex-wrap gap-2">
-            {PASSOS.slice(0, Math.min(passo, PASSOS.length)).map((p, i) => (
+            {passos.slice(0, Math.min(passo, passos.length)).map((p, i) => (
               <motion.button
                 key={p.chave}
                 type="button"
@@ -934,7 +1097,7 @@ export function Formulario({
                 className="flex items-center gap-1.5 rounded-full border border-white/[0.12] bg-white/[0.05] px-3 py-1.5 text-[12px] text-white/60 transition-colors hover:border-white/40 hover:text-white focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white/50"
               >
                 <Check className="h-3 w-3 shrink-0" strokeWidth={2.5} />
-                {dados[p.chave]}
+                {exibirValor(idioma, p.chave, dados[p.chave])}
               </motion.button>
             ))}
           </div>
@@ -1013,6 +1176,7 @@ export function Formulario({
                     <Escolha
                       rotuladoPor={`campo-${atual.chave}`}
                       opcoes={atual.opcoes}
+                      rotulos={OPCOES_EXIBIDAS[idioma][atual.chave]}
                       escolhidas={dados[atual.chave] === '' ? [] : [dados[atual.chave]]}
                       multipla={false}
                       empilhada
@@ -1086,7 +1250,7 @@ export function Formulario({
                         key="voltar"
                         type="button"
                         onClick={() => voltar(passo - 1)}
-                        aria-label="Voltar para a pergunta anterior"
+                        aria-label={ui.voltarAria}
                         initial={parado ? false : { scale: 0.3, opacity: 0 }}
                         animate={{ scale: 1, opacity: 1 }}
                         exit={{ scale: 0.4, opacity: 0, transition: { duration: 0.18 } }}
@@ -1115,7 +1279,7 @@ export function Formulario({
                         resposta anunciaria o corte para quem ainda vai passar
                         por ele. `busy` é a gravação do corte acontecendo. */}
                     <MotionButton
-                      label="Continuar"
+                      label={ui.continuar}
                       onClick={avancar}
                       busy={enviando}
                       fullWidth
@@ -1140,7 +1304,7 @@ export function Formulario({
                     onClick={semPerfil}
                     className="mt-4 rounded px-1 py-0.5 text-[13px] text-white/40 underline decoration-white/20 underline-offset-4 transition-colors hover:text-white hover:decoration-white/60 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white/50"
                   >
-                    Ainda não tenho perfil da empresa
+                    {ui.semPerfilBotao}
                   </button>
                 )}
               </motion.div>
@@ -1164,13 +1328,13 @@ export function Formulario({
                 className="mt-7"
               >
                 <p className="font-serif text-[1.75rem] leading-[1.1] tracking-[-0.02em] text-white md:text-[2.35rem]">
-                  {DESQUALIFICADO.titulo}
+                  {DESQUALIFICADO[idioma].titulo}
                 </p>
                 <p className="mt-4 text-[15px] leading-relaxed text-white/70">
-                  {DESQUALIFICADO.corpo}
+                  {DESQUALIFICADO[idioma].corpo}
                 </p>
                 <p className="mt-4 text-[15px] leading-relaxed text-white/45">
-                  {DESQUALIFICADO.fecho}
+                  {DESQUALIFICADO[idioma].fecho}
                 </p>
               </motion.div>
             )}
@@ -1265,7 +1429,7 @@ export function Formulario({
                   transition={parado ? undefined : { duration: 0.5, ease: EASE, delay: 0.7 }}
                   className="mt-6 font-serif text-[1.9rem] leading-[1.1] tracking-[-0.02em] text-[#F4F1E8] md:text-[2.3rem]"
                 >
-                  Recebemos.
+                  {ui.recebemos}
                 </motion.p>
                 <motion.p
                   initial={parado ? undefined : { opacity: 0, y: 10 }}
@@ -1273,7 +1437,7 @@ export function Formulario({
                   transition={parado ? undefined : { duration: 0.5, ease: EASE, delay: 0.85 }}
                   className="mt-3 max-w-sm text-[15px] leading-snug text-white/55"
                 >
-                  {RETORNO} No WhatsApp que você deixou, {dados.whatsapp}.
+                  {RETORNO[idioma]} {ui.noWhats} {dados.whatsapp}.
                 </motion.p>
 
               </motion.div>
@@ -1301,12 +1465,13 @@ export function Formulario({
                 <div className="mt-6">
                   <Escolha
                     rotuladoPor={`ficha-${fichaAtual.chave}`}
-                    opcoes={fichaAtual.opcoes}
+                    opcoes={fichaCanonica?.opcoes ?? fichaAtual.opcoes}
+                    rotulos={fichaAtual.opcoes}
                     escolhidas={respostas[fichaAtual.chave] ?? []}
                     multipla={fichaAtual.multipla === true}
                     livre={fichaAtual.livre}
                     textoLivre={livres[fichaAtual.chave] ?? ''}
-                    aoEscolher={(opcao) => escolher(fichaAtual, opcao)}
+                    aoEscolher={(opcao) => escolher(fichaCanonica ?? fichaAtual, opcao)}
                     aoEscreverLivre={(valor) => {
                       setLivres((l) => ({ ...l, [fichaAtual.chave]: valor }));
                       if (erro != null) setErro(null);
@@ -1328,7 +1493,7 @@ export function Formulario({
                   <button
                     type="button"
                     onClick={() => voltar(passo - 1)}
-                    aria-label="Voltar para a pergunta anterior"
+                    aria-label={ui.voltarAria}
                     className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full border border-white/20 text-white/60 transition-colors hover:border-white/50 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black"
                   >
                     <ArrowLeft className="h-5 w-5" strokeWidth={2} />
@@ -1341,7 +1506,7 @@ export function Formulario({
                         o botão não passa, e prometer uma saída que não existe é
                         pior do que não prometer nada. */}
                     <MotionButton
-                      label={passo === TOTAL - 1 ? 'Enviar' : 'Continuar'}
+                      label={passo === TOTAL - 1 ? ui.enviar : ui.continuar}
                       onClick={seguir}
                       busy={enviando}
                       fullWidth
@@ -1390,7 +1555,7 @@ export function Formulario({
 
       <div className="pointer-events-none absolute -left-[9999px] top-0 h-0 w-0 overflow-hidden">
         <label htmlFor={ARMADILHA} aria-hidden>
-          Não preencha este campo
+          {idioma === 'en' ? 'Do not fill in this field' : 'Não preencha este campo'}
         </label>
         <input
           id={ARMADILHA}

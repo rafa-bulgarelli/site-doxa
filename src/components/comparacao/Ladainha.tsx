@@ -9,6 +9,7 @@ import {
   type MotionValue,
 } from 'framer-motion';
 import { useIsDesktop } from '../../hooks/useIsDesktop';
+import { useIdioma } from '../../idioma';
 import { ITENS, TEMPO, type Item } from './config';
 import { Icone } from './icones';
 
@@ -384,6 +385,10 @@ export function Ladainha({
    */
   cauda?: ReactNode;
 }) {
+  const [idioma] = useIdioma();
+  const itens = ITENS[idioma];
+  const tempo = TEMPO[idioma];
+
   const ref = useRef<HTMLParagraphElement>(null);
   const isDesktop = useIsDesktop();
   const parado = useReducedMotion() === true;
@@ -578,7 +583,7 @@ export function Ladainha({
         // continuam serifados, e a conta vira letra de fatura.
         className="relative z-10 text-justify text-[17px] leading-[1.75] text-white/45 [word-spacing:0.55em] md:text-[1.4rem] md:[word-spacing:0.7em] lg:text-[1.55rem] lg:leading-[1.75] lg:[word-spacing:0.75em]"
       >
-        {ITENS.map((item, i) => {
+        {itens.map((item, i) => {
           const aceso = apontado === item;
           return (
             // O espaço é um nó de texto de verdade, e não uma margem: a
@@ -590,7 +595,7 @@ export function Ladainha({
                 progresso={progresso}
                 acende={acende}
                 parado={parado}
-                fatia={(i / ITENS.length) * ESPALHA}
+                fatia={(i / itens.length) * ESPALHA}
                 numero={String(i + 1).padStart(2, '0')}
                 nome={item.nome}
                 aoApontar={apontar(item)}
@@ -671,8 +676,8 @@ export function Ladainha({
           acende={acende}
           parado={parado}
           fatia={FATIA_TOTAL}
-          nome={TEMPO.nome}
-          aoApontar={apontar(TEMPO)}
+          nome={tempo.nome}
+          aoApontar={apontar(tempo)}
           className={`mt-7 block w-fit pt-0 [word-spacing:normal] font-serif text-[2rem] leading-none text-[#F4F1E8] sm:border-t sm:border-white/[0.12] sm:pt-7 md:mt-9 md:pt-9 md:text-[3rem] ${
             podeSeguir ? 'cursor-default' : ''
           }`}
