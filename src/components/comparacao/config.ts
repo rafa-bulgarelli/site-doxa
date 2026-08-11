@@ -716,56 +716,56 @@ const FICHA_CONVITE_EN = {
 
 /* ─── OS PARES EXPORTADOS ───────────────────────────────────────────────────── */
 
-export const ITENS: PorIdioma<readonly Item[]> = { pt: ITENS_PT, en: ITENS_EN, es: ITENS_PT };
+export const ITENS: PorIdioma<readonly Item[]> = { pt: ITENS_PT, en: ITENS_EN};
 export const SEM_GARANTIA: PorIdioma<readonly string[]> = {
-  pt: SEM_GARANTIA_PT, en: SEM_GARANTIA_EN, es: SEM_GARANTIA_PT,
+  pt: SEM_GARANTIA_PT, en: SEM_GARANTIA_EN,
 };
-export const TEMPO: PorIdioma<Item> = { pt: TEMPO_PT, en: TEMPO_EN, es: TEMPO_PT };
+export const TEMPO: PorIdioma<Item> = { pt: TEMPO_PT, en: TEMPO_EN};
 export const CUSTO_UNIDADE: PorIdioma<string> = {
-  pt: CUSTO_UNIDADE_PT, en: CUSTO_UNIDADE_EN, es: CUSTO_UNIDADE_PT,
+  pt: CUSTO_UNIDADE_PT, en: CUSTO_UNIDADE_EN,
 };
 export const PERGUNTA: PorIdioma<readonly string[]> = {
-  pt: PERGUNTA_PT, en: PERGUNTA_EN, es: PERGUNTA_PT,
+  pt: PERGUNTA_PT, en: PERGUNTA_EN,
 };
 export const PERGUNTA_ESTREITA: PorIdioma<readonly string[]> = {
-  pt: PERGUNTA_ESTREITA_PT, en: PERGUNTA_ESTREITA_EN, es: PERGUNTA_ESTREITA_PT,
+  pt: PERGUNTA_ESTREITA_PT, en: PERGUNTA_ESTREITA_EN,
 };
 export const CONVITE: PorIdioma<readonly string[]> = {
-  pt: CONVITE_PT, en: CONVITE_EN, es: CONVITE_PT,
+  pt: CONVITE_PT, en: CONVITE_EN,
 };
 export const TROCA_DEPOIS: PorIdioma<string> = {
-  pt: TROCA_DEPOIS_PT, en: TROCA_DEPOIS_EN, es: TROCA_DEPOIS_PT,
+  pt: TROCA_DEPOIS_PT, en: TROCA_DEPOIS_EN,
 };
 export const TROCA_ANTES: PorIdioma<string> = {
-  pt: TROCA_ANTES_PT, en: TROCA_ANTES_EN, es: TROCA_ANTES_PT,
+  pt: TROCA_ANTES_PT, en: TROCA_ANTES_EN,
 };
-export const FALTA: PorIdioma<readonly string[]> = { pt: FALTA_PT, en: FALTA_EN, es: FALTA_PT };
+export const FALTA: PorIdioma<readonly string[]> = { pt: FALTA_PT, en: FALTA_EN};
 export const GARANTIA: PorIdioma<readonly string[]> = {
-  pt: GARANTIA_PT, en: GARANTIA_EN, es: GARANTIA_PT,
+  pt: GARANTIA_PT, en: GARANTIA_EN,
 };
-export const FILTRO: PorIdioma<typeof FILTRO_PT> = { pt: FILTRO_PT, en: FILTRO_EN, es: FILTRO_PT };
+export const FILTRO: PorIdioma<typeof FILTRO_PT> = { pt: FILTRO_PT, en: FILTRO_EN};
 export const PAGAMENTO_TITULO: PorIdioma<string> = {
-  pt: PAGAMENTO_TITULO_PT, en: PAGAMENTO_TITULO_EN, es: PAGAMENTO_TITULO_PT,
+  pt: PAGAMENTO_TITULO_PT, en: PAGAMENTO_TITULO_EN,
 };
 export const PAGAMENTO_ACAO: PorIdioma<string> = {
-  pt: PAGAMENTO_ACAO_PT, en: PAGAMENTO_ACAO_EN, es: PAGAMENTO_ACAO_PT,
+  pt: PAGAMENTO_ACAO_PT, en: PAGAMENTO_ACAO_EN,
 };
 export const AUDITORIA: PorIdioma<string> = {
-  pt: AUDITORIA_PT, en: AUDITORIA_EN, es: AUDITORIA_PT,
+  pt: AUDITORIA_PT, en: AUDITORIA_EN,
 };
 export const PAGAMENTO_CHAMADA: PorIdioma<string> = {
-  pt: PAGAMENTO_CHAMADA_PT, en: PAGAMENTO_CHAMADA_EN, es: PAGAMENTO_CHAMADA_PT,
+  pt: PAGAMENTO_CHAMADA_PT, en: PAGAMENTO_CHAMADA_EN,
 };
-export const RETORNO: PorIdioma<string> = { pt: RETORNO_PT, en: RETORNO_EN, es: RETORNO_PT };
+export const RETORNO: PorIdioma<string> = { pt: RETORNO_PT, en: RETORNO_EN};
 export const PAGAMENTOS: PorIdioma<readonly string[]> = {
-  pt: PAGAMENTOS_PT, en: PAGAMENTOS_EN, es: PAGAMENTOS_PT,
+  pt: PAGAMENTOS_PT, en: PAGAMENTOS_EN,
 };
-export const OUTRO: PorIdioma<string> = { pt: OUTRO_PT, en: OUTRO_EN, es: OUTRO_PT };
+export const OUTRO: PorIdioma<string> = { pt: OUTRO_PT, en: OUTRO_EN};
 export const FICHA: PorIdioma<readonly PerguntaFicha[]> = {
-  pt: FICHA_PT, en: FICHA_EN, es: FICHA_PT,
+  pt: FICHA_PT, en: FICHA_EN,
 };
 export const FICHA_FIM: PorIdioma<typeof FICHA_FIM_PT> = {
-  pt: FICHA_FIM_PT, en: FICHA_FIM_EN, es: FICHA_FIM_PT,
+  pt: FICHA_FIM_PT, en: FICHA_FIM_EN,
 };
 /** A forma da pergunta de corte — o `as const` do PT congelaria os literais. */
 interface Investimento {
@@ -776,11 +776,11 @@ interface Investimento {
 }
 
 export const INVESTIMENTO: PorIdioma<Investimento> = {
-  pt: INVESTIMENTO_PT, en: INVESTIMENTO_EN, es: INVESTIMENTO_PT,
+  pt: INVESTIMENTO_PT, en: INVESTIMENTO_EN,
 };
 export const DESQUALIFICADO: PorIdioma<typeof DESQUALIFICADO_PT> = {
-  pt: DESQUALIFICADO_PT, en: DESQUALIFICADO_EN, es: DESQUALIFICADO_PT,
+  pt: DESQUALIFICADO_PT, en: DESQUALIFICADO_EN,
 };
 export const FICHA_CONVITE: PorIdioma<typeof FICHA_CONVITE_PT> = {
-  pt: FICHA_CONVITE_PT, en: FICHA_CONVITE_EN, es: FICHA_CONVITE_PT,
+  pt: FICHA_CONVITE_PT, en: FICHA_CONVITE_EN,
 };

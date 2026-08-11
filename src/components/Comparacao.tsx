@@ -57,7 +57,6 @@ const PAPEL = '#F4F1E8';
 const CONTA_IDIOMA = {
   pt: { locale: 'pt-BR', intervalo: 'a', em: 'em' },
   en: { locale: 'en-US', intervalo: 'to', em: 'on' },
-  es: { locale: 'pt-BR', intervalo: 'a', em: 'em' },
 } as const;
 
 /**

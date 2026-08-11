@@ -153,7 +153,6 @@ const QUESTIONS_EN = [
 const QUESTIONS: PorIdioma<typeof QUESTIONS_PT> = {
   pt: QUESTIONS_PT,
   en: QUESTIONS_EN,
-  es: QUESTIONS_PT,
 };
 
 /**
@@ -482,7 +481,7 @@ const UPLOADS_EN = [
   { icon: Mic, label: 'your voice', hint: 'a short audio clip, saying anything' },
 ];
 
-const UPLOADS: PorIdioma<typeof UPLOADS_PT> = { pt: UPLOADS_PT, en: UPLOADS_EN, es: UPLOADS_PT };
+const UPLOADS: PorIdioma<typeof UPLOADS_PT> = { pt: UPLOADS_PT, en: UPLOADS_EN};
 
 /**
  * What the platform reports while it assembles the clone.
@@ -506,7 +505,6 @@ const BUILD_STEPS_EN = [
 const BUILD_STEPS: PorIdioma<readonly string[]> = {
   pt: BUILD_STEPS_PT,
   en: BUILD_STEPS_EN,
-  es: BUILD_STEPS_PT,
 };
 
 /**
@@ -785,7 +783,6 @@ const RENDER_STEPS_EN = [
 const RENDER_STEPS: PorIdioma<readonly string[]> = {
   pt: RENDER_STEPS_PT,
   en: RENDER_STEPS_EN,
-  es: RENDER_STEPS_PT,
 };
 
 /** Os textos avulsos dos três cartões. */
@@ -851,27 +848,6 @@ const TEXTO_ARTE: PorIdioma<{
     reposts: 'reposts',
     desligarSom: 'Mute the video',
     ligarSom: 'Unmute the video',
-  },
-  es: {
-    depoisDisso: 'Depois disso',
-    salvar: 'Salvar',
-    reuniaoUmaVez: 'Uma reunião, uma vez só',
-    perfilPronto: 'Perfil do negócio pronto',
-    montandoClone: 'Montando o seu clone',
-    clonePronto: 'Clone pronto',
-    fotoAudioUmaVez: 'Uma foto e um áudio, uma vez só',
-    aguardando: 'aguardando',
-    enviando: 'enviando…',
-    gerandoVideo: 'gerando o vídeo',
-    comOClone: 'com o clone que você acabou de montar',
-    naEsteira: 'Na esteira',
-    nadaAqui: 'Você não precisa fazer nada aqui',
-    visualizacoes: 'visualizações',
-    curtidas: 'curtidas',
-    comentarios: 'comentários',
-    reposts: 'reposts',
-    desligarSom: 'Desligar o som do vídeo',
-    ligarSom: 'Ligar o som do vídeo',
   },
 };
 

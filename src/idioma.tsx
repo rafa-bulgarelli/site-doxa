@@ -31,7 +31,7 @@ import {
  *    traz o seu, tipado por `Idioma`, e o compilador cobra os três.
  */
 
-export const IDIOMAS = ['pt', 'en', 'es'] as const;
+export const IDIOMAS = ['pt', 'en'] as const;
 
 export type Idioma = (typeof IDIOMAS)[number];
 
@@ -51,11 +51,15 @@ export type PorIdioma<T> = Readonly<Record<Idioma, T>>;
  * hifenização e a voz que um leitor de tela usa. Inglês e espanhol vão sem
  * região porque não temos preferência entre as variantes — declarar `en-US`
  * seria inventar uma que ninguém escolheu.
+ *
+ * O espanhol EXISTIU aqui e saiu por decisão do dono (10/08/2026): duas
+ * línguas de verdade valem mais que três com uma de mentira. Quem tinha
+ * `es` guardado no localStorage cai na detecção do navegador — `ehIdioma`
+ * recusa o valor velho sozinho.
  */
 const LANG: PorIdioma<string> = {
   pt: 'pt-BR',
   en: 'en',
-  es: 'es',
 };
 
 const CHAVE = 'doxa:idioma';
@@ -69,8 +73,7 @@ const CHAVE = 'doxa:idioma';
  * pt-BR numa frase em inglês troca o valor aos olhos do leitor.
  *
  * A troca é SÓ de pontuação — vírgula vira ponto e ponto vira vírgula — e por
- * isso preserva o número por construção: nenhum dígito é tocado. Espanhol usa
- * os mesmos separadores do português, então só o inglês troca.
+ * isso preserva o número por construção: nenhum dígito é tocado.
  */
 export function numeroNoIdioma(numero: string, idioma: Idioma): string {
   if (idioma !== 'en') return numero;

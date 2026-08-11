@@ -16,8 +16,8 @@ import type { Idioma } from '../../idioma';
  * Desenhadas, são idênticas em todo lugar e custam zero pedido de rede.
  *
  * SIMPLIFICADAS de propósito, para 20 × 14 pixels: as 27 estrelas do Brasil, a
- * legenda "ORDEM E PROGRESSO", as 50 dos Estados Unidos e o brasão da Espanha
- * viram sujeira nesse tamanho. Fica o que identifica cada uma à distância —
+ * legenda "ORDEM E PROGRESSO" e as 50 dos Estados Unidos viram sujeira nesse
+ * tamanho. Fica o que identifica cada uma à distância —
  * campo, forma central e proporção. As cores são as oficiais, e OPACAS: uma
  * bandeira desbotada não é uma bandeira discreta, é uma bandeira errada.
  */
@@ -53,15 +53,6 @@ const DESENHOS: Readonly<Record<Idioma, { titulo: string; formas: JSX.Element }>
           <rect y="12" width="20" height="2" />
         </g>
         <rect width="9" height="8" fill="#3C3B6E" />
-      </>
-    ),
-  },
-  es: {
-    titulo: 'Espanha',
-    formas: (
-      <>
-        <rect width="20" height="14" fill="#AA151B" />
-        <rect y="3.5" width="20" height="7" fill="#F1BF00" />
       </>
     ),
   },

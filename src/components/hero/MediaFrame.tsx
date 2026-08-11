@@ -22,12 +22,6 @@ const TEXTO_MIDIA: PorIdioma<{
     ligarSom: 'Unmute video',
     calarSom: 'Mute video',
   },
-  es: {
-    fotoAlt: 'Foto base enviada pelo cliente',
-    videoAlt: 'Vídeo vertical produzido para o cliente',
-    ligarSom: 'Ativar som do vídeo',
-    calarSom: 'Silenciar vídeo',
-  },
 };
 
 interface FrameProps {

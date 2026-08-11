@@ -138,23 +138,6 @@ const TEXTO: PorIdioma<TextoDoMenu> = {
       'Contato': 'Contact',
     },
   },
-  es: {
-    titulo: 'Menú',
-    viralize: 'Hazte viral ahora',
-    secoes: 'Secciones',
-    idiomas: 'Idiomas',
-    nav: 'Menú principal',
-    abrir: 'Abrir el menú',
-    cta: 'Quiero viralizar',
-    rotulos: {
-      'Início': 'Inicio',
-      'Como funciona': 'Cómo funciona',
-      'Prova': 'Pruebas',
-      'Quanto custa': 'Cuánto cuesta',
-      'Perguntas': 'Preguntas',
-      'Contato': 'Contacto',
-    },
-  },
 };
 
 /**
@@ -187,7 +170,6 @@ function Icone({ secao }: { secao: Secao }) {
 const NOME_DO_IDIOMA: PorIdioma<string> = {
   pt: 'Português',
   en: 'English',
-  es: 'Español',
 };
 
 /**

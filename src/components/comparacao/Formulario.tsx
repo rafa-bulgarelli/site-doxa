@@ -240,7 +240,6 @@ const ERROS: PorIdioma<Record<string, string>> = {
     'Confere o e-mail?': 'Double-check the email?',
     'Escolhe uma faixa.': 'Pick a range.',
   },
-  es: {},
 };
 
 interface TextoDePasso {
@@ -290,9 +289,6 @@ const TEXTO_PASSOS: PorIdioma<Record<Passo['chave'], TextoDePasso>> = {
       dica: INVESTIMENTO.en.dica,
     },
   },
-  es: Object.fromEntries(
-    PASSOS_PT.map((p) => [p.chave, { rotulo: p.rotulo, pergunta: p.pergunta, dica: p.dica, exemplo: p.exemplo }]),
-  ) as Record<Passo['chave'], TextoDePasso>,
 };
 
 /** As opções que cada idioma MOSTRA — o que se grava segue sendo o PT. */
@@ -302,7 +298,6 @@ const OPCOES_EXIBIDAS: PorIdioma<Partial<Record<Passo['chave'], readonly string[
     caminho: ['I want my business to go viral', 'I want to become a licensed agency'],
     investimento: INVESTIMENTO.en.faixas,
   },
-  es: {},
 };
 
 const TEXTO_UI: PorIdioma<{
@@ -340,18 +335,6 @@ const TEXTO_UI: PorIdioma<{
     semPerfilBotao: "I don't have a business profile yet",
     escolheUma: 'Pick one to continue.',
     escreveQual: 'Type it in — or drop "Other" and pick one.',
-  },
-  es: {
-    continuar: 'Continuar',
-    enviar: 'Enviar',
-    pular: 'Pular',
-    voltarAria: 'Voltar para a pergunta anterior',
-    recebemos: 'Recebemos.',
-    noWhats: 'No WhatsApp que você deixou,',
-    semPerfil: SEM_PERFIL,
-    semPerfilBotao: 'Ainda não tenho perfil da empresa',
-    escolheUma: 'Escolhe uma para seguir.',
-    escreveQual: 'Escreve qual é — ou tira o "Outro" e escolhe outra.',
   },
 };
 

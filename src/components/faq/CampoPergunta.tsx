@@ -248,12 +248,6 @@ const TEXTO_CAMPO: PorIdioma<{
     abrir: 'Write a question',
     enviar: 'Send the question',
   },
-  es: {
-    escreva: 'Escreva a sua pergunta…',
-    escrevaAria: 'Escreva a sua pergunta',
-    abrir: 'Escrever uma pergunta',
-    enviar: 'Enviar a pergunta',
-  },
 };
 
 export function CampoPergunta({

@@ -56,17 +56,6 @@ const TEXTO_HERO: PorIdioma<{
     audio: 'Audio',
     parceiros: 'partners:',
   },
-  es: {
-    titulo: 'Um milhão de views.',
-    tituloItalico: 'Ou seu dinheiro de volta.',
-    prefixo: '60 conteúdos · 90 dias ·',
-    clausula: 'views somadas no',
-    cta: 'Quero viralizar',
-    fotoCliente: 'Foto do cliente',
-    vozCliente: 'Voz do cliente',
-    audio: 'Áudio',
-    parceiros: 'parceiros:',
-  },
 };
 
 function FadeUp({

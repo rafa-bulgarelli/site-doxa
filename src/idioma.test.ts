@@ -14,8 +14,8 @@ describe('numeroNoIdioma', () => {
     expect(numeroNoIdioma('+111k', 'en')).toBe('+111k');
   });
 
-  it('não toca no português nem no espanhol', () => {
+  it('não toca no português', () => {
     expect(numeroNoIdioma('1.500', 'pt')).toBe('1.500');
-    expect(numeroNoIdioma('3,4M', 'es')).toBe('3,4M');
+    expect(numeroNoIdioma('3,4M', 'pt')).toBe('3,4M');
   });
 });

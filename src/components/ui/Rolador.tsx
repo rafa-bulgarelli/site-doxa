@@ -153,7 +153,6 @@ const DESTINO = ANCORA_FORMS;
 const TEXTO_ROLADOR: PorIdioma<{ faltam: (pct: number) => string; copy: string; pular: string }> = {
   pt: { faltam: (pct) => `Faltam ${pct}%`, copy: 'para mudar sua empresa', pular: 'Pule a experiência' },
   en: { faltam: (pct) => `${pct}% to go`, copy: 'to change your business', pular: 'Skip the experience' },
-  es: { faltam: (pct) => `Faltam ${pct}%`, copy: 'para mudar sua empresa', pular: 'Pule a experiência' },
 };
 
 export function Rolador() {

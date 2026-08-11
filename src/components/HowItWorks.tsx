@@ -119,10 +119,9 @@ const STEPS_EN: readonly Step[] = STEPS_PT.map((step, i) => ({
   ][i],
 }));
 
-const STEPS: { pt: readonly Step[]; en: readonly Step[]; es: readonly Step[] } = {
+const STEPS: { pt: readonly Step[]; en: readonly Step[] } = {
   pt: STEPS_PT,
   en: STEPS_EN,
-  es: STEPS_PT,
 };
 
 const TEXTO_SECAO = {
@@ -137,12 +136,6 @@ const TEXTO_SECAO = {
     subtitulo: 'Three steps, and only the first one asks for your time.',
     pausar: 'Pause',
     retomar: 'Resume',
-  },
-  es: {
-    titulo: 'Como funciona.',
-    subtitulo: 'Três passos, e só o primeiro pede o seu tempo.',
-    pausar: 'Pausar',
-    retomar: 'Retomar',
   },
 } as const;
 

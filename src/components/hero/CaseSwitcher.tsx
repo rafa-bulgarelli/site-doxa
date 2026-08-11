@@ -40,11 +40,6 @@ const TEXTO_TROCA: PorIdioma<{ verCase: string; retomar: string; pausar: string 
     retomar: 'Resume auto-rotation',
     pausar: 'Pause auto-rotation',
   },
-  es: {
-    verCase: 'Ver o case',
-    retomar: 'Retomar a troca automática',
-    pausar: 'Pausar a troca automática',
-  },
 };
 
 export function CaseSwitcher({ activeIndex, onSelect }: CaseSwitcherProps) {

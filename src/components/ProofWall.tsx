@@ -435,10 +435,6 @@ const SCALE_CLAIMS: PorIdioma<readonly { value: string; label: string }[]> = {
     { value: '+10B', label: 'organic views generated' },
     { value: '+900', label: 'videos generated per day' },
   ],
-  es: [
-    { value: '+10B', label: 'de views orgânicas geradas' },
-    { value: '+900', label: 'vídeos gerados por dia' },
-  ],
 };
 
 /** Os textos da parede fora das cifras. */
@@ -480,19 +476,6 @@ const TEXTO_PROVA: PorIdioma<{
     seguidores: 'followers',
     desligarSom: 'Mute the video',
     ligarSom: 'Unmute the video',
-  },
-  es: {
-    manchete: ['empresas já', 'viralizaram com a Doxa.'],
-    handleMock: '@suaempresa',
-    proxima: 'E a próxima é a sua.',
-    cta: 'Quero viralizar',
-    visualizacoes: 'visualizações',
-    curtidas: 'curtidas',
-    comentarios: 'comentários',
-    reposts: 'reposts',
-    seguidores: 'seguidores',
-    desligarSom: 'Desligar o som do vídeo',
-    ligarSom: 'Ativar som do vídeo',
   },
 };
 

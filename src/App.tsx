@@ -78,11 +78,6 @@ const META: PorIdioma<{ titulo: string; descricao: string }> = {
     descricao:
       'One photo and one audio clip become sixty videos in ninety days. One million combined views, or your money back.',
   },
-  es: {
-    titulo: 'Doxa — Um milhão de views. Ou seu dinheiro de volta.',
-    descricao:
-      'Uma foto e um áudio viram sessenta conteúdos em noventa dias. Um milhão de views somadas, ou seu dinheiro de volta.',
-  },
 };
 
 function MetaDoIdioma() {

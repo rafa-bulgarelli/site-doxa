@@ -1015,15 +1015,15 @@ const ABERTURA_EN = {
 /* ─── OS PARES EXPORTADOS ───────────────────────────────────────────────────── */
 
 export const DUVIDAS: PorIdioma<readonly Duvida[]> = {
-  pt: DUVIDAS_PT, en: DUVIDAS_EN, es: DUVIDAS_PT,
+  pt: DUVIDAS_PT, en: DUVIDAS_EN,
 };
 export const DESTAQUES: PorIdioma<readonly Duvida[]> = {
-  pt: destacar(DUVIDAS_PT), en: destacar(DUVIDAS_EN), es: destacar(DUVIDAS_PT),
+  pt: destacar(DUVIDAS_PT), en: destacar(DUVIDAS_EN),
 };
 export const SEM_RESPOSTA: PorIdioma<typeof SEM_RESPOSTA_PT> = {
-  pt: SEM_RESPOSTA_PT, en: SEM_RESPOSTA_EN, es: SEM_RESPOSTA_PT,
+  pt: SEM_RESPOSTA_PT, en: SEM_RESPOSTA_EN,
 };
-export const ESPERA: PorIdioma<typeof ESPERA_PT> = { pt: ESPERA_PT, en: ESPERA_EN, es: ESPERA_PT };
+export const ESPERA: PorIdioma<typeof ESPERA_PT> = { pt: ESPERA_PT, en: ESPERA_EN};
 export const ABERTURA: PorIdioma<typeof ABERTURA_PT> = {
-  pt: ABERTURA_PT, en: ABERTURA_EN, es: ABERTURA_PT,
+  pt: ABERTURA_PT, en: ABERTURA_EN,
 };

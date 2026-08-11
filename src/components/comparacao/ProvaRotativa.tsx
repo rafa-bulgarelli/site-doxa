@@ -69,7 +69,6 @@ function Perfil({ handle, verificado }: { handle: string; verificado: boolean })
 const TEXTO_PROVA_ROTATIVA: PorIdioma<{ jaPublicados: string; deViews: string }> = {
   pt: { jaPublicados: 'Já publicados', deViews: 'de views' },
   en: { jaPublicados: 'Already published', deViews: 'views' },
-  es: { jaPublicados: 'Já publicados', deViews: 'de views' },
 };
 
 export function ProvaRotativa() {

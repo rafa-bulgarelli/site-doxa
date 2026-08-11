@@ -197,7 +197,7 @@ const fechoEm = (idioma: Idioma): Fecho => {
   };
 };
 
-export const FECHO: PorIdioma<Fecho> = { pt: fechoEm('pt'), en: fechoEm('en'), es: fechoEm('pt') };
+export const FECHO: PorIdioma<Fecho> = { pt: fechoEm('pt'), en: fechoEm('en')};
 
 /**
  * Os links rápidos: âncoras que EXISTEM.
@@ -221,5 +221,4 @@ const ATALHOS_EN: readonly { rotulo: string; destino: string }[] = [
 export const ATALHOS: PorIdioma<readonly { rotulo: string; destino: string }[]> = {
   pt: ATALHOS_PT,
   en: ATALHOS_EN,
-  es: ATALHOS_PT,
 };
