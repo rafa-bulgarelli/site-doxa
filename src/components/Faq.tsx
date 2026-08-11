@@ -7,6 +7,7 @@ import { Revela } from './faq/Revela';
 import { encontra } from './faq/busca';
 import { usarNaTela } from '../hooks/usarNaTela';
 import { ABERTURA, DESTAQUES, DUVIDAS, ESPERA, SEM_RESPOSTA, type Duvida } from './faq/config';
+import { useIdioma } from '../idioma';
 import { CORES, SEM_COR, corDaDuvida } from './faq/cores';
 import { MotionButton } from './ui/MotionButton';
 import { ANCORA_FAQ, HREF_FORMS, ID_CARTAO_PEDIDO } from '../ancoras';
@@ -261,6 +262,16 @@ function useArDoPedido(secaoRef: RefObject<HTMLElement>): number | null {
  * nenhum, que é exatamente o que se queria das duas vezes.
  */
 export function Faq() {
+  const [idioma] = useIdioma();
+  /* O FAQ do idioma corrente. A busca, os atalhos, o schema e a conversa saem
+     todos da MESMA lista — misturar duas línguas aqui devolveria resposta
+     inglesa para pergunta portuguesa na primeira troca de idioma. */
+  const duvidas = DUVIDAS[idioma];
+  const destaques = DESTAQUES[idioma];
+  const semResposta = SEM_RESPOSTA[idioma];
+  const espera = ESPERA[idioma];
+  const abertura = ABERTURA[idioma];
+
   const parado = useReducedMotion() === true;
   const secaoRef = useRef<HTMLElement>(null);
   const naTela = useInView(secaoRef, { amount: 0.2, once: true });
@@ -296,16 +307,16 @@ export function Faq() {
   const [escrevendo, setEscrevendo] = useState(false);
 
   const responder = (pergunta: string, duvida: Duvida | null) => {
-    const achada = duvida ?? encontra(pergunta, DUVIDAS);
+    const achada = duvida ?? encontra(pergunta, duvidas);
     const nova = {
       id: proximoId.current++,
       pergunta,
-      paragrafos: achada?.resposta ?? [SEM_RESPOSTA.titulo, SEM_RESPOSTA.corpo],
+      paragrafos: achada?.resposta ?? [semResposta.titulo, semResposta.corpo],
       escape: achada == null,
       // Pela POSIÇÃO da dúvida no arquivo, e não por uma cor guardada nela: a
       // ordem das seis é o arco do anel, e é ela que decide qual tom cada uma
       // recebe. Quem não foi achada fica com o creme do consultor.
-      cor: achada == null ? SEM_COR : corDaDuvida(DUVIDAS.indexOf(achada)),
+      cor: achada == null ? SEM_COR : corDaDuvida(duvidas.indexOf(achada)),
     };
 
     // Perguntar durante o fechamento cancela o fechamento: sem isto, a coluna
@@ -412,15 +423,15 @@ export function Faq() {
      campo chama de "as dúvidas que todo mundo tem", e uma régua com denominador
      23 mal sairia do lugar depois de a pessoa ler três respostas. */
   const respondidas = new Set(trocas.map((t) => t.pergunta));
-  const atalhos = DESTAQUES.filter((d) => !respondidas.has(d.pergunta));
-  const cobertas = DESTAQUES.length - atalhos.length;
+  const atalhos = destaques.filter((d) => !respondidas.has(d.pergunta));
+  const cobertas = destaques.length - atalhos.length;
 
   /* Os pontos do cabeçalho, na ordem DO ARQUIVO e não na ordem em que foram
      perguntados: é essa ordem que faz o âmbar vir sempre antes do coral,
      independentemente de por onde a pessoa começou. Os pontos se acumulam da
      esquerda para a direita como uma régua que se preenche, e não como um
      histórico embaralhado. */
-  const lidas: readonly Ponto[] = DESTAQUES.map((duvida, i) => ({ duvida, i }))
+  const lidas: readonly Ponto[] = destaques.map((duvida, i) => ({ duvida, i }))
     .filter(({ duvida }) => respondidas.has(duvida.pergunta))
     .map(({ duvida, i }) => ({ chave: duvida.chave, cor: corDaDuvida(i) }));
 
@@ -583,7 +594,7 @@ export function Faq() {
                * competia por largura com as duas coisas que informam. */}
               <span className="flex items-center gap-4">
                 <span className="texto-aceso font-serif text-[19px] uppercase leading-none tracking-[0.1em] text-[#F4F1E8]">
-                  {ABERTURA.rotulo}
+                  {abertura.rotulo}
                 </span>
 
                 {/* A régua: o mesmo progresso em forma de barra. Ela se estende
@@ -610,7 +621,7 @@ export function Faq() {
                       backgroundSize: '13rem 100%',
                     }}
                     initial={false}
-                    animate={{ width: `${(cobertas / DESTAQUES.length) * 100}%` }}
+                    animate={{ width: `${(cobertas / destaques.length) * 100}%` }}
                     transition={parado ? { duration: 0 } : { duration: 0.55, ease: EASE }}
                   />
                 </motion.span>
@@ -656,7 +667,7 @@ export function Faq() {
                * frase menor ler como resposta à maior. */}
               <div className="mt-5 flex flex-wrap items-baseline gap-x-5 gap-y-4">
                 <h2 className={`font-serif ${MANCHETE} leading-[0.95] tracking-[-0.03em] text-[#F4F1E8] md:text-[4.4rem]`}>
-                  {ABERTURA.titulo}
+                  {abertura.titulo}
                 </h2>
                 {/* ─── EM SERIFA E ACESO, e por que NÃO no tamanho do título ──
                  *
@@ -704,7 +715,7 @@ export function Faq() {
                     dicaNaTela ? '' : 'sem-halo'
                   }`}
                 >
-                  {ABERTURA.dica}
+                  {abertura.dica}
                 </p>
               </div>
               {/* O SEGUNDO CAMINHO, apagado.
@@ -719,7 +730,7 @@ export function Faq() {
                   título — invertendo a hierarquia que os dois vãos existem para
                   declarar. */}
               <p className="mt-6 max-w-lg text-[17px] leading-snug text-white/40 md:text-[19px]">
-                {ABERTURA.limite}
+                {abertura.limite}
               </p>
             </motion.div>
 
@@ -736,7 +747,7 @@ export function Faq() {
                    sabe responder — com vinte e três, o ciclo fica longo demais
                    para alguém chegar a ver o próprio começo, e a frase que
                    aparece deixa de casar com o botão logo abaixo dela. */
-                exemplos={[ABERTURA.exemplo, ...DESTAQUES.map((d) => d.pergunta)]}
+                exemplos={[abertura.exemplo, ...destaques.map((d) => d.pergunta)]}
                 carregando={cargas > 0}
                 aoDigitar={setRascunho}
                 aoEnviar={enviar}
@@ -878,9 +889,9 @@ export function Faq() {
                   className="max-w-md"
                 >
                   <p className="font-serif text-[1.5rem] leading-tight tracking-[-0.02em] text-white/25 md:text-[1.9rem]">
-                    {ESPERA.titulo}
+                    {espera.titulo}
                   </p>
-                  <p className="mt-3 text-[15px] leading-relaxed text-white/25">{ESPERA.corpo}</p>
+                  <p className="mt-3 text-[15px] leading-relaxed text-white/25">{espera.corpo}</p>
                 </motion.div>
               )}
             </AnimatePresence>
@@ -1016,7 +1027,7 @@ export function Faq() {
 
                       {troca.escape && (
                         <div className="mt-6">
-                          <MotionButton label={SEM_RESPOSTA.acao} href={HREF_FORMS} />
+                          <MotionButton label={semResposta.acao} href={HREF_FORMS} />
                         </div>
                       )}
                     </div>
@@ -1055,7 +1066,7 @@ export function Faq() {
                não vale: quem lê isto é o buscador, e ele não tem bandeja de
                atalhos para lotar. Cada resposta escondida é uma pergunta a mais
                pela qual a página pode ser encontrada. */
-            mainEntity: DUVIDAS.map((duvida) => ({
+            mainEntity: duvidas.map((duvida) => ({
               '@type': 'Question',
               name: duvida.pergunta,
               acceptedAnswer: { '@type': 'Answer', text: duvida.resposta.join(' ') },

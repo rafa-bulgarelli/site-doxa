@@ -1,3 +1,4 @@
+import type { PorIdioma } from '../../idioma';
 
 /**
  * Conteúdo do dono do FAQ. Aqui mora TODA pergunta e TODA resposta — o resto
@@ -86,7 +87,7 @@ export interface Duvida {
   termos: readonly string[];
 }
 
-export const DUVIDAS: readonly Duvida[] = [
+const DUVIDAS_PT: readonly Duvida[] = [
   /*
    * ─── AS SEIS, DITADAS PELO DONO ─────────────────────────────────────────────
    *
@@ -596,7 +597,7 @@ export const DUVIDAS: readonly Duvida[] = [
  * saem desse índice — separadas, o ponto sairia âmbar e a bolha coral para a
  * mesma pergunta.
  */
-export const DESTAQUES: readonly Duvida[] = DUVIDAS.filter((d) => d.atalho != null);
+const destacar = (lista: readonly Duvida[]) => lista.filter((d) => d.atalho != null);
 
 /**
  * O que o campo responde quando não reconhece a pergunta.
@@ -606,7 +607,7 @@ export const DESTAQUES: readonly Duvida[] = DUVIDAS.filter((d) => d.atalho != nu
  * página inteira. Um chat que improvisa para não parecer limitado é um chat que
  * inventa preço.
  */
-export const SEM_RESPOSTA = {
+const SEM_RESPOSTA_PT = {
   titulo: 'Essa eu não sei responder.',
   corpo: 'Quem responde é um consultor do time Doxa, e é rápido: deixa o contato aqui em cima que ele fala com você em até 24 horas.',
   /* O rótulo diz o destino, e não o objeto. "Ir para o formulário" descreve um
@@ -628,12 +629,12 @@ export const SEM_RESPOSTA = {
  * Nenhuma afirmação comercial aqui, e por isso este texto pode ser escrito e não
  * importado: ele fala do comportamento da tela, não do que a empresa entrega.
  */
-export const ESPERA = {
+const ESPERA_PT = {
   titulo: 'A resposta aparece aqui.',
   corpo: 'Escreva a pergunta ao lado, ou toque num assunto. Este lado da tela existe só para isso.',
 };
 
-export const ABERTURA = {
+const ABERTURA_PT = {
   /* "FAQ" e não "Perguntas": o título logo abaixo já pergunta, e um rótulo que
      repete o que o título faz é uma linha a menos de informação na tela. A sigla
      é o nome do objeto — quem chega sabe na hora o que esta seção é. */
@@ -714,3 +715,315 @@ export const PENDENTES: readonly string[] = [
   'Preciso aparecer no vídeo?',
   'De quem são os direitos do vídeo?',
 ];
+
+/*
+ * ─── O MESMO FAQ, EM INGLÊS ──────────────────────────────────────────────────
+ *
+ * As `chave`s são IDÊNTICAS às do português de propósito: elas são o contrato
+ * com a cor do ponto e da bolha (`DESTAQUES` deriva por índice) e com qualquer
+ * código que roteie por chave. O que muda de idioma é o que a pessoa lê — e o
+ * que ela DIGITA: `ancoras` e `termos` são o índice da busca, e quem pergunta
+ * em inglês escreve "guarantee", não "garantia". Um FAQ traduzido sem o índice
+ * traduzido é um FAQ que responde "não sei" para tudo.
+ *
+ * A regra das respostas atravessa a tradução intacta: cada uma é afirmação
+ * comercial publicada, e a versão inglesa afirma EXATAMENTE o que a portuguesa
+ * afirma — mesmos números, mesmas reservas ("as set out in the contract"),
+ * nenhuma promessa nova. A primeira frase continua carregando o próprio
+ * sujeito, pela mesma razão cara que a nota da `organico` conta.
+ *
+ * O espanhol aponta para o português até o card ES existir — o mesmo contrato
+ * do `comparacao/config`.
+ */
+const DUVIDAS_EN: readonly Duvida[] = [
+  {
+    chave: 'garantia',
+    atalho: 'The guarantee',
+    pergunta: 'How does the guarantee work?',
+    resposta: [
+      'Doxa works with performance targets defined in the contract.',
+      'Our operation is built to reach the agreed volume of views within the established period and, if the target is not met, the guarantee conditions set out in the contract apply.',
+    ],
+    ancoras: ['guarantee', 'guaranteed', 'money back', 'refund', 'million', 'target', 'contract'],
+    termos: ['give back', 'does not work', 'what if'],
+  },
+  {
+    chave: 'como-gera',
+    atalho: 'How do you go viral?',
+    pergunta: 'How does Doxa generate so many views?',
+    resposta: [
+      'We build a proprietary content operation based on volume, constant testing, data analysis and optimization.',
+      'Instead of depending on a single viral video, we create a continuous system to increase the odds of distribution and growth.',
+    ],
+    ancoras: [
+      'how do you go viral', 'how do you generate', 'how does it work', 'method', 'operation', 'system',
+    ],
+    termos: ['process', 'steps', 'strategy', 'secret', 'algorithm'],
+  },
+  {
+    chave: 'organico',
+    atalho: 'Is it organic?',
+    pergunta: 'Are the views organic?',
+    resposta: [
+      'The views counted toward Doxa targets are 100% organic, coming from the distribution of the content produced inside our operation.',
+      'No media buying is needed to reach the contracted targets.',
+    ],
+    ancoras: ['organic', 'bought', 'bot', 'bots', 'fake', 'are they real'],
+    termos: ['real', 'genuine', 'actually real'],
+  },
+  {
+    chave: 'prova',
+    atalho: 'Who has used it',
+    pergunta: 'Who has used the platform?',
+    resposta: [
+      'Doxa technology and operations have been used by more than 1,500 clients, including companies and brands such as Magalu, G4 and Natália Beauty.',
+      'With operations in Brazil and in the United States.',
+    ],
+    ancoras: [
+      'who used', 'who has used', 'which companies', 'worked with you', 'client', 'clients',
+      'case', 'cases', 'example',
+    ],
+    termos: ['proof', 'results', 'does it really work', 'trustworthy', 'reference'],
+  },
+  {
+    chave: 'prazo',
+    atalho: 'When do I see results?',
+    pergunta: 'How soon do I start seeing results?',
+    resposta: [
+      'The first results can show up within the first few weeks, but our strategy is built for consistent performance across the whole contracted period.',
+      'The more content is published, the more data we have to identify the formats with the highest potential and scale the results.',
+    ],
+    ancoras: [
+      'how long', 'timeline', 'takes', 'when', 'first weeks', 'results', 'start seeing results',
+      'see results', 'when do i see',
+    ],
+    termos: ['fast', 'starts', 'beginning', 'first video'],
+  },
+  {
+    chave: 'para-quem',
+    atalho: 'Who it is for',
+    pergunta: 'Which businesses is Doxa right for?',
+    resposta: [
+      'Doxa is built for businesses that want to turn content into a predictable, scalable growth channel.',
+      'We work especially with brands that need to gain relevance, grow an audience and consistently claim space on the main digital platforms.',
+    ],
+    ancoras: ['who is it for', 'what kind of business', 'is it for me', 'my niche', 'niche', 'segment', 'right for'],
+    termos: ['small', 'big', 'beginner', 'serve'],
+  },
+  {
+    chave: 'preco',
+    pergunta: 'How much does it cost to hire Doxa?',
+    resposta: [
+      'The investment varies with the volume of content, the views target and the size of the operation.',
+      'Doxa builds a custom strategy for each business and, once we understand your goals, our team presents the plan that fits best.',
+    ],
+    ancoras: ['how much', 'price', 'cost', 'pricing', 'monthly fee', 'budget', 'investment'],
+    termos: ['plan', 'package', 'hire', 'expensive', 'cheap'],
+  },
+  {
+    chave: 'nao-bater',
+    pergunta: 'What happens if you do not hit the promised view count?',
+    resposta: [
+      'Doxa works with performance targets defined in the contract. If the agreed volume of views is not reached within the established period, the guarantee conditions set out in the contract apply.',
+      'The guarantee exists precisely to align our result with the client result.',
+    ],
+    ancoras: ['not hit', 'miss the target', 'do not reach', 'do not deliver', 'what if it fails'],
+    termos: ['fail', 'fall short', 'promised'],
+  },
+  {
+    chave: 'viralizar-garantido',
+    pergunta: 'Can you guarantee my content will go viral?',
+    resposta: [
+      'We do not guarantee that a specific video will go viral. What we do is build an operation with enough volume, data and testing to significantly increase the odds of reaching large audiences.',
+      'Our guarantee is tied to the total contracted performance, not to the performance of a single piece of content.',
+    ],
+    ancoras: ['guarantee it goes viral', 'will it go viral', 'every video viral'],
+    termos: ['certainty', 'promise'],
+  },
+  {
+    chave: 'midia-extra',
+    pergunta: 'Do I need to invest in media on top of what I pay Doxa?',
+    resposta: [
+      'To reach the organic targets contracted with Doxa, no media spend is needed. Our operation is built to generate distribution without depending on paid media.',
+      'If the business wants to complement the strategy with ads, that can be done separately.',
+    ],
+    ancoras: [
+      'paid traffic', 'paid media', 'do i need ads', 'need to invest', 'need to pay',
+      'on top of', 'media budget', 'spend on ads',
+    ],
+    termos: ['ad', 'ads', 'boost', 'boosting'],
+  },
+  {
+    chave: 'pequenas',
+    pergunta: 'Does Doxa work for small businesses too?',
+    resposta: [
+      'Small businesses can also work with Doxa, as long as there is potential to turn content into a relevant growth channel.',
+      'What matters most is not the size of the business, but the goals, the market, the product and the ability to capture the audience the operation generates.',
+    ],
+    ancoras: ['small business', 'small businesses', 'i am small', 'micro business'],
+    termos: ['beginner', 'starting out', 'low revenue'],
+  },
+  {
+    chave: 'b2b',
+    pergunta: 'My business is B2B — does Doxa work for me?',
+    resposta: [
+      'B2B businesses can also use content to build authority, generate awareness, educate the market and reach potential clients.',
+      'The strategy, the language and the formats are adapted to the audience and the sales process of each business.',
+    ],
+    ancoras: ['b2b', 'business to business', 'sell to companies', 'industry', 'wholesale'],
+    termos: ['corporate', 'services for companies'],
+  },
+  {
+    chave: 'redes',
+    pergunta: 'Which social networks do you publish on?',
+    resposta: [
+      'The strategy can involve TikTok, Instagram, YouTube and other networks relevant to the business audience.',
+      'Distribution is defined by the audience behavior and the goals of each operation.',
+    ],
+    ancoras: [
+      'which networks', 'social networks', 'tiktok', 'instagram', 'youtube', 'shorts', 'reels',
+      'where do you post', 'platforms',
+    ],
+    termos: ['publish', 'channels', 'network'],
+  },
+  {
+    chave: 'volume',
+    pergunta: 'How many videos do you produce per month?',
+    resposta: [
+      'Volume depends on the contracted plan. Doxa runs high-frequency operations and can produce and publish multiple pieces of content per day.',
+      'The exact volume is defined by the strategy and the performance target of each client.',
+    ],
+    ancoras: ['how many videos', 'how many posts', 'per month', 'per day', 'volume', 'frequency'],
+    termos: ['production', 'quantity', 'how many'],
+  },
+  {
+    chave: 'gravar',
+    pergunta: 'Do I need to record the videos, or do you handle everything?',
+    resposta: [
+      'Doxa can take on most of the content operation. During onboarding we map which materials — images, videos, audio or appearances — will be needed.',
+      'How much the client needs to record varies with the format chosen for the brand.',
+    ],
+    ancoras: [
+      'do i record', 'who records', 'appear in the video', 'show my face', 'recording',
+      'do not like being on camera',
+    ],
+    termos: ['camera', 'film', 'studio', 'face'],
+  },
+  {
+    chave: 'escala',
+    pergunta: 'How can you produce so much content for one business?',
+    resposta: [
+      'We use technology, artificial intelligence, proprietary processes and an operation specialized in content production at scale.',
+      'That lets us create, test and optimize different formats much faster than a traditional content operation.',
+    ],
+    ancoras: ['produce so much', 'so much content', 'artificial intelligence', 'ai', 'how do you produce', 'at scale'],
+    termos: ['technology', 'fast', 'team'],
+  },
+  {
+    chave: 'aprovacao',
+    pergunta: 'Do the videos need my approval before they are published?',
+    resposta: [
+      'When the client workflow requires approval, content goes through validation steps before publishing.',
+      'The business can follow themes, scripts, versions and materials to make sure everything is aligned with the brand guidelines.',
+    ],
+    ancoras: ['approve', 'approval', 'approved', 'before publishing', 'before posting', 'validate', 'review'],
+    termos: ['publishing', 'control'],
+  },
+  {
+    chave: 'tom-de-voz',
+    pergunta: 'Can Doxa follow my brand identity and tone of voice?',
+    resposta: [
+      'At the start of the operation, our team maps the identity, the positioning, the audience, the language and the restrictions of the business.',
+      'That information then guides production, so the content stays consistent with the brand.',
+    ],
+    ancoras: ['tone of voice', 'identity', 'visual identity', 'my brand', 'positioning', 'branding', 'brand guidelines'],
+    termos: ['language', 'style', 'brand look'],
+  },
+  {
+    chave: 'direitos',
+    pergunta: 'Who owns the content Doxa produces?',
+    resposta: [
+      'The content is developed exclusively for the brand operation.',
+      'Usage rights, ownership and other conditions are established in each client contract, according to the contracted scope.',
+    ],
+    ancoras: ['who owns', 'content ownership', 'rights', 'copyright', 'ownership'],
+    termos: ['possession', 'mine or yours'],
+  },
+  {
+    chave: 'reuso',
+    pergunta: 'Can I use the videos you produce on other networks or campaigns?',
+    resposta: [
+      'In general, yes: content produced for the brand can be used across its own channels, respecting the conditions established in the contract.',
+      'The same piece of content can also be adapted to different platforms and formats.',
+    ],
+    ancoras: ['use on other networks', 'other campaigns', 'reuse', 'can i use', 'use in ads'],
+    termos: ['campaign', 'repurpose', 'repost'],
+  },
+  {
+    chave: 'processo',
+    pergunta: 'How does the process work after I sign?',
+    resposta: [
+      'The process starts with onboarding, so we understand the business, the goals, the audience, the positioning and the references. Then we structure the strategy, start production, go through the necessary approvals and begin publishing.',
+      'From there, results are analyzed continuously to guide the next pieces of content.',
+    ],
+    ancoras: ['after i sign', 'after hiring', 'onboarding', 'how does it start', 'first steps', 'step by step'],
+    termos: ['process', 'stages', 'start', 'beginning'],
+  },
+  {
+    chave: 'acompanhar',
+    pergunta: 'Can I track how many views the content is getting?',
+    resposta: [
+      'Performance is tracked throughout the operation: views and other relevant indicators are monitored the whole time.',
+      'That way both Doxa and the client follow the evolution of the strategy and the progress toward the contracted targets.',
+    ],
+    ancoras: ['track', 'report', 'reports', 'dashboard', 'metrics', 'see the numbers', 'how do i know'],
+    termos: ['transparency', 'monitor', 'panel'],
+  },
+  {
+    chave: 'primeiros-videos',
+    pergunta: 'What if the first videos do not perform well?',
+    resposta: [
+      'Early content that performs below expectations is part of the process: it generates data about audience, themes, formats, hooks and narratives. The Doxa strategy does not depend on getting every video right.',
+      'When we identify higher-performance patterns, we scale production around what works and quickly discard what does not.',
+    ],
+    ancoras: ['first videos', 'do not perform', 'flop', 'bad start', 'not go viral at first'],
+    termos: ['bad', 'failure', 'not work'],
+  },
+];
+
+const SEM_RESPOSTA_EN = {
+  titulo: "That one I can't answer.",
+  corpo:
+    "A consultant from the Doxa team can, and it's quick: leave your contact up above and they'll talk to you within 24 hours.",
+  acao: 'Talk to the consultant',
+};
+
+const ESPERA_EN = {
+  titulo: 'The answer shows up here.',
+  corpo:
+    'Type the question on the other side, or tap a topic. This half of the screen exists just for that.',
+};
+
+const ABERTURA_EN = {
+  rotulo: 'FAQ',
+  titulo: 'What do you want to know?',
+  dica: 'Ask anything.',
+  limite: 'Or start with one of the questions everyone asks.',
+  exemplo: 'Type your question…',
+};
+
+/* ─── OS PARES EXPORTADOS ───────────────────────────────────────────────────── */
+
+export const DUVIDAS: PorIdioma<readonly Duvida[]> = {
+  pt: DUVIDAS_PT, en: DUVIDAS_EN, es: DUVIDAS_PT,
+};
+export const DESTAQUES: PorIdioma<readonly Duvida[]> = {
+  pt: destacar(DUVIDAS_PT), en: destacar(DUVIDAS_EN), es: destacar(DUVIDAS_PT),
+};
+export const SEM_RESPOSTA: PorIdioma<typeof SEM_RESPOSTA_PT> = {
+  pt: SEM_RESPOSTA_PT, en: SEM_RESPOSTA_EN, es: SEM_RESPOSTA_PT,
+};
+export const ESPERA: PorIdioma<typeof ESPERA_PT> = { pt: ESPERA_PT, en: ESPERA_EN, es: ESPERA_PT };
+export const ABERTURA: PorIdioma<typeof ABERTURA_PT> = {
+  pt: ABERTURA_PT, en: ABERTURA_EN, es: ABERTURA_PT,
+};
