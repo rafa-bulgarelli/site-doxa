@@ -2,6 +2,7 @@ import { ImageOff, Pause, Play } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { usarNaTela } from '../../hooks/usarNaTela';
 import { CASES } from './cases';
+import { useIdioma, type PorIdioma } from '../../idioma';
 
 interface CaseSwitcherProps {
   activeIndex: number;
@@ -28,7 +29,27 @@ const HOLD_MS = 10000;
  * its own owes the viewer a way to stop it, which is what the pause button is —
  * not a nicety, the reason the autoplay is allowed to exist at all.
  */
+const TEXTO_TROCA: PorIdioma<{ verCase: string; retomar: string; pausar: string }> = {
+  pt: {
+    verCase: 'Ver o case',
+    retomar: 'Retomar a troca automática',
+    pausar: 'Pausar a troca automática',
+  },
+  en: {
+    verCase: 'See the case study:',
+    retomar: 'Resume auto-rotation',
+    pausar: 'Pause auto-rotation',
+  },
+  es: {
+    verCase: 'Ver o case',
+    retomar: 'Retomar a troca automática',
+    pausar: 'Pausar a troca automática',
+  },
+};
+
 export function CaseSwitcher({ activeIndex, onSelect }: CaseSwitcherProps) {
+  const [idioma] = useIdioma();
+
   const [paused, setPaused] = useState(false);
   const barRef = useRef<HTMLDivElement>(null);
   const elapsedRef = useRef(0);
@@ -103,7 +124,7 @@ export function CaseSwitcher({ activeIndex, onSelect }: CaseSwitcherProps) {
               type="button"
               onClick={() => onSelect(index)}
               aria-pressed={isActive}
-              aria-label={`Ver o case ${heroCase.name}`}
+              aria-label={`${TEXTO_TROCA[idioma].verCase} ${heroCase.name}`}
               /* The deck recedes away from whichever thumb is active: stacking
                  order falls with distance from it, and the active one sits one
                  step above the whole deck. A fixed order counted from the first
@@ -160,7 +181,7 @@ export function CaseSwitcher({ activeIndex, onSelect }: CaseSwitcherProps) {
         <button
           type="button"
           onClick={() => setPaused((current) => !current)}
-          aria-label={paused ? 'Retomar a troca automática' : 'Pausar a troca automática'}
+          aria-label={paused ? TEXTO_TROCA[idioma].retomar : TEXTO_TROCA[idioma].pausar}
           className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-white/[0.14] bg-white/[0.06] text-white/70 transition-colors hover:bg-white/[0.12] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black"
         >
           {paused ? (

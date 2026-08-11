@@ -19,6 +19,7 @@ import {
   VolumeX,
 } from 'lucide-react';
 import { CASES } from '../hero/cases';
+import { numeroNoIdioma, useIdioma, type PorIdioma } from '../../idioma';
 
 /** The case whose real files stand in for the pipeline's output. */
 const SHOWCASE = CASES[1];
@@ -121,7 +122,7 @@ function BuildList({
 }
 
 /** The questions the onboarding call goes through, in the owner's order. */
-const QUESTIONS = [
+const QUESTIONS_PT = [
   { icon: Store, label: 'O que o seu negócio faz?', hint: 'Produto, serviço, ticket médio' },
   {
     icon: Users,
@@ -135,14 +136,34 @@ const QUESTIONS = [
   },
 ];
 
+const QUESTIONS_EN = [
+  { icon: Store, label: 'What does your business do?', hint: 'Product, service, average ticket' },
+  {
+    icon: Users,
+    label: 'Who is the audience you want to reach?',
+    hint: 'Age, region, platform',
+  },
+  {
+    icon: Target,
+    label: 'What do you want to happen when someone starts following you?',
+    hint: 'Buy, message you, refer',
+  },
+];
+
+const QUESTIONS: PorIdioma<typeof QUESTIONS_PT> = {
+  pt: QUESTIONS_PT,
+  en: QUESTIONS_EN,
+  es: QUESTIONS_PT,
+};
+
 /**
  * The sequence, in milliseconds per phase: one dwell per question, a beat on
  * the button, then the confirmation. The last entry is how long the check holds
  * before the card hands the cycle to the next one.
  */
 const PHASES = [1600, 1600, 1600, 950, 2200];
-const BUTTON_PHASE = QUESTIONS.length;
-const CHECK_PHASE = QUESTIONS.length + 1;
+const BUTTON_PHASE = QUESTIONS_PT.length;
+const CHECK_PHASE = QUESTIONS_PT.length + 1;
 
 /**
  * One row of the panel. The active one carries the highlight and the cursor,
@@ -347,6 +368,9 @@ function StepDone({ label }: { label: string }) {
  * signals by handing the turn back.
  */
 export function OnboardingArt({ state, paused, onFinish }: ArtProps) {
+  const [idioma] = useIdioma();
+  const t = TEXTO_ARTE[idioma];
+
   const still = useReducedMotion() ?? false;
   const [phase, setPhase] = useState(0);
   const running = state === 'running';
@@ -376,14 +400,14 @@ export function OnboardingArt({ state, paused, onFinish }: ArtProps) {
   // Frozen on the check between turns: `done` means the turn is over, and the
   // last frame is the confirmation it ended on.
   const done = state === 'done' || phase >= CHECK_PHASE;
-  if (done) return <StepDone label="Perfil do negócio pronto" />;
+  if (done) return <StepDone label={t.perfilPronto} />;
 
   return (
     <div className="w-full overflow-hidden rounded-2xl border border-white/[0.09] bg-white/[0.07] p-3 backdrop-blur-sm">
       <GroupLabel>Doxa Scan 🚀</GroupLabel>
 
       <div className="flex flex-col">
-        {QUESTIONS.map(({ icon, label, hint }, index) => (
+        {QUESTIONS[idioma].map(({ icon, label, hint }, index) => (
           <Row
             key={label}
             icon={icon}
@@ -395,7 +419,7 @@ export function OnboardingArt({ state, paused, onFinish }: ArtProps) {
         ))}
       </div>
 
-      <GroupLabel spaced>Depois disso</GroupLabel>
+      <GroupLabel spaced>{t.depoisDisso}</GroupLabel>
 
       <div className="relative flex items-center justify-end px-2.5 pb-4 pt-2">
         {/* A real button, not a picture of one: the loop demonstrates the
@@ -410,7 +434,7 @@ export function OnboardingArt({ state, paused, onFinish }: ArtProps) {
           animate={phase === BUTTON_PHASE && !still ? { scale: [1, 0.96, 1] } : { scale: 1 }}
           transition={{ duration: 0.45, times: [0, 0.5, 1], delay: 0.4 }}
         >
-          Salvar
+          {t.salvar}
           <ArrowRight className="h-4 w-4" strokeWidth={2.5} />
         </motion.button>
         {phase === BUTTON_PHASE && !still && <Cursor />}
@@ -418,7 +442,7 @@ export function OnboardingArt({ state, paused, onFinish }: ArtProps) {
 
       <div className="flex items-center gap-1.5 border-t border-white/[0.07] px-2.5 py-2 text-[11px] text-white/25">
         <Info className="h-3.5 w-3.5" strokeWidth={1.75} />
-        Uma reunião, uma vez só
+        {t.reuniaoUmaVez}
       </div>
     </div>
   );
@@ -448,10 +472,17 @@ const BARS = [9, 18, 12, 22, 14];
  * has to say is what you are expected to send, and that is true regardless of
  * who is looking at it.
  */
-const UPLOADS = [
+const UPLOADS_PT = [
   { icon: ImageIcon, label: 'a sua foto', hint: 'uma foto de frente, com luz no rosto' },
   { icon: Mic, label: 'a sua voz', hint: 'um áudio curto, falando qualquer coisa' },
 ];
+
+const UPLOADS_EN = [
+  { icon: ImageIcon, label: 'your photo', hint: 'a front-facing photo, light on your face' },
+  { icon: Mic, label: 'your voice', hint: 'a short audio clip, saying anything' },
+];
+
+const UPLOADS: PorIdioma<typeof UPLOADS_PT> = { pt: UPLOADS_PT, en: UPLOADS_EN, es: UPLOADS_PT };
 
 /**
  * What the platform reports while it assembles the clone.
@@ -460,11 +491,23 @@ const UPLOADS = [
  * reading of a mock: the card depicts the work, it does not measure it. A bar
  * claiming a percentage would be a number about a job that is not running.
  */
-const BUILD_STEPS = [
+const BUILD_STEPS_PT = [
   'lendo os traços do rosto',
   'clonando o timbre da voz',
   'sincronizando fala e boca',
 ];
+
+const BUILD_STEPS_EN = [
+  'reading your facial features',
+  'cloning the tone of your voice',
+  'syncing speech and lips',
+];
+
+const BUILD_STEPS: PorIdioma<readonly string[]> = {
+  pt: BUILD_STEPS_PT,
+  en: BUILD_STEPS_EN,
+  es: BUILD_STEPS_PT,
+};
 
 /**
  * The clone card's sequence, in milliseconds: one phase per upload, one per
@@ -477,7 +520,7 @@ const BUILD_STEPS = [
  * belongs to a run that no longer exists.
  */
 const CLONE_PHASES = [2000, 2000, 900, 900, 900, 1000, 2200];
-const BUILD_START = UPLOADS.length;
+const BUILD_START = UPLOADS_PT.length;
 /**
  * The beat that holds the finished list before the confirmation replaces it.
  *
@@ -486,7 +529,7 @@ const BUILD_START = UPLOADS.length;
  * straight to the green check and never sees the work land. A second of the
  * list standing complete is what makes the check read as the consequence of it.
  */
-const CLONE_SETTLE_PHASE = BUILD_START + BUILD_STEPS.length;
+const CLONE_SETTLE_PHASE = BUILD_START + BUILD_STEPS_PT.length;
 const CLONE_CHECK_PHASE = CLONE_SETTLE_PHASE + 1;
 
 /** Where an upload row is in its own little life. */
@@ -521,6 +564,9 @@ function UploadRow({
   still: boolean;
   paused: boolean;
 }) {
+  const [idioma] = useIdioma();
+  const t = TEXTO_ARTE[idioma];
+
   const sent = status === 'ready';
 
   return (
@@ -577,7 +623,7 @@ function UploadRow({
             </motion.span>
           ) : (
             <span className="shrink-0 text-[10px] text-white/30">
-              {status === 'sending' ? 'enviando…' : 'aguardando'}
+              {status === 'sending' ? t.enviando : t.aguardando}
             </span>
           )}
         </span>
@@ -621,6 +667,9 @@ function UploadRow({
  * the claim being made about it.
  */
 export function CloneArt({ state, paused, onFinish }: ArtProps) {
+  const [idioma] = useIdioma();
+  const t = TEXTO_ARTE[idioma];
+
   const still = useReducedMotion() ?? false;
   const [phase, setPhase] = useState(0);
   const running = state === 'running';
@@ -643,7 +692,7 @@ export function CloneArt({ state, paused, onFinish }: ArtProps) {
 
   // Frozen on the check between turns, exactly as step one is.
   const done = state === 'done' || phase >= CLONE_CHECK_PHASE;
-  if (done) return <StepDone label="Clone pronto" />;
+  if (done) return <StepDone label={t.clonePronto} />;
 
   /**
    * What the panel is showing, which is not always what `phase` says.
@@ -659,7 +708,7 @@ export function CloneArt({ state, paused, onFinish }: ArtProps) {
    */
   const shown = still ? BUILD_START : running ? phase : -1;
   /** How many build lines are ticked off; below zero, the build has not begun. */
-  const built = still ? BUILD_STEPS.length : shown - BUILD_START;
+  const built = still ? BUILD_STEPS_PT.length : shown - BUILD_START;
   const building = built >= 0;
 
   return (
@@ -667,7 +716,7 @@ export function CloneArt({ state, paused, onFinish }: ArtProps) {
       <GroupLabel>Doxa Clone 🧬</GroupLabel>
 
       <div className="flex flex-col">
-        {UPLOADS.map(({ icon, label, hint }, index) => (
+        {UPLOADS[idioma].map(({ icon, label, hint }, index) => (
           <UploadRow
             key={label}
             icon={icon}
@@ -677,7 +726,7 @@ export function CloneArt({ state, paused, onFinish }: ArtProps) {
             // Stops on the settled beat, not when the panel swaps: a read head
             // still sweeping over a finished list would say the machine never
             // stopped, and the whole point of that beat is that it did.
-            scanning={building && built < BUILD_STEPS.length}
+            scanning={building && built < BUILD_STEPS_PT.length}
             // The photo row shows the real face the pipeline works from; the
             // voice row has no thumbnail to show, so it gets the waveform.
             photoUrl={index === 0 ? SHOWCASE.photoUrl : null}
@@ -687,7 +736,7 @@ export function CloneArt({ state, paused, onFinish }: ArtProps) {
         ))}
       </div>
 
-      <GroupLabel spaced>Montando o seu clone</GroupLabel>
+      <GroupLabel spaced>{t.montandoClone}</GroupLabel>
 
       <div className="relative rounded-xl px-2.5 py-2.5">
         {building && (
@@ -703,13 +752,13 @@ export function CloneArt({ state, paused, onFinish }: ArtProps) {
             building ? 'opacity-100' : 'opacity-30'
           }`}
         >
-          <BuildList steps={BUILD_STEPS} built={built} still={still} paused={paused} />
+          <BuildList steps={BUILD_STEPS[idioma]} built={built} still={still} paused={paused} />
         </div>
       </div>
 
       <div className="mt-1 flex items-center gap-1.5 border-t border-white/[0.07] px-2.5 py-2 text-[11px] text-white/25">
         <Info className="h-3.5 w-3.5" strokeWidth={1.75} />
-        Uma foto e um áudio, uma vez só
+        {t.fotoAudioUmaVez}
       </div>
     </div>
   );
@@ -721,11 +770,110 @@ export function CloneArt({ state, paused, onFinish }: ArtProps) {
  * PENDENTE-DONO: a plausible reading of the stages, not a spec of them. If the
  * real pipeline names its passes differently, these are the strings to change.
  */
-const RENDER_STEPS = [
+const RENDER_STEPS_PT = [
   'montando as cenas',
   'gerando a locução com a sua voz',
   'legendando e cortando em 9:16',
 ];
+
+const RENDER_STEPS_EN = [
+  'assembling the scenes',
+  'generating the voiceover with your voice',
+  'captioning and cutting to 9:16',
+];
+
+const RENDER_STEPS: PorIdioma<readonly string[]> = {
+  pt: RENDER_STEPS_PT,
+  en: RENDER_STEPS_EN,
+  es: RENDER_STEPS_PT,
+};
+
+/** Os textos avulsos dos três cartões. */
+const TEXTO_ARTE: PorIdioma<{
+  depoisDisso: string;
+  salvar: string;
+  reuniaoUmaVez: string;
+  perfilPronto: string;
+  montandoClone: string;
+  clonePronto: string;
+  fotoAudioUmaVez: string;
+  aguardando: string;
+  enviando: string;
+  gerandoVideo: string;
+  comOClone: string;
+  naEsteira: string;
+  nadaAqui: string;
+  visualizacoes: string;
+  curtidas: string;
+  comentarios: string;
+  reposts: string;
+  desligarSom: string;
+  ligarSom: string;
+}> = {
+  pt: {
+    depoisDisso: 'Depois disso',
+    salvar: 'Salvar',
+    reuniaoUmaVez: 'Uma reunião, uma vez só',
+    perfilPronto: 'Perfil do negócio pronto',
+    montandoClone: 'Montando o seu clone',
+    clonePronto: 'Clone pronto',
+    fotoAudioUmaVez: 'Uma foto e um áudio, uma vez só',
+    aguardando: 'aguardando',
+    enviando: 'enviando…',
+    gerandoVideo: 'gerando o vídeo',
+    comOClone: 'com o clone que você acabou de montar',
+    naEsteira: 'Na esteira',
+    nadaAqui: 'Você não precisa fazer nada aqui',
+    visualizacoes: 'visualizações',
+    curtidas: 'curtidas',
+    comentarios: 'comentários',
+    reposts: 'reposts',
+    desligarSom: 'Desligar o som do vídeo',
+    ligarSom: 'Ligar o som do vídeo',
+  },
+  en: {
+    depoisDisso: 'After that',
+    salvar: 'Save',
+    reuniaoUmaVez: 'One meeting, one time only',
+    perfilPronto: 'Business profile ready',
+    montandoClone: 'Building your clone',
+    clonePronto: 'Clone ready',
+    fotoAudioUmaVez: 'One photo and one audio clip, one time only',
+    aguardando: 'waiting',
+    enviando: 'sending…',
+    gerandoVideo: 'generating the video',
+    comOClone: 'with the clone you just built',
+    naEsteira: 'In the pipeline',
+    nadaAqui: 'You do not have to do anything here',
+    visualizacoes: 'views',
+    curtidas: 'likes',
+    comentarios: 'comments',
+    reposts: 'reposts',
+    desligarSom: 'Mute the video',
+    ligarSom: 'Unmute the video',
+  },
+  es: {
+    depoisDisso: 'Depois disso',
+    salvar: 'Salvar',
+    reuniaoUmaVez: 'Uma reunião, uma vez só',
+    perfilPronto: 'Perfil do negócio pronto',
+    montandoClone: 'Montando o seu clone',
+    clonePronto: 'Clone pronto',
+    fotoAudioUmaVez: 'Uma foto e um áudio, uma vez só',
+    aguardando: 'aguardando',
+    enviando: 'enviando…',
+    gerandoVideo: 'gerando o vídeo',
+    comOClone: 'com o clone que você acabou de montar',
+    naEsteira: 'Na esteira',
+    nadaAqui: 'Você não precisa fazer nada aqui',
+    visualizacoes: 'visualizações',
+    curtidas: 'curtidas',
+    comentarios: 'comentários',
+    reposts: 'reposts',
+    desligarSom: 'Desligar o som do vídeo',
+    ligarSom: 'Ligar o som do vídeo',
+  },
+};
 
 /**
  * Step three's sequence, in milliseconds: one phase per line of the render, the
@@ -736,7 +884,7 @@ const RENDER_STEPS = [
  * card exists to give it time to actually play.
  */
 const RENDER_PHASES = [900, 900, 900, 1000, 15000];
-const RENDER_SETTLE_PHASE = RENDER_STEPS.length;
+const RENDER_SETTLE_PHASE = RENDER_STEPS_PT.length;
 const REVEAL_PHASE = RENDER_SETTLE_PHASE + 1;
 
 /**
@@ -782,6 +930,9 @@ function Engagement({
  * never pays for it.
  */
 export function OutputArt({ state, paused, hovered, onFinish }: ArtProps) {
+  const [idioma] = useIdioma();
+  const t = TEXTO_ARTE[idioma];
+
   const still = useReducedMotion() ?? false;
   const [phase, setPhase] = useState(0);
   const [loaded, setLoaded] = useState(false);
@@ -888,7 +1039,7 @@ export function OutputArt({ state, paused, hovered, onFinish }: ArtProps) {
               type="button"
               onClick={() => setSoundOn((current) => !current)}
               aria-pressed={soundOn}
-              aria-label={soundOn ? 'Desligar o som do vídeo' : 'Ligar o som do vídeo'}
+              aria-label={soundOn ? t.desligarSom : t.ligarSom}
               className="absolute bottom-2 right-2 flex h-7 w-7 items-center justify-center rounded-full border border-white/20 bg-black/55 text-white/80 backdrop-blur-sm transition-colors hover:border-white/40 hover:text-white focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white/60"
             >
               {soundOn ? (
@@ -923,7 +1074,7 @@ export function OutputArt({ state, paused, hovered, onFinish }: ArtProps) {
         >
           <div>
             <p className="text-lg font-semibold leading-tight tracking-tight text-white">
-              {SHOWCASE.outputLabel}
+              {SHOWCASE.outputLabel[idioma]}
             </p>
             {SHOWCASE.handle && (
               <p className="mt-1 text-[13px] leading-none text-white/50">{SHOWCASE.handle}</p>
@@ -939,22 +1090,22 @@ export function OutputArt({ state, paused, hovered, onFinish }: ArtProps) {
             <div className="rounded-xl border border-white/[0.08] bg-white/[0.04] p-3 font-ui">
               <div className="flex items-baseline gap-2">
                 <span className="text-2xl font-semibold leading-none tabular-nums text-white">
-                  {SHOWCASE.stats.views}
+                  {numeroNoIdioma(SHOWCASE.stats.views, idioma)}
                 </span>
-                <span className="text-[11px] leading-none text-white/45">visualizações</span>
+                <span className="text-[11px] leading-none text-white/45">{t.visualizacoes}</span>
               </div>
 
               <div className="mt-3 flex flex-wrap items-center gap-x-5 gap-y-2.5 border-t border-white/[0.07] pt-3">
-                <Engagement icon={Heart} value={SHOWCASE.stats.likes} label="curtidas" liked />
+                <Engagement icon={Heart} value={numeroNoIdioma(SHOWCASE.stats.likes, idioma)} label={t.curtidas} liked />
                 {SHOWCASE.stats.comments && (
                   <Engagement
                     icon={MessageCircle}
-                    value={SHOWCASE.stats.comments}
-                    label="comentários"
+                    value={numeroNoIdioma(SHOWCASE.stats.comments, idioma)}
+                    label={t.comentarios}
                   />
                 )}
                 {SHOWCASE.stats.reposts && (
-                  <Engagement icon={Repeat2} value={SHOWCASE.stats.reposts} label="reposts" />
+                  <Engagement icon={Repeat2} value={numeroNoIdioma(SHOWCASE.stats.reposts, idioma)} label={t.reposts} />
                 )}
               </div>
             </div>
@@ -988,7 +1139,7 @@ export function OutputArt({ state, paused, hovered, onFinish }: ArtProps) {
   const shown = running ? phase : -1;
   /** The render's own progress: one notch per line, plus the settled beat. */
   const progress =
-    shown < 0 ? 0 : ((Math.min(shown, RENDER_STEPS.length) + 1) / (RENDER_STEPS.length + 1)) * 100;
+    shown < 0 ? 0 : ((Math.min(shown, RENDER_STEPS_PT.length) + 1) / (RENDER_STEPS_PT.length + 1)) * 100;
 
   return (
     <div className="w-full overflow-hidden rounded-2xl border border-white/[0.09] bg-white/[0.07] p-3 backdrop-blur-sm">
@@ -1015,12 +1166,12 @@ export function OutputArt({ state, paused, hovered, onFinish }: ArtProps) {
         <span className="flex min-w-0 flex-1 flex-col gap-1.5">
           <span className="flex items-center justify-between gap-2">
             <span className="text-[13px] font-medium leading-snug text-white">
-              gerando o vídeo
+              {t.gerandoVideo}
             </span>
             <span className="shrink-0 text-[10px] text-white/30">9:16</span>
           </span>
           <span className="text-[11px] leading-snug text-white/40">
-            com o clone que você acabou de montar
+            {t.comOClone}
           </span>
           <span className="h-1 w-full overflow-hidden rounded-full bg-white/[0.07]">
             <motion.span
@@ -1033,15 +1184,15 @@ export function OutputArt({ state, paused, hovered, onFinish }: ArtProps) {
         </span>
       </div>
 
-      <GroupLabel spaced>Na esteira</GroupLabel>
+      <GroupLabel spaced>{t.naEsteira}</GroupLabel>
 
       <div className="px-2.5 py-2.5">
-        <BuildList steps={RENDER_STEPS} built={shown} still={still} paused={paused} />
+        <BuildList steps={RENDER_STEPS[idioma]} built={shown} still={still} paused={paused} />
       </div>
 
       <div className="mt-1 flex items-center gap-1.5 border-t border-white/[0.07] px-2.5 py-2 text-[11px] text-white/25">
         <Info className="h-3.5 w-3.5" strokeWidth={1.75} />
-        Você não precisa fazer nada aqui
+        {t.nadaAqui}
       </div>
     </div>
   );

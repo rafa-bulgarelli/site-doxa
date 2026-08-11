@@ -23,6 +23,7 @@ import { DotGridSpotlight } from './hero/DotGridSpotlight';
 import { MotionButton } from './ui/MotionButton';
 import { HREF_FORMS } from '../ancoras';
 import { useIsDesktop } from '../hooks/useIsDesktop';
+import { numeroNoIdioma, useIdioma, type PorIdioma } from '../idioma';
 
 /**
  * How far the track steps between one card and the next, along all three axes.
@@ -425,10 +426,75 @@ const CLIENTES = '1.500';
  * operações de conteúdo no país sustentam, e "+900 por dia" implica capacidade
  * instalada. São dele para afirmar; ficam registrados aqui como o que são.
  */
-const SCALE_CLAIMS = [
-  { value: '+10B', label: 'de views orgânicas geradas' },
-  { value: '+900', label: 'vídeos gerados por dia' },
-];
+const SCALE_CLAIMS: PorIdioma<readonly { value: string; label: string }[]> = {
+  pt: [
+    { value: '+10B', label: 'de views orgânicas geradas' },
+    { value: '+900', label: 'vídeos gerados por dia' },
+  ],
+  en: [
+    { value: '+10B', label: 'organic views generated' },
+    { value: '+900', label: 'videos generated per day' },
+  ],
+  es: [
+    { value: '+10B', label: 'de views orgânicas geradas' },
+    { value: '+900', label: 'vídeos gerados por dia' },
+  ],
+};
+
+/** Os textos da parede fora das cifras. */
+const TEXTO_PROVA: PorIdioma<{
+  manchete: [string, string];
+  handleMock: string;
+  proxima: string;
+  cta: string;
+  visualizacoes: string;
+  curtidas: string;
+  comentarios: string;
+  reposts: string;
+  seguidores: string;
+  desligarSom: string;
+  ligarSom: string;
+}> = {
+  pt: {
+    manchete: ['empresas já', 'viralizaram com a Doxa.'],
+    handleMock: '@suaempresa',
+    proxima: 'E a próxima é a sua.',
+    cta: 'Quero viralizar',
+    visualizacoes: 'visualizações',
+    curtidas: 'curtidas',
+    comentarios: 'comentários',
+    reposts: 'reposts',
+    seguidores: 'seguidores',
+    desligarSom: 'Desligar o som do vídeo',
+    ligarSom: 'Ativar som do vídeo',
+  },
+  en: {
+    manchete: ['businesses have already', 'gone viral with Doxa.'],
+    handleMock: '@yourbusiness',
+    proxima: 'And the next one is yours.',
+    cta: 'I want to go viral',
+    visualizacoes: 'views',
+    curtidas: 'likes',
+    comentarios: 'comments',
+    reposts: 'reposts',
+    seguidores: 'followers',
+    desligarSom: 'Mute the video',
+    ligarSom: 'Unmute the video',
+  },
+  es: {
+    manchete: ['empresas já', 'viralizaram com a Doxa.'],
+    handleMock: '@suaempresa',
+    proxima: 'E a próxima é a sua.',
+    cta: 'Quero viralizar',
+    visualizacoes: 'visualizações',
+    curtidas: 'curtidas',
+    comentarios: 'comentários',
+    reposts: 'reposts',
+    seguidores: 'seguidores',
+    desligarSom: 'Desligar o som do vídeo',
+    ligarSom: 'Ativar som do vídeo',
+  },
+};
 
 /**
  * The figures on the empty post.
@@ -699,9 +765,10 @@ function useVaoLivre(
 }
 
 function ScaleClaims() {
+  const [idioma] = useIdioma();
   return (
     <>
-      {SCALE_CLAIMS.map(({ value, label }) => (
+      {SCALE_CLAIMS[idioma].map(({ value, label }) => (
         <div key={label} className="flex flex-col gap-1">
           {/* ── A DIETA FOI DESFEITA, e o registro das duas decisões fica.
 
@@ -766,6 +833,9 @@ function ReelCard({
   onTap: () => void;
   onToggleSound: () => void;
 }) {
+  const [idioma] = useIdioma();
+  const t = TEXTO_PROVA[idioma];
+
   const { transform, focus, display } = usePlacement(placement);
   const videoRef = useRef<HTMLVideoElement | null>(null);
 
@@ -892,7 +962,7 @@ function ReelCard({
             onToggleSound();
           }}
           aria-pressed={soundOn}
-          aria-label={soundOn ? 'Desligar o som do vídeo' : 'Ativar som do vídeo'}
+          aria-label={soundOn ? t.desligarSom : t.ligarSom}
           className="absolute right-2 top-2 flex h-8 w-8 items-center justify-center rounded-full border border-white/[0.14] bg-black/50 text-white opacity-80 backdrop-blur-sm transition hover:bg-black/70 hover:opacity-100 focus-visible:opacity-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/60"
         >
           {soundOn ? (
@@ -914,10 +984,10 @@ function ReelCard({
         </span>
 
         <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1">
-          {reel.views && <Stat icon={Eye} value={reel.views} label="visualizações" />}
-          {reel.likes && <Stat icon={Heart} value={reel.likes} label="curtidas" liked />}
-          {reel.comments && <Stat icon={MessageCircle} value={reel.comments} label="comentários" />}
-          {reel.reposts && <Stat icon={Repeat2} value={reel.reposts} label="reposts" />}
+          {reel.views && <Stat icon={Eye} value={numeroNoIdioma(reel.views, idioma)} label={t.visualizacoes} />}
+          {reel.likes && <Stat icon={Heart} value={numeroNoIdioma(reel.likes, idioma)} label={t.curtidas} liked />}
+          {reel.comments && <Stat icon={MessageCircle} value={numeroNoIdioma(reel.comments, idioma)} label={t.comentarios} />}
+          {reel.reposts && <Stat icon={Repeat2} value={numeroNoIdioma(reel.reposts, idioma)} label={t.reposts} />}
         </div>
       </div>
     </motion.div>
@@ -953,6 +1023,9 @@ function ClosingCard({
   /** O tamanho em que o miolo foi desenhado. `card` é o que coube na tela. */
   base: { width: number; height: number };
 }) {
+  const [idioma] = useIdioma();
+  const t = TEXTO_PROVA[idioma];
+
   const { transform, focus, display } = usePlacement(placement);
   /*
    * O miolo inteiro numa escala só, em vez de um corpo de texto por breakpoint.
@@ -1024,7 +1097,7 @@ function ClosingCard({
             como uma linha só de cabeçalho. */}
         <div className="flex w-full flex-col items-center gap-3 font-ui lg:gap-4">
           <span className="flex items-center gap-1 text-[12px] font-semibold text-white/70">
-            @suaempresa
+            {t.handleMock}
             <Verified />
           </span>
           {/* The five figures, at nearly twice a reel's size. The followers come
@@ -1043,12 +1116,12 @@ function ClosingCard({
               rather than as a step on the scale: the owner asked for that gap,
               and `gap-x-4` would be sixteen. */}
           <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 lg:gap-x-[15px]">
-            <Stat big icon={Eye} value={CTA_STATS.views} label="visualizações" />
-            <Stat big icon={Heart} value={CTA_STATS.likes} label="curtidas" liked />
+            <Stat big icon={Eye} value={numeroNoIdioma(CTA_STATS.views, idioma)} label={t.visualizacoes} />
+            <Stat big icon={Heart} value={numeroNoIdioma(CTA_STATS.likes, idioma)} label={t.curtidas} liked />
             <span aria-hidden className="w-full lg:hidden" />
-            <Stat big icon={MessageCircle} value={CTA_STATS.comments} label="comentários" />
-            <Stat big icon={Repeat2} value={CTA_STATS.reposts} label="reposts" />
-            <Stat big icon={UserPlus} value={CTA_STATS.followers} label="seguidores" />
+            <Stat big icon={MessageCircle} value={numeroNoIdioma(CTA_STATS.comments, idioma)} label={t.comentarios} />
+            <Stat big icon={Repeat2} value={numeroNoIdioma(CTA_STATS.reposts, idioma)} label={t.reposts} />
+            <Stat big icon={UserPlus} value={numeroNoIdioma(CTA_STATS.followers, idioma)} label={t.seguidores} />
           </div>
         </div>
 
@@ -1067,10 +1140,10 @@ function ClosingCard({
             gaps come out equal without either being a number that has to be
             re-tuned when the card or the type changes. */}
         <p className="my-auto whitespace-nowrap font-serif text-[34px] leading-none tracking-[-0.03em] text-white lg:text-[58px]">
-          E a próxima é a sua.
+          {t.proxima}
         </p>
 
-        <MotionButton label="Quero viralizar" href={HREF_FORMS} />
+        <MotionButton label={t.cta} href={HREF_FORMS} />
       </div>
     </motion.div>
   );
@@ -1091,6 +1164,9 @@ function ClosingCard({
  * through — the track is walked once, so there are half as many cards.
  */
 export function ProofWall() {
+  const [idioma] = useIdioma();
+  const t = TEXTO_PROVA[idioma];
+
   const sectionRef = useRef<HTMLElement>(null);
   /**
    * The pinned screen, not the section. The section is several viewports tall
@@ -1450,9 +1526,9 @@ export function ProofWall() {
 
                 Acima de 640 nada muda. */}
             <h2 className="font-serif text-[2.1rem] font-normal leading-[1.05] tracking-[-0.02em] text-white sm:text-4xl md:text-6xl">
-              {CLIENTES} empresas já
+              {numeroNoIdioma(CLIENTES, idioma)} {t.manchete[0]}
               <br />
-              viralizaram com a Doxa.
+              {t.manchete[1]}
             </h2>
 
             <div className="hidden flex-wrap justify-end gap-x-10 gap-y-4 text-right lg:flex">

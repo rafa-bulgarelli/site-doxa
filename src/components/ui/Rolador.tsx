@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { ArrowDown } from 'lucide-react';
 import { ANCORA_FORMS } from '../../ancoras';
+import { useIdioma, type PorIdioma } from '../../idioma';
 
 /** Folga da barra contra o topo e o pé da janela, em pixels. */
 const MARGEM = 10;
@@ -149,7 +150,24 @@ const DESTINO = ANCORA_FORMS;
  * Estado só para o que muda de verdade e raramente: dormindo/acordada, aberta, e
  * o nome da seção (que muda cinco vezes numa leitura inteira).
  */
+const TEXTO_ROLADOR: PorIdioma<{ faltam: (pct: number) => string; copy: string; pular: string }> = {
+  pt: { faltam: (pct) => `Faltam ${pct}%`, copy: 'para mudar sua empresa', pular: 'Pule a experiência' },
+  en: { faltam: (pct) => `${pct}% to go`, copy: 'to change your business', pular: 'Skip the experience' },
+  es: { faltam: (pct) => `Faltam ${pct}%`, copy: 'para mudar sua empresa', pular: 'Pule a experiência' },
+};
+
 export function Rolador() {
+  const [idioma] = useIdioma();
+  const textoRolador = TEXTO_ROLADOR[idioma];
+  /*
+   * O escritor da régua roda dentro de um rAF preso num efeito de montagem —
+   * ele não reexecuta quando o idioma troca. A `ref` é o correio: o laço lê o
+   * valor corrente dela a cada quadro, e trocar o idioma muda a frase no
+   * quadro seguinte sem religar o laço.
+   */
+  const textoRef = useRef(textoRolador);
+  textoRef.current = textoRolador;
+
   const barraRef = useRef<HTMLDivElement>(null);
   const pctVivaRef = useRef<HTMLSpanElement>(null);
   const pctCapaRef = useRef<HTMLSpanElement>(null);
@@ -270,7 +288,7 @@ export function Rolador() {
          percentual em metade dos valores, e o painel mostraria a capa em 40% com
          a linha dizendo "faltam 61%". A capa conta o que passou, a frase conta o
          que vem — o mesmo número pelas duas pontas. */
-      if (faltaRef.current != null) faltaRef.current.textContent = `Faltam ${100 - feito}%`;
+      if (faltaRef.current != null) faltaRef.current.textContent = textoRef.current.faltam(100 - feito);
 
       /* ─── O ESTICÃO ────────────────────────────────────────────────────────
        *
@@ -615,7 +633,7 @@ export function Rolador() {
             React a cada re-render, apagando o número. */}
         <div>
           <span ref={faltaRef} className="rolador-ilha-secao" />
-          <span className="rolador-ilha-copy">para mudar sua empresa</span>
+          <span className="rolador-ilha-copy">{textoRolador.copy}</span>
         </div>
 
         <span className="rolador-trilha">
@@ -626,7 +644,7 @@ export function Rolador() {
           <span className="rolador-ilha-seta">
             <ArrowDown className="h-4 w-4" strokeWidth={2.25} aria-hidden />
           </span>
-          Pule a experiência
+          {textoRolador.pular}
         </button>
       </div>
     </div>

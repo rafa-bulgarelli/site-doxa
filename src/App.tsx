@@ -1,6 +1,6 @@
 import { Suspense, lazy, useEffect, useState, type ReactNode } from 'react';
 import { ANCORA_FORMS, HREF_FORMS } from './ancoras';
-import { ProvedorDeIdioma } from './idioma';
+import { ProvedorDeIdioma, useIdioma, type PorIdioma } from './idioma';
 import { usarNaTela } from './hooks/usarNaTela';
 import { Hero } from './components/Hero';
 import { Rolador } from './components/ui/Rolador';
@@ -55,6 +55,45 @@ const Leads = lazy(() => import('./leads/Rota'));
  */
 function ehCentralDeLeads() {
   return window.location.pathname.replace(/\/+$/, '') === '/leads';
+}
+
+/**
+ * O título e a descrição do documento, no idioma escolhido.
+ *
+ * O `index.html` continua em português, e está certo assim: é o que os
+ * robôs de busca leem, e o padrão do site é o Brasil. Isto aqui corrige a ABA
+ * e o que um leitor de tela anuncia para quem trocou de idioma — a única parte
+ * do `<head>` que uma SPA consegue mudar de verdade. SEO em inglês de verdade
+ * (hreflang, rota própria, prerender) é o card de SEO internacional, não um
+ * `useEffect`.
+ */
+const META: PorIdioma<{ titulo: string; descricao: string }> = {
+  pt: {
+    titulo: 'Doxa — Um milhão de views. Ou seu dinheiro de volta.',
+    descricao:
+      'Uma foto e um áudio viram sessenta conteúdos em noventa dias. Um milhão de views somadas, ou seu dinheiro de volta.',
+  },
+  en: {
+    titulo: 'Doxa — One million views. Or your money back.',
+    descricao:
+      'One photo and one audio clip become sixty videos in ninety days. One million combined views, or your money back.',
+  },
+  es: {
+    titulo: 'Doxa — Um milhão de views. Ou seu dinheiro de volta.',
+    descricao:
+      'Uma foto e um áudio viram sessenta conteúdos em noventa dias. Um milhão de views somadas, ou seu dinheiro de volta.',
+  },
+};
+
+function MetaDoIdioma() {
+  const [idioma] = useIdioma();
+  useEffect(() => {
+    document.title = META[idioma].titulo;
+    document
+      .querySelector('meta[name="description"]')
+      ?.setAttribute('content', META[idioma].descricao);
+  }, [idioma]);
+  return null;
 }
 
 /**
@@ -265,6 +304,7 @@ export default function App() {
           página inteira. Dentro dele, sumiria junto com a página no reveal do
           rodapé — e o fim da rolagem é justamente onde alguém pode querer
           voltar ao topo. */}
+      <MetaDoIdioma />
       <Cabecalho />
 
       {/*

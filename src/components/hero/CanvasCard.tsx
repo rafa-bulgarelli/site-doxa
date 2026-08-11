@@ -2,6 +2,7 @@ import { AnimatePresence, motion, useAnimationControls, useReducedMotion } from 
 import { Eye, Heart } from 'lucide-react';
 import { useEffect, useRef, type ReactNode, type RefObject } from 'react';
 import type { CaseStats } from './cases';
+import { numeroNoIdioma, useIdioma } from '../../idioma';
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
@@ -13,19 +14,20 @@ const EASE = [0.22, 1, 0.36, 1] as const;
  * can't be, or its pupil dissolves into the surrounding shape.
  */
 function StatRow({ stats }: { stats: CaseStats }) {
+  const [idioma] = useIdioma();
   return (
     <span className="ml-auto flex items-center gap-2.5 text-[11px] font-semibold leading-tight text-white">
       <span className="flex items-center gap-1">
-        <span className="tabular-nums">{stats.views}</span>
+        <span className="tabular-nums">{numeroNoIdioma(stats.views, idioma)}</span>
         <Eye className="h-3 w-3" strokeWidth={2.25} aria-hidden />
-        <span className="sr-only">visualizações</span>
+        <span className="sr-only">{idioma === 'en' ? 'views' : 'visualizações'}</span>
       </span>
       <span className="flex items-center gap-1">
-        <span className="tabular-nums">{stats.likes}</span>
+        <span className="tabular-nums">{numeroNoIdioma(stats.likes, idioma)}</span>
         {/* The one piece of colour the hero allows itself, and it is quoted
             rather than chosen: this is the red a like is, everywhere. */}
         <Heart className="h-3 w-3 fill-current text-[#ff3040]" strokeWidth={0} aria-hidden />
-        <span className="sr-only">curtidas</span>
+        <span className="sr-only">{idioma === 'en' ? 'likes' : 'curtidas'}</span>
       </span>
     </span>
   );

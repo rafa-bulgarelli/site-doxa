@@ -11,6 +11,7 @@ import { DotGridSpotlight } from './hero/DotGridSpotlight';
 import { MotionButton } from './ui/MotionButton';
 import { HREF_FORMS } from '../ancoras';
 import { useIsDesktop } from '../hooks/useIsDesktop';
+import { useIdioma, type PorIdioma } from '../idioma';
 import { TOOLS } from './tools';
 
 /**
@@ -20,6 +21,53 @@ import { TOOLS } from './tools';
 const PLATFORMS = ['Instagram', 'TikTok', 'YouTube Shorts'] as const;
 
 const EASE = [0.16, 1, 0.3, 1] as const;
+
+/** A copy da primeira dobra, nos três idiomas. */
+const TEXTO_HERO: PorIdioma<{
+  titulo: string;
+  tituloItalico: string;
+  prefixo: string;
+  clausula: string;
+  cta: string;
+  fotoCliente: string;
+  vozCliente: string;
+  audio: string;
+  parceiros: string;
+}> = {
+  pt: {
+    titulo: 'Um milhão de views.',
+    tituloItalico: 'Ou seu dinheiro de volta.',
+    prefixo: '60 conteúdos · 90 dias ·',
+    clausula: 'views somadas no',
+    cta: 'Quero viralizar',
+    fotoCliente: 'Foto do cliente',
+    vozCliente: 'Voz do cliente',
+    audio: 'Áudio',
+    parceiros: 'parceiros:',
+  },
+  en: {
+    titulo: 'One million views.',
+    tituloItalico: 'Or your money back.',
+    prefixo: '60 videos · 90 days ·',
+    clausula: 'combined views on',
+    cta: 'I want to go viral',
+    fotoCliente: 'Client photo',
+    vozCliente: 'Client voice',
+    audio: 'Audio',
+    parceiros: 'partners:',
+  },
+  es: {
+    titulo: 'Um milhão de views.',
+    tituloItalico: 'Ou seu dinheiro de volta.',
+    prefixo: '60 conteúdos · 90 dias ·',
+    clausula: 'views somadas no',
+    cta: 'Quero viralizar',
+    fotoCliente: 'Foto do cliente',
+    vozCliente: 'Voz do cliente',
+    audio: 'Áudio',
+    parceiros: 'parceiros:',
+  },
+};
 
 function FadeUp({
   children,
@@ -43,6 +91,8 @@ function FadeUp({
 }
 
 export function Hero() {
+  const [idioma] = useIdioma();
+  const texto = TEXTO_HERO[idioma];
   const isDesktop = useIsDesktop();
   const [caseIndex, setCaseIndex] = useState(0);
   const activeCase = CASES[caseIndex];
@@ -121,7 +171,7 @@ export function Hero() {
                 objects. */}
             <div className="absolute left-10 top-[11%] w-[21%]">
               <CanvasCard
-                label="Foto do cliente"
+                label={texto.fotoCliente}
                 meta={activeCase.name}
                 inlineHeader={activeCase.inlineHeader}
                 swapKey={caseIndex}
@@ -141,8 +191,8 @@ export function Hero() {
 
             <div className="absolute bottom-[11%] left-10 w-[21%]">
               <CanvasCard
-                label="Voz do cliente"
-                meta="Áudio"
+                label={texto.vozCliente}
+                meta={texto.audio}
                 inlineHeader={activeCase.inlineHeader}
                 delay={0.5}
                 driftDelay={-3.5}
@@ -157,7 +207,7 @@ export function Hero() {
             {/* Output node — the finished vertical video. */}
             <div className="absolute right-10 top-1/2 w-[19%] -translate-y-1/2">
               <CanvasCard
-                label={activeCase.outputLabel}
+                label={activeCase.outputLabel[idioma]}
                 meta={activeCase.handle ?? activeCase.name}
                 stats={activeCase.stats}
                 inlineHeader={activeCase.inlineHeader}
@@ -196,22 +246,22 @@ export function Hero() {
               that the wider serif fallback doesn't wrap it before the webfont
               lands. */}
           <h1 className="font-serif text-[10vw] font-normal leading-[1.1] tracking-[-0.02em] text-white sm:text-6xl md:text-[4.25rem]">
-            Um milhão de views.
+            {texto.titulo}
             <br />
-            <em className="italic">Ou seu dinheiro de volta.</em>
+            <em className="italic">{texto.tituloItalico}</em>
           </h1>
 
           {/* The one moving element in the headline block — Flora's rotator,
               carrying the owner's literal platform list instead of ad copy. */}
           <FadeUp delay={0.45}>
             <p className="mt-6 flex flex-wrap items-baseline justify-center gap-x-2 text-sm text-white/70 md:text-base">
-              <span>60 conteúdos · 90 dias ·</span>
+              <span>{texto.prefixo}</span>
               {/* The clause and the platform it names are one unit: broken
                   apart, a line ends on "no" and the next opens on a word that
                   is still rotating. Its own non-wrapping flex box is what keeps
                   the break in front of the clause instead of inside it. */}
               <span className="flex items-baseline gap-x-2">
-                <span>views somadas no</span>
+                <span>{texto.clausula}</span>
                 <WordRotator words={PLATFORMS} className="font-medium text-white" />
               </span>
             </p>
@@ -235,7 +285,7 @@ export function Hero() {
                 keeps the tighter horizontal gap from `lg`, where the button
                 and the deck sit side by side and 24px would read as a gulf. */}
             <div className="mt-6 flex flex-col items-center gap-6 lg:mt-9 lg:flex-row lg:items-start lg:justify-center lg:gap-3">
-              <MotionButton label="Quero viralizar" href={HREF_FORMS} />
+              <MotionButton label={texto.cta} href={HREF_FORMS} />
 
               {/* The canvas below the desktop breakpoint, in its two forms.
 
@@ -273,7 +323,7 @@ export function Hero() {
                         this column is one line. */}
                     <div className="w-1/2 md:w-full">
                       <CanvasCard
-                        label="Foto do cliente"
+                        label={texto.fotoCliente}
                         meta={activeCase.name}
                         swapKey={caseIndex}
                         delay={0.8}
@@ -290,8 +340,8 @@ export function Hero() {
 
                     <div className="w-1/2 md:w-full">
                       <CanvasCard
-                        label="Voz do cliente"
-                        meta="Áudio"
+                        label={texto.vozCliente}
+                        meta={texto.audio}
                         delay={0.9}
                         driftDelay={-3.5}
                         bodyRef={voiceRef}
@@ -309,7 +359,7 @@ export function Hero() {
                       the rest is the gap the wires need. */}
                   <div className="mx-auto mt-16 w-[70%] max-w-[210px] md:mx-0 md:mt-0 md:w-[27%] md:max-w-none">
                     <CanvasCard
-                      label={activeCase.outputLabel}
+                      label={activeCase.outputLabel[idioma]}
                       meta={activeCase.handle ?? activeCase.name}
                       stats={activeCase.stats}
                       swapKey={caseIndex}
@@ -340,7 +390,7 @@ export function Hero() {
         {/* Its own element rather than another item in the row: as a sibling of
             the marks it would inherit their 64px gap and stop reading as a
             label for them. */}
-        <span className="text-sm text-white/40">parceiros:</span>
+        <span className="text-sm text-white/40">{texto.parceiros}</span>
 
         {/* Mark and name together. The marks are symbols, not wordmarks — five
             bare glyphs would ask the visitor to recognise every vendor from an

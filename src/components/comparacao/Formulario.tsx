@@ -1572,7 +1572,7 @@ export function Formulario({
 
       <div className="pointer-events-none absolute -left-[9999px] top-0 h-0 w-0 overflow-hidden">
         <label htmlFor={ARMADILHA} aria-hidden>
-          Não preencha este campo
+          {idioma === 'en' ? 'Do not fill in this field' : 'Não preencha este campo'}
         </label>
         <input
           id={ARMADILHA}
