@@ -111,7 +111,7 @@ export function Cabecalho() {
 
   return (
     <header
-      className={`fixed inset-x-0 top-0 z-50 flex items-center justify-between px-5 py-5 transition-transform duration-300 ease-out motion-reduce:transition-none md:px-10 md:py-7 ${
+      className={`fixed inset-x-0 top-0 z-50 px-5 py-5 transition-transform duration-300 ease-out motion-reduce:transition-none md:px-10 md:py-7 ${
         visivel ? 'translate-y-0' : '-translate-y-full'
       }`}
     >
@@ -174,38 +174,56 @@ export function Cabecalho() {
         />
       </div>
 
-      <a href="#" className="shrink-0">
-        <img src={wordmarkUrl} alt="Doxa" className="h-6 w-auto md:h-7" width={364} height={96} />
-      </a>
+      {/* ─── A MESMA COLUNA DAS SEÇÕES ──────────────────────────────────────
+          O logo e o menu param onde o conteúdo das seções para, e não onde a
+          janela acaba.
 
-      {/* ─── O BURACO E A PEÇA ──────────────────────────────────────────────
-          Duas caixas para uma pílula, e as duas são necessárias.
+          O recuo sozinho não fazia isso. `px-10` cola as duas pontas na borda
+          da tela, enquanto toda seção do site põe o conteúdo numa caixa
+          `max-w-screen-2xl` CENTRADA dentro do mesmo recuo. Até 1616 px de
+          janela as duas contas dão o mesmo número — 1536 + 80 de recuo é
+          exatamente onde a caixa para de crescer — e por isso o desalinho não
+          aparece num monitor comum. Acima disso ele abre: medido no Chrome, o
+          cabeçalho ficava 152 px fora a 1920 e 472 px fora a 2560.
 
-          A de fora é o BURACO: ela tem o tamanho da pílula FECHADA e é a única
-          coisa que existe no fluxo do cabeçalho. É ela que reserva o espaço.
+          O VIDRO fica FORA desta caixa, de propósito. Ele é a faixa, e faixa
+          vai de borda a borda; capado junto com o conteúdo, viraria um cartão
+          flutuando no meio do topo. */}
+      <div className="mx-auto flex w-full max-w-screen-2xl items-center justify-between">
+        <a href="#" className="shrink-0">
+          <img src={wordmarkUrl} alt="Doxa" className="h-6 w-auto md:h-7" width={364} height={96} />
+        </a>
 
-          A de dentro está fora do fluxo, ancorada à direita, e é mais larga que
-          o buraco de propósito — é o espaço para onde a pílula cresce quando
-          abre. Crescer no fluxo mexeria no cabeçalho a cada passada de cursor, e
-          um cabeçalho que se reorganiza sozinho no hover é um cabeçalho
-          quebrado.
+        {/* ─── O BURACO E A PEÇA ────────────────────────────────────────────
+            Duas caixas para uma pílula, e as duas são necessárias.
 
-          `pointer-events-none` nela, e `auto` de volta na pílula: essa caixa
-          larga cobre um pedaço do topo, e sem isso a área vazia dela engoliria o
-          clique do que estivesse embaixo.
+            A de fora é o BURACO: ela tem o tamanho da pílula FECHADA e é a
+            única coisa que existe no fluxo do cabeçalho. É ela que reserva o
+            espaço.
 
-          A largura aqui e a que a `MenuDoxa` passa ao componente são a mesma
-          medida escrita em dois lugares — `w-28` de um lado, `max-w-28` do
-          outro. Divergindo, a pílula não cabe no buraco e o cabeçalho ganha um
-          degrau. De onde saiu o número está em `MenuDoxa.tsx`.
+            A de dentro está fora do fluxo, ancorada à direita, e é mais larga
+            que o buraco de propósito — é o espaço para onde a pílula cresce
+            quando abre. Crescer no fluxo mexeria no cabeçalho a cada passada de
+            cursor, e um cabeçalho que se reorganiza sozinho no hover é um
+            cabeçalho quebrado.
 
-          A altura é 44: 32 do "+" mais 6 de recuo em cima e embaixo. Somada aos
-          recuos verticais daqui, ela é a ALTURA DO CABEÇALHO — e é essa conta
-          que o `Hero` repete como recuo de topo, já que a peça saiu do fluxo
-          dele. Mexer numa exige mexer na outra. */}
-      <div className="relative h-11 w-28 shrink-0">
-        <div className="pointer-events-none absolute right-0 top-0 flex w-[21rem] max-w-[calc(100vw-2.5rem)] justify-end">
-          <MenuDoxa aoAlternar={setMenuAberto} />
+            `pointer-events-none` nela, e `auto` de volta na pílula: essa caixa
+            larga cobre um pedaço do topo, e sem isso a área vazia dela
+            engoliria o clique do que estivesse embaixo.
+
+            A largura aqui e a que a `MenuDoxa` passa ao componente são a mesma
+            medida escrita em dois lugares — `w-28` de um lado, `max-w-28` do
+            outro. Divergindo, a pílula não cabe no buraco e o cabeçalho ganha
+            um degrau. De onde saiu o número está em `MenuDoxa.tsx`.
+
+            A altura é 44: 32 do "+" mais 6 de recuo em cima e embaixo. Somada
+            aos recuos verticais do `<header>`, ela é a ALTURA DO CABEÇALHO — e
+            é essa conta que o `Hero` repete como recuo de topo, já que a peça
+            saiu do fluxo dele. Mexer numa exige mexer na outra. */}
+        <div className="relative h-11 w-28 shrink-0">
+          <div className="pointer-events-none absolute right-0 top-0 flex w-[21rem] max-w-[calc(100vw-2.5rem)] justify-end">
+            <MenuDoxa aoAlternar={setMenuAberto} />
+          </div>
         </div>
       </div>
     </header>
