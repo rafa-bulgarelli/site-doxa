@@ -6,6 +6,7 @@ import { ArrastoInfinito } from './rodape/ArrastoInfinito';
 import { Peca, usePalco } from './rodape/Peca';
 import { ATALHOS, EXPOSTAS, FECHO, PECAS } from './rodape/config';
 import { MotionButton } from './ui/MotionButton';
+import { useIdioma } from '../idioma';
 
 const EASE = [0.16, 1, 0.3, 1] as const;
 
@@ -107,6 +108,9 @@ const FECHO_A_VISTA = 0.55;
  *     — assim o arrasto continua funcionando POR BAIXO do texto.
  */
 export function Rodape() {
+  const [idioma] = useIdioma();
+  const fecho = FECHO[idioma];
+  const atalhos = ATALHOS[idioma];
   const marcoRef = useRef<HTMLDivElement>(null);
   const revelado = useInView(marcoRef, { amount: ACORDA });
   const noFecho = useInView(marcoRef, { amount: FECHO_A_VISTA, once: true });
@@ -352,8 +356,8 @@ export function Rodape() {
                * equilibrada pelo `text-balance`. A redução tirou 25 pixels de
                * altura do bloco, que a clareira já cobria com folga. */}
               <h2 className="texto-aceso text-balance font-serif text-[min(9.95vw,3.32rem)] leading-[1.25] tracking-[-0.03em] sm:leading-[1.08] text-[#F4F1E8] sm:text-[2.6rem] md:text-[4.4rem]">
-                {FECHO.titulo}
-                <span className="block">{FECHO.linha}</span>
+                {fecho.titulo}
+                <span className="block">{fecho.linha}</span>
               </h2>
 
               {/* O subtítulo subiu de 50% para 85% de branco e de 15 para 17
@@ -376,7 +380,7 @@ export function Rodape() {
                   O ritmo do bloco tem de acompanhar o tamanho dele — é a mesma
                   regra que fez os números descerem antes e subirem agora. */}
               <p className="mx-auto mt-6 max-w-lg text-[16px] text-white/85 sm:mt-5 md:text-[17px]">
-                {FECHO.publico}
+                {fecho.publico}
               </p>
 
               {/* O único ponto clicável do campo. `pointer-events-auto` devolve
@@ -389,7 +393,7 @@ export function Rodape() {
                   pixels debaixo de três linhas de serifa grande pararam de ser
                   "perto" e viraram "grudado". O mesmo 36 dos dois lados. */}
               <div className="pointer-events-auto mt-9 flex justify-center">
-                <MotionButton label={FECHO.acao} href={FECHO.destino} />
+                <MotionButton label={fecho.acao} href={fecho.destino} />
               </div>
             </motion.div>
           </div>
@@ -433,7 +437,7 @@ export function Rodape() {
             />
 
             <nav className="flex flex-nowrap items-center gap-x-[min(3.5vw,1.75rem)] sm:gap-x-7">
-              {ATALHOS.map((atalho) => (
+              {atalhos.map((atalho) => (
                 <a
                   key={atalho.destino}
                   href={atalho.destino}

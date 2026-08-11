@@ -27,6 +27,15 @@ interface EscolhaProps {
   /** O `id` do enunciado, para o grupo herdar o nome dele. */
   rotuladoPor: string;
   opcoes: readonly string[];
+  /**
+   * O que cada opção MOSTRA, quando difere do que ela grava.
+   *
+   * `opcoes` é o valor canônico — o texto português que vai para o banco e
+   * para o score — e esta lista paralela é a cara dele no idioma da tela.
+   * Ausente, a opção mostra o próprio valor, que é o site em português de
+   * sempre. As duas listas casam por índice, pelo contrato de `config.ts`.
+   */
+  rotulos?: readonly string[];
   escolhidas: readonly string[];
   /** Aceita mais de uma. Muda o desenho do selecionado e o modo de avançar. */
   multipla: boolean;
@@ -75,6 +84,7 @@ interface EscolhaProps {
 export function Escolha({
   rotuladoPor,
   opcoes,
+  rotulos,
   escolhidas,
   multipla,
   empilhada = false,
@@ -86,7 +96,7 @@ export function Escolha({
 }: EscolhaProps) {
   const parado = useReducedMotion() === true;
   const livreRef = useRef<HTMLInputElement>(null);
-  const abriuLivre = livre != null && escolhidas.includes(OUTRO);
+  const abriuLivre = livre != null && escolhidas.includes(OUTRO.pt);
 
   /*
    * O campo do "Outro" recebe o foco quando ABRE, e só então.
@@ -276,7 +286,7 @@ export function Escolha({
                     única ele seria ruído: ali o papel cheio já diz sozinho qual
                     é, e um visto sugere que dá para juntar mais. */}
                 {multipla && marcada && <Check className="h-3.5 w-3.5 shrink-0" strokeWidth={3} />}
-                {opcao}
+                {rotulos?.[i] ?? opcao}
               </span>
             </motion.button>
           );
