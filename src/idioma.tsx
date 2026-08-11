@@ -60,6 +60,23 @@ const LANG: PorIdioma<string> = {
 
 const CHAVE = 'doxa:idioma';
 
+/**
+ * Um número escrito à brasileira, no idioma pedido.
+ *
+ * Os números do site são STRINGS do dono — "3,4M", "1.300", "1.500" — e o
+ * contrato deles é não serem recalculados (`cases.ts` explica). Só que em
+ * inglês "1.500" lê como um e meio: o separador é informação, e mantê-lo em
+ * pt-BR numa frase em inglês troca o valor aos olhos do leitor.
+ *
+ * A troca é SÓ de pontuação — vírgula vira ponto e ponto vira vírgula — e por
+ * isso preserva o número por construção: nenhum dígito é tocado. Espanhol usa
+ * os mesmos separadores do português, então só o inglês troca.
+ */
+export function numeroNoIdioma(numero: string, idioma: Idioma): string {
+  if (idioma !== 'en') return numero;
+  return numero.replace(/[.,]/g, (c) => (c === ',' ? '.' : ','));
+}
+
 function ehIdioma(valor: unknown): valor is Idioma {
   return typeof valor === 'string' && (IDIOMAS as readonly string[]).includes(valor);
 }
