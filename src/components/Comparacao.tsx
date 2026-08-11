@@ -46,6 +46,21 @@ import {
 const PAPEL = '#F4F1E8';
 
 /**
+ * O locale dos números e os conectores da conta riscada.
+ *
+ * "R$ 8.000 a 10.500/mês em uma agência" tem QUATRO peças que mudam de idioma:
+ * o separador de milhar, o "a" do intervalo, o "/mês" e o "em". Traduzir só as
+ * palavras deixaria "R$ 8.000 to 10.500" — número brasileiro em frase inglesa,
+ * que lê como oito ponto zero zero zero. O R$ fica: o custo é brasileiro e a
+ * moeda é um fato, não uma tradução.
+ */
+const CONTA_IDIOMA = {
+  pt: { locale: 'pt-BR', intervalo: 'a', em: 'em' },
+  en: { locale: 'en-US', intervalo: 'to', em: 'on' },
+  es: { locale: 'pt-BR', intervalo: 'a', em: 'em' },
+} as const;
+
+/**
  * O respiro entre os blocos do painel escuro, e ele é UM só.
  *
  * O dono pediu que o vão embaixo do cabeçalho fosse exatamente igual ao do
@@ -226,13 +241,21 @@ function Selo({ prefixo, escuro = false }: { prefixo: string; escuro?: boolean }
  * de milhar tem de existir durante a contagem, senão o valor pisca de quatro
  * para cinco caracteres no meio do caminho e a linha inteira dança.
  */
-function Contador({ ate, naTela }: { ate: number; naTela: boolean }) {
+function Contador({
+  ate,
+  naTela,
+  locale: localeDoContador = 'pt-BR',
+}: {
+  ate: number;
+  naTela: boolean;
+  locale?: string;
+}) {
   const parado = useReducedMotion() === true;
   // Zero, sempre — exceto para quem pediu menos movimento. A versão anterior
   // testava `!naTela` aqui, e `naTela` é falso no primeiro render por
   // construção: o valor nascia já no total e a contagem nunca acontecia.
   const bruto = useMotionValue(parado ? ate : 0);
-  const texto = useTransform(bruto, (v) => Math.round(v).toLocaleString('pt-BR'));
+  const texto = useTransform(bruto, (v) => Math.round(v).toLocaleString(localeDoContador));
 
   useEffect(() => {
     if (!naTela || parado) return;
@@ -309,8 +332,9 @@ function Conta({
   const [idioma] = useIdioma();
   return (
     <span className={className}>
-      R$ <Contador ate={CUSTO_DE} naTela={naTela} /> a{' '}
-      <Contador ate={CUSTO_ATE} naTela={naTela} />
+      R$ <Contador ate={CUSTO_DE} naTela={naTela} locale={CONTA_IDIOMA[idioma].locale} />{' '}
+      {CONTA_IDIOMA[idioma].intervalo}{' '}
+      <Contador ate={CUSTO_ATE} naTela={naTela} locale={CONTA_IDIOMA[idioma].locale} />
       {/* O `/mês` em destaque, a pedido do dono, e o argumento é dele: no fim
           do dia o que dói não é o valor, é a recorrência dele. Um custo alto se
           engole uma vez; um custo alto TODO MÊS, sem resultado garantido, é o
@@ -996,7 +1020,9 @@ export function Comparacao() {
                   parado={parado}
                   atraso={0.35}
                 >
-                  R$ {CUSTO_DE.toLocaleString('pt-BR')} a {CUSTO_ATE.toLocaleString('pt-BR')}
+                  R$ {CUSTO_DE.toLocaleString(CONTA_IDIOMA[idioma].locale)}{' '}
+                  {CONTA_IDIOMA[idioma].intervalo}{' '}
+                  {CUSTO_ATE.toLocaleString(CONTA_IDIOMA[idioma].locale)}
                   {CUSTO_UNIDADE[idioma]}
                 </Riscado>
                 <br />
@@ -1006,7 +1032,7 @@ export function Comparacao() {
                   parado={parado}
                   atraso={0.6}
                 >
-                  em {TROCA_ANTES[idioma]}
+                  {CONTA_IDIOMA[idioma].em} {TROCA_ANTES[idioma]}
                 </Riscado>
               </span>
 
@@ -1016,8 +1042,10 @@ export function Comparacao() {
                 parado={parado}
                 atraso={0.35}
               >
-                R$ {CUSTO_DE.toLocaleString('pt-BR')} a {CUSTO_ATE.toLocaleString('pt-BR')}
-                {CUSTO_UNIDADE[idioma]} em {TROCA_ANTES[idioma]}
+                R$ {CUSTO_DE.toLocaleString(CONTA_IDIOMA[idioma].locale)}{' '}
+                {CONTA_IDIOMA[idioma].intervalo}{' '}
+                {CUSTO_ATE.toLocaleString(CONTA_IDIOMA[idioma].locale)}
+                {CUSTO_UNIDADE[idioma]} {CONTA_IDIOMA[idioma].em} {TROCA_ANTES[idioma]}
               </Riscado>
 
               <p className="mt-2 font-serif text-[1.9rem] leading-tight tracking-[-0.02em] text-[#0B0B0B] md:text-[2.4rem]">

@@ -1089,7 +1089,7 @@ export function Formulario({
             </div>
             <p className="mt-2.5 text-[12px] leading-none text-white/40">
               <span className="tabular-nums">
-                {passo + 1} de {TOTAL}
+                {passo + 1} {idioma === 'en' ? 'of' : 'de'} {TOTAL}
               </span>
               {rotuloDoPasso != null && (
                 <>
