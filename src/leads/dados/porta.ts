@@ -48,4 +48,15 @@ export interface PortaDeLeads {
   listar(): Promise<Lead[]>;
 
   marcarBaixados(ids: string[]): Promise<void>;
+
+  /**
+   * Apaga leads de vez. NÃO tem lixeira: o que sai daqui saiu do banco.
+   *
+   * Existe desde 13/08/2026 por decisão do dono — a regra anterior era
+   * "ninguém apaga lead pelo painel", e está revogada nas duas pontas: aqui e
+   * na política de DELETE do `schema.sql`. Quem protege contra o clique
+   * acidental é a interface, com a confirmação em dois passos; o banco só
+   * confere QUEM pode (a conta do time, autenticada).
+   */
+  excluir(ids: string[]): Promise<void>;
 }

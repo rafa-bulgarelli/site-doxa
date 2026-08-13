@@ -10,7 +10,7 @@
  */
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { baixarCsv } from './csv';
-import { listarLeads, marcarBaixados } from './deposito';
+import { excluirLeads, listarLeads, marcarBaixados } from './deposito';
 import { derivar, type Aba, type Ordem } from './filtrar';
 import type { Lead } from './tipos';
 
@@ -29,6 +29,8 @@ export function usarLeads() {
   const [mostrarCortados, setMostrarCortados] = useState(false);
   const [pagina, setPagina] = useState(1);
   const [exportando, setExportando] = useState(false);
+  const [selecionados, setSelecionados] = useState<readonly string[]>([]);
+  const [excluindo, setExcluindo] = useState(false);
 
   const carregar = useCallback(async () => {
     setCarga('carregando');
@@ -53,6 +55,16 @@ export function usarLeads() {
   useEffect(() => {
     setPagina(1);
   }, [aba, busca, origem, ordem, mostrarCortados]);
+
+  /*
+   * A seleção só existe sobre leads que EXISTEM. Depois de uma exclusão ou de
+   * um recarregamento, qualquer id que sobrou na seleção sem lead por trás é
+   * um fantasma — e um fantasma no contador faria "3 selecionados" com duas
+   * caixas marcadas na tela.
+   */
+  useEffect(() => {
+    setSelecionados((atuais) => atuais.filter((id) => leads.some((l) => l.id === id)));
+  }, [leads]);
 
   const visao = useMemo(
     () => derivar(leads, { aba, busca, origem, ordem, mostrarCortados, pagina, porPagina: POR_PAGINA }),
@@ -94,6 +106,54 @@ export function usarLeads() {
     }
   }, [visao.filtrados, carregar]);
 
+  const alternarSelecionado = useCallback((id: string) => {
+    setSelecionados((atuais) =>
+      atuais.includes(id) ? atuais.filter((x) => x !== id) : [...atuais, id],
+    );
+  }, []);
+
+  /**
+   * A caixa do cabeçalho da tabela: marca a PÁGINA, desmarca a página.
+   *
+   * A página e não o filtrado: "marcar tudo" sobre um filtro de trezentos
+   * leads arma uma exclusão de trezentos com dois cliques, e o painel não tem
+   * como mostrar trezentas caixas marcadas — a pessoa estaria confiando num
+   * número. Dez por vez é o tamanho de decisão que dá para ver.
+   */
+  const alternarPagina = useCallback((ids: readonly string[]) => {
+    setSelecionados((atuais) =>
+      ids.every((id) => atuais.includes(id))
+        ? atuais.filter((id) => !ids.includes(id))
+        : [...new Set([...atuais, ...ids])],
+    );
+  }, []);
+
+  const limparSelecao = useCallback(() => setSelecionados([]), []);
+
+  /**
+   * Apaga os selecionados. Otimista como o exportar, e pela mesma razão: a
+   * linha some da tela no clique, e se o banco recusar, o recarregamento traz
+   * a verdade de volta — junto com o erro na cara, em vez de um sumiço que
+   * volta sozinho no F5.
+   *
+   * A CONFIRMAÇÃO não mora aqui. Este arquivo executa intenções; quem impede
+   * o clique acidental é a interface, com o botão em dois tempos.
+   */
+  const excluirSelecionados = useCallback(async () => {
+    const alvo = selecionados;
+    if (alvo.length === 0 || excluindo) return;
+    setExcluindo(true);
+    setLeads((atuais) => atuais.filter((l) => !alvo.includes(l.id)));
+    setSelecionados([]);
+    try {
+      await excluirLeads([...alvo]);
+    } catch {
+      await carregar();
+    } finally {
+      setExcluindo(false);
+    }
+  }, [selecionados, excluindo, carregar]);
+
   return {
     carga,
     ...visao,
@@ -114,6 +174,12 @@ export function usarLeads() {
     setPagina,
     exportando,
     exportar,
+    selecionados,
+    alternarSelecionado,
+    alternarPagina,
+    limparSelecao,
+    excluindo,
+    excluirSelecionados,
     recarregar: carregar,
   };
 }

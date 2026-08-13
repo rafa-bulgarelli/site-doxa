@@ -16,9 +16,10 @@
  * não pode poder LER. O desenho mora nas políticas do banco
  * (`supabase/schema.sql`), e é este:
  *
- *   INSERT  →  anônimo      (o formulário grava)
+ *   INSERT  →  ninguém      (só o `/api/lead`, com a chave de servidor)
  *   SELECT  →  autenticado  (a Central lê)
  *   UPDATE  →  autenticado  (marcar como baixado)
+ *   DELETE  →  autenticado  (o time apaga pelo painel — decisão do dono, 13/08/2026)
  *
  * Sem isso, "senha do time" seria teatro: bastaria abrir o bundle, copiar a
  * chave e baixar a base inteira de nomes e telefones.
@@ -141,6 +142,23 @@ export function portaSupabase(url: string, chave: string): PortaDeLeads {
         method: 'PATCH',
         headers: { ...cabecalho(token), Prefer: 'return=minimal' },
         body: JSON.stringify({ baixado: true, baixado_em: new Date().toISOString() }),
+      });
+      if (!resposta.ok) throw new Error(resposta.status === 401 ? 'sessao' : 'rede');
+    },
+
+    /*
+     * O DELETE usa o MESMO desenho do PATCH acima: os ids na URL, o token da
+     * sessão no cabeçalho, e o RLS como juiz. `return=minimal` porque a Central
+     * não precisa do eco das linhas apagadas — ela já as tirou da tela.
+     */
+    async excluir(ids) {
+      if (ids.length === 0) return;
+      const token = tokenGuardado();
+      if (!token) throw new Error('sessao');
+      const lista = ids.map((id) => `"${id}"`).join(',');
+      const resposta = await fetch(`${url}/rest/v1/leads?id=in.(${lista})`, {
+        method: 'DELETE',
+        headers: { ...cabecalho(token), Prefer: 'return=minimal' },
       });
       if (!resposta.ok) throw new Error(resposta.status === 401 ? 'sessao' : 'rede');
     },

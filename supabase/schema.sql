@@ -13,7 +13,7 @@
 --   INSERT  →  NINGUÉM      (só o endpoint, que usa a chave de servidor)
 --   SELECT  →  autenticado  (a Central lê)
 --   UPDATE  →  autenticado  (marcar como baixado)
---   DELETE  →  ninguém      (nem o time; lead não se apaga por engano)
+--   DELETE  →  autenticado  (o time apaga pelo painel — decisão do dono, 13/08/2026)
 --
 -- Sem isso, a "senha do time" seria teatro: bastaria abrir o bundle do site,
 -- copiar a chave e baixar a base inteira de nomes, telefones e e-mails.
@@ -114,8 +114,16 @@ create policy "time marca"
   using (true)
   with check (true);
 
--- Nenhuma política de DELETE, de propósito: ninguém apaga lead pelo painel. Se
--- um dia for preciso, que seja aqui no SQL Editor, com intenção.
+-- O time APAGA. A regra anterior era "ninguém apaga lead pelo painel", e ela
+-- caiu em 13/08/2026 por decisão do dono — a Central ganhou seleção e exclusão
+-- em massa. O banco continua conferindo só QUEM pode (a conta autenticada do
+-- time); o "tem certeza?" mora na interface, em dois cliques, porque política
+-- de RLS não sabe perguntar. Não há lixeira: DELETE aqui é definitivo.
+drop policy if exists "time apaga" on public.leads;
+create policy "time apaga"
+  on public.leads for delete
+  to authenticated
+  using (true);
 
 -- ─────────────────────────────────────────────────────────────────────────────
 -- PARA UM BANCO QUE JÁ EXISTE, o que muda é só isto (o resto acima é idempotente):
@@ -133,9 +141,9 @@ create policy "time marca"
 --
 --   select policyname, roles, cmd from pg_policies where tablename = 'leads';
 --
--- Tem de devolver DUAS linhas, ambas para `authenticated`: `time le` (select) e
--- `time marca` (update). Qualquer linha com `anon` significa que a porta foi
--- reaberta por engano.
+-- Tem de devolver TRÊS linhas, todas para `authenticated`: `time le` (select),
+-- `time marca` (update) e `time apaga` (delete). Qualquer linha com `anon`
+-- significa que a porta foi reaberta por engano.
 --
 -- ─────────────────────────────────────────────────────────────────────────────
 -- DEPOIS DE RODAR ISTO, FALTAM DOIS PASSOS NO PAINEL DO SUPABASE:
