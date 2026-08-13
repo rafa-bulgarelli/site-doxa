@@ -250,6 +250,16 @@ export function portaSimulada(cenario: Cenario = cenarioDaUrl()): PortaDeLeads {
       // ele na aba certa, senão o estado da tela vira mentira depois do F5.
       guardarGravados(lerGravados().map(marcar));
     },
+
+    async excluir(ids) {
+      await espera(250);
+      const alvo = new Set(ids);
+      leads = leads.filter((l) => !alvo.has(l.id));
+      // Os SEMEADOS voltam no F5 — eles são gerados, não guardados, e está
+      // certo assim: o simulado existe para ensaiar a tela, não para ter
+      // memória. Os gravados de verdade somem para sempre, como no banco.
+      guardarGravados(lerGravados().filter((l) => !alvo.has(l.id)));
+    },
   };
 }
 

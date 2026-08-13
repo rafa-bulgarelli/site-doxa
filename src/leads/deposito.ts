@@ -110,3 +110,4 @@ export const sessaoAtiva = () => portaDeLeads().sessaoAtiva();
 export const sair = () => portaDeLeads().sair();
 export const listarLeads = (): Promise<Lead[]> => portaDeLeads().listar();
 export const marcarBaixados = (ids: string[]) => portaDeLeads().marcarBaixados(ids);
+export const excluirLeads = (ids: string[]) => portaDeLeads().excluir(ids);

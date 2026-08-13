@@ -15,8 +15,8 @@
  * Este componente é `lazy` a partir do `App`: nada dele entra no pacote da
  * landing, e quem nunca abriu `/leads` nunca baixou uma linha disto.
  */
-import { useState } from 'react';
-import { Download, LogOut, RefreshCw, Search, Users } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { Download, LogOut, RefreshCw, Search, Trash2, Users } from 'lucide-react';
 import { scoreDo } from './score';
 import { sair } from './deposito';
 import { POR_PAGINA, usarLeads } from './usarLeads';
@@ -25,7 +25,17 @@ import { Detalhe } from './central/Detalhe';
 import { Chip, Contador, Estrelas, Presenca, quandoFoi } from './central/pecas';
 
 /** Uma linha da tabela no desktop. */
-function Linha({ lead, aoAbrir }: { lead: Lead; aoAbrir: () => void }) {
+function Linha({
+  lead,
+  aoAbrir,
+  marcado,
+  aoMarcar,
+}: {
+  lead: Lead;
+  aoAbrir: () => void;
+  marcado: boolean;
+  aoMarcar: () => void;
+}) {
   const { estrelas } = scoreDo(lead);
   return (
     /*
@@ -46,7 +56,28 @@ function Linha({ lead, aoAbrir }: { lead: Lead; aoAbrir: () => void }) {
      */
     <tr
       onClick={aoAbrir}
-      className="cursor-pointer border-t border-white/[0.06] transition-colors hover:bg-white/[0.02]">
+      className={`cursor-pointer border-t border-white/[0.06] transition-colors hover:bg-white/[0.02] ${
+        marcado ? 'bg-white/[0.04]' : ''
+      }`}>
+      {/* A célula INTEIRA marca, não só o quadradinho de 16px: numa tabela, a
+          caixa é o menor alvo da linha e o único cujo erro custa uma exclusão.
+          O clique não sobe — senão marcar abriria o diálogo junto. */}
+      <td
+        className="w-10 px-3 py-4"
+        onClick={(evento) => {
+          evento.stopPropagation();
+          aoMarcar();
+        }}
+      >
+        <input
+          type="checkbox"
+          checked={marcado}
+          onChange={aoMarcar}
+          onClick={(evento) => evento.stopPropagation()}
+          aria-label={`Selecionar ${lead.nome}`}
+          className="h-4 w-4 cursor-pointer accent-white"
+        />
+      </td>
       <td className="max-w-[220px] px-4 py-4">
         <p className="truncate text-[15px] text-white" title={lead.nome}>
           {lead.nome}
@@ -91,16 +122,48 @@ function Linha({ lead, aoAbrir }: { lead: Lead; aoAbrir: () => void }) {
 }
 
 /** A mesma linha como CARTÃO, no telefone. */
-function Cartao({ lead, aoAbrir }: { lead: Lead; aoAbrir: () => void }) {
+function Cartao({
+  lead,
+  aoAbrir,
+  marcado,
+  aoMarcar,
+}: {
+  lead: Lead;
+  aoAbrir: () => void;
+  marcado: boolean;
+  aoMarcar: () => void;
+}) {
   const { estrelas } = scoreDo(lead);
   return (
-    <button
-      type="button"
+    /* Era um `<button>` e virou `div` clicável COM o botão de abrir dentro: um
+       checkbox dentro de um botão é HTML inválido e leitor de tela anuncia os
+       dois como uma coisa só. O acesso por teclado não regrediu — abrir continua
+       num `<button>` de verdade (o nome do lead), e marcar num `<input>`. */
+    <div
       onClick={aoAbrir}
-      className="w-full rounded-2xl border border-white/[0.08] bg-white/[0.02] p-4 text-left transition-colors hover:bg-white/[0.05]"
+      className={`w-full cursor-pointer rounded-2xl border border-white/[0.08] p-4 text-left transition-colors hover:bg-white/[0.05] ${
+        marcado ? 'bg-white/[0.05]' : 'bg-white/[0.02]'
+      }`}
     >
       <div className="flex items-start justify-between gap-3">
-        <p className="min-w-0 flex-1 break-words text-[15px] text-white">{lead.nome}</p>
+        <input
+          type="checkbox"
+          checked={marcado}
+          onChange={aoMarcar}
+          onClick={(evento) => evento.stopPropagation()}
+          aria-label={`Selecionar ${lead.nome}`}
+          className="mt-0.5 h-4 w-4 shrink-0 cursor-pointer accent-white"
+        />
+        <button
+          type="button"
+          onClick={(evento) => {
+            evento.stopPropagation();
+            aoAbrir();
+          }}
+          className="min-w-0 flex-1 break-words text-left text-[15px] text-white"
+        >
+          {lead.nome}
+        </button>
         <Estrelas quantas={estrelas} tamanho={13} />
       </div>
       <div className="mt-3 flex flex-wrap items-center gap-2">
@@ -111,7 +174,7 @@ function Cartao({ lead, aoAbrir }: { lead: Lead; aoAbrir: () => void }) {
         <Presenca tem={Boolean(lead.arroba)} rotulo="Instagram" />
         <Presenca tem={Boolean(lead.email)} rotulo="e-mail" />
       </div>
-    </button>
+    </div>
   );
 }
 
@@ -158,8 +221,28 @@ function Esqueleto() {
 }
 
 export function Central({ aoSair }: { aoSair: () => void }) {
+  /*
+   * O "tem certeza?" da exclusão, em DOIS TEMPOS no mesmo lugar.
+   *
+   * Não é um `confirm()` do navegador nem um modal: o botão troca de cara e
+   * pede o segundo clique com o número na frente. Diálogo nativo não se estila
+   * e um modal para isto seria cerimônia — o gesto perigoso já exige dois
+   * cliques distantes no tempo e idênticos no lugar, que é o que impede o
+   * duplo-clique nervoso de confirmar sozinho.
+   */
+  const [confirmandoExclusao, setConfirmandoExclusao] = useState(false);
   const painel = usarLeads();
   const [aberto, setAberto] = useState<Lead | null>(null);
+
+  /* Mexeu na seleção, o pedido de confirmação caduca: confirmar "excluir 3"
+     depois de marcar um quarto apagaria quatro sob um número que dizia três. */
+  useEffect(() => {
+    setConfirmandoExclusao(false);
+  }, [painel.selecionados]);
+
+  const idsDaPagina = painel.daPagina.map((l) => l.id);
+  const paginaInteiraMarcada =
+    idsDaPagina.length > 0 && idsDaPagina.every((id) => painel.selecionados.includes(id));
 
   const sairDaConta = () => {
     sair();
@@ -278,6 +361,60 @@ export function Central({ aoSair }: { aoSair: () => void }) {
             </div>
           </div>
 
+          {/* ── A BARRA DA EXCLUSÃO — só existe com algo marcado. */}
+          {painel.selecionados.length > 0 && (
+            <div className="mx-4 mb-4 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-white/[0.1] bg-white/[0.03] px-4 py-3 sm:mx-6">
+              <p className="text-[13px] tabular-nums text-white/70">
+                {painel.selecionados.length}{' '}
+                {painel.selecionados.length === 1 ? 'lead selecionado' : 'leads selecionados'}
+              </p>
+              <div className="flex flex-wrap items-center gap-2">
+                <button
+                  type="button"
+                  onClick={painel.limparSelecao}
+                  className="rounded-full border border-white/[0.12] px-4 py-2 text-[13px] text-white/60 transition-colors hover:text-white"
+                >
+                  Limpar
+                </button>
+                {confirmandoExclusao ? (
+                  <>
+                    <span className="text-[13px] text-[#E0453F]">
+                      Sem volta: {painel.selecionados.length === 1 ? 'este lead sai' : 'estes leads saem'}{' '}
+                      do banco.
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => void painel.excluirSelecionados()}
+                      disabled={painel.excluindo}
+                      className="inline-flex items-center gap-2 rounded-full bg-[#E0453F] px-4 py-2 text-[13px] font-semibold text-white transition-opacity disabled:opacity-40"
+                    >
+                      <Trash2 className="h-3.5 w-3.5" strokeWidth={2.5} />
+                      {painel.excluindo
+                        ? 'Excluindo…'
+                        : `Excluir ${painel.selecionados.length} de vez`}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setConfirmandoExclusao(false)}
+                      className="rounded-full border border-white/[0.12] px-4 py-2 text-[13px] text-white/60 transition-colors hover:text-white"
+                    >
+                      Cancelar
+                    </button>
+                  </>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => setConfirmandoExclusao(true)}
+                    className="inline-flex items-center gap-2 rounded-full border border-[#E0453F]/50 px-4 py-2 text-[13px] font-semibold text-[#E0453F] transition-colors hover:bg-[#E0453F]/10"
+                  >
+                    <Trash2 className="h-3.5 w-3.5" strokeWidth={2.5} />
+                    Excluir…
+                  </button>
+                )}
+              </div>
+            </div>
+          )}
+
           {/* ── BUSCA E FILTROS */}
           <div className="flex flex-wrap gap-2 px-4 pb-4 sm:px-6">
             <label className="relative min-w-[200px] flex-1">
@@ -387,6 +524,15 @@ export function Central({ aoSair }: { aoSair: () => void }) {
                 <table className="w-full min-w-[880px] text-left">
                   <thead>
                     <tr className="text-[12px] uppercase tracking-[0.1em] text-white/35">
+                      <th className="w-10 px-3 py-3 font-normal">
+                        <input
+                          type="checkbox"
+                          checked={paginaInteiraMarcada}
+                          onChange={() => painel.alternarPagina(idsDaPagina)}
+                          aria-label="Selecionar todos os leads desta página"
+                          className="h-4 w-4 cursor-pointer accent-white"
+                        />
+                      </th>
                       <th className="px-4 py-3 font-normal">Nome</th>
                       <th className="px-4 py-3 font-normal">Origem</th>
                       <th className="px-4 py-3 font-normal">Score</th>
@@ -398,7 +544,13 @@ export function Central({ aoSair }: { aoSair: () => void }) {
                   </thead>
                   <tbody>
                     {painel.daPagina.map((lead) => (
-                      <Linha key={lead.id} lead={lead} aoAbrir={() => setAberto(lead)} />
+                      <Linha
+                        key={lead.id}
+                        lead={lead}
+                        aoAbrir={() => setAberto(lead)}
+                        marcado={painel.selecionados.includes(lead.id)}
+                        aoMarcar={() => painel.alternarSelecionado(lead.id)}
+                      />
                     ))}
                   </tbody>
                 </table>
@@ -406,7 +558,13 @@ export function Central({ aoSair }: { aoSair: () => void }) {
 
               <div className="space-y-2 p-4 lg:hidden">
                 {painel.daPagina.map((lead) => (
-                  <Cartao key={lead.id} lead={lead} aoAbrir={() => setAberto(lead)} />
+                  <Cartao
+                    key={lead.id}
+                    lead={lead}
+                    aoAbrir={() => setAberto(lead)}
+                    marcado={painel.selecionados.includes(lead.id)}
+                    aoMarcar={() => painel.alternarSelecionado(lead.id)}
+                  />
                 ))}
               </div>
 
