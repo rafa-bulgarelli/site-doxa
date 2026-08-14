@@ -1,0 +1,226 @@
+/**
+ * ─── O LADO DA EQUIPE ────────────────────────────────────────────────────────
+ *
+ * Seis ações, uma credencial: o `access_token` da sessão do time no
+ * `Authorization: Bearer`. Toda uma passa por `autorizar` ANTES de a ação ser
+ * lida — não existe caminho aqui que toque no banco sem saber quem pediu.
+ *
+ * ─── O PAPEL, E POR QUE ELE DIVIDE ASSIM ─────────────────────────────────────
+ *
+ * 'cx' cuida do dia a dia: cria, revoga e regenera convite, e baixa
+ * comprovante. Publicar e duplicar versão são de 'admin' porque mexem no
+ * CONTEÚDO que todo convite novo vai carregar — publicar por engano troca o
+ * manual do mundo inteiro, e revogar um convite por engano custa um link novo.
+ *
+ * ─── O LINK APARECE UMA VEZ ──────────────────────────────────────────────────
+ *
+ * `convite_criar` é o único instante em que o token existe fora do navegador do
+ * cliente. O banco guarda o hash; fechou a resposta, acabou. Perdeu o link?
+ * Regenera — que revoga o antigo e emite outro, com a cadeia registrada em
+ * `regenerado_de`.
+ */
+import { ROTA_BASE } from '../config';
+import type {
+  ConviteLinha,
+  PedidoConviteCriar,
+  PedidoConviteRegenerar,
+  PedidoConviteRevogar,
+  PedidoPdfBaixar,
+  PedidoVersaoRascunho,
+  RespostaConviteCriado,
+  RespostaPdf,
+  RespostaVersao,
+  VersaoLinha,
+} from '../tipos';
+import { autorizar, exigirPapel, type Autor } from './auth';
+import { ErroDoBanco, atualizar, inserir, primeira, rpc } from './banco';
+import { garantirPdf } from './comprovante';
+import { registrarEvento } from './eventos';
+import { ErroHttp, lerJson, responder, responderErro } from './http';
+import { lerPedidoAdmin } from './pedidos';
+import { gerarToken, hashDoToken } from './token';
+import { versaoPublicada } from './versao';
+
+/** O domínio de produção. O link vai por WhatsApp e precisa ser absoluto. */
+const SITE = 'https://www.doxaviral.com';
+
+/** A linha do aceite que o `pdf_baixar` precisa — nada além do vínculo. */
+interface AceiteDoConvite {
+  id: string;
+  convite_id: string;
+}
+
+function linkDoConvite(token: string): string {
+  return `${SITE}${ROTA_BASE}/convite/${token}`;
+}
+
+async function conviteDe(conviteId: string): Promise<ConviteLinha> {
+  const convite = await primeira<ConviteLinha>(`manual_convites?id=eq.${conviteId}&select=*`);
+  if (convite == null) throw new ErroHttp(404, 'convite_inexistente');
+  return convite;
+}
+
+/**
+ * Emite convite e link. A versão é sempre a PUBLICADA no momento da emissão, e
+ * é ela que o convite carrega para sempre — publicar um manual novo amanhã não
+ * muda o que este cliente vai ver.
+ */
+async function criarConvite(
+  autor: Autor,
+  dados: Pick<PedidoConviteCriar, 'email' | 'empresa' | 'nome_cliente' | 'expira_em'>,
+  regeneradoDe: string | null,
+): Promise<RespostaConviteCriado> {
+  const versao = await versaoPublicada();
+  if (versao == null) throw new ErroHttp(409, 'sem_versao_publicada');
+
+  const token = gerarToken();
+  const convite = await inserir<ConviteLinha>('manual_convites', {
+    token_hash: await hashDoToken(token),
+    email: dados.email,
+    empresa: dados.empresa,
+    nome_cliente: dados.nome_cliente ?? null,
+    versao_id: versao.id,
+    expira_em: dados.expira_em ?? null,
+    criado_por: autor.id,
+    regenerado_de: regeneradoDe,
+  });
+
+  await registrarEvento({
+    convite_id: convite.id,
+    ator: 'equipe',
+    ator_id: autor.id,
+    tipo: 'convite_criado',
+    detalhes: { versao_id: versao.id, regenerado_de: regeneradoDe },
+  });
+  return { convite_id: convite.id, link: linkDoConvite(token) };
+}
+
+/**
+ * Revoga, e trata "não pegou ninguém" como o que é: alguém já revogou, ou o
+ * cliente já concluiu. O `update` filtrado é o que evita bater no trigger de
+ * convite concluído, que recusaria a mudança com uma exceção do Postgres.
+ */
+async function revogar(autor: Autor, conviteId: string): Promise<ConviteLinha> {
+  const convite = await conviteDe(conviteId);
+  if (convite.status === 'concluido') throw new ErroHttp(409, 'convite_concluido');
+  if (convite.status === 'revogado') return convite;
+  const linhas = await atualizar<ConviteLinha>(
+    'manual_convites',
+    `id=eq.${conviteId}&status=in.(pendente,aberto)`,
+    { status: 'revogado', revogado_em: new Date().toISOString() },
+  );
+  if (linhas.length === 0) throw new ErroHttp(409, 'convite_mudou');
+  await registrarEvento({
+    convite_id: conviteId,
+    ator: 'equipe',
+    ator_id: autor.id,
+    tipo: 'convite_revogado',
+  });
+  return linhas[0];
+}
+
+async function regenerar(autor: Autor, dados: PedidoConviteRegenerar): Promise<RespostaConviteCriado> {
+  const antigo = await conviteDe(dados.convite_id);
+  await revogar(autor, antigo.id);
+  const novo = await criarConvite(
+    autor,
+    {
+      email: antigo.email,
+      empresa: antigo.empresa,
+      nome_cliente: antigo.nome_cliente ?? undefined,
+      expira_em: antigo.expira_em ?? undefined,
+    },
+    antigo.id,
+  );
+  await registrarEvento({
+    convite_id: antigo.id,
+    ator: 'equipe',
+    ator_id: autor.id,
+    tipo: 'convite_regenerado',
+    detalhes: { novo_convite_id: novo.convite_id },
+  });
+  return novo;
+}
+
+async function baixarPdf(autor: Autor, dados: PedidoPdfBaixar): Promise<RespostaPdf> {
+  const aceite = await primeira<AceiteDoConvite>(
+    `manual_aceites?id=eq.${dados.aceite_id}&select=id,convite_id`,
+  );
+  if (aceite == null) throw new ErroHttp(404, 'aceite_inexistente');
+  const comprovante = await garantirPdf(aceite.id, 'equipe', autor.id);
+  await registrarEvento({
+    convite_id: aceite.convite_id,
+    ator: 'equipe',
+    ator_id: autor.id,
+    tipo: 'pdf_baixado',
+    detalhes: { aceite_id: aceite.id },
+  });
+  return { pdf_url: comprovante.url };
+}
+
+/** As duas RPC de versão. A mensagem do Postgres nunca sai daqui como está. */
+async function chamarVersao(nome: string, argumentos: Record<string, unknown>): Promise<RespostaVersao> {
+  try {
+    const versao = await rpc<VersaoLinha>(nome, argumentos);
+    return { versao_id: versao.id, numero: versao.numero };
+  } catch (erro) {
+    if (erro instanceof ErroDoBanco && erro.status >= 400 && erro.status < 500) {
+      // 4xx do PostgREST aqui é sempre uma `raise` das funções de `manual.sql`
+      // ("so rascunho se publica", "versao sem regra obrigatoria"). É regra de
+      // negócio, e a equipe precisa saber qual — mas o texto vai só ao log.
+      console.error('manual/admin: versao recusada', nome, erro.mensagem);
+      throw new ErroHttp(409, 'versao_recusada');
+    }
+    throw erro;
+  }
+}
+
+async function despachar(pedido: Request, autor: Autor): Promise<Response> {
+  const dados = lerPedidoAdmin(await lerJson(pedido));
+  switch (dados.acao) {
+    case 'convite_criar':
+      exigirPapel(autor, ['admin', 'cx']);
+      return responder(await criarConvite(autor, dados, null), 201);
+    case 'convite_revogar':
+      exigirPapel(autor, ['admin', 'cx']);
+      return responder(await revogarERelatar(autor, dados));
+    case 'convite_regenerar':
+      exigirPapel(autor, ['admin', 'cx']);
+      return responder(await regenerar(autor, dados), 201);
+    case 'pdf_baixar':
+      exigirPapel(autor, ['admin', 'cx']);
+      return responder(await baixarPdf(autor, dados));
+    case 'versao_rascunho':
+      exigirPapel(autor, ['admin']);
+      return responder(await rascunho(autor, dados), 201);
+    case 'versao_publicar':
+      exigirPapel(autor, ['admin']);
+      return responder(await chamarVersao('manual_publicar_versao', { p_versao: dados.versao_id }));
+    default:
+      throw new ErroHttp(400, 'acao_invalida');
+  }
+}
+
+function rascunho(autor: Autor, dados: PedidoVersaoRascunho): Promise<RespostaVersao> {
+  return chamarVersao('manual_criar_rascunho', { p_origem: dados.origem_id, p_autor: autor.id });
+}
+
+/**
+ * Revogar não tem resposta no contrato — e não precisa: a lista da equipe lê o
+ * PostgREST direto, como a Central, e recarrega. O `{ ok: true }` é o mesmo
+ * "recebi" de `api/lead.ts`.
+ */
+async function revogarERelatar(autor: Autor, dados: PedidoConviteRevogar): Promise<{ ok: true }> {
+  await revogar(autor, dados.convite_id);
+  return { ok: true };
+}
+
+export async function responderAdmin(pedido: Request): Promise<Response> {
+  if (pedido.method !== 'POST') return responderErro(new ErroHttp(405, 'metodo'));
+  try {
+    const autor = await autorizar(pedido);
+    return await despachar(pedido, autor);
+  } catch (erro) {
+    return responderErro(erro);
+  }
+}
