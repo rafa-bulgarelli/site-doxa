@@ -49,3 +49,6 @@ pnpm-debug.log*
 # O exemplo documenta as vars sem valor nenhum — ele PRECISA ser versionado,
 # e o `.env*` acima o engoliria em silêncio.
 !.env.example
+# Worktrees que o harness cria para executores — cada uma e um checkout
+# inteiro; um `git add -A` distraido comitaria o repo dentro do repo.
+.claude/worktrees/
