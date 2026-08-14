@@ -191,6 +191,8 @@ create table if not exists public.manual_aceite_itens (
 );
 create index if not exists manual_aceite_itens_regra_idx
   on public.manual_aceite_itens (regra_id);
+create index if not exists manual_aceite_itens_aceite_idx
+  on public.manual_aceite_itens (aceite_id);
 
 -- ── EVENTOS
 -- A linha do tempo de cada convite: criado, aberto, progresso, revogado,

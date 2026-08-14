@@ -23,5 +23,12 @@
     "isolatedModules": true,
     "verbatimModuleSyntax": true
   },
-  "include": ["api", "src/leads/antibot.ts", "src/leads/tipos.ts"]
+  "include": [
+    "api",
+    "src/leads/antibot.ts",
+    "src/leads/tipos.ts",
+    "src/manual/config.ts",
+    "src/manual/tipos.ts",
+    "src/manual/servidor"
+  ]
 }

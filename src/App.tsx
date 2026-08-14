@@ -1,5 +1,6 @@
 import { Suspense, lazy, useEffect, useState, type ReactNode } from 'react';
 import { ANCORA_FORMS, HREF_FORMS } from './ancoras';
+import { ROTA_BASE } from './manual/config';
 import { ProvedorDeIdioma, useIdioma, type PorIdioma } from './idioma';
 import { usarNaTela } from './hooks/usarNaTela';
 import { Hero } from './components/Hero';
@@ -42,19 +43,35 @@ const Rodape = lazy(() => import('./components/Rodape').then((m) => ({ default: 
 const Leads = lazy(() => import('./leads/Rota'));
 
 /**
+ * O Manual interativo, sob a ROTA_BASE (`manual/config.ts`).
+ *
+ * Mesmo desenho da Central, mesmo motivo: quem veio ver a página de vendas não
+ * baixa um byte dele. A diferença é que o manual TEM navegação interna
+ * (convite → concluído; lista → detalhe no painel da equipe) — e ela mora
+ * INTEIRA em `manual/Rota.tsx`, num roteador de vinte linhas do módulo. O
+ * `App` continua decidindo só uma coisa: qual das três páginas existe.
+ */
+const Manual = lazy(() => import('./manual/Rota'));
+
+/**
  * Qual página está sendo pedida.
  *
- * Um `switch` no caminho, e não um roteador: o site tem DUAS rotas, e nenhuma
- * delas navega para a outra — a Central se chega por URL digitada, não por link.
- * `react-router` resolveria isto com 12 kB e um provider em volta da página
- * inteira. Se um dia houver uma terceira rota com navegação de verdade, é o
- * momento de trocar; hoje seria abstração sem consumidor.
+ * Um `switch` no caminho, e não um roteador: o site tem TRÊS rotas, e nenhuma
+ * navega para as outras — a Central e o manual se chegam por URL colada, não
+ * por link da landing. `react-router` resolveria isto com 12 kB e um provider
+ * em volta da página inteira; a navegação que existe de verdade é interna ao
+ * manual, e o roteador dela vive lá dentro, do tamanho que ela precisa.
  *
- * A `vercel.json` já reescreve tudo para o `index.html`, então `/leads` chega
- * aqui inteiro depois de um recarregamento ou de um link colado.
+ * A `vercel.json` já reescreve tudo para o `index.html`, então qualquer uma
+ * delas chega aqui inteira depois de um recarregamento ou de um link colado.
  */
 function ehCentralDeLeads() {
   return window.location.pathname.replace(/\/+$/, '') === '/leads';
+}
+
+function ehManual() {
+  const caminho = window.location.pathname.replace(/\/+$/, '');
+  return caminho === ROTA_BASE || caminho.startsWith(`${ROTA_BASE}/`);
 }
 
 /**
@@ -141,10 +158,12 @@ function SecaoViva({ children }: { children: ReactNode }) {
  * o mesmo argumento e sem sequestrar o scroll.
  */
 export default function App() {
-  // Lido uma vez: sem navegação entre as duas rotas, o caminho não muda sem um
-  // recarregamento — e um estado que escuta `popstate` seria um ouvinte para um
-  // evento que este site não dispara.
+  // Lido uma vez: não há navegação ENTRE as rotas, então o caminho não troca de
+  // página sem um recarregamento — e um estado que escuta `popstate` seria um
+  // ouvinte para um evento que esta fronteira não dispara. A navegação interna
+  // do manual nunca sai da base dele, e quem a escuta é o roteador de lá.
   const [naCentral] = useState(ehCentralDeLeads);
+  const [noManual] = useState(ehManual);
 
   /**
    * Os pedaços de baixo, buscados assim que o navegador fica ocioso.
@@ -284,6 +303,14 @@ export default function App() {
     return (
       <Suspense fallback={<div className="min-h-screen bg-doxa-bg" aria-hidden />}>
         <Leads />
+      </Suspense>
+    );
+  }
+
+  if (noManual) {
+    return (
+      <Suspense fallback={<div className="min-h-screen bg-doxa-bg" aria-hidden />}>
+        <Manual />
       </Suspense>
     );
   }
