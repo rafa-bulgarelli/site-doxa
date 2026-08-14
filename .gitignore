@@ -46,3 +46,6 @@ yarn-error.log*
 pnpm-debug.log*
 .vercel
 .env*
+# O exemplo documenta as vars sem valor nenhum — ele PRECISA ser versionado,
+# e o `.env*` acima o engoliria em silêncio.
+!.env.example
