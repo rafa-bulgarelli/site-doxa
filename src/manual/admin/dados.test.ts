@@ -154,6 +154,19 @@ describe('a API da equipe', () => {
     await expect(chamarAdmin(pedido, TOKEN)).rejects.toThrow('sessao');
   });
 
+  it('404 sem o {erro} da API diz que a API não está aqui — não inventa banco', async () => {
+    // O caso real: `pnpm dev` serve só o site, o POST em /api/manual/admin
+    // volta 404 do Vite, e a mensagem antiga mandava procurar um cadastro
+    // que nunca existiu.
+    fingirFetch(new Response('<!doctype html>', { status: 404 }));
+    await expect(chamarAdmin(pedido, TOKEN)).rejects.toThrow(/API do manual não existe neste endereço/);
+  });
+
+  it('404 COM o {erro} da API passa a frase dela adiante', async () => {
+    fingirFetch(new Response(JSON.stringify({ erro: 'convite_inexistente' }), { status: 404 }));
+    await expect(chamarAdmin(pedido, TOKEN)).rejects.toThrow('convite_inexistente');
+  });
+
   it('aceita sucesso sem corpo — 204 não é `JSON.parse` de string vazia', async () => {
     fingirFetch(new Response(null, { status: 204 }));
     await expect(chamarAdmin(pedido, TOKEN)).resolves.toBeNull();

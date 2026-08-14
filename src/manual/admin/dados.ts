@@ -187,9 +187,19 @@ export async function chamarAdmin<R>(pedido: PedidoAdmin, token: string): Promis
   if (resposta.status === 401 || resposta.status === 403) throw new Error('sessao');
   const corpo = await corpoDoErro(resposta);
   if (!resposta.ok) {
+    const daApi = erroDaApi(corpo);
+    // 404 SEM o `{ erro }` da nossa função não é "não achei no banco": é o
+    // endereço que não tem a API — `pnpm dev` serve só o site, e as funções
+    // de `api/` só existem num deploy da Vercel. Já custou um susto real:
+    // a mensagem antiga mandava o time procurar um cadastro que nunca existiu.
+    if (daApi == null && resposta.status === 404) {
+      throw new Error(
+        'A API do manual não existe neste endereço — o dev local serve só o site. Teste num deploy da Vercel.',
+      );
+    }
     // O texto da API já é escrito para ser lido por gente; só quando ele não
     // vier é que a mensagem genérica entra.
-    throw new Error(erroDaApi(corpo) ?? mensagemDoErro(resposta.status, corpo));
+    throw new Error(daApi ?? mensagemDoErro(resposta.status, corpo));
   }
   // Resposta vazia (204) é sucesso sem conteúdo — `JSON.parse('')` seria um
   // erro inventado por nós em cima de uma operação que deu certo.
