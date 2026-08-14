@@ -597,6 +597,32 @@ begin
 end;
 $$;
 
+-- O time EDITA rascunho direto, como marca leads na Central — e o juiz do
+-- estado é o TRIGGER, não a política: uma versão publicada recusa INSERT,
+-- UPDATE e DELETE de seção e regra venha de quem vier. As políticas só dizem
+-- QUEM pode tentar.
+drop policy if exists "equipe cria rascunho" on public.manual_versoes;
+create policy "equipe cria rascunho" on public.manual_versoes
+  for insert to authenticated with check (status = 'rascunho');
+drop policy if exists "equipe edita rascunho" on public.manual_versoes;
+create policy "equipe edita rascunho" on public.manual_versoes
+  for update to authenticated using (status = 'rascunho') with check (status = 'rascunho');
+drop policy if exists "equipe apaga rascunho" on public.manual_versoes;
+create policy "equipe apaga rascunho" on public.manual_versoes
+  for delete to authenticated using (status = 'rascunho');
+drop policy if exists "equipe edita conteudo" on public.manual_secoes;
+create policy "equipe edita conteudo" on public.manual_secoes
+  for all to authenticated using (true) with check (true);
+drop policy if exists "equipe edita conteudo" on public.manual_regras;
+create policy "equipe edita conteudo" on public.manual_regras
+  for all to authenticated using (true) with check (true);
+
+-- Copiar link e exportar CSV são eventos que a área admin registra direto; o
+-- `with check` impede a equipe de forjar evento de cliente ou de sistema.
+drop policy if exists "equipe registra evento" on public.manual_eventos;
+create policy "equipe registra evento" on public.manual_eventos
+  for insert to authenticated with check (ator = 'equipe');
+
 -- As funções são da API, e de mais ninguém: um `authenticated` que chamasse
 -- `manual_concluir` pelo PostgREST estaria concluindo convite sem passar pela
 -- validação de token.
@@ -623,6 +649,8 @@ insert into public.manual_perfis (id, nome, papel)
 --   select tablename, policyname, roles, cmd from pg_policies
 --     where tablename like 'manual_%';
 --
--- Nove linhas, todas `authenticated` + `select`. Qualquer linha com `anon`, ou
--- com `insert/update/delete`, significa porta reaberta por engano.
+-- Toda linha é `authenticated` — NENHUMA pode ser `anon`. As de escrita são só
+-- as seis do bloco de rascunho e a de evento da equipe; escrita em convite,
+-- progresso, aceite e item não existe para papel nenhum: é a API, com a
+-- service_role, ou ninguém.
 -- ─────────────────────────────────────────────────────────────────────────────
