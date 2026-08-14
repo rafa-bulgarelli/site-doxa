@@ -119,6 +119,20 @@ async function revogar(autor: Autor, conviteId: string): Promise<ConviteLinha> {
   return linhas[0];
 }
 
+/**
+ * O prazo do convite novo. Herdar `expira_em` vencido criaria um filho que já
+ * nasce expirado — e regenerar um link vencido para reenviar é exatamente o
+ * caso natural. Prazo ainda vivo se mantém; vencido renasce com a duração
+ * original, contada de agora; sem prazo continua sem prazo.
+ */
+function prazoRenovado(antigo: ConviteLinha): string | undefined {
+  if (antigo.expira_em == null) return undefined;
+  const expira = new Date(antigo.expira_em).getTime();
+  if (expira > Date.now()) return antigo.expira_em;
+  const duracao = expira - new Date(antigo.criado_em).getTime();
+  return new Date(Date.now() + Math.max(duracao, 0)).toISOString();
+}
+
 async function regenerar(autor: Autor, dados: PedidoConviteRegenerar): Promise<RespostaConviteCriado> {
   const antigo = await conviteDe(dados.convite_id);
   await revogar(autor, antigo.id);
@@ -128,7 +142,7 @@ async function regenerar(autor: Autor, dados: PedidoConviteRegenerar): Promise<R
       email: antigo.email,
       empresa: antigo.empresa,
       nome_cliente: antigo.nome_cliente ?? undefined,
-      expira_em: antigo.expira_em ?? undefined,
+      expira_em: prazoRenovado(antigo),
     },
     antigo.id,
   );

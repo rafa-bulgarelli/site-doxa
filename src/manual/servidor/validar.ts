@@ -37,11 +37,17 @@ export function exigirTexto(valor: unknown, campo: string, minimo: number, maxim
   return limpo;
 }
 
-/** Ausente e vazio são a mesma coisa aqui: `undefined`. */
+/**
+ * Ausente e vazio são a mesma coisa aqui: `undefined`. Presente, porém, segue
+ * a régua do banco (`between 2 and 160` nos checks de nome): deixar "A" passar
+ * daqui só trocaria este 400 explicável por um 500 do Postgres.
+ */
 export function textoOpcional(valor: unknown, campo: string, maximo: number): string | undefined {
   if (valor == null) return undefined;
   const limpo = exigirTexto(valor, campo, 0, maximo);
-  return limpo.length === 0 ? undefined : limpo;
+  if (limpo.length === 0) return undefined;
+  if (limpo.length < 2) throw new ErroHttp(400, 'campo_invalido', `${campo} fora de 2..${maximo}`);
+  return limpo;
 }
 
 export function exigirEmail(valor: unknown, campo: string): string {

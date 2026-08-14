@@ -353,6 +353,32 @@ describe('responderAdmin — revogar e regenerar', () => {
     expect(tipos).toContain('convite_regenerado');
   });
 
+  it('regenerar de convite vencido renasce com a duração original, contada de agora', async () => {
+    // Criado 2026-08-01 com 7 dias de prazo — vencido em 08/08, muito antes de
+    // hoje. Herdar esse `expira_em` faria o link novo nascer morto.
+    instalarFetch(rotasPadrao('admin', {
+      expira_em: '2026-08-08T12:00:00.000Z',
+    }));
+    const resposta = await responderAdmin(
+      postar({ acao: 'convite_regenerar', convite_id: CONVITE_ID }),
+    );
+    expect(resposta.status).toBe(201);
+    const novo = chamadas.find((c) => c.metodo === 'POST' && c.url.includes('manual_convites'));
+    const prazo = new Date((novo?.corpo as { expira_em: string }).expira_em).getTime();
+    const seteDias = 7 * 24 * 60 * 60 * 1000;
+    expect(prazo).toBeGreaterThan(Date.now());
+    expect(prazo - Date.now()).toBeLessThanOrEqual(seteDias);
+    expect(prazo - Date.now()).toBeGreaterThan(seteDias - 60_000);
+  });
+
+  it('regenerar mantém prazo que ainda está vivo', async () => {
+    const futuro = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString();
+    instalarFetch(rotasPadrao('admin', { expira_em: futuro }));
+    await responderAdmin(postar({ acao: 'convite_regenerar', convite_id: CONVITE_ID }));
+    const novo = chamadas.find((c) => c.metodo === 'POST' && c.url.includes('manual_convites'));
+    expect((novo?.corpo as { expira_em: string }).expira_em).toBe(futuro);
+  });
+
   it('recusa id que não é uuid', async () => {
     instalarFetch(rotasPadrao());
     const resposta = await responderAdmin(
