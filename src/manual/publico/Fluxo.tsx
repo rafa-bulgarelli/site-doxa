@@ -3,7 +3,9 @@
  *
  * Do link do WhatsApp ao PDF na mão. Este arquivo é só a ORQUESTRAÇÃO: quem
  * decide alguma coisa é `maquina.ts` (pura, testada), quem fala com o servidor
- * é `api.ts`, e quem desenha são as telas ao lado. Aqui mora o estado.
+ * é `api.ts`, quem anda pelos passos é `Leitura.tsx` e quem desenha são as
+ * telas ao lado. Aqui mora o que só o CONVITE tem: o token, o progresso que
+ * sobe e o aceite que grava.
  *
  * Duas rotas chegam:
  *  · `['convite', '<token>']` — o fluxo inteiro; o token sai daqui e vai no
@@ -12,32 +14,20 @@
  *
  * Qualquer outra coisa é link quebrado, e tem tela própria.
  */
-import { useEffect, useRef, useState } from 'react';
-import { useReducedMotion } from 'framer-motion';
+import { useEffect, useState } from 'react';
 import type { PropsDeRota } from '../tipos';
 import { ROTA_BASE } from '../config';
 import { abrirConvite, concluirAceite, pedirPdf, salvarProgresso } from './api';
 import {
   aceiteDaSessao,
-  alternarRegra,
-  capituloDoPasso,
-  capitulosEmOrdem,
-  chaveDoPasso,
-  impedimentosDoAceite,
   montarPedidoConcluir,
   montarPedidoProgresso,
   nomeParaAceite,
-  passoAnterior,
-  podeAvancarDa,
   podeConcluir,
-  proximoPasso,
   situacaoDe,
-  termosDaVersao,
 } from './maquina';
-import type { Passo, Sessao, Situacao } from './maquina';
+import type { Sessao, Situacao } from './maquina';
 import { guardarComprovante, pegarComprovante } from './memoria';
-import { Abertura } from './Abertura';
-import { Capitulo } from './Capitulo';
 import { Conclusao } from './Conclusao';
 import {
   Carregando,
@@ -48,8 +38,7 @@ import {
   LinkInvalido,
   LinkRevogado,
 } from './Estados';
-import { Identificacao } from './Identificacao';
-import { Revisao } from './Revisao';
+import { Leitura } from './Leitura';
 
 /* ─── O PDF, PEDIDO SOB DEMANDA ────────────────────────────────────────────── */
 
@@ -112,35 +101,6 @@ function usarConvite(token: string): Convite {
   };
 }
 
-/* ─── O FOCO AO TROCAR DE PASSO ────────────────────────────────────────────── */
-
-/**
- * Leva o foco e a rolagem ao topo quando o passo MUDA — e só quando muda.
- *
- * Duas armadilhas do repo estão pagas aqui. A primeira: `focus()` na montagem
- * faz a página rolar sozinha, e as rotas do manual são `lazy`, então isso
- * aconteceria segundos depois do load; daí `preventScroll` e a intenção
- * guardada com o valor ANTERIOR num ref — bandeira "já montou" não sobrevive ao
- * StrictMode, que roda o efeito duas vezes. A segunda: o nó vem por
- * `useState` + ref de callback, nunca uma `ref` recebida por props, que chega
- * `null` no efeito do filho e só quebra no site publicado.
- */
-function usarFocoNoPasso(chave: string): (no: HTMLDivElement | null) => void {
-  const [alvo, setAlvo] = useState<HTMLDivElement | null>(null);
-  const anterior = useRef<string>();
-  const semMovimento = useReducedMotion();
-
-  useEffect(() => {
-    const passada = anterior.current;
-    anterior.current = chave;
-    if (passada == null || passada === chave) return;
-    window.scrollTo({ top: 0, behavior: semMovimento === true ? 'auto' : 'smooth' });
-    if (alvo != null) alvo.focus({ preventScroll: true });
-  }, [chave, alvo, semMovimento]);
-
-  return setAlvo;
-}
-
 /* ─── O ACEITE ─────────────────────────────────────────────────────────────── */
 
 interface Envio {
@@ -176,78 +136,15 @@ async function registrarAceite(envio: Envio): Promise<void> {
   navegar(`${ROTA_BASE}/concluido`);
 }
 
-/* ─── AS TELAS DO PASSO ────────────────────────────────────────────────────── */
+/* ─── A LEITURA COM TRANSPORTE ─────────────────────────────────────────────── */
 
-interface PropsDoPasso {
-  sessao: Sessao;
-  enviando: boolean;
-  erroDoEnvio?: string;
-  aoAlternar: (id: string) => void;
-  aoAvancar: () => void;
-  aoVoltar: () => void;
-  aoDigitarNome: (valor: string) => void;
-  aoConfirmarDeclaracao: (valor: boolean) => void;
-  aoConcluir: () => void;
-}
-
-function PassoNaTela(props: PropsDoPasso) {
-  const { sessao } = props;
-  const { convite, versao, passo, marcadas } = sessao;
-
-  switch (passo.tipo) {
-    case 'abertura':
-      return <Abertura versao={versao} convite={convite} aoComecar={props.aoAvancar} />;
-    case 'identificacao':
-      return (
-        <Identificacao
-          convite={convite}
-          nome={sessao.nome}
-          aoDigitarNome={props.aoDigitarNome}
-          aoAvancar={props.aoAvancar}
-          aoVoltar={props.aoVoltar}
-        />
-      );
-    case 'capitulo': {
-      const capitulo = capituloDoPasso(passo, versao);
-      // Índice fora da lista não deveria existir; se existir, é melhor dizer do
-      // que renderizar um capítulo vazio como se fosse o manual.
-      if (capitulo == null) {
-        return <Indisponivel mensagem="Este capítulo não existe nesta versão." />;
-      }
-      return (
-        <Capitulo
-          capitulo={capitulo}
-          posicao={passo.indice + 1}
-          total={capitulosEmOrdem(versao).length}
-          marcadas={marcadas}
-          aoAlternar={props.aoAlternar}
-          aoAvancar={props.aoAvancar}
-          aoVoltar={props.aoVoltar}
-        />
-      );
-    }
-    case 'revisao':
-      return (
-        <Revisao
-          estado={aceiteDaSessao(sessao)}
-          nomeParaMostrar={nomeParaAceite(convite, sessao.nome)}
-          termos={termosDaVersao(versao)}
-          impedimentos={impedimentosDoAceite(aceiteDaSessao(sessao))}
-          enviando={props.enviando}
-          erro={props.erroDoEnvio}
-          aoConfirmarDeclaracao={props.aoConfirmarDeclaracao}
-          aoConcluir={props.aoConcluir}
-          aoVoltar={props.aoVoltar}
-        />
-      );
-    default:
-      throw new Error(`passo desconhecido: ${JSON.stringify(passo)}`);
-  }
-}
-
-/* ─── A LEITURA ────────────────────────────────────────────────────────────── */
-
-function Leitura({
+/**
+ * A leitura do cliente ligada ao servidor.
+ *
+ * O caminho e as telas são da `Leitura`; o que este pedaço acrescenta é o que
+ * só o convite tem — o token, o progresso que sobe e o aceite que grava.
+ */
+function LeituraDoConvite({
   token,
   sessao,
   trocarSessao,
@@ -260,49 +157,31 @@ function Leitura({
 }) {
   const [enviando, setEnviando] = useState(false);
   const [erroDoEnvio, setErroDoEnvio] = useState<string>();
-  const prenderFoco = usarFocoNoPasso(chaveDoPasso(sessao.passo));
-
-  const irPara = (destino: Passo): void => {
-    const nova: Sessao = { ...sessao, passo: destino };
-    trocarSessao(nova);
-    // O servidor é a memória ENTRE visitas; dentro da visita o estado é local.
-    // Por isso o progresso sobe na troca de passo, e não a cada checkbox — e
-    // por isso a falha dele é ignorada: travar a leitura porque um POST de
-    // conveniência não subiu seria punir o cliente por um problema nosso.
-    void salvarProgresso(montarPedidoProgresso(token, destino, aceiteDaSessao(nova)));
-  };
-
-  const avancar = (): void => {
-    const capitulo = capituloDoPasso(sessao.passo, sessao.versao);
-    // O gate de novo, longe do botão: aparência muda em refactor, isto não.
-    if (capitulo != null && !podeAvancarDa(capitulo, sessao.marcadas)) return;
-    irPara(proximoPasso(sessao.passo, sessao.versao));
-  };
 
   return (
-    /* `tabIndex={-1}` para o foco poder pousar aqui na troca de passo; sem
-       `outline` porque o anel é do elemento que o cliente ATIVOU, não deste. */
-    <div ref={prenderFoco} tabIndex={-1} className="outline-none">
-      <PassoNaTela
-        sessao={sessao}
-        enviando={enviando}
-        erroDoEnvio={erroDoEnvio}
-        aoAlternar={(id) => trocarSessao({ ...sessao, marcadas: alternarRegra(sessao.marcadas, id) })}
-        aoAvancar={avancar}
-        aoVoltar={() => irPara(passoAnterior(sessao.passo, sessao.versao))}
-        aoDigitarNome={(valor) => trocarSessao({ ...sessao, nome: valor })}
-        aoConfirmarDeclaracao={(valor) => trocarSessao({ ...sessao, declaracaoConfirmada: valor })}
-        aoConcluir={() =>
-          void registrarAceite({
-            token,
-            sessao,
-            navegar,
-            marcarEnvio: setEnviando,
-            mostrarErro: setErroDoEnvio,
-          })
-        }
-      />
-    </div>
+    <Leitura
+      sessao={sessao}
+      trocarSessao={trocarSessao}
+      aoTrocarPasso={(destino, nova) => {
+        // O servidor é a memória ENTRE visitas; dentro da visita o estado é
+        // local. Por isso o progresso sobe na troca de passo, e não a cada
+        // checkbox — e por isso a falha dele é ignorada: travar a leitura
+        // porque um POST de conveniência não subiu seria punir o cliente por
+        // um problema nosso.
+        void salvarProgresso(montarPedidoProgresso(token, destino, aceiteDaSessao(nova)));
+      }}
+      enviando={enviando}
+      erroDoEnvio={erroDoEnvio}
+      aoConcluir={() =>
+        void registrarAceite({
+          token,
+          sessao,
+          navegar,
+          marcarEnvio: setEnviando,
+          mostrarErro: setErroDoEnvio,
+        })
+      }
+    />
   );
 }
 
@@ -350,7 +229,7 @@ function FluxoDoConvite({ token, navegar }: { token: string; navegar: (destino: 
       );
     case 'fluxo':
       return (
-        <Leitura
+        <LeituraDoConvite
           token={token}
           sessao={situacao.sessao}
           trocarSessao={trocarSessao}

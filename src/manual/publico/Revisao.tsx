@@ -123,6 +123,7 @@ export function Revisao({
   impedimentos,
   enviando,
   erro,
+  fecho,
   aoConfirmarDeclaracao,
   aoConcluir,
   aoVoltar,
@@ -135,6 +136,14 @@ export function Revisao({
   impedimentos: string[];
   enviando: boolean;
   erro?: string;
+  /**
+   * O que fecha a tela no lugar do botão de concluir.
+   *
+   * Ausente — o caso do cliente — é o botão, com os impedimentos e o erro do
+   * envio. Só a prévia da equipe passa alguma coisa aqui, e passa justamente
+   * para que não exista botão nenhum capaz de gravar um aceite de mentira.
+   */
+  fecho?: ReactNode;
   aoConfirmarDeclaracao: (valor: boolean) => void;
   aoConcluir: () => void;
   aoVoltar: () => void;
@@ -179,21 +188,25 @@ export function Revisao({
       </Bloco>
 
       <div className="mt-10 space-y-3">
-        {impedimentos.length > 0 && (
-          <ul className="space-y-1 text-center text-[16px] text-white/55" role="status">
-            {impedimentos.map((falta) => (
-              <li key={falta}>{falta}</li>
-            ))}
-          </ul>
+        {fecho ?? (
+          <>
+            {impedimentos.length > 0 && (
+              <ul className="space-y-1 text-center text-[16px] text-white/55" role="status">
+                {impedimentos.map((falta) => (
+                  <li key={falta}>{falta}</li>
+                ))}
+              </ul>
+            )}
+            {erro != null && (
+              <p className="text-center text-[16px] text-white/80" role="alert">
+                {erro}
+              </p>
+            )}
+            <Botao onClick={aoConcluir} desabilitado={travado}>
+              {enviando ? 'Registrando…' : 'Confirmar e concluir'}
+            </Botao>
+          </>
         )}
-        {erro != null && (
-          <p className="text-center text-[16px] text-white/80" role="alert">
-            {erro}
-          </p>
-        )}
-        <Botao onClick={aoConcluir} desabilitado={travado}>
-          {enviando ? 'Registrando…' : 'Confirmar e concluir'}
-        </Botao>
         <BotaoDiscreto onClick={aoVoltar}>Voltar aos capítulos</BotaoDiscreto>
       </div>
     </Casca>

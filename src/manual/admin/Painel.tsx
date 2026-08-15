@@ -13,6 +13,10 @@
  *   ['convites', '<id>']      o detalhe de um convite
  *   ['manual']                as versões
  *   ['manual', '<versaoId>']  o conteúdo (editor, se for rascunho)
+ *   ['previa']                o manual como o cliente o vê, sem convite
+ *
+ * A prévia sai da moldura de propósito — ela É a tela do cliente, e o motivo
+ * está no cabeçalho do `PreviaDoManual`.
  *
  * Este arquivo é `lazy` a partir do `Rota`: quem abre o link de convite no
  * celular não baixa um byte de nada que está aqui dentro.
@@ -24,6 +28,7 @@ import { ROTA_BASE } from '../config';
 import { ConviteDetalhe } from './ConviteDetalhe';
 import { Convites } from './Convites';
 import { Portao } from './Portao';
+import { PreviaDoManual } from './PreviaDoManual';
 import { VersaoEditor } from './VersaoEditor';
 import { Versoes } from './Versoes';
 import { VisaoGeral } from './VisaoGeral';
@@ -37,6 +42,7 @@ const ABAS = [
   { chave: '', rotulo: 'Visão geral' },
   { chave: 'convites', rotulo: 'Convites' },
   { chave: 'manual', rotulo: 'Manual' },
+  { chave: 'previa', rotulo: 'Ver como o cliente vê' },
 ] as const;
 
 /** O que decide qual tela aparece — separado para o `switch` caber na cabeça. */
@@ -111,6 +117,12 @@ function Area({
   };
 
   const abaAtiva = segmentos[0] ?? '';
+
+  /* A prévia é a única tela desta área que NÃO usa a moldura: ela mostra o
+     manual como o cliente o recebe, e o cliente não vê abas nem cabeçalho de
+     administração. Ela trata os próprios estados de carga porque roda fora do
+     `if` de sessão/erro que protege o resto do painel. */
+  if (abaAtiva === 'previa') return <PreviaDoManual painel={painel} ir={ir} />;
 
   return (
     <main className="min-h-screen bg-doxa-bg px-4 py-8 sm:px-6 md:px-10 md:py-12">
