@@ -9,7 +9,7 @@
  * (`manual.sql`) — e um slug com acento ou um código minúsculo só apareceriam
  * como "400 Bad Request" na cara de quem estava escrevendo um manual.
  */
-import type { RegraLinha, SecaoLinha } from '../tipos';
+import type { RegraLinha, SecaoLinha, Versao, VersaoLinha } from '../tipos';
 
 /**
  * O que todo pedaço do editor recebe: como recarregar e onde reclamar.
@@ -128,4 +128,56 @@ export function regrasDaSecao(
 /** Se o rascunho pode ser publicado. O banco cobra o mesmo, e é ele que decide. */
 export function podePublicar(regras: readonly RegraLinha[]): boolean {
   return regras.some((regra) => regra.obrigatoria);
+}
+
+/* ─── DAS LINHAS DO BANCO PARA O MANUAL DO CLIENTE ─────────────────────────── */
+
+/**
+ * A versão inteira no formato que o fluxo do cliente entende.
+ *
+ * A área do time lê LINHAS do PostgREST (`VersaoLinha`, `SecaoLinha`,
+ * `RegraLinha`), planas e com as chaves estrangeiras à mostra; o cliente recebe
+ * da API uma `Versao` já montada, com as regras dentro de cada seção. A prévia
+ * é o único lugar em que os dois mundos se encontram, e é aqui que a costura
+ * acontece — pura, para ser provada sem banco e sem tela.
+ *
+ * Campo a campo, e não por espalhamento: `versao_id` e `secao_id` são do banco
+ * e não do contrato público. Um `...secao` levaria a chave estrangeira para
+ * dentro da prévia e, no dia em que a prévia virasse fonte de outra coisa,
+ * levaria junto para onde ela não deve ir.
+ *
+ * A ordem é a mesma que o cliente vê: `ordem` manda, e o desempate repete o do
+ * editor (slug para seção, código para regra) para que a prévia e a tela de
+ * conteúdo nunca mostrem a mesma versão em ordens diferentes.
+ */
+export function montarVersao(
+  versao: VersaoLinha,
+  secoes: readonly SecaoLinha[],
+  regras: readonly RegraLinha[],
+): Versao {
+  const emOrdem = [...secoes].sort((a, b) => a.ordem - b.ordem || a.slug.localeCompare(b.slug));
+  return {
+    id: versao.id,
+    numero: versao.numero,
+    titulo: versao.titulo,
+    declaracao: versao.declaracao,
+    secoes: emOrdem.map((secao) => ({
+      id: secao.id,
+      slug: secao.slug,
+      titulo: secao.titulo,
+      descricao: secao.descricao,
+      ordem: secao.ordem,
+      regras: regrasDaSecao(regras, secao).map((regra) => ({
+        id: regra.id,
+        codigo: regra.codigo,
+        titulo: regra.titulo,
+        instrucao: regra.instrucao,
+        porque: regra.porque,
+        exemplo: regra.exemplo,
+        severidade: regra.severidade,
+        obrigatoria: regra.obrigatoria,
+        ordem: regra.ordem,
+      })),
+    })),
+  };
 }
