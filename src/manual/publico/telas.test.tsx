@@ -3,64 +3,134 @@
  *
  * `renderToStaticMarkup` — sem DOM, sem jsdom, sem dependência nova. Não é
  * teste de desenho (classe de Tailwind não se afirma em teste); é a prova de
- * que cada tela RENDERIZA e de que o texto que decide alguma coisa está nela:
- * o rótulo do aceite, o botão travado, a frase de cada link morto.
+ * que cada tela RENDERIZA e de que o que decide alguma coisa está nela: o
+ * checkbox só onde deve existir, o botão travado, os termos na revisão, a frase
+ * de cada link morto.
  *
  * A lacuna que isto fecha é real: a lógica pura pode estar perfeita e o fluxo
  * quebrar num acesso a campo indefinido dentro do JSX — e no celular do
  * cliente isso é uma tela branca, sem erro visível para ninguém.
+ *
+ * A amostra tem o FORMATO da v2 (capítulo de leitura · capítulo de aceites ·
+ * termos) porque é o formato que o cliente recebe. O que separa um do outro é
+ * o dado, nunca o slug: o slug aqui só escolhe a cena e aparta os termos.
  */
 import { describe, expect, it } from 'vitest';
 import { renderToStaticMarkup } from 'react-dom/server';
-import type { ConviteAberto, Versao } from '../tipos';
+import type { ConviteAberto, Secao, Versao } from '../tipos';
 import Fluxo from './Fluxo';
 import { Abertura } from './Abertura';
+import { Capitulo } from './Capitulo';
 import { Conclusao } from './Conclusao';
 import { Identificacao } from './Identificacao';
 import { Revisao } from './Revisao';
-import { Secao } from './Secao';
+import { DocumentoDeTermos } from './Termos';
 import { JaConcluido, LinkExpirado, LinkInvalido, LinkRevogado } from './Estados';
-import { andamentoDe, secoesEmOrdem } from './maquina';
+import { capitulosEmOrdem, termosDaVersao } from './maquina';
 import type { EstadoDoAceite } from './maquina';
+
+const LEITURA: Secao = {
+  id: 's-voz',
+  slug: 'voz',
+  titulo: 'A sua voz',
+  descricao: 'A plataforma clona a sua voz a partir de uma gravação sua.',
+  ordem: 1,
+  regras: [
+    {
+      id: 'vz1',
+      codigo: 'VZ-1',
+      titulo: 'Grave num lugar silencioso',
+      instrucao: 'Nada de eco, música ou rua no fundo.',
+      porque: 'O clone aprende com tudo que estiver no áudio.',
+      exemplo: 'Quarto fechado, ar-condicionado desligado.',
+      severidade: 'normal',
+      obrigatoria: false,
+      ordem: 1,
+    },
+  ],
+};
+
+const GARANTIA: Secao = {
+  id: 's-garantia',
+  slug: 'garantia',
+  titulo: 'A rotina que protege a sua garantia',
+  descricao: 'São os itens que sustentam o estorno de 100%.',
+  ordem: 2,
+  regras: [
+    {
+      id: 'ga1',
+      codigo: 'GA-1',
+      titulo: 'Um milhão em 90 dias',
+      instrucao: 'A contagem começa no primeiro vídeo publicado.',
+      porque: 'É contra esse número que o resultado será aferido.',
+      exemplo: 'Primeiro vídeo em março, aferição até maio.',
+      severidade: 'critica',
+      obrigatoria: true,
+      ordem: 1,
+    },
+    {
+      id: 'ga2',
+      codigo: 'GA-2',
+      titulo: 'Baixou, publicou — sem editar nada',
+      instrucao: 'Publique exatamente o arquivo recebido.',
+      porque: 'Cada detalhe do vídeo é decidido para desempenho.',
+      exemplo: 'Não troque a música nem ponha a sua logo.',
+      severidade: 'critica',
+      obrigatoria: true,
+      ordem: 2,
+    },
+    {
+      id: 'ga3',
+      codigo: 'GA-3',
+      titulo: 'O que NÃO quebra a garantia',
+      instrucao: 'Perder um dia isolado de publicação não invalida nada.',
+      porque: 'A rotina tem folga de verdade.',
+      exemplo: 'Viajou na quarta? Publique na quinta.',
+      severidade: 'normal',
+      obrigatoria: false,
+      ordem: 3,
+    },
+  ],
+};
+
+const TERMOS: Secao = {
+  id: 's-termos',
+  slug: 'termos',
+  titulo: 'Termos de uso',
+  descricao: 'O detalhe completo das condições que você está aceitando.',
+  ordem: 3,
+  regras: [
+    {
+      id: 'tu1',
+      codigo: 'TU-1',
+      titulo: 'O que a DOXA entrega',
+      instrucao: 'A DOXA produz e entrega os vídeos prontos para publicação.',
+      porque: 'A metodologia é um sistema.',
+      exemplo: '',
+      severidade: 'normal',
+      obrigatoria: false,
+      ordem: 1,
+    },
+    {
+      id: 'tu2',
+      codigo: 'TU-2',
+      titulo: 'A garantia e o estorno',
+      instrucao: 'Cumpridas as condições, existe estorno de 100% conforme o contrato.',
+      porque: 'Meta, período e contagem precisam estar claros.',
+      exemplo: '',
+      severidade: 'normal',
+      obrigatoria: false,
+      ordem: 2,
+    },
+  ],
+};
 
 const VERSAO: Versao = {
   id: 'v1',
   numero: 3,
   titulo: 'Manual DOXA',
   declaracao: 'Declaro que li, entendi e concordo com o manual inteiro.',
-  secoes: [
-    {
-      id: 's1',
-      slug: 'prazos',
-      titulo: 'Prazos',
-      descricao: 'Como o tempo funciona por aqui.',
-      ordem: 1,
-      regras: [
-        {
-          id: 'r1',
-          codigo: 'PR-01',
-          titulo: 'Material até quinta',
-          instrucao: 'Envie o material até quinta-feira.',
-          porque: 'Sem material não há edição na sexta.',
-          exemplo: 'Mandar os brutos na quarta à noite.',
-          severidade: 'critica',
-          obrigatoria: true,
-          ordem: 1,
-        },
-        {
-          id: 'r2',
-          codigo: 'PR-02',
-          titulo: 'Feriado conta',
-          instrucao: 'Feriado não estica prazo.',
-          porque: 'A grade de publicação não para.',
-          exemplo: 'Adiantar o envio na véspera.',
-          severidade: 'normal',
-          obrigatoria: false,
-          ordem: 2,
-        },
-      ],
-    },
-  ],
+  secoes: [LEITURA, GARANTIA, TERMOS],
 };
 
 const CONVITE: ConviteAberto = {
@@ -85,14 +155,30 @@ const nada = () => undefined;
  */
 const BOTAO_TRAVADO = 'disabled=""';
 
+function capitulo(indice: number, marcadas: string[] = []) {
+  const capitulos = capitulosEmOrdem(VERSAO);
+  return desenhar(
+    <Capitulo
+      capitulo={capitulos[indice]}
+      posicao={indice + 1}
+      total={capitulos.length}
+      marcadas={marcadas}
+      aoAlternar={nada}
+      aoAvancar={nada}
+      aoVoltar={nada}
+    />,
+  );
+}
+
 describe('as telas do caminho', () => {
-  it('a abertura conta o que é, quanto custa e o que fica registrado', () => {
+  it('a abertura promete o tamanho real do manual: capítulos e itens', () => {
     const html = desenhar(<Abertura versao={VERSAO} convite={CONVITE} aoComecar={nada} />);
     expect(html).toContain('Manual DOXA');
     expect(html).toContain('Empresa LTDA');
     expect(html).toContain('O que fica registrado');
-    // A informativa não entra na conta de regras a confirmar.
-    expect(html).toContain('1 regra');
+    // Dois capítulos (os termos não contam) e dois itens para confirmar.
+    expect(html).toContain('2 capítulos curtos');
+    expect(html).toContain('2 itens');
   });
 
   it('a identificação trava e-mail e empresa e só abre campo para o nome', () => {
@@ -127,59 +213,48 @@ describe('as telas do caminho', () => {
     expect(html).not.toContain('<input');
   });
 
-  it('a seção mostra o porquê, o exemplo, o selo da crítica e o aceite', () => {
-    const secao = secoesEmOrdem(VERSAO)[0];
-    const html = desenhar(
-      <Secao
-        secao={secao}
-        posicao={1}
-        total={1}
-        andamento={andamentoDe(VERSAO, [])}
-        marcadas={[]}
-        aoAlternar={nada}
-        aoAvancar={nada}
-        aoVoltar={nada}
-      />,
-    );
-    expect(html).toContain('Por que existe');
-    expect(html).toContain('Na prática');
-    expect(html).toContain('Crítica');
-    expect(html).toContain('Li, entendi e concordo');
-    expect(html).toContain('Informativo');
-    expect(html).toContain('Falta confirmar 1 regra desta seção.');
-    // Nada marcado: o botão de avançar está travado.
-    expect(html).toContain(BOTAO_TRAVADO);
-  });
-
-  it('a seção libera o avanço com a obrigatória marcada', () => {
-    const html = desenhar(
-      <Secao
-        secao={secoesEmOrdem(VERSAO)[0]}
-        posicao={1}
-        total={1}
-        andamento={andamentoDe(VERSAO, ['r1'])}
-        marcadas={['r1']}
-        aoAlternar={nada}
-        aoAvancar={nada}
-        aoVoltar={nada}
-      />,
-    );
-    expect(html).toContain('Tudo desta seção confirmado.');
+  it('capítulo informativo NÃO renderiza checkbox — só explica e libera o Entendi', () => {
+    const html = capitulo(0);
+    expect(html).toContain('A sua voz');
+    expect(html).toContain('Grave num lugar silencioso');
+    expect(html).toContain('Capítulo 1 de 2');
+    expect(html).toContain('Entendi →');
+    // A promessa do redesenho: capítulo que explica não cobra caixa nenhuma.
+    expect(html).not.toContain('<input');
+    expect(html).not.toContain('type="checkbox"');
+    // E, sem nada a travar, o botão nasce aberto.
     expect(html).not.toContain(BOTAO_TRAVADO);
   });
 
-  it('a revisão mostra a declaração inteira e o aviso da garantia', () => {
-    const estado: EstadoDoAceite = {
-      versao: VERSAO,
-      convite: CONVITE,
-      marcadas: ['r1'],
-      nomeInformado: 'Ana Lima',
-      declaracaoConfirmada: false,
-    };
+  it('o capítulo da garantia é a item list: uma caixa por item, e a conta em tela', () => {
+    const html = capitulo(1);
+    expect(html.match(/type="checkbox"/g)?.length).toBe(2);
+    expect(html).toContain('Item 1');
+    expect(html).toContain('Item 2');
+    expect(html).toContain('Um milhão em 90 dias');
+    expect(html).toContain('Faltam confirmar 2 itens.');
+    expect(html).toContain(BOTAO_TRAVADO);
+  });
+
+  it('a informativa da garantia vira nota de alívio, sem caixa própria', () => {
+    const html = capitulo(1);
+    expect(html).toContain('O que NÃO quebra a garantia');
+    // Duas caixas na tela — a nota de alívio não trouxe uma terceira.
+    expect(html.match(/type="checkbox"/g)?.length).toBe(2);
+  });
+
+  it('com os oito (aqui dois) marcados, o capítulo libera a revisão', () => {
+    const html = capitulo(1, ['ga1', 'ga2']);
+    expect(html).toContain('Ir para a revisão final');
+    expect(html).not.toContain(BOTAO_TRAVADO);
+  });
+
+  it('os termos aparecem na revisão, atrás de "ler os termos completos"', () => {
     const html = desenhar(
       <Revisao
-        estado={estado}
+        estado={estadoDaRevisao()}
         nomeParaMostrar="Ana Lima"
+        termos={termosDaVersao(VERSAO)}
         impedimentos={['Falta confirmar a declaração final.']}
         enviando={false}
         aoConfirmarDeclaracao={nada}
@@ -187,13 +262,62 @@ describe('as telas do caminho', () => {
         aoVoltar={nada}
       />,
     );
+    expect(html).toContain('Termos de uso');
+    expect(html).toContain('O detalhe completo das condições');
+    expect(html).toContain('Ler os termos completos');
+  });
+
+  it('a revisão é enxuta: dados, itens confirmados, declaração inteira e o aceite', () => {
+    const html = desenhar(
+      <Revisao
+        estado={estadoDaRevisao()}
+        nomeParaMostrar="Ana Lima"
+        termos={termosDaVersao(VERSAO)}
+        impedimentos={['Falta confirmar a declaração final.']}
+        enviando={false}
+        aoConfirmarDeclaracao={nada}
+        aoConcluir={nada}
+        aoVoltar={nada}
+      />,
+    );
+    expect(html).toContain('Ana Lima');
+    expect(html).toContain('cliente@empresa.com');
+    expect(html).toContain('Um milhão em 90 dias');
     expect(html).toContain('Declaro que li, entendi e concordo com o manual inteiro.');
-    expect(html).toContain('invalidar a garantia');
     expect(html).toContain('Confirmo que li e concordo com a declaração acima');
     expect(html).toContain('Falta confirmar a declaração final.');
     expect(html).toContain(BOTAO_TRAVADO);
     // O termo que o dono proibiu não aparece em lugar nenhum do fluxo.
     expect(html.toLowerCase()).not.toContain('assinatura eletrônica');
+  });
+
+  it('versão sem seção de termos: a revisão não oferece um documento vazio', () => {
+    const semTermos: Versao = { ...VERSAO, secoes: [LEITURA, GARANTIA] };
+    const html = desenhar(
+      <Revisao
+        estado={{ ...estadoDaRevisao(), versao: semTermos }}
+        nomeParaMostrar="Ana Lima"
+        termos={termosDaVersao(semTermos)}
+        impedimentos={[]}
+        enviando={false}
+        aoConfirmarDeclaracao={nada}
+        aoConcluir={nada}
+        aoVoltar={nada}
+      />,
+    );
+    expect(html).not.toContain('Ler os termos completos');
+    expect(html).toContain('Confirmo que li e concordo com a declaração acima');
+  });
+
+  it('o documento dos termos sai inteiro, numerado, em corpo de leitura', () => {
+    const termos = termosDaVersao(VERSAO);
+    if (termos == null) throw new Error('a amostra precisa ter os termos');
+    const html = desenhar(<DocumentoDeTermos secao={termos} />);
+    expect(html).toContain('1. O que a DOXA entrega');
+    expect(html).toContain('2. A garantia e o estorno');
+    expect(html).toContain('estorno de 100% conforme o contrato');
+    // Documento é para ler, não para marcar.
+    expect(html).not.toContain('type="checkbox"');
   });
 
   it('a conclusão entrega registro, data, versão e o link do PDF', () => {
@@ -242,6 +366,16 @@ describe('as telas do caminho', () => {
     expect(html).toContain('Baixar meu comprovante em PDF');
   });
 });
+
+function estadoDaRevisao(): EstadoDoAceite {
+  return {
+    versao: VERSAO,
+    convite: CONVITE,
+    marcadas: ['ga1'],
+    nomeInformado: 'Ana Lima',
+    declaracaoConfirmada: false,
+  };
+}
 
 describe('as telas de link morto', () => {
   it('cada estado diz o que houve e o que fazer, sem culpar o cliente', () => {

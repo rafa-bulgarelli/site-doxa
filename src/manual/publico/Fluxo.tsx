@@ -20,7 +20,8 @@ import { abrirConvite, concluirAceite, pedirPdf, salvarProgresso } from './api';
 import {
   aceiteDaSessao,
   alternarRegra,
-  andamentoDe,
+  capituloDoPasso,
+  capitulosEmOrdem,
   chaveDoPasso,
   impedimentosDoAceite,
   montarPedidoConcluir,
@@ -30,13 +31,13 @@ import {
   podeAvancarDa,
   podeConcluir,
   proximoPasso,
-  secaoDoPasso,
-  secoesEmOrdem,
   situacaoDe,
+  termosDaVersao,
 } from './maquina';
 import type { Passo, Sessao, Situacao } from './maquina';
 import { guardarComprovante, pegarComprovante } from './memoria';
 import { Abertura } from './Abertura';
+import { Capitulo } from './Capitulo';
 import { Conclusao } from './Conclusao';
 import {
   Carregando,
@@ -49,7 +50,6 @@ import {
 } from './Estados';
 import { Identificacao } from './Identificacao';
 import { Revisao } from './Revisao';
-import { Secao } from './Secao';
 
 /* ─── O PDF, PEDIDO SOB DEMANDA ────────────────────────────────────────────── */
 
@@ -207,17 +207,18 @@ function PassoNaTela(props: PropsDoPasso) {
           aoVoltar={props.aoVoltar}
         />
       );
-    case 'secao': {
-      const secao = secaoDoPasso(passo, versao);
+    case 'capitulo': {
+      const capitulo = capituloDoPasso(passo, versao);
       // Índice fora da lista não deveria existir; se existir, é melhor dizer do
-      // que renderizar uma seção vazia como se fosse o manual.
-      if (secao == null) return <Indisponivel mensagem="Esta seção não existe nesta versão." />;
+      // que renderizar um capítulo vazio como se fosse o manual.
+      if (capitulo == null) {
+        return <Indisponivel mensagem="Este capítulo não existe nesta versão." />;
+      }
       return (
-        <Secao
-          secao={secao}
+        <Capitulo
+          capitulo={capitulo}
           posicao={passo.indice + 1}
-          total={secoesEmOrdem(versao).length}
-          andamento={andamentoDe(versao, marcadas)}
+          total={capitulosEmOrdem(versao).length}
           marcadas={marcadas}
           aoAlternar={props.aoAlternar}
           aoAvancar={props.aoAvancar}
@@ -230,6 +231,7 @@ function PassoNaTela(props: PropsDoPasso) {
         <Revisao
           estado={aceiteDaSessao(sessao)}
           nomeParaMostrar={nomeParaAceite(convite, sessao.nome)}
+          termos={termosDaVersao(versao)}
           impedimentos={impedimentosDoAceite(aceiteDaSessao(sessao))}
           enviando={props.enviando}
           erro={props.erroDoEnvio}
@@ -271,9 +273,9 @@ function Leitura({
   };
 
   const avancar = (): void => {
-    const secao = secaoDoPasso(sessao.passo, sessao.versao);
+    const capitulo = capituloDoPasso(sessao.passo, sessao.versao);
     // O gate de novo, longe do botão: aparência muda em refactor, isto não.
-    if (secao != null && !podeAvancarDa(secao, sessao.marcadas)) return;
+    if (capitulo != null && !podeAvancarDa(capitulo, sessao.marcadas)) return;
     irPara(proximoPasso(sessao.passo, sessao.versao));
   };
 

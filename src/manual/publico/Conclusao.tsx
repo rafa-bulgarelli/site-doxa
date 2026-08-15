@@ -13,7 +13,7 @@
  * O que NÃO se faz aqui é fingir que o aceite não existiu. O tom das duas é o
  * mesmo: está feito.
  */
-import { BaixarPdf, Casca, Linha, Quadro, Titulo } from './pecas';
+import { BaixarPdf, Casca, Linha, Quadro, Rotulo, Titulo } from './pecas';
 import { dataEHora } from './formato';
 import type { Comprovante } from './memoria';
 
@@ -50,8 +50,8 @@ export function Conclusao({
 
   return (
     <Casca>
-      <p className="text-[11px] uppercase tracking-[0.18em] text-doxa-muted">Concluído</p>
-      <div className="mt-3">
+      <Rotulo>Concluído</Rotulo>
+      <div className="mt-4">
         <Titulo>Pronto, {primeiroNome(comprovante.nome)}. Está registrado.</Titulo>
       </div>
 
@@ -98,9 +98,9 @@ function Item({
   monoespacado?: boolean;
 }) {
   return (
-    <div className="border-t border-doxa-line py-3 first:border-t-0 first:pt-0">
-      <p className="text-[11px] uppercase tracking-[0.16em] text-doxa-muted">{rotulo}</p>
-      <p className={`mt-1 break-all text-[14px] text-white ${monoespacado ? 'font-mono' : ''}`}>
+    <div className="border-t border-doxa-line py-4 first:border-t-0 first:pt-0">
+      <Rotulo>{rotulo}</Rotulo>
+      <p className={`mt-1.5 break-all text-[17px] text-white ${monoespacado ? 'font-mono' : ''}`}>
         {valor}
       </p>
     </div>

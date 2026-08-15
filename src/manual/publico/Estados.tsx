@@ -11,7 +11,7 @@
  * resolve.
  */
 import type { ReactNode } from 'react';
-import { BaixarPdf, Botao, Casca, Linha, Quadro, Titulo } from './pecas';
+import { BaixarPdf, Botao, Casca, Linha, Quadro, Rotulo, Titulo } from './pecas';
 import { dataEHora } from './formato';
 import type { AceiteResumo } from '../tipos';
 
@@ -19,7 +19,7 @@ import type { AceiteResumo } from '../tipos';
 export function Carregando() {
   return (
     <Casca>
-      <p className="text-[15px] text-white/45" role="status">
+      <p className="text-[17px] text-white/45" role="status">
         Abrindo seu manual…
       </p>
     </Casca>
@@ -141,8 +141,8 @@ export function JaConcluido({
         {aceite.versao_numero} do manual. A DOXA mantém o documento arquivado.
       </Linha>
       <Quadro>
-        <p className="text-[11px] uppercase tracking-[0.16em] text-doxa-muted">Registro</p>
-        <p className="mt-1 break-all font-mono text-[13px] text-white/80">{aceite.aceite_id}</p>
+        <Rotulo>Registro</Rotulo>
+        <p className="mt-1.5 break-all font-mono text-[15px] text-white/80">{aceite.aceite_id}</p>
       </Quadro>
       <div className="pt-2">
         <BaixarPdf url={pdfUrl} pedindo={baixando} erro={erro} aoPedir={aoBaixar} />

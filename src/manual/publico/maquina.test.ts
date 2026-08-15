@@ -17,24 +17,29 @@ import {
   aceiteDaSessao,
   alternarRegra,
   andamentoDe,
+  capituloDoPasso,
+  capitulosEmOrdem,
   chaveDoPasso,
   faltamNa,
+  feitioDo,
   impedimentosDoAceite,
+  informativasDa,
   marcadasCanonicas,
   marcadasDeRetomada,
   montarPedidoConcluir,
   montarPedidoProgresso,
   nomeDeRetomada,
   nomeParaAceite,
+  obrigatoriasDaVersao,
   ordemDoPasso,
   passoAnterior,
   passoDeRetomada,
   podeAvancarDa,
   podeConcluir,
   proximoPasso,
-  secaoDoPasso,
   secoesEmOrdem,
   situacaoDe,
+  termosDaVersao,
 } from './maquina';
 import type { EstadoDoAceite, Passo, Sessao } from './maquina';
 import type { ConviteAberto, Regra, RespostaAbrir, Secao, Versao } from '../tipos';
@@ -73,13 +78,23 @@ const R4 = regra('r4', 1);
 const S1 = secao('s1', 1, [R2, R1, R3]);
 const S2 = secao('s2', 2, [R4]);
 
+/**
+ * A seção de termos, com uma regra OBRIGATÓRIA dentro.
+ *
+ * É uma armadilha de propósito: os termos não são capítulo, então essa regra
+ * não tem checkbox em tela nenhuma. Se a máquina a cobrasse, o cliente ficaria
+ * preso num impedimento que nenhum gesto resolve — e nenhum aceite sairia
+ * jamais.
+ */
+const TERMOS = secao('termos', 3, [regra('t1', 1)]);
+
 const VERSAO: Versao = {
   id: 'v1',
   numero: 3,
   titulo: 'Manual DOXA',
   declaracao: 'Declaro que li e concordo com tudo acima.',
   // Fora de ordem de propósito: quem ordena é a máquina, não a API.
-  secoes: [S2, S1],
+  secoes: [S2, TERMOS, S1],
 };
 
 const COM_NOME: ConviteAberto = {
@@ -104,13 +119,40 @@ function estado(extra: Partial<EstadoDoAceite> = {}): EstadoDoAceite {
 
 describe('leitura da versão', () => {
   it('ordena seções e regras pelo campo ordem, mesmo vindo embaralhado', () => {
-    expect(secoesEmOrdem(VERSAO).map((s) => s.id)).toEqual(['s1', 's2']);
+    expect(secoesEmOrdem(VERSAO).map((s) => s.id)).toEqual(['s1', 's2', 'termos']);
   });
 
   it('conta o manual inteiro no andamento — informativa não entra na conta', () => {
     expect(andamentoDe(VERSAO, []).total).toBe(3);
     expect(andamentoDe(VERSAO, ['r1', 'r3']).feitas).toBe(1);
     expect(andamentoDe(VERSAO, ['r1', 'r2', 'r4']).fracao).toBe(1);
+  });
+});
+
+describe('capítulos e termos', () => {
+  it('os capítulos são todas as seções MENOS os termos, na ordem do banco', () => {
+    expect(capitulosEmOrdem(VERSAO).map((s) => s.id)).toEqual(['s1', 's2']);
+    expect(termosDaVersao(VERSAO)?.slug).toBe('termos');
+  });
+
+  it('versão sem a seção de termos não tem documento, e nenhum capítulo se perde', () => {
+    const semTermos: Versao = { ...VERSAO, secoes: [S2, S1] };
+    expect(termosDaVersao(semTermos)).toBeUndefined();
+    expect(capitulosEmOrdem(semTermos).map((s) => s.id)).toEqual(['s1', 's2']);
+  });
+
+  it('obrigatória escondida nos termos NÃO é cobrada: ela não tem checkbox em tela', () => {
+    expect(obrigatoriasDaVersao(VERSAO).map((r) => r.id)).toEqual(['r1', 'r2', 'r4']);
+    // Sem `t1` marcada, o aceite fecha. Cobrá-la travaria o fluxo para sempre.
+    expect(podeConcluir(estado())).toBe(true);
+  });
+
+  it('o feitio do capítulo sai dos dados, nunca do slug', () => {
+    expect(feitioDo(S1)).toBe('aceites');
+    expect(feitioDo(secao('so-leitura', 9, [regra('x', 1, { obrigatoria: false })]))).toBe(
+      'leitura',
+    );
+    expect(informativasDa(S1).map((r) => r.id)).toEqual(['r3']);
   });
 });
 
@@ -134,46 +176,52 @@ describe('o gate de avanço', () => {
 describe('navegação entre passos', () => {
   const abertura: Passo = { tipo: 'abertura' };
 
-  it('vai da abertura à identificação e daí para a primeira seção', () => {
+  it('vai da abertura à identificação e daí para o primeiro capítulo', () => {
     expect(proximoPasso(abertura, VERSAO)).toEqual({ tipo: 'identificacao' });
-    expect(proximoPasso({ tipo: 'identificacao' }, VERSAO)).toEqual({ tipo: 'secao', indice: 0 });
+    expect(proximoPasso({ tipo: 'identificacao' }, VERSAO)).toEqual({ tipo: 'capitulo', indice: 0 });
   });
 
-  it('a última seção leva à revisão, e a revisão não caminha sozinha', () => {
-    expect(proximoPasso({ tipo: 'secao', indice: 1 }, VERSAO)).toEqual({ tipo: 'revisao' });
+  it('o último CAPÍTULO leva à revisão — os termos nunca viram um passo', () => {
+    expect(proximoPasso({ tipo: 'capitulo', indice: 1 }, VERSAO)).toEqual({ tipo: 'revisao' });
     expect(proximoPasso({ tipo: 'revisao' }, VERSAO)).toEqual({ tipo: 'revisao' });
   });
 
-  it('voltar é sempre possível, e da revisão cai na última seção', () => {
-    expect(passoAnterior({ tipo: 'revisao' }, VERSAO)).toEqual({ tipo: 'secao', indice: 1 });
-    expect(passoAnterior({ tipo: 'secao', indice: 0 }, VERSAO)).toEqual({ tipo: 'identificacao' });
+  it('voltar é sempre possível, e da revisão cai no último capítulo', () => {
+    expect(passoAnterior({ tipo: 'revisao' }, VERSAO)).toEqual({ tipo: 'capitulo', indice: 1 });
+    expect(passoAnterior({ tipo: 'capitulo', indice: 0 }, VERSAO)).toEqual({
+      tipo: 'identificacao',
+    });
     expect(passoAnterior(abertura, VERSAO)).toEqual(abertura);
   });
 
-  it('a seção do passo sai da lista ordenada', () => {
-    expect(secaoDoPasso({ tipo: 'secao', indice: 0 }, VERSAO)?.id).toBe('s1');
-    expect(secaoDoPasso({ tipo: 'secao', indice: 9 }, VERSAO)).toBeUndefined();
-    expect(secaoDoPasso(abertura, VERSAO)).toBeUndefined();
+  it('o capítulo do passo sai da lista de capítulos, sem os termos', () => {
+    expect(capituloDoPasso({ tipo: 'capitulo', indice: 0 }, VERSAO)?.id).toBe('s1');
+    expect(capituloDoPasso({ tipo: 'capitulo', indice: 2 }, VERSAO)).toBeUndefined();
+    expect(capituloDoPasso(abertura, VERSAO)).toBeUndefined();
   });
 
-  it('a chave do passo distingue seções diferentes', () => {
-    expect(chaveDoPasso({ tipo: 'secao', indice: 1 })).toBe('secao-1');
+  it('a chave do passo distingue capítulos diferentes', () => {
+    expect(chaveDoPasso({ tipo: 'capitulo', indice: 1 })).toBe('capitulo-1');
     expect(chaveDoPasso(abertura)).toBe('abertura');
   });
 });
 
 describe('retomada pelo mesmo link', () => {
-  it('casa a seção pelo campo ordem, não pelo índice do array', () => {
-    // `secao_ordem: 2` é a SEGUNDA seção (índice 1). Casar por índice cairia
-    // na seção errada — o bug que este teste existe para pegar.
+  it('casa o capítulo pelo campo ordem, não pelo índice do array', () => {
+    // `secao_ordem: 2` é o SEGUNDO capítulo (índice 1). Casar por índice cairia
+    // no capítulo errado — o bug que este teste existe para pegar.
     expect(passoDeRetomada(VERSAO, { secao_ordem: 2, regras_marcadas: [], nome_informado: null })).toEqual({
-      tipo: 'secao',
+      tipo: 'capitulo',
       indice: 1,
     });
   });
 
-  it('ordem que não é de seção nenhuma volta para a abertura', () => {
+  it('ordem que não é de capítulo nenhum volta para a abertura', () => {
     expect(passoDeRetomada(VERSAO, { secao_ordem: 0, regras_marcadas: [], nome_informado: null })).toEqual({
+      tipo: 'abertura',
+    });
+    // A ordem 3 é a dos TERMOS: não é capítulo, logo não é destino de retomada.
+    expect(passoDeRetomada(VERSAO, { secao_ordem: 3, regras_marcadas: [], nome_informado: null })).toEqual({
       tipo: 'abertura',
     });
     expect(passoDeRetomada(VERSAO)).toEqual({ tipo: 'abertura' });
@@ -194,8 +242,8 @@ describe('retomada pelo mesmo link', () => {
 });
 
 describe('os pedidos que sobem para a API', () => {
-  it('o progresso grava a ordem da seção e as marcações na ordem do manual', () => {
-    const pedido = montarPedidoProgresso('tok', { tipo: 'secao', indice: 1 }, {
+  it('o progresso grava a ordem do capítulo e as marcações na ordem do manual', () => {
+    const pedido = montarPedidoProgresso('tok', { tipo: 'capitulo', indice: 1 }, {
       versao: VERSAO,
       convite: COM_NOME,
       marcadas: ['r4', 'r1'],
@@ -209,7 +257,9 @@ describe('os pedidos que sobem para a API', () => {
     });
   });
 
-  it('a revisão grava a ÚLTIMA seção: retomar não pode pular para a declaração', () => {
+  it('a revisão grava o ÚLTIMO CAPÍTULO, nunca a ordem dos termos', () => {
+    // A ordem 3 (termos) aqui apagaria o caminho andado: `passoDeRetomada` não
+    // acharia destino e devolveria o cliente à abertura na próxima visita.
     expect(ordemDoPasso({ tipo: 'revisao' }, VERSAO)).toBe(2);
     expect(ordemDoPasso({ tipo: 'abertura' }, VERSAO)).toBe(0);
   });
@@ -244,9 +294,9 @@ describe('a porta do aceite', () => {
   it('recusa concluir com regra obrigatória por marcar, e diz quantas faltam', () => {
     const incompleto = estado({ marcadas: ['r1'] });
     expect(podeConcluir(incompleto)).toBe(false);
-    expect(impedimentosDoAceite(incompleto)[0]).toBe('Faltam marcar 2 regras do manual.');
+    expect(impedimentosDoAceite(incompleto)[0]).toBe('Faltam confirmar 2 itens do manual.');
     expect(impedimentosDoAceite(estado({ marcadas: ['r1', 'r2'] }))[0]).toBe(
-      'Falta marcar 1 regra do manual.',
+      'Falta confirmar 1 item do manual.',
     );
   });
 
@@ -294,7 +344,7 @@ describe('o que o link abriu', () => {
     });
     expect(situacao.tipo).toBe('fluxo');
     if (situacao.tipo !== 'fluxo') throw new Error('esperava fluxo');
-    expect(situacao.sessao.passo).toEqual({ tipo: 'secao', indice: 1 });
+    expect(situacao.sessao.passo).toEqual({ tipo: 'capitulo', indice: 1 });
     expect(situacao.sessao.marcadas).toEqual(['r1']);
     expect(situacao.sessao.nome).toBe('João');
     // A declaração NUNCA volta confirmada de uma visita anterior.
