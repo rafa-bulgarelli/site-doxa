@@ -20,6 +20,8 @@ import {
   capituloDoPasso,
   capitulosEmOrdem,
   chaveDoPasso,
+  etapaDeRetomada,
+  etapasDo,
   faltamNa,
   feitioDo,
   impedimentosDoAceite,
@@ -35,6 +37,8 @@ import {
   passoAnterior,
   passoDeRetomada,
   podeAvancarDa,
+  podeAvancarDaEtapa,
+  podeAvancarDoPasso,
   podeConcluir,
   proximoPasso,
   secoesEmOrdem,
@@ -173,21 +177,136 @@ describe('o gate de avanço', () => {
   });
 });
 
+/* ─── AS ETAPAS: UMA TELA POR ITEM ─────────────────────────────────────────── */
+
+describe('as etapas de um capítulo', () => {
+  it('N obrigatórias viram N telas de item — a conta sai dos dados, não do slug', () => {
+    const etapas = etapasDo(S1);
+    expect(etapas.map((etapa) => etapa.tipo)).toEqual(['intro', 'item', 'item', 'respiro']);
+    const itens = etapas.filter((etapa) => etapa.tipo === 'item');
+    expect(itens.map((etapa) => (etapa.tipo === 'item' ? etapa.regra.id : null))).toEqual([
+      'r1',
+      'r2',
+    ]);
+    // A numeração da tela ("Item 2 de 2") é derivada, nunca escrita à mão.
+    expect(itens.map((etapa) => (etapa.tipo === 'item' ? `${etapa.numero}/${etapa.total}` : ''))).toEqual([
+      '1/2',
+      '2/2',
+    ]);
+  });
+
+  it('capítulo sem obrigatória continua sendo uma leitura só', () => {
+    const soLeitura = secao('so-leitura', 9, [regra('x', 1, { obrigatoria: false })]);
+    expect(etapasDo(soLeitura).map((etapa) => etapa.tipo)).toEqual(['leitura']);
+  });
+
+  it('sem informativa não há interlúdio para desenhar', () => {
+    expect(etapasDo(S2).map((etapa) => etapa.tipo)).toEqual(['intro', 'item']);
+  });
+
+  it('o capítulo do clone ganha a etapa dos exemplos de foto, no fim', () => {
+    const clone = secao('clone', 8, [regra('c1', 1, { obrigatoria: false })]);
+    expect(etapasDo(clone).map((etapa) => etapa.tipo)).toEqual(['leitura', 'fotos']);
+  });
+
+  it('o gate agora é por ETAPA: cada item cobra a confirmação dele mesmo', () => {
+    const [intro, primeiro, segundo, respiro] = etapasDo(S1);
+    expect(podeAvancarDaEtapa(intro, [])).toBe(true);
+    expect(podeAvancarDaEtapa(primeiro, [])).toBe(false);
+    expect(podeAvancarDaEtapa(primeiro, ['r1'])).toBe(true);
+    // Marcar o item errado não abre a porta deste.
+    expect(podeAvancarDaEtapa(segundo, ['r1'])).toBe(false);
+    expect(podeAvancarDaEtapa(respiro, [])).toBe(true);
+  });
+
+  it('o gate do passo inteiro trava o item por marcar e libera o resto', () => {
+    const noItem: Passo = { tipo: 'capitulo', indice: 0, etapa: 1 };
+    expect(podeAvancarDoPasso(noItem, VERSAO, [])).toBe(false);
+    expect(podeAvancarDoPasso(noItem, VERSAO, ['r1'])).toBe(true);
+    expect(podeAvancarDoPasso({ tipo: 'capitulo', indice: 0 }, VERSAO, [])).toBe(true);
+    expect(podeAvancarDoPasso({ tipo: 'revisao' }, VERSAO, [])).toBe(true);
+  });
+
+  it('a SAÍDA do capítulo cobra o capítulo inteiro, e não só a etapa da vez', () => {
+    // A etapa 3 de S1 é o respiro: ela não cobra nada por si. Sair dali com um
+    // item por marcar é o que a segunda trava impede — se a derivação das
+    // etapas um dia pular um item, o gate ainda segura.
+    const respiro: Passo = { tipo: 'capitulo', indice: 0, etapa: 3 };
+    expect(podeAvancarDaEtapa(etapasDo(S1)[3], ['r1'])).toBe(true);
+    expect(podeAvancarDoPasso(respiro, VERSAO, ['r1'])).toBe(false);
+    expect(podeAvancarDoPasso(respiro, VERSAO, ['r1', 'r2'])).toBe(true);
+  });
+
+  it('a etapa de retomada é o PRIMEIRO item não marcado', () => {
+    // Etapa 0 é a abertura do capítulo; o item r1 é a 1 e o r2 é a 2.
+    expect(etapaDeRetomada(S1, [])).toBe(1);
+    expect(etapaDeRetomada(S1, ['r1'])).toBe(2);
+    // Tudo marcado: a última etapa, e não o item 1 de novo — reandar um
+    // caminho terminado é o jeito rápido de o cliente fechar a aba.
+    expect(etapaDeRetomada(S1, ['r1', 'r2'])).toBe(3);
+    // Capítulo sem item nenhum abre no começo, que é a única etapa que ele tem.
+    expect(etapaDeRetomada(secao('so-leitura', 9, [regra('x', 1, { obrigatoria: false })]), [])).toBe(0);
+  });
+});
+
 describe('navegação entre passos', () => {
   const abertura: Passo = { tipo: 'abertura' };
 
-  it('vai da abertura à identificação e daí para o primeiro capítulo', () => {
+  it('vai da abertura à identificação e daí para a PRIMEIRA etapa do capítulo 1', () => {
     expect(proximoPasso(abertura, VERSAO)).toEqual({ tipo: 'identificacao' });
-    expect(proximoPasso({ tipo: 'identificacao' }, VERSAO)).toEqual({ tipo: 'capitulo', indice: 0 });
+    expect(proximoPasso({ tipo: 'identificacao' }, VERSAO)).toEqual({
+      tipo: 'capitulo',
+      indice: 0,
+      etapa: 0,
+    });
   });
 
-  it('o último CAPÍTULO leva à revisão — os termos nunca viram um passo', () => {
-    expect(proximoPasso({ tipo: 'capitulo', indice: 1 }, VERSAO)).toEqual({ tipo: 'revisao' });
+  it('anda etapa por etapa dentro do capítulo antes de trocar de assunto', () => {
+    // S1 tem quatro etapas: abertura, item r1, item r2, respiro.
+    expect(proximoPasso({ tipo: 'capitulo', indice: 0 }, VERSAO)).toEqual({
+      tipo: 'capitulo',
+      indice: 0,
+      etapa: 1,
+    });
+    expect(proximoPasso({ tipo: 'capitulo', indice: 0, etapa: 2 }, VERSAO)).toEqual({
+      tipo: 'capitulo',
+      indice: 0,
+      etapa: 3,
+    });
+    // Só a ÚLTIMA etapa vira o capítulo seguinte, e sempre pela abertura dele.
+    expect(proximoPasso({ tipo: 'capitulo', indice: 0, etapa: 3 }, VERSAO)).toEqual({
+      tipo: 'capitulo',
+      indice: 1,
+      etapa: 0,
+    });
+  });
+
+  it('a última etapa do último CAPÍTULO leva à revisão — os termos nunca viram passo', () => {
+    expect(proximoPasso({ tipo: 'capitulo', indice: 1, etapa: 1 }, VERSAO)).toEqual({
+      tipo: 'revisao',
+    });
     expect(proximoPasso({ tipo: 'revisao' }, VERSAO)).toEqual({ tipo: 'revisao' });
   });
 
-  it('voltar é sempre possível, e da revisão cai no último capítulo', () => {
-    expect(passoAnterior({ tipo: 'revisao' }, VERSAO)).toEqual({ tipo: 'capitulo', indice: 1 });
+  it('voltar entra pelo FIM do capítulo anterior, e da revisão pelo fim do último', () => {
+    // S2 tem duas etapas (abertura e o item r4): o fim dele é a etapa 1.
+    expect(passoAnterior({ tipo: 'revisao' }, VERSAO)).toEqual({
+      tipo: 'capitulo',
+      indice: 1,
+      etapa: 1,
+    });
+    expect(passoAnterior({ tipo: 'capitulo', indice: 0, etapa: 2 }, VERSAO)).toEqual({
+      tipo: 'capitulo',
+      indice: 0,
+      etapa: 1,
+    });
+    // A etapa 3 de S1 é o respiro: voltar do capítulo 2 cai nele, e não na
+    // abertura do capítulo 1 — desandar o caminho é refazer o último passo.
+    expect(passoAnterior({ tipo: 'capitulo', indice: 1 }, VERSAO)).toEqual({
+      tipo: 'capitulo',
+      indice: 0,
+      etapa: 3,
+    });
     expect(passoAnterior({ tipo: 'capitulo', indice: 0 }, VERSAO)).toEqual({
       tipo: 'identificacao',
     });
@@ -200,8 +319,9 @@ describe('navegação entre passos', () => {
     expect(capituloDoPasso(abertura, VERSAO)).toBeUndefined();
   });
 
-  it('a chave do passo distingue capítulos diferentes', () => {
-    expect(chaveDoPasso({ tipo: 'capitulo', indice: 1 })).toBe('capitulo-1');
+  it('a chave do passo distingue capítulos E etapas — cada item é uma tela', () => {
+    expect(chaveDoPasso({ tipo: 'capitulo', indice: 1 })).toBe('capitulo-1-0');
+    expect(chaveDoPasso({ tipo: 'capitulo', indice: 1, etapa: 3 })).toBe('capitulo-1-3');
     expect(chaveDoPasso(abertura)).toBe('abertura');
   });
 });
@@ -213,7 +333,22 @@ describe('retomada pelo mesmo link', () => {
     expect(passoDeRetomada(VERSAO, { secao_ordem: 2, regras_marcadas: [], nome_informado: null })).toEqual({
       tipo: 'capitulo',
       indice: 1,
+      etapa: 1,
     });
+  });
+
+  it('reabre no PRIMEIRO item não marcado, derivado do que o servidor guardou', () => {
+    const semNada = { secao_ordem: 1, regras_marcadas: [], nome_informado: null };
+    expect(passoDeRetomada(VERSAO, semNada)).toEqual({ tipo: 'capitulo', indice: 0, etapa: 1 });
+    // Com o primeiro item já confirmado, a volta é no segundo — e não numa
+    // etapa gravada à parte, que divergiria das marcações na versão seguinte.
+    expect(
+      passoDeRetomada(VERSAO, { ...semNada, regras_marcadas: ['r1'] }),
+    ).toEqual({ tipo: 'capitulo', indice: 0, etapa: 2 });
+    // Id de outra versão não conta como item confirmado.
+    expect(
+      passoDeRetomada(VERSAO, { ...semNada, regras_marcadas: ['de-outra-versao'] }),
+    ).toEqual({ tipo: 'capitulo', indice: 0, etapa: 1 });
   });
 
   it('ordem que não é de capítulo nenhum volta para a abertura', () => {
@@ -344,7 +479,9 @@ describe('o que o link abriu', () => {
     });
     expect(situacao.tipo).toBe('fluxo');
     if (situacao.tipo !== 'fluxo') throw new Error('esperava fluxo');
-    expect(situacao.sessao.passo).toEqual({ tipo: 'capitulo', indice: 1 });
+    // O capítulo vem da `secao_ordem`; a ETAPA vem das marcações — r4, a única
+    // obrigatória de S2, continua por marcar.
+    expect(situacao.sessao.passo).toEqual({ tipo: 'capitulo', indice: 1, etapa: 1 });
     expect(situacao.sessao.marcadas).toEqual(['r1']);
     expect(situacao.sessao.nome).toBe('João');
     // A declaração NUNCA volta confirmada de uma visita anterior.

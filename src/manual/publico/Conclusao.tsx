@@ -13,7 +13,7 @@
  * O que NÃO se faz aqui é fingir que o aceite não existiu. O tom das duas é o
  * mesmo: está feito.
  */
-import { BaixarPdf, Casca, Linha, Quadro, Rotulo, Titulo } from './pecas';
+import { BaixarPdf, Casca, Fio, Linha, Quadro, Rotulo, Titulo } from './pecas';
 import { dataEHora } from './formato';
 import type { Comprovante } from './memoria';
 
@@ -51,9 +51,21 @@ export function Conclusao({
   return (
     <Casca>
       <Rotulo>Concluído</Rotulo>
-      <div className="mt-4">
-        <Titulo>Pronto, {primeiroNome(comprovante.nome)}. Está registrado.</Titulo>
-      </div>
+      {/*
+        ─── A ÚNICA FITA ACESA DO FLUXO INTEIRO ───────────────────────────────
+
+        `texto-aceso-siri` (a mesma de "Pergunte o que quiser." no FAQ e do
+        título do formulário) aparece UMA vez no manual, e é aqui: o instante em
+        que o registro passou a existir. Numa segunda tela ela deixaria de ser o
+        momento e viraria enfeite de fundo — a parcimônia é o que a faz valer.
+
+        Na variante `sem-halo`, sem a auréola: o resto da tela é sóbrio, e um
+        brilho largo sobre um comprovante lê como propaganda, não como recibo.
+      */}
+      <h1 className="mt-4 font-serif text-[34px] leading-[1.08] text-white sm:text-[46px]">
+        Pronto, {primeiroNome(comprovante.nome)}.{' '}
+        <span className="texto-aceso-siri sem-halo text-[#F4F1E8]">Está registrado.</span>
+      </h1>
 
       <div className="mt-5 space-y-4">
         <Linha>
@@ -62,7 +74,11 @@ export function Conclusao({
         </Linha>
       </div>
 
-      <div className="mt-6 rounded-2xl border border-doxa-line bg-doxa-surface p-5">
+      <div className="mt-7">
+        <Fio />
+      </div>
+
+      <div className="mt-5 rounded-2xl border border-emerald-400/25 bg-emerald-400/[0.04] p-5">
         <Item rotulo="Registro" valor={comprovante.aceite_id} monoespacado />
         <Item rotulo="Data e hora" valor={dataEHora(comprovante.aceito_em)} />
         <Item rotulo="Versão do manual" valor={`Versão ${comprovante.versao_numero}`} />

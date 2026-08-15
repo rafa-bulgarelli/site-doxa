@@ -1,177 +1,232 @@
 /**
- * ─── A LISTA QUE PROTEGE A GARANTIA ──────────────────────────────────────────
+ * ─── UM ITEM POR TELA ────────────────────────────────────────────────────────
  *
- * O único lugar do fluxo com checkbox. O dono foi direto: a rotina de postagem
- * tem que ficar claríssima, como uma lista de itens — não como oito telas de
- * texto contratual.
+ * A v2 punha os oito itens da garantia numa lista só, e o dono reprovou com a
+ * frase que define este arquivo: "você deixa tudo na mesma página e o cara vai
+ * descer marcando tudo, não vai nem ler nada". Aqui cada item obrigatório é uma
+ * TELA — mini-cena, "Item 3 de 8", título grande em serifa, a instrução, o
+ * porquê a um toque e a confirmação daquele item, que é o que libera o próximo.
  *
- * Cada item é uma linha só de leitura: número, título forte, a instrução, e o
- * porquê a UM TOQUE (a revelação). O alvo de toque é a linha inteira, com 64px
- * de altura mínima — isto é marcado com o polegar, em pé, e um erro de clique
- * aqui é o cliente confirmando o que não leu.
+ * O que a tela única dava de graça e precisou ser reconstruído: o tamanho do
+ * caminho. É o que a `TrilhaDeItens` faz — um ponto por item, aceso na cor da
+ * fita quando confirmado. Sem ela, uma regra sozinha na tela esconde quantas
+ * vêm depois, e fluxo de aceite sem horizonte é o mais fácil de abandonar.
  *
- * A cor é funcional e existe só aqui, com autorização do dono para esta tela:
- * verde é o item que protege a garantia quando confirmado, vermelho é o aviso
- * de que descumprir quebra. Fora desta lista o manual segue monocromático como
- * o resto do site.
+ * A cor é gramática, não enfeite: verde é o que protege a garantia, vermelho é
+ * o que a quebra, e a fita da marca (`faq/cores.ts`) marca a passagem do tempo.
+ * O anel da Siri aparece UMA vez por tela, na confirmação — é o gesto que falta.
  *
- * As regras informativas do mesmo capítulo (o "o que NÃO quebra") viram nota de
- * alívio: sem caixa, sem cobrança. Quem chegou até aqui leu oito condições
- * seguidas e precisa saber que a rotina tem folga de verdade.
+ * O interlúdio fecha o capítulo pelo lado positivo: as informativas ("o que
+ * você PODE fazer") sozinhas numa tela verde, depois do último item. No meio da
+ * lista, elas liam como mais uma condição — que é o contrário do que dizem.
  */
-import { motion, useReducedMotion } from 'framer-motion';
-import { EASE, Revelacao } from './pecas';
+import { cenaDoItem } from '../cenas/contrato';
+import { corDaDuvida } from '../../components/faq/cores';
+import { ANEL_SIRI, Entrada, Fio, Revelacao, Rotulo, TrilhaDeItens } from './pecas';
 import type { Regra } from '../tipos';
 
-/* ─── UM ITEM ──────────────────────────────────────────────────────────────── */
+/* ─── A MINI-CENA DO ITEM ──────────────────────────────────────────────────── */
+
+/** Código sem cena não tem ilustração, e a etapa continua inteira. */
+function MiniCena({ codigo }: { codigo: string }) {
+  const Desenho = cenaDoItem(codigo);
+  if (Desenho == null) return null;
+  return (
+    <div className="mb-8">
+      <Desenho />
+    </div>
+  );
+}
+
+/* ─── A CONFIRMAÇÃO DAQUELE ITEM ───────────────────────────────────────────── */
 
 /**
  * O quadrado marcado.
  *
  * O `input` de verdade é `sr-only` (o desenho nativo não dá para estilizar sem
  * gambiarra), então o anel de foco do teclado tem que vir dele para cá pelo
- * `peer` — sem isso quem navega por tabulação não vê onde está, e a caixa some
- * do caminho de quem mais precisa dela.
+ * `peer` — sem isso quem navega por tabulação não vê onde está.
  */
 function Marca({ marcada }: { marcada: boolean }) {
-  const semMovimento = useReducedMotion() === true;
   return (
     <span
       aria-hidden
-      className={`mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border transition-colors peer-focus-visible:ring-2 peer-focus-visible:ring-white/70 peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-doxa-bg ${
+      className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border text-[19px] leading-none transition-colors peer-focus-visible:ring-2 peer-focus-visible:ring-white/70 peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-doxa-bg ${
         marcada ? 'border-emerald-400 bg-emerald-400 text-black' : 'border-white/30 text-transparent'
       }`}
     >
-      <motion.span
-        initial={false}
-        animate={{ scale: marcada ? 1 : 0.4, opacity: marcada ? 1 : 0 }}
-        transition={{ duration: semMovimento ? 0 : 0.2, ease: EASE }}
-        className="text-[17px] leading-none"
-      >
-        ✓
-      </motion.span>
+      ✓
     </span>
   );
 }
 
-function ItemDeAceite({
-  regra,
+/**
+ * O aceite de UM item.
+ *
+ * O rótulo inteiro é o alvo, com 64px de altura mínima: isto é marcado com o
+ * polegar, em pé, e um erro de clique aqui é o cliente confirmando o que não
+ * leu. Por marcar, ela leva o anel da Siri com a isca — é o único gesto que
+ * falta na tela. Marcada, o anel sai e entra o verde.
+ */
+function ConfirmacaoDoItem({ marcada, aoAlternar }: { marcada: boolean; aoAlternar: () => void }) {
+  return (
+    <label
+      style={marcada ? undefined : ANEL_SIRI}
+      className={`relative mt-8 flex min-h-[64px] cursor-pointer items-center gap-4 rounded-2xl border px-5 py-4 transition-colors ${
+        marcada
+          ? 'border-emerald-400/45 bg-emerald-400/[0.07]'
+          : 'anel-siri anel-siri-isca border-white/20 bg-doxa-surface hover:bg-white/[0.05]'
+      }`}
+    >
+      <input type="checkbox" checked={marcada} onChange={aoAlternar} className="peer sr-only" />
+      <Marca marcada={marcada} />
+      <span className={`text-[17px] leading-[1.45] ${marcada ? 'text-white' : 'text-white/80'}`}>
+        Li, entendi e concordo com este item
+      </span>
+    </label>
+  );
+}
+
+/* ─── A TELA DO ITEM ───────────────────────────────────────────────────────── */
+
+/** O aviso do item crítico. Vermelho aqui é significado, não decoração. */
+function AvisoCritico() {
+  return (
+    <p className="mt-6 rounded-2xl border border-rose-400/30 bg-rose-400/[0.05] px-5 py-4 text-[17px] leading-[1.5] text-white/80">
+      Este item, descumprido, pode quebrar a garantia.
+    </p>
+  );
+}
+
+/** Onde estou e quanto falta: a posição em texto e a trilha em pontos. */
+function Posicao({
   numero,
-  marcada,
-  aoAlternar,
+  total,
+  confirmados,
+  cor,
 }: {
-  regra: Regra;
   numero: number;
-  marcada: boolean;
-  aoAlternar: () => void;
+  total: number;
+  confirmados: readonly boolean[];
+  cor: string;
 }) {
+  return (
+    <div className="flex flex-wrap items-center justify-between gap-4">
+      <p className="text-[14px] uppercase tracking-[0.16em]" style={{ color: cor }}>
+        Item {numero} de {total}
+      </p>
+      <TrilhaDeItens total={total} atual={numero} confirmados={confirmados} />
+    </div>
+  );
+}
+
+/** O porquê e o exemplo, a um toque — e nunca abertos por padrão. */
+function PorQueProtege({ regra, cor }: { regra: Regra; cor: string }) {
+  const temPorque = regra.porque.trim().length > 0;
+  const temExemplo = regra.exemplo.trim().length > 0;
+  if (!temPorque && !temExemplo) return null;
+  return (
+    <div className="mt-6">
+      <Revelacao rotulo="Por que isso protege você">
+        <div className="space-y-3 border-l pl-4" style={{ borderColor: cor }}>
+          {temPorque && <p className="text-[17px] leading-[1.7] text-white/70">{regra.porque}</p>}
+          {temExemplo && (
+            <p className="text-[17px] leading-[1.7] text-white/70">
+              <span className="text-white/45">Na prática: </span>
+              {regra.exemplo}
+            </p>
+          )}
+        </div>
+      </Revelacao>
+    </div>
+  );
+}
+
+interface PropsDoItem {
+  regra: Regra;
+  /** 1-based, para ler na tela: "Item 3 de 8". */
+  numero: number;
+  total: number;
+  /** Um booleano por item obrigatório do capítulo, na ordem — a trilha os desenha. */
+  confirmados: readonly boolean[];
+  aoAlternar: (id: string) => void;
+}
+
+export function TelaDoItem({ regra, numero, total, confirmados, aoAlternar }: PropsDoItem) {
+  const marcada = confirmados[numero - 1] === true;
+  // A cor do item vem da fita da marca, pela POSIÇÃO dele: oito itens em oito
+  // tons vizinhos leem como uma sequência, e não como oito avisos diferentes.
+  const cor = corDaDuvida(numero - 1);
+
+  return (
+    <Entrada>
+      <MiniCena codigo={regra.codigo} />
+      <Posicao numero={numero} total={total} confirmados={confirmados} cor={cor} />
+
+      <div className="mt-4">
+        <Fio cor={cor} />
+      </div>
+      <h2 className="mt-5 font-serif text-[30px] leading-[1.1] text-white sm:text-[38px]">
+        {regra.titulo}
+      </h2>
+      <p className="mt-5 text-[19px] leading-[1.6] text-white/85">{regra.instrucao}</p>
+
+      <PorQueProtege regra={regra} cor={cor} />
+      {regra.severidade === 'critica' && <AvisoCritico />}
+
+      <ConfirmacaoDoItem marcada={marcada} aoAlternar={() => aoAlternar(regra.id)} />
+    </Entrada>
+  );
+}
+
+/* ─── O INTERLÚDIO: O QUE VOCÊ PODE FAZER ──────────────────────────────────── */
+
+/** Uma informativa do capítulo, sem caixa de aceite: é folga, não condição. */
+function NotaDeAlivio({ regra }: { regra: Regra }) {
   const temPorque = regra.porque.trim().length > 0;
   const temExemplo = regra.exemplo.trim().length > 0;
   return (
-    <li
-      className={`rounded-3xl border transition-colors ${
-        marcada ? 'border-emerald-400/35 bg-emerald-400/[0.05]' : 'border-doxa-line bg-doxa-surface'
-      }`}
-    >
-      {/* O rótulo inteiro é o alvo: 64px de altura mínima, sem ilha de 16px. */}
-      <label className="flex min-h-[64px] cursor-pointer items-start gap-4 p-5">
-        <input
-          type="checkbox"
-          checked={marcada}
-          onChange={aoAlternar}
-          className="peer sr-only"
-        />
-        <Marca marcada={marcada} />
-        <span className="min-w-0">
-          <span className="block text-[14px] uppercase tracking-[0.16em] text-doxa-muted">
-            Item {numero}
-          </span>
-          <span className="mt-1.5 block text-[19px] font-medium leading-[1.35] text-white">
-            {regra.titulo}
-          </span>
-          <span className="mt-2.5 block text-[17px] leading-[1.7] text-white/75">
-            {regra.instrucao}
-          </span>
-        </span>
-      </label>
-      {(temPorque || temExemplo) && (
-        <div className="px-5 pb-5 pl-[4.5rem]">
-          <Revelacao rotulo="Por que isso protege você">
-            <div className="space-y-3 border-l border-white/[0.14] pl-4">
-              {temPorque && (
-                <p className="text-[17px] leading-[1.7] text-white/65">{regra.porque}</p>
-              )}
-              {temExemplo && (
-                <p className="text-[17px] leading-[1.7] text-white/65">
-                  <span className="text-white/45">Na prática: </span>
-                  {regra.exemplo}
-                </p>
-              )}
-            </div>
-          </Revelacao>
-        </div>
-      )}
-    </li>
-  );
-}
-
-/* ─── A NOTA DE ALÍVIO ─────────────────────────────────────────────────────── */
-
-/** Sem caixa e sem cobrança: é a folga da rotina, não mais uma condição. */
-function NotaDeAlivio({ regra }: { regra: Regra }) {
-  const temPorque = regra.porque.trim().length > 0;
-  return (
-    <div className="mt-6 rounded-3xl border border-emerald-400/25 bg-emerald-400/[0.04] p-6">
-      <p className="text-[14px] uppercase tracking-[0.16em] text-emerald-300/70">Respire</p>
-      <h3 className="mt-2 font-serif text-[24px] leading-[1.2] text-white">{regra.titulo}</h3>
-      <p className="mt-3 text-[17px] leading-[1.7] text-white/75">{regra.instrucao}</p>
-      {temPorque && <p className="mt-3 text-[17px] leading-[1.7] text-white/55">{regra.porque}</p>}
-    </div>
-  );
-}
-
-/* ─── A LISTA ──────────────────────────────────────────────────────────────── */
-
-export function ListaDeAceites({
-  obrigatorias,
-  alivios,
-  marcadas,
-  aoAlternar,
-}: {
-  obrigatorias: Regra[];
-  /** As informativas do mesmo capítulo. Aparecem depois da lista, sem caixa. */
-  alivios: Regra[];
-  marcadas: readonly string[];
-  aoAlternar: (id: string) => void;
-}) {
-  const feitas = obrigatorias.filter((regra) => marcadas.includes(regra.id)).length;
-  return (
-    <div className="mt-8">
-      <div className="flex items-center justify-between gap-4 rounded-2xl border border-rose-400/25 bg-rose-400/[0.04] px-5 py-4">
-        <p className="text-[17px] leading-[1.5] text-white/75">
-          Cada item aqui, descumprido, pode quebrar a garantia.
+    <article className="rounded-3xl border border-emerald-400/25 bg-emerald-400/[0.05] p-6">
+      <h3 className="font-serif text-[26px] leading-[1.15] text-white sm:text-[28px]">
+        {regra.titulo}
+      </h3>
+      <p className="mt-4 text-[17px] leading-[1.7] text-white/80">{regra.instrucao}</p>
+      {temPorque && <p className="mt-3 text-[17px] leading-[1.7] text-white/60">{regra.porque}</p>}
+      {temExemplo && (
+        <p className="mt-3 text-[17px] leading-[1.7] text-white/60">
+          <span className="text-white/40">Na prática: </span>
+          {regra.exemplo}
         </p>
-        <p className="shrink-0 text-[17px] tabular-nums text-white" role="status">
-          <span className={feitas === obrigatorias.length ? 'text-emerald-300' : ''}>{feitas}</span>
-          /{obrigatorias.length}
+      )}
+    </article>
+  );
+}
+
+/**
+ * O respiro depois do último item.
+ *
+ * Ele é a única tela do capítulo que não cobra nada, e é de propósito que ela
+ * venha logo depois da mais pesada: quem acabou de confirmar oito condições
+ * precisa ouvir, na mesma voz, que a rotina tem folga de verdade.
+ */
+export function Interludio({ regras, itens }: { regras: Regra[]; itens: number }) {
+  return (
+    <Entrada>
+      <div className="rounded-3xl border border-emerald-400/30 bg-emerald-400/[0.06] px-6 py-8 text-center">
+        <Rotulo>Respire</Rotulo>
+        <p className="mt-4 font-serif text-[30px] leading-[1.1] text-white sm:text-[36px]">
+          {itens === 1 ? 'Item confirmado.' : `Os ${itens} itens estão confirmados.`}
+        </p>
+        <p className="mt-4 text-[17px] leading-[1.7] text-white/70">
+          Agora a parte que quase ninguém conta: o que você continua podendo fazer.
         </p>
       </div>
 
-      <ul className="mt-5 space-y-4">
-        {obrigatorias.map((regra, indice) => (
-          <ItemDeAceite
-            key={regra.id}
-            regra={regra}
-            numero={indice + 1}
-            marcada={marcadas.includes(regra.id)}
-            aoAlternar={() => aoAlternar(regra.id)}
-          />
+      <div className="mt-6 space-y-4">
+        {regras.map((regra) => (
+          <NotaDeAlivio key={regra.id} regra={regra} />
         ))}
-      </ul>
-
-      {alivios.map((regra) => (
-        <NotaDeAlivio key={regra.id} regra={regra} />
-      ))}
-    </div>
+      </div>
+    </Entrada>
   );
 }

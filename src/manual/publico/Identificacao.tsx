@@ -13,7 +13,7 @@
  * faz o navegador rolar sozinho até o campo, e o cliente vê a tela "fugir" —
  * armadilha registrada no CLAUDE.md, paga uma vez, não se paga de novo.
  */
-import { Botao, BotaoDiscreto, Casca, Dado, Linha, Rotulo, Titulo } from './pecas';
+import { Botao, BotaoDiscreto, Casca, Dado, Fio, Linha, Rotulo, Titulo } from './pecas';
 import { MINIMO_DO_NOME, nomeValido, precisaDeNome } from './maquina';
 import type { ConviteAberto } from '../tipos';
 
@@ -35,7 +35,10 @@ export function Identificacao({
 
   return (
     <Casca>
-      <Rotulo>Identificação</Rotulo>
+      <Fio />
+      <div className="mt-4">
+        <Rotulo>Identificação</Rotulo>
+      </div>
       <div className="mt-4">
         <Titulo>Confirme quem é você</Titulo>
       </div>

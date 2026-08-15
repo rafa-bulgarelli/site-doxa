@@ -93,6 +93,34 @@ const GARANTIA: Secao = {
   ],
 };
 
+/**
+ * O clone fica FORA da versão da amostra de propósito.
+ *
+ * Ele existe só para provar a etapa dos exemplos de foto; dentro da `VERSAO`,
+ * mudaria a contagem que a abertura promete ("2 capítulos curtos") e o teste da
+ * promessa passaria a medir duas coisas ao mesmo tempo.
+ */
+const CLONE: Secao = {
+  id: 's-clone',
+  slug: 'clone',
+  titulo: 'O seu clone',
+  descricao: 'As fotos alimentam o clone visual.',
+  ordem: 9,
+  regras: [
+    {
+      id: 'cl1',
+      codigo: 'CL-1',
+      titulo: 'Foto nítida, de frente, em boa luz',
+      instrucao: 'Rosto inteiro visível, luz uniforme.',
+      porque: 'O clone é construído do que aparece.',
+      exemplo: 'Fotografe de dia, de frente para a janela.',
+      severidade: 'normal',
+      obrigatoria: false,
+      ordem: 1,
+    },
+  ],
+};
+
 const TERMOS: Secao = {
   id: 's-termos',
   slug: 'termos',
@@ -155,13 +183,15 @@ const nada = () => undefined;
  */
 const BOTAO_TRAVADO = 'disabled=""';
 
-function capitulo(indice: number, marcadas: string[] = []) {
+/** Um capítulo NUMA etapa. Sem etapa é a primeira, como no passo sem etapa. */
+function capitulo(indice: number, etapa = 0, marcadas: string[] = []) {
   const capitulos = capitulosEmOrdem(VERSAO);
   return desenhar(
     <Capitulo
       capitulo={capitulos[indice]}
       posicao={indice + 1}
       total={capitulos.length}
+      etapa={etapa}
       marcadas={marcadas}
       aoAlternar={nada}
       aoAvancar={nada}
@@ -226,27 +256,66 @@ describe('as telas do caminho', () => {
     expect(html).not.toContain(BOTAO_TRAVADO);
   });
 
-  it('o capítulo da garantia é a item list: uma caixa por item, e a conta em tela', () => {
+  it('o capítulo da garantia ABRE explicando, sem cobrar caixa nenhuma', () => {
     const html = capitulo(1);
-    expect(html.match(/type="checkbox"/g)?.length).toBe(2);
-    expect(html).toContain('Item 1');
-    expect(html).toContain('Item 2');
+    expect(html).toContain('A rotina que protege a sua garantia');
+    expect(html).toContain('São 2 itens, um por tela.');
+    expect(html).not.toContain('type="checkbox"');
+    expect(html).not.toContain(BOTAO_TRAVADO);
+    expect(html).toContain('Começar pelo item 1 →');
+  });
+
+  it('cada item da garantia é uma TELA: um item, uma caixa, e o próximo travado', () => {
+    const html = capitulo(1, 1);
+    // A promessa do redesenho: uma caixa na tela inteira, não a lista toda.
+    expect(html.match(/type="checkbox"/g)?.length).toBe(1);
+    expect(html).toContain('Item 1 de 2');
     expect(html).toContain('Um milhão em 90 dias');
-    expect(html).toContain('Faltam confirmar 2 itens.');
+    // O item 2 não está nesta tela — é o que impede descer marcando tudo.
+    expect(html).not.toContain('Baixou, publicou — sem editar nada');
+    expect(html).toContain('Li, entendi e concordo com este item');
+    expect(html).toContain('Confirme o item acima para continuar.');
     expect(html).toContain(BOTAO_TRAVADO);
   });
 
-  it('a informativa da garantia vira nota de alívio, sem caixa própria', () => {
-    const html = capitulo(1);
-    expect(html).toContain('O que NÃO quebra a garantia');
-    // Duas caixas na tela — a nota de alívio não trouxe uma terceira.
-    expect(html.match(/type="checkbox"/g)?.length).toBe(2);
+  it('confirmado o item, a tela libera o próximo — e só o próximo', () => {
+    const html = capitulo(1, 1, ['ga1']);
+    expect(html).toContain('Próximo item →');
+    expect(html).not.toContain(BOTAO_TRAVADO);
+    expect(html).not.toContain('Ir para a revisão final');
   });
 
-  it('com os oito (aqui dois) marcados, o capítulo libera a revisão', () => {
-    const html = capitulo(1, ['ga1', 'ga2']);
+  it('o item crítico avisa que descumprir quebra a garantia', () => {
+    expect(capitulo(1, 2)).toContain('Este item, descumprido, pode quebrar a garantia.');
+    expect(capitulo(1, 2)).toContain('Item 2 de 2');
+  });
+
+  it('depois do último item vem o interlúdio — e ele não cobra nada', () => {
+    const html = capitulo(1, 3, ['ga1', 'ga2']);
+    expect(html).toContain('Respire');
+    expect(html).toContain('Os 2 itens estão confirmados.');
+    expect(html).toContain('O que NÃO quebra a garantia');
+    expect(html).not.toContain('type="checkbox"');
+    // Última etapa do último capítulo: daqui a saída é a revisão.
     expect(html).toContain('Ir para a revisão final');
     expect(html).not.toContain(BOTAO_TRAVADO);
+  });
+
+  it('o capítulo do clone ganha a etapa de exemplos de foto, depois dos cartões', () => {
+    const html = desenhar(
+      <Capitulo
+        capitulo={CLONE}
+        posicao={1}
+        total={1}
+        etapa={1}
+        marcadas={[]}
+        aoAlternar={nada}
+        aoAvancar={nada}
+        aoVoltar={nada}
+      />,
+    );
+    expect(html).toContain('Que foto serve — e que foto não serve');
+    expect(html).not.toContain('type="checkbox"');
   });
 
   it('os termos aparecem na revisão, atrás de "ler os termos completos"', () => {
