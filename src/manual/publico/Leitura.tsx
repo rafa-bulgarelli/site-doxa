@@ -24,10 +24,11 @@ import {
   capituloDoPasso,
   capitulosEmOrdem,
   chaveDoPasso,
+  etapaDoPasso,
   impedimentosDoAceite,
   nomeParaAceite,
   passoAnterior,
-  podeAvancarDa,
+  podeAvancarDoPasso,
   proximoPasso,
   termosDaVersao,
 } from './maquina';
@@ -108,6 +109,7 @@ function PassoNaTela(props: PropsDoPasso) {
           capitulo={capitulo}
           posicao={passo.indice + 1}
           total={capitulosEmOrdem(versao).length}
+          etapa={etapaDoPasso(passo)}
           marcadas={marcadas}
           aoAlternar={props.aoAlternar}
           aoAvancar={props.aoAvancar}
@@ -176,9 +178,10 @@ export function Leitura({
   };
 
   const avancar = (): void => {
-    const capitulo = capituloDoPasso(sessao.passo, sessao.versao);
-    // O gate de novo, longe do botão: aparência muda em refactor, isto não.
-    if (capitulo != null && !podeAvancarDa(capitulo, sessao.marcadas)) return;
+    // O gate de novo, longe do botão: aparência muda em refactor, isto não. E
+    // agora ele é por ETAPA — cada item libera o próximo, e nenhum passa em
+    // branco por um clique rápido em "Continuar".
+    if (!podeAvancarDoPasso(sessao.passo, sessao.versao, sessao.marcadas)) return;
     irPara(proximoPasso(sessao.passo, sessao.versao));
   };
 

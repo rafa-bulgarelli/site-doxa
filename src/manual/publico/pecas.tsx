@@ -15,18 +15,42 @@
  *    letra miúda". Texto contratual em corpo pequeno é o padrão que faz as
  *    pessoas rolarem sem ler, e este manual existe para ser lido.
  *
- * A paleta é a do site: preto, `doxa-surface`, `doxa-line`, branco em opacidade.
- * A ÚNICA cor autorizada aqui é funcional e mora na lista da garantia (verde
- * protege, vermelho quebra) — decisão do dono para esta tela, não licença para
- * colorir o resto.
+ * ─── A COR, E DE ONDE ELA VEM ────────────────────────────────────────────────
+ *
+ * O dono viu o fluxo v2 no ar e disse: "tá muito cinza, sem vida... se baseia no
+ * nosso site, traz cor, pode usar os degradês e efeito Siri do FAQ/formulário".
+ * Então a cor daqui é IMPORTADA, nunca inventada: a fita de `faq/cores.ts` (a
+ * mesma dos pontos do FAQ, do anel do campo e do `texto-aceso-siri`) e as
+ * classes globais `.anel-siri` / `.anel-luz`, que já moram no `index.css`.
+ * Nenhuma paleta nova nasce neste arquivo — uma sétima cor aqui seria a marca
+ * dizendo duas coisas diferentes na mesma tela.
+ *
+ * O verde e o vermelho continuam sendo GRAMÁTICA, não enfeite: verde é o que
+ * protege a garantia, vermelho é o que a quebra. O resto da tela segue preto,
+ * `doxa-surface`, `doxa-line` e branco em opacidade.
  */
 import { useId, useState } from 'react';
-import type { ReactNode } from 'react';
+import type { CSSProperties, ReactNode } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
+import { CORES } from '../../components/faq/cores';
 import wordmarkUrl from '../../../brand/doxa-wordmark-white-96.avif';
 
 /** A curva de entrada da landing. O manual se move como o site, não como um form. */
 export const EASE = [0.16, 1, 0.3, 1] as const;
+
+/**
+ * As cores do anel, entregues ao CSS — o mesmo contrato do campo do FAQ.
+ *
+ * A primeira volta no fim porque um `conic-gradient` não fecha sozinho: sem
+ * repetir o tom inicial, a emenda entre o último e o primeiro apareceria como
+ * uma costura dando voltas na borda.
+ */
+export const ANEL_SIRI: CSSProperties = {
+  ['--anel-siri-cores' as string]: [...CORES, CORES[0]].join(', '),
+};
+
+/** A fita da marca em linha, para preencher trilho e fio de luz. */
+const FITA = `linear-gradient(90deg, ${CORES.join(', ')})`;
 
 /** A moldura de toda tela do fluxo: fundo preto, logo no topo, coluna estreita. */
 export function Casca({ children }: { children: ReactNode }) {
@@ -88,23 +112,40 @@ const BASE_DO_BOTAO =
   'focus-visible:ring-white/70 focus-visible:ring-offset-2 focus-visible:ring-offset-doxa-bg ' +
   'disabled:cursor-not-allowed';
 
+/**
+ * O botão que leva adiante.
+ *
+ * `aceso` põe nele o anel da Siri — o mesmo `conic-gradient` de um pixel do
+ * campo do FAQ. Ele é para o gesto que FECHA alguma coisa (confirmar o aceite,
+ * concluir), e não para todo botão do fluxo: um anel em cada tela deixa de
+ * significar "é aqui" e vira papel de parede. Travado, o anel some junto — luz
+ * num botão que não responde é promessa falsa.
+ */
 export function Botao({
   children,
   onClick,
   desabilitado = false,
   tipo = 'button',
+  aceso = false,
 }: {
   children: ReactNode;
   onClick?: () => void;
   desabilitado?: boolean;
   tipo?: 'button' | 'submit';
+  aceso?: boolean;
 }) {
+  const comAnel = aceso && !desabilitado;
   return (
     <button
       type={tipo === 'submit' ? 'submit' : 'button'}
       onClick={onClick}
       disabled={desabilitado}
-      className={`${BASE_DO_BOTAO} bg-white text-black hover:bg-white/90 disabled:bg-white/15 disabled:text-white/40`}
+      /* `relative` porque o anel é um `::before` em `inset: -1px`, e
+         `border-radius: inherit` o faz copiar o raio da pílula. */
+      className={`${BASE_DO_BOTAO} bg-white text-black hover:bg-white/90 disabled:bg-white/15 disabled:text-white/40 ${
+        comAnel ? 'anel-siri anel-siri-isca relative' : ''
+      }`}
+      style={comAnel ? ANEL_SIRI : undefined}
     >
       {children}
     </button>
@@ -140,11 +181,66 @@ export function Trilho({ fracao }: { fracao: number }) {
   const largura = Math.round(Math.min(Math.max(fracao, 0), 1) * 100);
   return (
     <div className="h-[3px] w-full overflow-hidden rounded-full bg-white/[0.08]" aria-hidden>
+      {/* O preenchido é a FITA da marca, não um cinza claro: o que já foi
+          andado é a única coisa desta tela que merece cor o tempo todo. O
+          fundo do trilho continua branco a 8% — sem contraste atrás, a fita
+          não teria o que medir. */}
       <div
-        className="h-full rounded-full bg-white/70 transition-[width] duration-500 motion-reduce:transition-none"
-        style={{ width: `${largura}%` }}
+        className="h-full rounded-full transition-[width] duration-500 motion-reduce:transition-none"
+        style={{ width: `${largura}%`, backgroundImage: FITA }}
       />
     </div>
+  );
+}
+
+/**
+ * A trilha de itens: um ponto por item obrigatório do capítulo.
+ *
+ * É o mapa que a etapa única não dá. Sozinha na tela, uma regra por vez esconde
+ * o tamanho do caminho — e um fluxo de aceite que não diz quanto falta é o mais
+ * rápido de abandonar. Ponto aceso na cor da fita = confirmado; o da vez ganha
+ * um anel branco; os que vêm depois são contorno.
+ *
+ * `aria-hidden` porque o texto ao lado já diz "Item 3 de 8": um leitor de tela
+ * anunciando oito pontos diria a mesma coisa oito vezes.
+ */
+export function TrilhaDeItens({
+  total,
+  atual,
+  confirmados,
+}: {
+  total: number;
+  /** 1-based, como está escrito na tela. 0 = nenhum item em foco (a intro). */
+  atual: number;
+  confirmados: readonly boolean[];
+}) {
+  return (
+    <div className="flex flex-wrap items-center gap-2" aria-hidden>
+      {Array.from({ length: total }, (_, indice) => {
+        const feito = confirmados[indice] === true;
+        const agora = indice + 1 === atual;
+        return (
+          <span
+            key={indice}
+            className={`h-2.5 w-2.5 rounded-full border transition-colors ${
+              agora ? 'ring-2 ring-white/70 ring-offset-2 ring-offset-doxa-bg' : ''
+            } ${feito ? 'border-transparent' : 'border-white/25'}`}
+            style={feito ? { backgroundColor: CORES[indice % CORES.length] } : undefined}
+          />
+        );
+      })}
+    </div>
+  );
+}
+
+/** Um fio de luz da marca — a assinatura de cor no topo de um cartão-momento. */
+export function Fio({ cor }: { cor?: string }) {
+  return (
+    <span
+      aria-hidden
+      className="block h-[2px] w-14 rounded-full"
+      style={{ backgroundImage: cor == null ? FITA : undefined, backgroundColor: cor }}
+    />
   );
 }
 
@@ -221,6 +317,11 @@ export function Revelacao({ rotulo, children }: { rotulo: string; children: Reac
  *
  * O rótulo INTEIRO é o alvo, não o quadradinho: é o gesto que decide o registro,
  * feito com o polegar, e errar nele marca o que o cliente não quis marcar.
+ *
+ * Por marcar, ela carrega o anel da Siri com a isca — é o único gesto que falta
+ * na tela, e o pulso espaçado é o que o mostra a quem chegou rolando. Marcada,
+ * o anel sai e entra o verde: a luz diz "é aqui", o verde diz "está feito", e
+ * as duas coisas na mesma caixa ao mesmo tempo seriam duas afirmações brigando.
  */
 export function CaixaDeAceite({
   marcada,
@@ -233,10 +334,11 @@ export function CaixaDeAceite({
 }) {
   return (
     <label
-      className={`flex min-h-[56px] cursor-pointer items-center gap-4 rounded-2xl border px-5 py-4 transition-colors ${
+      style={marcada ? undefined : ANEL_SIRI}
+      className={`relative flex min-h-[56px] cursor-pointer items-center gap-4 rounded-2xl border px-5 py-4 transition-colors ${
         marcada
           ? 'border-emerald-400/40 bg-emerald-400/[0.06] text-white'
-          : 'border-white/[0.14] text-white/75 hover:bg-white/[0.04]'
+          : 'anel-siri anel-siri-isca border-white/[0.14] text-white/75 hover:bg-white/[0.04]'
       }`}
     >
       <input

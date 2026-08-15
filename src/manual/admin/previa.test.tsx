@@ -206,6 +206,7 @@ describe('a prévia no lugar do cliente', () => {
   it('a faixa de PRÉVIA fica na tela em todo passo', () => {
     expect(desenhar(<Previa versao={VERSAO} />)).toContain('PRÉVIA');
     expect(emPasso({ tipo: 'capitulo', indice: 0 })).toContain('PRÉVIA');
+    expect(emPasso({ tipo: 'capitulo', indice: 1, etapa: 1 })).toContain('PRÉVIA');
     expect(emPasso({ tipo: 'revisao' })).toContain('PRÉVIA');
   });
 
@@ -224,14 +225,23 @@ describe('a prévia no lugar do cliente', () => {
     expect(html).toContain('Entendi →');
   });
 
-  it('o capítulo de aceites sai como item list, com uma caixa por item', () => {
-    const html = emPasso({ tipo: 'capitulo', indice: 1 });
-    expect(html).toContain('Um milhão em 90 dias');
-    expect(html).toContain('Baixou, publicou — sem editar nada');
-    expect(html.match(/type="checkbox"/g)?.length).toBe(2);
-    expect(html).toContain('Item 1');
-    expect(html).toContain('Faltam confirmar 2 itens.');
-    expect(html).toContain(BOTAO_TRAVADO);
+  it('o capítulo de aceites virou UMA TELA POR ITEM, e a prévia anda por elas', () => {
+    // A abertura do capítulo explica e não cobra nada.
+    const intro = emPasso({ tipo: 'capitulo', indice: 1 });
+    expect(intro).toContain('São 2 itens, um por tela.');
+    expect(intro).not.toContain('type="checkbox"');
+
+    // Cada item tem a sua tela, com a sua ÚNICA caixa e o avanço travado.
+    const primeiro = emPasso({ tipo: 'capitulo', indice: 1, etapa: 1 });
+    expect(primeiro).toContain('Item 1 de 2');
+    expect(primeiro).toContain('Um milhão em 90 dias');
+    expect(primeiro).not.toContain('Baixou, publicou — sem editar nada');
+    expect(primeiro.match(/type="checkbox"/g)?.length).toBe(1);
+    expect(primeiro).toContain(BOTAO_TRAVADO);
+
+    const segundo = emPasso({ tipo: 'capitulo', indice: 1, etapa: 2 });
+    expect(segundo).toContain('Item 2 de 2');
+    expect(segundo).toContain('Baixou, publicou — sem editar nada');
   });
 
   it('o fim da prévia é um selo, e NÃO o botão que grava aceite', () => {
@@ -248,10 +258,12 @@ describe('a prévia no lugar do cliente', () => {
     expect(html).not.toContain(BOTAO_DE_CONCLUIR);
   });
 
-  it('em passo nenhum a prévia oferece concluir', () => {
+  it('em passo nenhum a prévia oferece concluir — nem nas etapas de item', () => {
     expect(desenhar(<Previa versao={VERSAO} />)).not.toContain(BOTAO_DE_CONCLUIR);
     expect(emPasso({ tipo: 'identificacao' })).not.toContain(BOTAO_DE_CONCLUIR);
     expect(emPasso({ tipo: 'capitulo', indice: 1 })).not.toContain(BOTAO_DE_CONCLUIR);
+    expect(emPasso({ tipo: 'capitulo', indice: 1, etapa: 1 })).not.toContain(BOTAO_DE_CONCLUIR);
+    expect(emPasso({ tipo: 'capitulo', indice: 1, etapa: 2 })).not.toContain(BOTAO_DE_CONCLUIR);
   });
 });
 

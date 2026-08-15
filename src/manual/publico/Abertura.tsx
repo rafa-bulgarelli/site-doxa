@@ -14,7 +14,7 @@
  * banco realmente grava, inclusive IP e navegador (`manual_aceites.ip` e
  * `user_agent`). Avisar depois de coletar não é aviso, é notificação.
  */
-import { Botao, Casca, Entrada, Linha, Quadro, Rotulo, Titulo } from './pecas';
+import { Botao, Casca, Entrada, Fio, Linha, Quadro, Rotulo, Titulo } from './pecas';
 import { capitulosEmOrdem, obrigatoriasDaVersao } from './maquina';
 import { dataLonga } from './formato';
 import type { ConviteAberto, Versao } from '../tipos';
@@ -34,9 +34,12 @@ export function Abertura({
   return (
     <Casca>
       <Entrada>
-        <Rotulo>
-          Versão {versao.numero} · {convite.empresa}
-        </Rotulo>
+        <Fio />
+        <div className="mt-4">
+          <Rotulo>
+            Versão {versao.numero} · {convite.empresa}
+          </Rotulo>
+        </div>
         <div className="mt-4">
           <Titulo>{versao.titulo}</Titulo>
         </div>
@@ -72,7 +75,12 @@ export function Abertura({
         </div>
 
         <div className="mt-10">
-          <Botao onClick={aoComecar}>Começar →</Botao>
+          {/* A única ação da tela, e a primeira do fluxo: o anel da Siri diz
+              "é aqui" para quem abriu um link do WhatsApp sem saber o que é
+              isto. As outras telas do caminho não o repetem. */}
+          <Botao onClick={aoComecar} aceso>
+            Começar →
+          </Botao>
         </div>
       </Entrada>
     </Casca>
