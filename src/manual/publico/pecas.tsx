@@ -2,21 +2,31 @@
  * ─── AS PEÇAS DO MANUAL ──────────────────────────────────────────────────────
  *
  * O vocabulário visual do fluxo, num lugar só: a casca preta, os botões, o
- * trilho de progresso, o quadro de aviso. Nenhuma peça daqui sabe o que é um
- * convite — elas só desenham.
+ * trilho, o quadro de recado e a revelação progressiva. Nenhuma peça daqui sabe
+ * o que é um convite — elas só desenham.
  *
- * Duas regras que valem para todas e não são gosto:
- *  · alvo de toque de 48px de altura, porque isto é lido no celular, em pé, com
- *    uma mão só — botão de 32px no polegar é erro de clique, e erro de clique
- *    num fluxo de aceite é o cliente marcando o que não queria;
+ * Três regras que valem para todas e não são gosto:
+ *  · alvo de toque de 48px, porque isto é lido no celular, em pé, com uma mão
+ *    só — erro de clique num fluxo de aceite é o cliente marcando o que não
+ *    queria;
  *  · foco visível SEMPRE (`focus-visible:ring`), porque o teclado é o caminho de
- *    quem usa leitor de tela e o anel é a única pista que essa pessoa tem.
+ *    quem usa leitor de tela e o anel é a única pista que essa pessoa tem;
+ *  · corpo de 17px para cima e NADA abaixo de 14px. O dono foi literal: "sem
+ *    letra miúda". Texto contratual em corpo pequeno é o padrão que faz as
+ *    pessoas rolarem sem ler, e este manual existe para ser lido.
  *
  * A paleta é a do site: preto, `doxa-surface`, `doxa-line`, branco em opacidade.
- * Nada colorido — a exceção do repo são as bandeiras do menu, que não vêm aqui.
+ * A ÚNICA cor autorizada aqui é funcional e mora na lista da garantia (verde
+ * protege, vermelho quebra) — decisão do dono para esta tela, não licença para
+ * colorir o resto.
  */
+import { useId, useState } from 'react';
 import type { ReactNode } from 'react';
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import wordmarkUrl from '../../../brand/doxa-wordmark-white-96.avif';
+
+/** A curva de entrada da landing. O manual se move como o site, não como um form. */
+export const EASE = [0.16, 1, 0.3, 1] as const;
 
 /** A moldura de toda tela do fluxo: fundo preto, logo no topo, coluna estreita. */
 export function Casca({ children }: { children: ReactNode }) {
@@ -25,27 +35,56 @@ export function Casca({ children }: { children: ReactNode }) {
       <header className="border-b border-doxa-line/80 px-5 py-4">
         <div className="mx-auto flex w-full max-w-2xl items-center justify-between">
           <img src={wordmarkUrl} alt="Doxa" className="h-5 w-auto" width={364} height={96} />
-          <span className="text-[11px] uppercase tracking-[0.18em] text-white/35">Manual</span>
+          <span className="text-[14px] uppercase tracking-[0.18em] text-white/35">Manual</span>
         </div>
       </header>
-      <div className="mx-auto w-full max-w-2xl px-5 pb-24 pt-8">{children}</div>
+      <div className="mx-auto w-full max-w-2xl px-5 pb-28 pt-10">{children}</div>
     </main>
+  );
+}
+
+/** A entrada suave de um bloco. Mesmo gesto das seções da landing. */
+export function Entrada({ children, atraso = 0 }: { children: ReactNode; atraso?: number }) {
+  const semMovimento = useReducedMotion() === true;
+  return (
+    <motion.div
+      initial={semMovimento ? false : { opacity: 0, y: 14 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.55, ease: EASE, delay: semMovimento ? 0 : atraso }}
+    >
+      {children}
+    </motion.div>
   );
 }
 
 export function Titulo({ children }: { children: ReactNode }) {
   return (
-    <h1 className="font-serif text-[30px] leading-[1.12] text-white sm:text-[38px]">{children}</h1>
+    <h1 className="font-serif text-[34px] leading-[1.08] text-white sm:text-[46px]">{children}</h1>
   );
 }
 
+/** O título de um bloco dentro da tela — grande, mas abaixo do `Titulo`. */
+export function Subtitulo({ children }: { children: ReactNode }) {
+  return (
+    <h2 className="font-serif text-[26px] leading-[1.15] text-white sm:text-[30px]">{children}</h2>
+  );
+}
+
+/** Metadado, e SÓ metadado: "Capítulo 2 de 4", "Registro", "E-mail". */
+export function Rotulo({ children }: { children: ReactNode }) {
+  return (
+    <p className="text-[14px] uppercase tracking-[0.16em] text-doxa-muted">{children}</p>
+  );
+}
+
+/** Corpo de leitura. Nunca `doxa-muted`: isto é conteúdo, não etiqueta. */
 export function Linha({ children }: { children: ReactNode }) {
-  return <p className="text-[15px] leading-[1.65] text-white/60">{children}</p>;
+  return <p className="text-[17px] leading-[1.7] text-white/75">{children}</p>;
 }
 
 const BASE_DO_BOTAO =
-  'inline-flex min-h-[48px] w-full items-center justify-center gap-2 rounded-full px-6 ' +
-  'text-[15px] transition-colors focus-visible:outline-none focus-visible:ring-2 ' +
+  'inline-flex min-h-[52px] w-full items-center justify-center gap-2 rounded-full px-6 ' +
+  'text-[17px] transition-colors focus-visible:outline-none focus-visible:ring-2 ' +
   'focus-visible:ring-white/70 focus-visible:ring-offset-2 focus-visible:ring-offset-doxa-bg ' +
   'disabled:cursor-not-allowed';
 
@@ -94,7 +133,7 @@ export function BotaoDiscreto({
  * O trilho de progresso.
  *
  * É `aria-hidden` porque o número já está dito em texto ao lado — um leitor de
- * tela anunciando "barra de progresso 40%" logo depois de "4 de 10 regras" diz
+ * tela anunciando "barra de progresso 40%" logo depois de "capítulo 2 de 4" diz
  * a mesma coisa duas vezes.
  */
 export function Trilho({ fracao }: { fracao: number }) {
@@ -119,17 +158,69 @@ export function Quadro({
 }) {
   const borda = tom === 'atencao' ? 'border-white/25' : 'border-doxa-line';
   return (
-    <div className={`rounded-2xl border ${borda} bg-doxa-surface p-4 text-[14px] leading-[1.6] text-white/65`}>
+    <div
+      className={`rounded-2xl border ${borda} bg-doxa-surface p-5 text-[17px] leading-[1.65] text-white/70`}
+    >
       {children}
     </div>
   );
 }
 
 /**
- * A caixa de aceite — a mesma no fim de cada regra e embaixo da declaração.
+ * A revelação progressiva — o "por quê" a um toque de distância.
  *
- * O rótulo INTEIRO é o alvo, não o quadradinho de 16px: é o gesto que mais se
- * repete no fluxo, feito com o polegar, e errar nele marca a regra errada.
+ * É a peça que faz a tela caber: o título e a instrução ficam sempre visíveis, e
+ * o porquê e o exemplo só aparecem para quem quer. Trinta parágrafos abertos de
+ * uma vez é exatamente a tela que ninguém lê.
+ */
+export function Revelacao({ rotulo, children }: { rotulo: string; children: ReactNode }) {
+  const [aberto, setAberto] = useState(false);
+  const semMovimento = useReducedMotion() === true;
+  const idDoCorpo = useId();
+
+  return (
+    <div>
+      <button
+        type="button"
+        onClick={() => setAberto((estava) => !estava)}
+        aria-expanded={aberto}
+        aria-controls={idDoCorpo}
+        className="inline-flex min-h-[44px] items-center gap-2 text-[16px] text-white/60 transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:ring-offset-4 focus-visible:ring-offset-doxa-surface"
+      >
+        <span className="underline decoration-white/25 underline-offset-4">{rotulo}</span>
+        <motion.span
+          aria-hidden
+          animate={{ rotate: aberto ? 180 : 0 }}
+          transition={{ duration: semMovimento ? 0 : 0.3, ease: EASE }}
+          className="text-[14px] leading-none"
+        >
+          ▾
+        </motion.span>
+      </button>
+      <AnimatePresence initial={false}>
+        {aberto && (
+          <motion.div
+            id={idDoCorpo}
+            key="corpo"
+            initial={semMovimento ? false : { height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: semMovimento ? 0 : 0.35, ease: EASE }}
+            className="overflow-hidden"
+          >
+            <div className="pt-3">{children}</div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
+/**
+ * A caixa de aceite da declaração final.
+ *
+ * O rótulo INTEIRO é o alvo, não o quadradinho: é o gesto que decide o registro,
+ * feito com o polegar, e errar nele marca o que o cliente não quis marcar.
  */
 export function CaixaDeAceite({
   marcada,
@@ -142,29 +233,20 @@ export function CaixaDeAceite({
 }) {
   return (
     <label
-      className={`flex min-h-[48px] cursor-pointer items-center gap-3 rounded-xl border px-4 py-3 transition-colors ${
+      className={`flex min-h-[56px] cursor-pointer items-center gap-4 rounded-2xl border px-5 py-4 transition-colors ${
         marcada
-          ? 'border-white/35 bg-white/[0.06] text-white'
-          : 'border-white/[0.12] text-white/70 hover:bg-white/[0.04]'
+          ? 'border-emerald-400/40 bg-emerald-400/[0.06] text-white'
+          : 'border-white/[0.14] text-white/75 hover:bg-white/[0.04]'
       }`}
     >
       <input
         type="checkbox"
         checked={marcada}
         onChange={(evento) => aoAlternar(evento.target.checked)}
-        className="h-5 w-5 shrink-0 cursor-pointer accent-white"
+        className="h-6 w-6 shrink-0 cursor-pointer accent-emerald-400"
       />
-      <span className="text-[15px]">{children}</span>
+      <span className="text-[17px] leading-[1.5]">{children}</span>
     </label>
-  );
-}
-
-/** O selo da regra crítica: descumprir pode invalidar a garantia. */
-export function SeloCritica() {
-  return (
-    <span className="inline-flex items-center rounded-full border border-white/30 px-2.5 py-1 text-[10px] uppercase tracking-[0.14em] text-white/75">
-      Crítica
-    </span>
   );
 }
 
@@ -205,7 +287,7 @@ export function BaixarPdf({
         </a>
       )}
       {erro != null && (
-        <p className="text-center text-[14px] text-white/70" role="alert">
+        <p className="text-center text-[16px] text-white/70" role="alert">
           {erro}
         </p>
       )}
@@ -216,9 +298,9 @@ export function BaixarPdf({
 /** Um par rótulo/valor dos dados travados da identificação. */
 export function Dado({ rotulo, valor }: { rotulo: string; valor: string }) {
   return (
-    <div className="border-t border-doxa-line py-3 first:border-t-0 first:pt-0">
-      <p className="text-[11px] uppercase tracking-[0.16em] text-doxa-muted">{rotulo}</p>
-      <p className="mt-1 break-words text-[15px] text-white">{valor}</p>
+    <div className="border-t border-doxa-line py-4 first:border-t-0 first:pt-0">
+      <Rotulo>{rotulo}</Rotulo>
+      <p className="mt-1.5 break-words text-[17px] text-white">{valor}</p>
     </div>
   );
 }

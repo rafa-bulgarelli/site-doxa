@@ -13,7 +13,7 @@
  * faz o navegador rolar sozinho até o campo, e o cliente vê a tela "fugir" —
  * armadilha registrada no CLAUDE.md, paga uma vez, não se paga de novo.
  */
-import { Botao, BotaoDiscreto, Casca, Dado, Linha, Titulo } from './pecas';
+import { Botao, BotaoDiscreto, Casca, Dado, Linha, Rotulo, Titulo } from './pecas';
 import { MINIMO_DO_NOME, nomeValido, precisaDeNome } from './maquina';
 import type { ConviteAberto } from '../tipos';
 
@@ -35,8 +35,8 @@ export function Identificacao({
 
   return (
     <Casca>
-      <p className="text-[11px] uppercase tracking-[0.18em] text-doxa-muted">Identificação</p>
-      <div className="mt-3">
+      <Rotulo>Identificação</Rotulo>
+      <div className="mt-4">
         <Titulo>Confirme quem é você</Titulo>
       </div>
       <div className="mt-5">
@@ -61,7 +61,7 @@ export function Identificacao({
 
         {pedeNome && (
           <div className="mt-5">
-            <label htmlFor="nome-do-cliente" className="block text-[14px] text-white/80">
+            <label htmlFor="nome-do-cliente" className="block text-[17px] text-white/80">
               Seu nome completo
             </label>
             <input
@@ -75,10 +75,10 @@ export function Identificacao({
               /* A dica mora dentro deste mesmo `if`: o id apontado sempre
                  existe, e leitor de tela não anuncia referência quebrada. */
               aria-describedby="dica-do-nome"
-              className="mt-2 min-h-[48px] w-full rounded-xl border border-white/[0.14] bg-doxa-raised px-4 text-[16px] text-white placeholder:text-white/25 focus:border-white/40 focus:outline-none"
+              className="mt-2.5 min-h-[56px] w-full rounded-2xl border border-white/[0.14] bg-doxa-raised px-5 text-[17px] text-white placeholder:text-white/25 focus:border-white/40 focus:outline-none"
               placeholder="Como está no seu documento"
             />
-            <p id="dica-do-nome" className="mt-2 text-[13px] text-white/40">
+            <p id="dica-do-nome" className="mt-2.5 text-[15px] text-white/45">
               É o nome que vai constar no comprovante — pelo menos {MINIMO_DO_NOME} letras.
             </p>
           </div>
