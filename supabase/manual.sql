@@ -416,6 +416,17 @@ begin
   ) then
     raise exception 'versao sem regra obrigatoria nao vira manual — nao ha o que aceitar';
   end if;
+  -- A secao 'termos' e documento, nao capitulo: a tela nunca desenha checkbox
+  -- para ela. Uma obrigatoria escondida ali passaria no cliente e seria
+  -- cobrada pelo manual_concluir — beco sem saida para o cliente. Recusa-se
+  -- na publicacao, que e onde da tempo de consertar.
+  if exists (
+    select 1 from public.manual_regras r
+      join public.manual_secoes s on s.id = r.secao_id
+      where s.versao_id = p_versao and s.slug = 'termos' and r.obrigatoria
+  ) then
+    raise exception 'regra obrigatoria na secao termos nao tem checkbox na tela — mova para um capitulo';
+  end if;
 
   update public.manual_versoes
     set status = 'arquivada'

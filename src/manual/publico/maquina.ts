@@ -27,18 +27,29 @@ import type {
 import type { FalhaDaApi, Resultado } from './api';
 
 /**
- * Onde o cliente está. A ordem é a do dono: abertura → identificação → seções
- * → revisão. A conclusão não é passo daqui — ela é OUTRA rota (`/concluido`),
- * porque depois do aceite não existe "voltar".
+ * Onde o cliente está. A ordem é a do dono: abertura → identificação →
+ * capítulos → revisão. A conclusão não é passo daqui — ela é OUTRA rota
+ * (`/concluido`), porque depois do aceite não existe "voltar".
  */
 export type Passo =
   | { tipo: 'abertura' }
   | { tipo: 'identificacao' }
-  | { tipo: 'secao'; indice: number }
+  | { tipo: 'capitulo'; indice: number }
   | { tipo: 'revisao' };
 
 /** Um nome com duas letras já é um nome; um espaço em branco não é. */
 export const MINIMO_DO_NOME = 2;
+
+/**
+ * A única seção que NÃO é capítulo.
+ *
+ * Termos de uso são documento, não passo de leitura: eles aparecem inteiros na
+ * revisão final, atrás de "ler os termos completos", e nunca no meio do caminho.
+ * Este é o ÚNICO lugar do fluxo em que um slug decide comportamento — todo o
+ * resto é dirigido pelos dados, então uma versão sem este slug (a v1, por
+ * exemplo) simplesmente tem um capítulo a mais e nenhum termo.
+ */
+export const SLUG_DOS_TERMOS = 'termos';
 
 /* ─── LEITURA DA VERSÃO ────────────────────────────────────────────────────── */
 
@@ -53,6 +64,16 @@ export function secoesEmOrdem(versao: Versao): Secao[] {
   return [...versao.secoes].sort((uma, outra) => uma.ordem - outra.ordem);
 }
 
+/** Os capítulos navegáveis: toda seção menos os termos, na ordem do banco. */
+export function capitulosEmOrdem(versao: Versao): Secao[] {
+  return secoesEmOrdem(versao).filter((secao) => secao.slug !== SLUG_DOS_TERMOS);
+}
+
+/** O documento contratual, quando a versão traz um. */
+export function termosDaVersao(versao: Versao): Secao | undefined {
+  return secoesEmOrdem(versao).find((secao) => secao.slug === SLUG_DOS_TERMOS);
+}
+
 export function regrasEmOrdem(secao: Secao): Regra[] {
   return [...secao.regras].sort((uma, outra) => uma.ordem - outra.ordem);
 }
@@ -62,8 +83,33 @@ export function obrigatoriasDa(secao: Secao): Regra[] {
   return regrasEmOrdem(secao).filter((regra) => regra.obrigatoria);
 }
 
+/** O que o capítulo explica sem cobrar nada — e, na garantia, a nota de alívio. */
+export function informativasDa(secao: Secao): Regra[] {
+  return regrasEmOrdem(secao).filter((regra) => !regra.obrigatoria);
+}
+
+/**
+ * O feitio do capítulo, decidido pelos DADOS e nunca pelo slug.
+ *
+ * Capítulo com regra obrigatória é lista de aceites; sem nenhuma, é leitura com
+ * um "Entendi" no fim. É o que mantém uma versão antiga do manual funcionando
+ * aqui dentro sem uma linha de caso especial.
+ */
+export type FeitioDoCapitulo = 'aceites' | 'leitura';
+
+export function feitioDo(secao: Secao): FeitioDoCapitulo {
+  return obrigatoriasDa(secao).length > 0 ? 'aceites' : 'leitura';
+}
+
+/**
+ * Os aceites do manual inteiro — só os que o cliente CONSEGUE marcar.
+ *
+ * A conta anda pelos capítulos, não por todas as seções: uma obrigatória
+ * escondida nos termos não teria checkbox em tela nenhuma, e cobrá-la travaria
+ * o fluxo para sempre num impedimento que ninguém consegue resolver.
+ */
 export function obrigatoriasDaVersao(versao: Versao): Regra[] {
-  return secoesEmOrdem(versao).flatMap(obrigatoriasDa);
+  return capitulosEmOrdem(versao).flatMap(obrigatoriasDa);
 }
 
 /** O que ainda falta marcar NESTA seção, na ordem em que aparece na tela. */
@@ -118,9 +164,11 @@ export function marcadasDeRetomada(versao: Versao, progresso?: Progresso): strin
  */
 export function passoDeRetomada(versao: Versao, progresso?: Progresso): Passo {
   if (progresso == null) return { tipo: 'abertura' };
-  const indice = secoesEmOrdem(versao).findIndex((secao) => secao.ordem === progresso.secao_ordem);
+  const indice = capitulosEmOrdem(versao).findIndex(
+    (secao) => secao.ordem === progresso.secao_ordem,
+  );
   if (indice < 0) return { tipo: 'abertura' };
-  return { tipo: 'secao', indice };
+  return { tipo: 'capitulo', indice };
 }
 
 /** O nome que o campo mostra ao reabrir: o do convite manda, o digitado guarda. */
@@ -131,15 +179,15 @@ export function nomeDeRetomada(convite: ConviteAberto, progresso?: Progresso): s
 /* ─── NAVEGAÇÃO ────────────────────────────────────────────────────────────── */
 
 export function proximoPasso(passo: Passo, versao: Versao): Passo {
-  const secoes = secoesEmOrdem(versao);
+  const capitulos = capitulosEmOrdem(versao);
   switch (passo.tipo) {
     case 'abertura':
       return { tipo: 'identificacao' };
     case 'identificacao':
-      return secoes.length === 0 ? { tipo: 'revisao' } : { tipo: 'secao', indice: 0 };
-    case 'secao':
-      return passo.indice + 1 < secoes.length
-        ? { tipo: 'secao', indice: passo.indice + 1 }
+      return capitulos.length === 0 ? { tipo: 'revisao' } : { tipo: 'capitulo', indice: 0 };
+    case 'capitulo':
+      return passo.indice + 1 < capitulos.length
+        ? { tipo: 'capitulo', indice: passo.indice + 1 }
         : { tipo: 'revisao' };
     case 'revisao':
       // Depois da revisão vem o aceite, e quem o dispara é o `Fluxo` — não há
@@ -152,25 +200,29 @@ export function proximoPasso(passo: Passo, versao: Versao): Passo {
 
 /** Voltar é SEMPRE permitido: reler não é risco, é o que se quer que aconteça. */
 export function passoAnterior(passo: Passo, versao: Versao): Passo {
-  const secoes = secoesEmOrdem(versao);
+  const capitulos = capitulosEmOrdem(versao);
   switch (passo.tipo) {
     case 'abertura':
       return passo;
     case 'identificacao':
       return { tipo: 'abertura' };
-    case 'secao':
-      return passo.indice === 0 ? { tipo: 'identificacao' } : { tipo: 'secao', indice: passo.indice - 1 };
+    case 'capitulo':
+      return passo.indice === 0
+        ? { tipo: 'identificacao' }
+        : { tipo: 'capitulo', indice: passo.indice - 1 };
     case 'revisao':
-      return secoes.length === 0 ? { tipo: 'identificacao' } : { tipo: 'secao', indice: secoes.length - 1 };
+      return capitulos.length === 0
+        ? { tipo: 'identificacao' }
+        : { tipo: 'capitulo', indice: capitulos.length - 1 };
     default:
       throw new Error(`passo desconhecido: ${JSON.stringify(passo)}`);
   }
 }
 
-/** A seção do passo, ou `undefined` nos passos que não são seção. */
-export function secaoDoPasso(passo: Passo, versao: Versao): Secao | undefined {
-  if (passo.tipo !== 'secao') return undefined;
-  return secoesEmOrdem(versao)[passo.indice];
+/** O capítulo do passo, ou `undefined` nos passos que não são capítulo. */
+export function capituloDoPasso(passo: Passo, versao: Versao): Secao | undefined {
+  if (passo.tipo !== 'capitulo') return undefined;
+  return capitulosEmOrdem(versao)[passo.indice];
 }
 
 /* ─── OS PEDIDOS ───────────────────────────────────────────────────────────── */
@@ -178,23 +230,27 @@ export function secaoDoPasso(passo: Passo, versao: Versao): Secao | undefined {
 /**
  * Que `secao_ordem` gravar para este passo.
  *
- * A revisão grava a ÚLTIMA seção, não um número próprio: quem reabre o link
- * cai na última seção e chega à declaração de novo por vontade própria.
+ * A revisão grava o ÚLTIMO CAPÍTULO, não um número próprio: quem reabre o link
+ * cai no último capítulo e chega à declaração de novo por vontade própria.
  * Declaração pré-confirmada por retomada não seria aceite, seria acidente.
+ *
+ * E é o último CAPÍTULO, nunca a ordem dos termos: gravar a ordem de uma seção
+ * que a navegação não conhece faria `passoDeRetomada` não achar destino nenhum
+ * e devolver o cliente à abertura, apagando o caminho andado.
  */
 export function ordemDoPasso(passo: Passo, versao: Versao): number {
-  const secoes = secoesEmOrdem(versao);
-  if (secoes.length === 0) return 0;
+  const capitulos = capitulosEmOrdem(versao);
+  if (capitulos.length === 0) return 0;
   switch (passo.tipo) {
     case 'abertura':
     case 'identificacao':
       return 0;
-    case 'secao': {
-      const secao = secoes[passo.indice];
-      return secao == null ? 0 : secao.ordem;
+    case 'capitulo': {
+      const capitulo = capitulos[passo.indice];
+      return capitulo == null ? 0 : capitulo.ordem;
     }
     case 'revisao':
-      return secoes[secoes.length - 1].ordem;
+      return capitulos[capitulos.length - 1].ordem;
     default:
       throw new Error(`passo desconhecido: ${JSON.stringify(passo)}`);
   }
@@ -258,8 +314,8 @@ export function impedimentosDoAceite(estado: EstadoDoAceite): string[] {
   if (faltam.length > 0) {
     impedimentos.push(
       faltam.length === 1
-        ? 'Falta marcar 1 regra do manual.'
-        : `Faltam marcar ${faltam.length} regras do manual.`,
+        ? 'Falta confirmar 1 item do manual.'
+        : `Faltam confirmar ${faltam.length} itens do manual.`,
     );
   }
   if (precisaDeNome(estado.convite) && !nomeValido(estado.nomeInformado)) {
@@ -384,5 +440,5 @@ export function aceiteDaSessao(sessao: Sessao): EstadoDoAceite {
 
 /** Identidade do passo em texto: serve de `key` no React e de comparação aqui. */
 export function chaveDoPasso(passo: Passo): string {
-  return passo.tipo === 'secao' ? `secao-${passo.indice}` : passo.tipo;
+  return passo.tipo === 'capitulo' ? `capitulo-${passo.indice}` : passo.tipo;
 }
