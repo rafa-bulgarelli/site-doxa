@@ -19,6 +19,14 @@ import CenaOnboarding from './CenaOnboarding';
 import CenaVoz from './CenaVoz';
 import CenaClone from './CenaClone';
 import CenaGarantia from './CenaGarantia';
+import Meta from './itens/Meta';
+import Sessenta from './itens/Sessenta';
+import Relogio from './itens/Relogio';
+import Semana from './itens/Semana';
+import Intacto from './itens/Intacto';
+import SemImpulso from './itens/SemImpulso';
+import SemCompra from './itens/SemCompra';
+import PergunteAntes from './itens/PergunteAntes';
 
 /** Uma cena não recebe nada: ela conta a própria história em loop discreto. */
 export type Cena = ComponentType;
@@ -32,4 +40,25 @@ const CENAS: Record<string, Cena> = {
 
 export function cenaDaSecao(slug: string): Cena | null {
   return CENAS[slug] ?? null;
+}
+
+/**
+ * A mini-cena de cada ITEM da garantia — o capítulo virou uma etapa por item,
+ * e cada etapa abre com a animação que conta AQUELE item. O vocabulário é o
+ * `codigo` da regra no banco (seed v2/v3); código sem cena → etapa sem
+ * ilustração, sem erro — o que mantém o fluxo dirigido a dados.
+ */
+const CENAS_DOS_ITENS: Record<string, Cena> = {
+  'GA-1': Meta,
+  'GA-2': Sessenta,
+  'GA-3': Relogio,
+  'GA-4': Semana,
+  'GA-5': Intacto,
+  'GA-6': SemImpulso,
+  'GA-7': SemCompra,
+  'GA-8': PergunteAntes,
+};
+
+export function cenaDoItem(codigo: string): Cena | null {
+  return CENAS_DOS_ITENS[codigo] ?? null;
 }
