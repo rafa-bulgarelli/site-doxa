@@ -25,8 +25,10 @@ import {
   Casca,
   Dado,
   EASE,
+  Fio,
   Linha,
   Rotulo,
+  Subtitulo,
   Titulo,
 } from './pecas';
 import { DocumentoDeTermos } from './Termos';
@@ -35,10 +37,20 @@ import type { EstadoDoAceite } from './maquina';
 import type { ReactNode } from 'react';
 import type { Secao } from '../tipos';
 
+/**
+ * Cada bloco abre com o fio da marca e um título em SERIFA.
+ *
+ * Era um rótulo cinza de 14px, e o dono viu o resultado: "tá muito cinza, sem
+ * vida". Quatro etiquetas iguais empilhadas não separam quatro assuntos — o
+ * olho lê uma parede. O fio dá a fronteira, a serifa dá a hierarquia.
+ */
 function Bloco({ titulo, children }: { titulo: string; children: ReactNode }) {
   return (
-    <section className="mt-10">
-      <Rotulo>{titulo}</Rotulo>
+    <section className="mt-12">
+      <Fio />
+      <div className="mt-4">
+        <Subtitulo>{titulo}</Subtitulo>
+      </div>
       {children}
     </section>
   );
@@ -55,25 +67,38 @@ function Bloco({ titulo, children }: { titulo: string; children: ReactNode }) {
 function ResumoDosItens({ estado }: { estado: EstadoDoAceite }) {
   const marcadas = new Set(estado.marcadas);
   const itens = obrigatoriasDaVersao(estado.versao);
+  const feitas = itens.filter((regra) => marcadas.has(regra.id)).length;
+  const inteiro = feitas === itens.length;
   return (
-    <ul className="mt-4 divide-y divide-doxa-line overflow-hidden rounded-3xl border border-doxa-line bg-doxa-surface">
-      {itens.map((regra) => {
-        const feita = marcadas.has(regra.id);
-        return (
-          <li key={regra.id} className="flex items-start gap-3 px-5 py-4">
-            <span
-              aria-hidden
-              className={`mt-0.5 text-[17px] leading-[1.5] ${
-                feita ? 'text-emerald-400' : 'text-white/25'
-              }`}
+    <div className="mt-4">
+      <p
+        className={`text-[17px] leading-[1.5] ${inteiro ? 'text-emerald-300' : 'text-white/60'}`}
+        role="status"
+      >
+        {feitas} de {itens.length} {itens.length === 1 ? 'item confirmado' : 'itens confirmados'}
+      </p>
+      <ul className="mt-3 divide-y divide-doxa-line overflow-hidden rounded-3xl border border-doxa-line bg-doxa-surface">
+        {itens.map((regra) => {
+          const feita = marcadas.has(regra.id);
+          return (
+            <li
+              key={regra.id}
+              className={`flex items-start gap-3 px-5 py-4 ${feita ? 'bg-emerald-400/[0.04]' : ''}`}
             >
-              {feita ? '✓' : '○'}
-            </span>
-            <span className="text-[17px] leading-[1.5] text-white/80">{regra.titulo}</span>
-          </li>
-        );
-      })}
-    </ul>
+              <span
+                aria-hidden
+                className={`mt-0.5 text-[17px] leading-[1.5] ${
+                  feita ? 'text-emerald-400' : 'text-white/25'
+                }`}
+              >
+                {feita ? '✓' : '○'}
+              </span>
+              <span className="text-[17px] leading-[1.5] text-white/80">{regra.titulo}</span>
+            </li>
+          );
+        })}
+      </ul>
+    </div>
   );
 }
 
@@ -202,7 +227,10 @@ export function Revisao({
                 {erro}
               </p>
             )}
-            <Botao onClick={aoConcluir} desabilitado={travado}>
+            {/* `aceso`: o anel da Siri no ÚNICO gesto do fluxo que não tem
+                desfazer. Travado ele some sozinho — luz num botão que não
+                responde é promessa falsa. */}
+            <Botao onClick={aoConcluir} desabilitado={travado} aceso>
               {enviando ? 'Registrando…' : 'Confirmar e concluir'}
             </Botao>
           </>

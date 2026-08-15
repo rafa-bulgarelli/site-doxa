@@ -30,11 +30,17 @@ import type { FalhaDaApi, Resultado } from './api';
  * Onde o cliente está. A ordem é a do dono: abertura → identificação →
  * capítulos → revisão. A conclusão não é passo daqui — ela é OUTRA rota
  * (`/concluido`), porque depois do aceite não existe "voltar".
+ *
+ * `etapa` é onde ele está DENTRO do capítulo. Ela nasceu de um veredito do dono
+ * olhando a v2: "você deixa tudo na mesma página e o cara vai descer marcando
+ * tudo, não vai nem ler nada". Uma etapa por item obrigatório é o que devolve o
+ * gesto de LER antes de confirmar. Ausente = a primeira, para que um passo
+ * montado à mão (a prévia, um teste) continue válido.
  */
 export type Passo =
   | { tipo: 'abertura' }
   | { tipo: 'identificacao' }
-  | { tipo: 'capitulo'; indice: number }
+  | { tipo: 'capitulo'; indice: number; etapa?: number }
   | { tipo: 'revisao' };
 
 /** Um nome com duas letras já é um nome; um espaço em branco não é. */
@@ -45,9 +51,10 @@ export const MINIMO_DO_NOME = 2;
  *
  * Termos de uso são documento, não passo de leitura: eles aparecem inteiros na
  * revisão final, atrás de "ler os termos completos", e nunca no meio do caminho.
- * Este é o ÚNICO lugar do fluxo em que um slug decide comportamento — todo o
- * resto é dirigido pelos dados, então uma versão sem este slug (a v1, por
- * exemplo) simplesmente tem um capítulo a mais e nenhum termo.
+ * Este é um dos DOIS lugares do fluxo em que um slug decide comportamento (o
+ * outro é `SLUG_DO_CLONE`, e ele só acrescenta uma ilustração) — todo o resto é
+ * dirigido pelos dados, então uma versão sem este slug (a v1, por exemplo)
+ * simplesmente tem um capítulo a mais e nenhum termo.
  */
 export const SLUG_DOS_TERMOS = 'termos';
 
@@ -99,6 +106,116 @@ export type FeitioDoCapitulo = 'aceites' | 'leitura';
 
 export function feitioDo(secao: Secao): FeitioDoCapitulo {
   return obrigatoriasDa(secao).length > 0 ? 'aceites' : 'leitura';
+}
+
+/* ─── AS ETAPAS DE UM CAPÍTULO ─────────────────────────────────────────────── */
+
+/**
+ * O SEGUNDO — e último — lugar do fluxo em que um slug decide comportamento.
+ *
+ * O capítulo do clone ganha um quadro de exemplos de foto ("que foto serve, que
+ * foto não serve") como etapa própria, a pedido do dono. É apresentação, não
+ * gate: versão sem este slug simplesmente não tem o quadro, e nada mais muda.
+ */
+export const SLUG_DO_CLONE = 'clone';
+
+/**
+ * Uma tela dentro do capítulo.
+ *
+ * `intro` abre o capítulo de aceites (a cena grande, o título, o contexto);
+ * `item` é UMA regra obrigatória com a confirmação dela; `respiro` é o
+ * interlúdio positivo com as informativas do capítulo; `leitura` é o capítulo
+ * que só explica, inteiro; `fotos` é o quadro de exemplos do clone.
+ */
+export type Etapa =
+  | { tipo: 'intro' }
+  | { tipo: 'leitura'; regras: Regra[] }
+  | { tipo: 'item'; regra: Regra; numero: number; total: number }
+  | { tipo: 'respiro'; regras: Regra[] }
+  | { tipo: 'fotos' };
+
+/**
+ * As etapas do capítulo, DERIVADAS dos dados.
+ *
+ * N obrigatórias = N etapas de item, em qualquer versão do manual — nada aqui
+ * conta até oito nem sabe o que é a garantia. Capítulo sem obrigatória continua
+ * sendo uma leitura só, como era antes das etapas.
+ */
+export function etapasDo(secao: Secao): Etapa[] {
+  const obrigatorias = obrigatoriasDa(secao);
+  const informativas = informativasDa(secao);
+  const etapas: Etapa[] = [];
+  if (obrigatorias.length > 0) {
+    etapas.push({ tipo: 'intro' });
+    obrigatorias.forEach((regra, indice) => {
+      etapas.push({ tipo: 'item', regra, numero: indice + 1, total: obrigatorias.length });
+    });
+    // O alívio vem DEPOIS do último item, e sozinho na tela: no meio da lista
+    // ele lia como mais uma condição, que é o contrário do que ele diz.
+    if (informativas.length > 0) etapas.push({ tipo: 'respiro', regras: informativas });
+  } else {
+    etapas.push({ tipo: 'leitura', regras: regrasEmOrdem(secao) });
+  }
+  if (secao.slug === SLUG_DO_CLONE) etapas.push({ tipo: 'fotos' });
+  return etapas;
+}
+
+/** Em que etapa o passo está. Passo que não é capítulo não tem etapa: é a 0. */
+export function etapaDoPasso(passo: Passo): number {
+  return passo.tipo === 'capitulo' ? passo.etapa ?? 0 : 0;
+}
+
+/** A etapa daquele índice, ou `undefined` quando o índice não existe. */
+export function etapaAtualDe(secao: Secao, indice: number): Etapa | undefined {
+  return etapasDo(secao)[indice];
+}
+
+/** O gate, agora por ETAPA: só o item cobra, e cobra a confirmação dele mesmo. */
+export function podeAvancarDaEtapa(etapa: Etapa, marcadas: readonly string[]): boolean {
+  return etapa.tipo !== 'item' || marcadas.includes(etapa.regra.id);
+}
+
+/**
+ * O gate do passo inteiro — o que a tela chama antes de andar.
+ *
+ * São DUAS travas, e a segunda não é redundância: a etapa cobra o item dela, e
+ * a saída do capítulo cobra o capítulo INTEIRO (`podeAvancarDa`). Se um dia a
+ * derivação das etapas pular um item — versão nova, campo novo, o que for —, a
+ * primeira trava deixaria passar e a segunda ainda seguraria. É a mesma razão
+ * de `montarPedidoConcluir` repetir o gate do botão: o que vira linha imutável
+ * no banco tem duas portas, não uma.
+ *
+ * Passo sem capítulo (abertura, identificação, revisão) não trava nada aqui: o
+ * que impede o ACEITE é `impedimentosDoAceite`, e essa porta é outra.
+ */
+export function podeAvancarDoPasso(
+  passo: Passo,
+  versao: Versao,
+  marcadas: readonly string[],
+): boolean {
+  const capitulo = capituloDoPasso(passo, versao);
+  if (capitulo == null) return true;
+  const indice = etapaDoPasso(passo);
+  const etapa = etapaAtualDe(capitulo, indice);
+  if (etapa != null && !podeAvancarDaEtapa(etapa, marcadas)) return false;
+  const saindoDoCapitulo = indice >= etapasDo(capitulo).length - 1;
+  return !saindoDoCapitulo || podeAvancarDa(capitulo, marcadas);
+}
+
+/**
+ * Onde reabrir DENTRO do capítulo: o primeiro item ainda não marcado.
+ *
+ * Quem já marcou tudo cai na última etapa — reapresentar o item 1 a quem já o
+ * confirmou é fazer a pessoa reandar um caminho que ela terminou. Capítulo sem
+ * item nenhum abre no começo, que é a única etapa que ele tem.
+ */
+export function etapaDeRetomada(secao: Secao, marcadas: readonly string[]): number {
+  const etapas = etapasDo(secao);
+  const pendente = etapas.findIndex(
+    (etapa) => etapa.tipo === 'item' && !marcadas.includes(etapa.regra.id),
+  );
+  if (pendente >= 0) return pendente;
+  return etapas.some((etapa) => etapa.tipo === 'item') ? etapas.length - 1 : 0;
 }
 
 /**
@@ -161,14 +278,23 @@ export function marcadasDeRetomada(versao: Versao, progresso?: Progresso): strin
  * só garante `ordem >= 0`, e casar por índice quebraria em silêncio se a
  * numeração começasse em 1. Ordem que não bate com seção nenhuma (o `default 0`
  * de quem nunca começou, por exemplo) devolve a abertura.
+ *
+ * A ETAPA não vem do servidor: ela é derivada das marcações já gravadas. O
+ * banco guarda o que a pessoa confirmou, e é dele que sai onde ela parou —
+ * gravar um número de etapa criaria uma segunda verdade para a mesma coisa, e
+ * as duas divergiriam na primeira versão nova do manual.
  */
 export function passoDeRetomada(versao: Versao, progresso?: Progresso): Passo {
   if (progresso == null) return { tipo: 'abertura' };
-  const indice = capitulosEmOrdem(versao).findIndex(
-    (secao) => secao.ordem === progresso.secao_ordem,
-  );
+  const capitulos = capitulosEmOrdem(versao);
+  const indice = capitulos.findIndex((secao) => secao.ordem === progresso.secao_ordem);
   if (indice < 0) return { tipo: 'abertura' };
-  return { tipo: 'capitulo', indice };
+  const capitulo = capitulos[indice];
+  return {
+    tipo: 'capitulo',
+    indice,
+    etapa: etapaDeRetomada(capitulo, marcadasDeRetomada(versao, progresso)),
+  };
 }
 
 /** O nome que o campo mostra ao reabrir: o do convite manda, o digitado guarda. */
@@ -178,17 +304,33 @@ export function nomeDeRetomada(convite: ConviteAberto, progresso?: Progresso): s
 
 /* ─── NAVEGAÇÃO ────────────────────────────────────────────────────────────── */
 
+/** O último índice de etapa do capítulo — para onde "voltar" cai vindo da frente. */
+function ultimaEtapaDe(capitulo: Secao | undefined): number {
+  if (capitulo == null) return 0;
+  return Math.max(etapasDo(capitulo).length - 1, 0);
+}
+
 export function proximoPasso(passo: Passo, versao: Versao): Passo {
   const capitulos = capitulosEmOrdem(versao);
   switch (passo.tipo) {
     case 'abertura':
       return { tipo: 'identificacao' };
     case 'identificacao':
-      return capitulos.length === 0 ? { tipo: 'revisao' } : { tipo: 'capitulo', indice: 0 };
-    case 'capitulo':
+      return capitulos.length === 0
+        ? { tipo: 'revisao' }
+        : { tipo: 'capitulo', indice: 0, etapa: 0 };
+    case 'capitulo': {
+      // Dentro do capítulo primeiro: só quando a última etapa acaba é que o
+      // caminho troca de assunto.
+      const capitulo = capitulos[passo.indice];
+      const etapa = etapaDoPasso(passo);
+      if (capitulo != null && etapa < ultimaEtapaDe(capitulo)) {
+        return { tipo: 'capitulo', indice: passo.indice, etapa: etapa + 1 };
+      }
       return passo.indice + 1 < capitulos.length
-        ? { tipo: 'capitulo', indice: passo.indice + 1 }
+        ? { tipo: 'capitulo', indice: passo.indice + 1, etapa: 0 }
         : { tipo: 'revisao' };
+    }
     case 'revisao':
       // Depois da revisão vem o aceite, e quem o dispara é o `Fluxo` — não há
       // passo seguinte para onde caminhar sozinho.
@@ -206,14 +348,20 @@ export function passoAnterior(passo: Passo, versao: Versao): Passo {
       return passo;
     case 'identificacao':
       return { tipo: 'abertura' };
-    case 'capitulo':
-      return passo.indice === 0
-        ? { tipo: 'identificacao' }
-        : { tipo: 'capitulo', indice: passo.indice - 1 };
-    case 'revisao':
-      return capitulos.length === 0
-        ? { tipo: 'identificacao' }
-        : { tipo: 'capitulo', indice: capitulos.length - 1 };
+    case 'capitulo': {
+      const etapa = etapaDoPasso(passo);
+      if (etapa > 0) return { tipo: 'capitulo', indice: passo.indice, etapa: etapa - 1 };
+      if (passo.indice === 0) return { tipo: 'identificacao' };
+      // Voltar entra pelo FIM do capítulo anterior: é o passo que se acabou de
+      // dar, ao contrário. Cair na abertura dele seria refazer o capítulo.
+      const anterior = passo.indice - 1;
+      return { tipo: 'capitulo', indice: anterior, etapa: ultimaEtapaDe(capitulos[anterior]) };
+    }
+    case 'revisao': {
+      if (capitulos.length === 0) return { tipo: 'identificacao' };
+      const ultimo = capitulos.length - 1;
+      return { tipo: 'capitulo', indice: ultimo, etapa: ultimaEtapaDe(capitulos[ultimo]) };
+    }
     default:
       throw new Error(`passo desconhecido: ${JSON.stringify(passo)}`);
   }
@@ -438,7 +586,13 @@ export function aceiteDaSessao(sessao: Sessao): EstadoDoAceite {
   };
 }
 
-/** Identidade do passo em texto: serve de `key` no React e de comparação aqui. */
+/**
+ * Identidade do passo em texto: serve de `key` no React e de comparação aqui.
+ *
+ * A ETAPA entra na chave porque cada item é uma TELA: sem ela, andar do item 3
+ * para o 4 não mexeria no foco nem na rolagem, e o cliente veria o texto trocar
+ * no meio da página sem entender que mudou de assunto.
+ */
 export function chaveDoPasso(passo: Passo): string {
-  return passo.tipo === 'capitulo' ? `capitulo-${passo.indice}` : passo.tipo;
+  return passo.tipo === 'capitulo' ? `capitulo-${passo.indice}-${etapaDoPasso(passo)}` : passo.tipo;
 }
