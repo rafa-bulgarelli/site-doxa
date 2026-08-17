@@ -3,7 +3,7 @@
  *
  * A lição: **foto nítida, de frente — e o clone é uma aproximação.**
  *
- * ─── POR QUE ESTA CENA FOI REFEITA ───────────────────────────────────────────
+ * ─── POR QUE ESTA CENA FOI REFEITA DUAS VEZES ────────────────────────────────
  *
  * A primeira versão tinha varredura em loop, faíscas coloridas, poeira subindo e
  * um ponto correndo na esteira. O dono olhou e resumiu: "fica escaneando e não
@@ -12,8 +12,23 @@
  * explicação. Movimento que não conta nada é ruído caro: ele rouba a atenção do
  * único gesto que importa.
  *
- * Então esta versão tem três momentos, lentos, um de cada vez:
+ * A segunda versão consertou isso e passou do ponto para o outro lado: um gesto
+ * por fase, fases longas, e um começo em que NADA acontecia por quase dois
+ * segundos — duas fotos já paradas no palco esperando a vez. O veredito da
+ * terceira revisão foi "muito lenta, mais ação: os dois retratos sendo subidos,
+ * mais viva". É o meio que esta versão procura, e o meio tem duas partes:
  *
+ * - **os retratos ENTRAM em cena** em vez de já estarem lá. Eles sobem alguns
+ *   pixels e acendem dentro de molduras que já estavam no palco, um logo depois
+ *   do outro — o gesto de quem acabou de enviá-los, e a única coisa que a
+ *   história ainda não tinha contado;
+ * - **as fases encurtaram** de 10,2s para 7,1s no total. Nenhum gesto foi
+ *   picotado: o que caiu foi a espera entre eles.
+ *
+ * Os quatro momentos, na ordem:
+ *
+ *   0. **O envio.** Duas molduras vazias; os retratos sobem para dentro delas,
+ *      escalonados.
  *   1. **O veredito.** A foto de óculos, meio de lado, apaga e leva o xis; a
  *      foto frontal ACENDE — clarão branco atrás, traço claro, visto verde.
  *   2. **O caminho.** Um traço só, desenhado uma vez, viaja da foto aprovada
@@ -39,16 +54,23 @@ import { Brilho, QUEBRA, TracoDeLuz } from './luz';
 import { EASE, tempo, useRoteiro } from './tempo';
 
 /**
- * As duas esperam · o veredito · o caminho · o clone segura.
+ * O envio · as duas no palco · o veredito · o caminho · o clone segura.
  *
- * Os tempos são longos de propósito: cada fase tem UM gesto, e um gesto por vez
- * pede um segundo a mais para ser lido. A última é quase o dobro das outras —
- * é o quadro que ensina, e é nele que quem passa os olhos precisa cair.
+ * Cada fase continua tendo UM gesto — o que mudou foi a espera entre eles. A
+ * primeira é curta de propósito: nela as duas molduras estão no palco e VAZIAS,
+ * e a transição de entrada (0,62s) atravessa a fronteira e termina já dentro da
+ * fase seguinte — o olho vê os retratos CHEGANDO. A última segue sendo a mais
+ * longa: é o quadro que ensina, e é nele que quem passa os olhos precisa cair.
  */
-const FASES = [1800, 2400, 1800, 4200] as const;
-const VEREDITO = 1;
-const CAMINHO = 2;
-const CLONE = 3;
+const FASES = [520, 1450, 1500, 1000, 2700] as const;
+const CHEGADAS = 1;
+const VEREDITO = 2;
+const CAMINHO = 3;
+const CLONE = 4;
+
+/** Quanto uma foto sobe ao entrar, e o atraso entre a primeira e a segunda. */
+const SUBIDA = 26;
+const ENTRE_AS_FOTOS = 0.18;
 
 /** As passadas que dão halo a um traço: larga e fraca, média, cheia. */
 const COM_BRILHO = [
@@ -110,31 +132,37 @@ interface FotoProps {
   readonly serve: boolean;
   /** Enquanto falso, a foto ainda não recebeu veredito nenhum. */
   readonly julgada: boolean;
+  /** Falso enquanto a foto ainda está subindo: fora do palco e apagada. */
+  readonly dentro: boolean;
+  /** O atraso da entrada, em segundos — é ele que escalona as duas. */
+  readonly atraso: number;
   readonly parado: boolean;
 }
 
-/** Uma das duas fotos enviadas, com o veredito quando ele chega. */
-function Foto({ x, serve, julgada, parado }: FotoProps) {
+/**
+ * Uma das duas fotos enviadas, com o veredito quando ele chega.
+ *
+ * São dois grupos animados, e a divisão é o assunto: o de FORA carrega o
+ * veredito (a recusada apaga para 0.28), o de DENTRO carrega a ENTRADA — o
+ * retrato sobe 26px e acende dentro de uma moldura que já estava lá. Foi assim
+ * que a cena ganhou o gesto que faltava sem ganhar um piscar de palco vazio: o
+ * quadro fica, o conteúdo é que é subido.
+ */
+function Foto({ x, serve, julgada, dentro, atraso, parado }: FotoProps) {
   const recusada = julgada && !serve;
   const aprovada = julgada && serve;
+  const meio = x + FOTO.largura / 2;
   return (
+    // `initial={false}` é o que faz a foto NASCER no valor da fase, em vez de
+    // fazer o percurso inteiro na primeira pintura.
     <motion.g
       initial={false}
       animate={{ opacity: recusada ? 0.28 : 1 }}
-      transition={{ duration: tempo(parado, 0.7), ease: EASE }}
+      transition={{ duration: tempo(parado, 0.6), ease: EASE }}
     >
       {/* O clarão da foto aprovada é BRANCO: "acender" aqui é luz, e o verde
           fica reservado ao carimbo, que é quem de fato julga. */}
-      {aprovada && (
-        <Brilho
-          x={x + FOTO.largura / 2}
-          y={FOTO.meio}
-          raio={104}
-          tinta="luz"
-          aceso
-          parado={parado}
-        />
-      )}
+      {aprovada && <Brilho x={meio} y={FOTO.meio} raio={104} tinta="luz" aceso parado={parado} />}
       <Painel
         x={x}
         y={FOTO.topo}
@@ -144,24 +172,36 @@ function Foto({ x, serve, julgada, parado }: FotoProps) {
         vidro={aprovada}
         tracejado={recusada}
       />
-      <g transform={`translate(${x + FOTO.largura / 2} 116)`}>
-        <Rosto
-          cor={aprovada ? TRACO_ACESO : TINTA.apagado}
-          oculos={!serve}
-          tracejado={false}
-          brilho={aprovada}
-        />
-      </g>
-      {julgada && (
-        <Marca
-          tipo={serve ? 'certo' : 'errado'}
-          x={x + FOTO.largura - 24}
-          y={FOTO.topo + FOTO.altura - 14}
-          escala={0.9}
-          cor={serve ? TINTA.protege : QUEBRA}
-          parado={parado}
-        />
-      )}
+      {/* A subida mora no grupo de FORA da que desenha: framer escreve o
+          `transform` deste nó, e o `translate` do rosto fica no filho. */}
+      <motion.g
+        initial={false}
+        animate={{ opacity: dentro ? 1 : 0, y: dentro ? 0 : SUBIDA }}
+        transition={{
+          duration: tempo(parado, 0.62),
+          ease: EASE,
+          delay: tempo(parado, dentro ? atraso : 0),
+        }}
+      >
+        <g transform={`translate(${meio} 116)`}>
+          <Rosto
+            cor={aprovada ? TRACO_ACESO : TINTA.apagado}
+            oculos={!serve}
+            tracejado={false}
+            brilho={aprovada}
+          />
+        </g>
+        {julgada && (
+          <Marca
+            tipo={serve ? 'certo' : 'errado'}
+            x={x + FOTO.largura - 24}
+            y={FOTO.topo + FOTO.altura - 14}
+            escala={0.9}
+            cor={serve ? TINTA.protege : QUEBRA}
+            parado={parado}
+          />
+        )}
+      </motion.g>
     </motion.g>
   );
 }
@@ -181,7 +221,7 @@ function Caminho({ parado }: { parado: boolean }) {
       halo={2.4}
       parado={parado}
       riscando
-      duracao={0.9}
+      duracao={0.7}
     />
   );
 }
@@ -209,9 +249,9 @@ function QuadroDoClone({ completo, parado }: { completo: boolean; parado: boolea
       />
       {completo && (
         <motion.g
-          initial={{ opacity: parado ? 1 : 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: tempo(parado, 1.1), ease: EASE }}
+          initial={{ opacity: parado ? 1 : 0, y: parado ? 0 : 14 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: tempo(parado, 0.7), ease: EASE }}
         >
           {/* O deslocamento fica no grupo de DENTRO: framer manda no atributo
               `transform` do elemento que anima, e o rosto acabaria desenhado na
@@ -230,8 +270,25 @@ export default function CenaClone() {
 
   return (
     <Palco viewBox="0 0 560 240" fase={fase}>
-      <Foto x={RUIM_X} serve={false} julgada={fase >= VEREDITO} parado={parado} />
-      <Foto x={BOA_X} serve julgada={fase >= VEREDITO} parado={parado} />
+      {/* A de óculos entra primeiro e a boa logo atrás: duas fotos subindo ao
+          mesmo tempo leem como um bloco só, e o escalonamento é o que dá a
+          sensação de envio — uma, depois a outra. */}
+      <Foto
+        x={RUIM_X}
+        serve={false}
+        julgada={fase >= VEREDITO}
+        dentro={fase >= CHEGADAS}
+        atraso={0}
+        parado={parado}
+      />
+      <Foto
+        x={BOA_X}
+        serve
+        julgada={fase >= VEREDITO}
+        dentro={fase >= CHEGADAS}
+        atraso={ENTRE_AS_FOTOS}
+        parado={parado}
+      />
 
       {/* O caminho e o quadro só existem quando há para onde ir: a foto
           aprovada virando clone. */}
