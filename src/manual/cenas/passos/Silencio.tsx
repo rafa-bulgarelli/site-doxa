@@ -23,6 +23,25 @@
  * O que a cena NÃO faz de propósito: mexer no timbre. A onda limpa tem a mesma
  * natureza de fala da suja — só sem a sujeira em volta. Clone bom sai de voz
  * natural, não de voz tratada.
+ *
+ * ─── OS DOIS CONSERTOS QUE O DONO PEDIU ──────────────────────────────────────
+ *
+ * 1. **O círculo saiu.** Havia um anel de raio 30 pulsando em volta do
+ *    microfone, para dizer "ligado". O dono olhou e nomeou o defeito: o círculo
+ *    estava ENFORCANDO o microfone. Respiro é ausência de jaula, não jaula
+ *    maior — então o anel não virou raio 40, ele deixou de existir. Quem diz
+ *    que a gravação está correndo é a ONDA, que é o assunto da cena; o
+ *    microfone só ganha um pouco mais de corpo para segurar o lado esquerdo
+ *    sozinho, e acende de cinza para branco quando o lugar cala.
+ *
+ * 2. **O ruído passou a ORNAR com a onda.** A serrilha vermelha era um
+ *    zigue-zague de amplitude fixa cortando o meio do desenho: um rabisco por
+ *    cima, sem relação nenhuma com o que estava embaixo. Agora ela é derivada da
+ *    PRÓPRIA onda suja — sobe onde a barra é alta, desce onde a barra é baixa —
+ *    e corre no topo dela, não atravessada. Três camadas legíveis, cada uma no
+ *    seu lugar: o microfone (branco), a voz (cinza) e o barulho grudado nela
+ *    (vermelho), com as duas fontes de ruído acima, na mesma cor de quem as
+ *    causou.
  */
 import { motion } from 'framer-motion';
 import { Marca, TINTA, TRACO_ACESO } from '../pecas';
@@ -50,21 +69,31 @@ const SUJA = [44, 14, 52, 20, 58, 10, 38, 50, 16, 46, 24, 56, 12, 42, 22, 52, 18
 const CLARA = [10, 18, 28, 40, 52, 60, 54, 42, 26, 22, 36, 52, 62, 54, 40, 26, 16, 10] as const;
 
 /**
- * O serrilhado do barulho, ponto a ponto.
+ * O serrilhado do barulho, ponto a ponto — tirado da onda que ele suja.
+ *
+ * Cada pico cai em cima de uma barra e sobe com ELA: barra alta, pico alto. O
+ * vale fica entre duas barras, perto do eixo. É o que faz a linha vermelha
+ * "ornar" com o cinza embaixo em vez de ser um rabisco atravessado — e é
+ * também o que a torna legível como "isto está grudado na sua voz".
  *
  * Um caminho gerado por conta é mais barato que dezoito formas: o ruído é UMA
  * linha, e uma linha só ganha halo por três passadas do mesmo `d`.
  */
 function serrilhaDoRuido(): string {
-  const passo = 9;
-  const partes: string[] = [`M ${BARRA_X - 4} ${EIXO}`];
-  for (let x = BARRA_X - 4 + passo; x <= FIM_DA_ONDA; x += passo) {
-    // A altura alterna e varia: serrilha regular vira zigue-zague decorativo,
-    // e zigue-zague decorativo é exatamente o que não conta nada.
-    const lado = partes.length % 2 === 0 ? 1 : -1;
-    const altura = 4 + ((partes.length * 7) % 6);
-    partes.push(`L ${x} ${EIXO + lado * altura}`);
-  }
+  const topo = (altura: number): number => EIXO - altura / 2;
+  const meio = BARRA_LARGURA / 2;
+  const partes: string[] = [`M ${BARRA_X - 6} ${topo(SUJA[0]) + 7}`];
+  SUJA.forEach((altura, indice) => {
+    const x = BARRA_X + indice * BARRA_PASSO + meio;
+    // O dente sobe 4 acima do topo da barra e desce 6 abaixo da média entre
+    // esta barra e a seguinte: a serrilha fica COLADA no contorno da onda, com
+    // dente pequeno. Dente grande vira cordilheira e rouba a cena da voz — que
+    // é o assunto —, e foi por isso que a versão anterior não ornava.
+    const seguinte = SUJA[indice + 1] ?? altura;
+    partes.push(`L ${x} ${topo(altura) - 4 - ((indice * 5) % 3)}`);
+    partes.push(`L ${x + BARRA_PASSO / 2} ${(topo(altura) + topo(seguinte)) / 2 + 6}`);
+  });
+  partes.push(`L ${FIM_DA_ONDA + 4} ${topo(SUJA[SUJA.length - 1]) + 7}`);
   return partes.join(' ');
 }
 
@@ -109,29 +138,31 @@ function FonteDeRuido({ tipo, x, y, visivel, parado }: FonteProps) {
   );
 }
 
-/** O microfone ligado: cápsula, arco e haste — o desenho de "estou ouvindo". */
-function Microfone({ parado }: { parado: boolean }) {
+/**
+ * O microfone ligado: cápsula, arco e haste — o desenho de "estou ouvindo".
+ *
+ * Solto, sem anel nenhum em volta (era o círculo que enforcava), e um pouco
+ * maior do que era: sem a jaula, é o próprio corpo do glifo que tem de segurar
+ * o lado esquerdo do palco. Ele acende junto com a onda — cinza claro enquanto
+ * há barulho, branco quando o lugar cala.
+ */
+function Microfone({ limpa, parado }: { limpa: boolean; parado: boolean }) {
+  const cor = limpa ? TINTA.branco : TRACO_ACESO;
   return (
-    <g>
-      <motion.circle
-        cx={MICROFONE_X}
-        cy={EIXO}
-        r={30}
-        fill="none"
-        stroke={TINTA.linha}
-        strokeWidth={1.5}
-        animate={parado ? { opacity: 1 } : { opacity: [0.45, 1, 0.45] }}
-        transition={{ duration: 2.6, repeat: parado ? 0 : Infinity, ease: 'easeInOut' }}
-      />
-      <rect x={MICROFONE_X - 7} y={EIXO - 26} width={14} height={28} rx={7} fill={TRACO_ACESO} />
+    <motion.g
+      initial={false}
+      animate={{ opacity: 1 }}
+      transition={{ duration: tempo(parado, 0.5), ease: EASE }}
+    >
+      <rect x={MICROFONE_X - 8} y={EIXO - 30} width={16} height={32} rx={8} fill={cor} />
       <TracoDeLuz
-        d={`M ${MICROFONE_X - 15} ${EIXO - 4} a 15 15 0 0 0 30 0 M ${MICROFONE_X} ${EIXO + 11} v 10`}
-        cor={TRACO_ACESO}
-        largura={2.1}
+        d={`M ${MICROFONE_X - 17} ${EIXO - 5} a 17 17 0 0 0 34 0 M ${MICROFONE_X} ${EIXO + 12} v 12`}
+        cor={cor}
+        largura={2.2}
         halo={2.2}
         parado={parado}
       />
-    </g>
+    </motion.g>
   );
 }
 
@@ -192,17 +223,21 @@ export default function Silencio() {
         parado={parado}
         achatar={0.32}
       />
-      <Microfone parado={parado} />
+      <Microfone limpa={limpa} parado={parado} />
       <Onda limpa={limpa} parado={parado} />
 
       {/* O ruído: as duas fontes no ambiente e o serrilhado que elas deixam em
           cima da voz. Some tudo junto, na fase em que o lugar cala. */}
       <motion.g
         initial={false}
-        animate={{ opacity: barulho ? 1 : 0 }}
+        // Nem a opacidade cheia: em vermelho saturado sobre preto, 1.0 num
+        // traço que cruza o palco inteiro rouba a cena da VOZ, que é o assunto.
+        animate={{ opacity: barulho ? 0.85 : 0 }}
         transition={{ duration: tempo(parado, 0.6), ease: EASE }}
       >
-        <TracoDeLuz d={SERRILHA} cor={QUEBRA} largura={1.6} halo={2} parado={parado} />
+        {/* Mais fina que o microfone e que a haste da nota: o barulho é o que
+            SUJA a cena, não o que a comanda. Hierarquia é peso de traço. */}
+        <TracoDeLuz d={SERRILHA} cor={QUEBRA} largura={1.5} halo={2.6} parado={parado} />
       </motion.g>
       <Brilho x={156} y={28} raio={44} tinta="luzQuebra" aceso={barulho} parado={parado} />
       <Brilho x={306} y={26} raio={44} tinta="luzQuebra" aceso={barulho} parado={parado} />

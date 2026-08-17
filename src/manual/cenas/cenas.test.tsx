@@ -46,7 +46,16 @@ import SemImpulso from './itens/SemImpulso';
 import SemCompra from './itens/SemCompra';
 import PergunteAntes from './itens/PergunteAntes';
 import ExemplosDeFotos, { Quadro } from './ExemplosDeFotos';
-import { cenaDaSecao, cenaDoItem } from './contrato';
+import Redes from './passos/Redes';
+import Contexto from './passos/Contexto';
+import UmCanal from './passos/UmCanal';
+import Silencio from './passos/Silencio';
+import FalaNatural from './passos/FalaNatural';
+import Gravador from './passos/Gravador';
+import FotoNitida from './passos/FotoNitida';
+import SemFiltro from './passos/SemFiltro';
+import Aproximacao from './passos/Aproximacao';
+import { cenaDaSecao, cenaDoItem, cenaDoPasso } from './contrato';
 import { ARCO } from './luz';
 
 interface CenaDoTeste {
@@ -73,7 +82,26 @@ const ITENS: readonly CenaDoTeste[] = [
   { chave: 'GA-8', Cena: PergunteAntes },
 ];
 
-const TODAS = [...CAPITULOS, ...ITENS];
+/**
+ * As mini-cenas dos PASSOS dos capítulos 1–3.
+ *
+ * A chave é o `codigo` da regra no seed (v2/v3/v7), que é o mesmo vocabulário
+ * do contrato: se uma cena for parar no código errado, o passo abre com a
+ * animação de outro passo — e isso não aparece em erro nenhum, só em quem lê.
+ */
+const PASSOS: readonly CenaDoTeste[] = [
+  { chave: 'ON-0', Cena: Redes },
+  { chave: 'ON-1', Cena: Contexto },
+  { chave: 'ON-2', Cena: UmCanal },
+  { chave: 'VZ-1', Cena: Silencio },
+  { chave: 'VZ-2', Cena: FalaNatural },
+  { chave: 'VZ-3', Cena: Gravador },
+  { chave: 'CL-1', Cena: FotoNitida },
+  { chave: 'CL-2', Cena: SemFiltro },
+  { chave: 'CL-3', Cena: Aproximacao },
+];
+
+const TODAS = [...CAPITULOS, ...ITENS, ...PASSOS];
 
 function desenhar(Cena: ComponentType): string {
   return renderToStaticMarkup(<Cena />);
@@ -149,6 +177,29 @@ describe('as cenas do manual', () => {
     }
     expect(cenaDoItem('GA-99')).toBeNull();
   });
+
+  it('o contrato entrega uma mini-cena para cada um dos nove passos', () => {
+    for (const { chave, Cena } of PASSOS) {
+      expect(cenaDoPasso(chave)).toBe(Cena);
+    }
+    // Regra sem cena não pode explodir a página: o fluxo pergunta por código e
+    // renderiza o que vier. Código de uma versão antiga do manual devolve nulo,
+    // e o passo simplesmente abre sem ilustração.
+    expect(cenaDoPasso('ON-9')).toBeNull();
+    expect(cenaDoPasso('GA-1')).toBeNull();
+  });
+
+  it('nenhum passo ficou com o esqueleto do prelude', () => {
+    // Os nove nasceram como um `<svg>` vazio, para a track do fluxo provar que
+    // o slot estava ligado antes de a cena existir. Um esqueleto esquecido é
+    // uma moldura vazia no ar: sem erro, sem console, sem desenho. Cena de
+    // verdade desenha dezenas de formas e escreve a fase na moldura.
+    for (const { chave, Cena } of PASSOS) {
+      const html = desenhar(Cena);
+      expect(html, chave).toContain('data-fase');
+      expect([...html.matchAll(/<(rect|path|circle|ellipse)/g)].length).toBeGreaterThan(6);
+    }
+  });
 });
 
 describe('as cenas com movimento reduzido', () => {
@@ -221,6 +272,66 @@ describe('a cena dos sessenta (GA-2)', () => {
       expect(videosDesenhados(desenhar(Sessenta))).toBeGreaterThanOrEqual(4);
     } finally {
       preferencia.reduzido = false;
+    }
+  });
+});
+
+/**
+ * ─── OS DOIS DEFEITOS QUE O DONO NOMEOU NAS CENAS-PILOTO ─────────────────────
+ *
+ * Nenhum dos dois aparece em teste de comportamento: são de DESENHO, e desenho
+ * não tem asserção óbvia. O que dá para cobrar — e é o que se cobra aqui — é a
+ * assinatura de cada versão reprovada, para que ela não volte por descuido numa
+ * refatoração daqui a seis meses.
+ */
+describe('as cenas-piloto dos passos, depois da revisão do dono', () => {
+  /** Os raios de todo `<circle>` do desenho. */
+  function raios(html: string): readonly number[] {
+    return [...html.matchAll(/<circle[^>]*\sr="([\d.]+)"/g)].map((achado) => Number(achado[1]));
+  }
+
+  it('a cena das redes não desenha círculo nenhum — os ícones são os reais', () => {
+    // A versão reprovada punha cada rede numa forma genérica dentro de um
+    // círculo cinza, e o dono nomeou o defeito duas vezes: "afogado",
+    // "enforcado". Os ícones de `redes.tsx` são só `path`, e o resto desta cena
+    // é retângulo e traço — então um `<circle>` aqui já é a jaula de volta.
+    preferencia.reduzido = true;
+    try {
+      expect(desenhar(Redes)).not.toContain('<circle');
+    } finally {
+      preferencia.reduzido = false;
+    }
+  });
+
+  it('o texto do link tem alturas de letra diferentes, e não vira código de barras', () => {
+    // O diagnóstico do dono na primeira versão: "parece código de barras". A
+    // cura foi dar linha de base ao texto — letra que sobe, letra que desce —,
+    // e é isso que se cobra: blocos todos da mesma altura são o código de
+    // barras de volta.
+    // No quadro PARADO, que é o do fim: na fase 0 os campos estão vazios de
+    // propósito, e não há letra nenhuma para medir.
+    preferencia.reduzido = true;
+    try {
+      const html = desenhar(Redes);
+      const alturas = [...html.matchAll(/<rect[^>]*rx="1\.5"[^>]*/g)].map((achado) => {
+        const altura = /height="([\d.]+)"/.exec(achado[0]);
+        if (altura == null) throw new Error(`letra sem altura: ${achado[0]}`);
+        return altura[1];
+      });
+      expect(alturas.length).toBeGreaterThan(20);
+      expect(new Set(alturas).size).toBeGreaterThanOrEqual(3);
+    } finally {
+      preferencia.reduzido = false;
+    }
+  });
+
+  it('o microfone do silêncio não volta para dentro de um círculo', () => {
+    // Era um anel de raio 30 em volta do glifo, e o dono disse a palavra:
+    // ENFORCANDO. Respiro é ausência de jaula, não jaula maior. Os únicos
+    // círculos que sobraram na cena são as duas cabeças da nota de música do
+    // ruído, de raio 4,5 — qualquer coisa grande aqui é o anel de volta.
+    for (const raio of raios(desenhar(Silencio))) {
+      expect(raio).toBeLessThan(10);
     }
   });
 });
