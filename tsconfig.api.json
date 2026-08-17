@@ -29,6 +29,9 @@
     "src/leads/tipos.ts",
     "src/manual/config.ts",
     "src/manual/tipos.ts",
-    "src/manual/servidor"
+    "src/manual/servidor",
+    "src/conversor/config.ts",
+    "src/conversor/tipos.ts",
+    "src/conversor/servidor"
   ]
 }
