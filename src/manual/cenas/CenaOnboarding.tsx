@@ -5,10 +5,19 @@
  *
  * Uma pergunta acende no alto. A resposta de uma palavra entra e fica ali,
  * curta e apagada — não é erro, é pouco. Aí a mesma resposta ganha contexto: as
- * três linhas se preenchem em cor, o campo acende por baixo e as faíscas sobem.
- * Fecha com o visto verde. Ninguém precisa ler nada para entender que o campo
- * quer mais texto: a diferença entre uma barrinha cinza e três linhas acesas diz
- * sozinha.
+ * três linhas se preenchem em cor e o campo acende por baixo. Fecha com o visto
+ * verde. Ninguém precisa ler nada para entender que o campo quer mais texto: a
+ * diferença entre uma barrinha cinza e três linhas acesas diz sozinha.
+ *
+ * ─── A ÚNICA FAÍSCA DESTA CENA É VERDE ───────────────────────────────────────
+ *
+ * Houve um punhado de partículas do arco subindo do campo no instante em que as
+ * linhas completavam. O dono olhou e cortou: "não é cor nenhuma, não é
+ * elegante". O diagnóstico é o da doutrina — ali a cor não julgava nada, era
+ * confete em cima de um campo que já tinha acabado de acender sozinho, e duas
+ * comemorações seguidas (a do campo e a do visto) tiram o peso da que importa.
+ * A faísca sobrou onde ela SIGNIFICA: em volta do visto, verde, dizendo
+ * "aprovado".
  *
  * Por que barra e não frase: frase dentro do desenho vira letra de 8px no
  * celular — ilegível, e ainda ficaria em português para o leitor em inglês.
@@ -147,14 +156,8 @@ function Campo({ fase, parado }: { fase: number; parado: boolean }) {
       {/* A resposta curta não some nem é riscada: ela fica FRACA. É assim que
           ela chega para a equipe — dá para usar, só não dá para render. */}
       <Resposta fase={fase} parado={parado} />
-      <Faiscas
-        x={ESQUERDA + 300}
-        y={152}
-        raio={130}
-        ativo={fase === COMPLETA}
-        parado={parado}
-        quantidade={11}
-      />
+      {/* Aqui NÃO entra faísca: o campo completo se anuncia pelo clarão e pelas
+          três linhas em cor. Ver o cabeçalho. */}
     </g>
   );
 }

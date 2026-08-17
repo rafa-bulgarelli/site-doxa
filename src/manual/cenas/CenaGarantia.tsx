@@ -19,10 +19,34 @@
  * vermelho é o ato que quebra e a rachadura. Um diz "isto mantém o seu direito",
  * o outro diz "isto o perde" — e essa distinção não pode depender de o leitor
  * ler nada.
+ *
+ * ─── O QUE A REVISÃO DO DONO DERRUBOU DESTA CENA ─────────────────────────────
+ *
+ * A história passou; a execução não. Foram três defeitos nomeados, e os três
+ * eram a mesma doença — desenho gritando no lugar de hierarquia:
+ *
+ * 1. **"Quadrado verde sem significado".** O dia cumprido pintava a BORDA de
+ *    verde e ainda soltava um halo verde do tamanho da caixa. Quem julga o dia
+ *    é o VISTO; a caixa é só onde ele mora. Agora a caixa cumprida volta ao
+ *    traço comum e o verde fica no visto e no clarão curto atrás dele — o mesmo
+ *    verde, num lugar só, valendo mais.
+ * 2. **"Ícone afogado no círculo cinza".** As redes eram glifos genéricos
+ *    dentro de um `circle` r=21, e o círculo enforcava o desenho. Saíram os
+ *    três: no lugar entram os ícones REAIS de `redes.tsx`, soltos, com 100 de
+ *    distância entre um e outro em vez de 80.
+ * 3. **"O 24 colado nos quadrados".** A legenda encostava na fileira dos dias.
+ *    Agora o intervalo tem faixa própria: a linha tracejada 24px abaixo das
+ *    caixas, ligando o centro de um dia ao centro do outro, e o número mais
+ *    abaixo ainda.
+ *
+ * O que NÃO mudou: o arco continua sendo a têmpera dos fios que sobem, e é ele
+ * que carrega a cor da cena. Os ícones acesos ficam brancos de propósito — a
+ * cor tem de estar no MOVIMENTO (o vídeo subindo), não parada no destino.
  */
 import { motion } from 'framer-motion';
 import { Legenda, Marca, Painel, Palco, TINTA, TRACO, TRACO_ACESO } from './pecas';
 import { ARCO, Brilho, CERTO, Faiscas, Poeira, QUEBRA, TracoDeLuz, useTintas } from './luz';
+import { IconeDaRede, REDES_REAIS } from './redes';
 import { EASE, tempo, useRoteiro } from './tempo';
 
 /**
@@ -36,41 +60,61 @@ const CUMPRIDA = 6;
 const QUEBRA_FASE = 7;
 
 const UTEIS = 5;
-const DIA_X = [44, 116, 188, 260, 332, 404, 476] as const;
-const DIA_Y = 118;
-const DIA_L = 56;
+/**
+ * Os sete dias. O sábado abre o dobro da distância que separa dois dias úteis
+ * (40 contra 20): a semana de trabalho é um bloco, e o fim de semana é OUTRO —
+ * a fileira igualmente espaçada dizia que domingo era só mais um dia.
+ */
+const DIA_X = [24, 96, 168, 240, 312, 404, 476] as const;
+const DIA_Y = 112;
+const DIA_L = 52;
 const DIA_A = 50;
+const DIA_FIM = DIA_Y + DIA_A;
 
-const REDES_X = [200, 280, 360] as const;
-const REDE_Y = 42;
+const REDES_X = [180, 280, 380] as const;
+const REDE_Y = 46;
+/** O lado da caixa do ícone. Meia caixa (19) é a folga que os fios respeitam. */
+const REDE_TAMANHO = 38;
+/** Onde o fio de luz encosta: 7px abaixo do glifo, sem tocá-lo. */
+const REDE_BASE = REDE_Y + REDE_TAMANHO / 2 + 7;
 
-const VERDE_FRACO = 'rgba(52,211,153,0.6)';
+/** A faixa do intervalo, abaixo da fileira dos dias — a linha e o número. */
+const INTERVALO_Y = DIA_FIM + 24;
 
 /** As três redes, no alto: para onde o mesmo vídeo do dia sobe. */
 function Redes({ ativo, parado }: { ativo: boolean; parado: boolean }) {
-  const cor = ativo ? TRACO_ACESO : TRACO;
   return (
     <g>
       {REDES_X.map((cx, indice) => (
         <g key={cx}>
           {ativo && (
-            <Brilho x={cx} y={REDE_Y} raio={46} tinta="luzQuente" aceso parado={parado} />
+            <Brilho x={cx} y={REDE_Y} raio={44} tinta="luzQuente" aceso parado={parado} />
           )}
-          <motion.circle
-            cx={cx}
-            cy={REDE_Y}
-            r={21}
-            fill={TINTA.elevado}
-            strokeWidth={1.8}
-            initial={{ stroke: ativo ? ARCO[indice + 1] : cor }}
-            animate={{ stroke: ativo ? ARCO[indice + 1] : cor }}
-            transition={{ duration: 0.4, ease: EASE }}
+          {/* Duas camadas do MESMO ícone, uma apagada por baixo e a acesa
+              esmaecendo por cima. Trocar a cor num atributo só seria um corte
+              seco no meio da cena; o cruzamento das duas é o "smooth" pedido, e
+              custa três `path` a mais. */}
+          <IconeDaRede
+            rede={REDES_REAIS[indice]}
+            x={cx}
+            y={REDE_Y}
+            tamanho={REDE_TAMANHO}
+            cor={TRACO}
+            acesa={false}
           />
-          {indice === 0 && <path d="M 194 34 l 14 8 l -14 8 z" fill={cor} />}
-          {indice === 1 && <rect x={272} y={34} width={16} height={16} rx={4.5} fill={cor} />}
-          {indice === 2 && (
-            <circle cx={360} cy={REDE_Y} r={7.5} fill="none" stroke={cor} strokeWidth={2.8} />
-          )}
+          <motion.g
+            initial={false}
+            animate={{ opacity: ativo ? 1 : 0 }}
+            transition={{ duration: tempo(parado, 0.45), ease: EASE }}
+          >
+            <IconeDaRede
+              rede={REDES_REAIS[indice]}
+              x={cx}
+              y={REDE_Y}
+              tamanho={REDE_TAMANHO}
+              cor={TRACO_ACESO}
+            />
+          </motion.g>
         </g>
       ))}
     </g>
@@ -84,33 +128,55 @@ interface DiaProps {
   readonly parado: boolean;
 }
 
-/** Um quadrado da semana: por fazer, publicando, publicado — ou de folga. */
+/**
+ * Um quadrado da semana: por fazer, publicando, publicado — ou de folga.
+ *
+ * A hierarquia é o assunto desta peça, e ela tem três degraus: o dia que TEM A
+ * VEZ é o mais aceso do palco (borda em arco, vidro, clarão quente); o dia
+ * CUMPRIDO volta ao traço comum e entrega o verde ao visto; o dia por fazer é
+ * só contorno. Antes os cumpridos eram cinco caixas verdes brilhando ao mesmo
+ * tempo, e nenhuma delas dizia mais do que a outra.
+ */
 function Dia({ indice, ativo, feito, parado }: DiaProps) {
   const x = DIA_X[indice];
+  const meio = x + DIA_L / 2;
   const folga = indice >= UTEIS;
-  const cor = feito ? VERDE_FRACO : ativo ? TRACO_ACESO : TINTA.linha;
   return (
-    <motion.g initial={false} animate={{ opacity: folga ? 0.45 : 1 }} transition={{ duration: 0.4 }}>
-      {feito && (
-        <Brilho x={x + DIA_L / 2} y={DIA_Y + DIA_A / 2} raio={46} tinta="luzCerta" aceso parado={parado} />
+    <motion.g
+      initial={false}
+      animate={{ opacity: folga ? 0.4 : 1 }}
+      transition={{ duration: tempo(parado, 0.5), ease: EASE }}
+    >
+      {ativo && !folga && (
+        <Brilho x={meio} y={DIA_Y + DIA_A / 2} raio={52} tinta="luzQuente" aceso parado={parado} />
+      )}
+      {/* O clarão do dia cumprido é do tamanho do VISTO, não da caixa: raio 24
+          apaga antes de chegar à borda, e o que fica verde é o carimbo. */}
+      {feito && !folga && (
+        <Brilho x={meio} y={DIA_Y + DIA_A / 2} raio={24} tinta="luzCerta" aceso parado={parado} />
       )}
       <Painel
         x={x}
         y={DIA_Y}
         largura={DIA_L}
         altura={DIA_A}
-        cor={folga ? TINTA.linha : cor}
+        cor={feito ? TRACO : TINTA.linha}
         tinta={ativo && !folga ? 'arco' : undefined}
-        vidro={ativo}
+        vidro={ativo && !folga}
       />
       {/* A peça de vídeo do dia: some no fim de semana, que é folga de verdade. */}
-      {!folga && !feito && <path d={`M ${x + 21} ${DIA_Y + 15} l 16 10 l -16 10 z`} fill={cor} />}
-      {feito && (
+      {!folga && !feito && (
+        <path
+          d={`M ${x + 19} ${DIA_Y + 15} l 16 10 l -16 10 z`}
+          fill={ativo ? TRACO_ACESO : TRACO}
+        />
+      )}
+      {feito && !folga && (
         <Marca
           tipo="certo"
-          x={x + DIA_L / 2}
+          x={meio}
           y={DIA_Y + DIA_A / 2}
-          escala={0.85}
+          escala={0.9}
           cor={TINTA.protege}
           parado={parado}
         />
@@ -126,7 +192,7 @@ function Envio({ indice, parado }: { indice: number; parado: boolean }) {
   return (
     <g>
       {REDES_X.map((cx, ordem) => {
-        const curva = `M ${origem} ${DIA_Y} C ${origem} 86, ${cx} 86, ${cx} ${REDE_Y + 23}`;
+        const curva = `M ${origem} ${DIA_Y} C ${origem} 84, ${cx} 84, ${cx} ${REDE_BASE}`;
         return (
           <g key={cx}>
             <TracoDeLuz
@@ -144,7 +210,7 @@ function Envio({ indice, parado }: { indice: number; parado: boolean }) {
                 r={3}
                 fill={ARCO[ordem + 1]}
                 initial={{ cx: origem, cy: DIA_Y, opacity: 0 }}
-                animate={{ cx, cy: REDE_Y + 23, opacity: [0, 1, 0] }}
+                animate={{ cx, cy: REDE_BASE, opacity: [0, 1, 0] }}
                 transition={{ duration: 0.9, delay: ordem * 0.08, ease: 'easeOut' }}
               />
             )}
@@ -155,17 +221,36 @@ function Envio({ indice, parado }: { indice: number; parado: boolean }) {
   );
 }
 
-/** O intervalo entre dois vídeos, dito com a única palavra que a cena carrega. */
+/**
+ * O intervalo entre dois vídeos, dito com a única palavra que a cena carrega.
+ *
+ * A medida é DESENHADA como medida: a linha vai do centro do dia anterior ao
+ * centro do dia da vez, com um tique em cada ponta, e o número mora abaixo
+ * dela. O "24h" antes flutuava encostado na quina dos quadrados, sem dizer
+ * entre o quê e o quê — colado e mudo ao mesmo tempo.
+ */
 function Vinte4Horas({ indice, parado }: { indice: number; parado: boolean }) {
-  const meio = DIA_X[indice] - 8;
+  const anterior = DIA_X[indice - 1] + DIA_L / 2;
+  const atual = DIA_X[indice] + DIA_L / 2;
+  const meio = (anterior + atual) / 2;
   return (
     <motion.g
       initial={{ opacity: parado ? 1 : 0 }}
       animate={{ opacity: 1 }}
-      transition={{ duration: tempo(parado, 0.4), ease: EASE }}
+      transition={{ duration: tempo(parado, 0.45), ease: EASE }}
     >
-      <path d={`M ${meio - 30} 200 h 60`} stroke={TRACO} strokeWidth={1.5} strokeDasharray="5 5" />
-      <Legenda x={meio} y={192} corpo={24} tinta="arco">
+      <path
+        d={`M ${anterior} ${INTERVALO_Y} H ${atual}`}
+        stroke={TRACO}
+        strokeWidth={1.5}
+        strokeDasharray="5 5"
+      />
+      <path
+        d={`M ${anterior} ${INTERVALO_Y - 6} v 12 M ${atual} ${INTERVALO_Y - 6} v 12`}
+        stroke={TRACO}
+        strokeWidth={1.5}
+      />
+      <Legenda x={meio} y={INTERVALO_Y + 30} corpo={22} tinta="arco">
         24h
       </Legenda>
     </motion.g>
@@ -181,27 +266,41 @@ const GLIFOS = [
   'M -10 -3 h 20 v 15 h -20 z M -5 -3 a 5 5 0 0 1 10 0',
 ] as const;
 
-/** Os três atos que quebram a garantia, cada um no seu selo. */
+/** A linha dos três atos e a distância entre eles. */
+const ATO_Y = 254;
+const ATO_X = [92, 180, 268] as const;
+
+/**
+ * Os três atos que quebram a garantia — soltos, sem anel em volta.
+ *
+ * O anel era o mesmo defeito das redes com outra roupa: um `circle` r=23 em
+ * torno de um glifo de 20 de largura deixa três pixels de folga, e o desenho
+ * fica preso. O vermelho já diz que aquilo derruba o direito, e o halo por trás
+ * é a moldura de que ele precisa.
+ */
 function Atos({ visivel, parado }: { visivel: boolean; parado: boolean }) {
   return (
     <g>
       {GLIFOS.map((traco, indice) => {
-        const cx = 96 + indice * 74;
+        const cx = ATO_X[indice];
         return (
           <motion.g
             key={traco}
             initial={false}
             animate={{ opacity: visivel ? 1 : 0 }}
             transition={{
-              duration: tempo(parado, 0.4),
+              duration: tempo(parado, 0.45),
               ease: EASE,
-              delay: tempo(parado, visivel ? indice * 0.18 : 0),
+              delay: tempo(parado, visivel ? indice * 0.16 : 0),
             }}
           >
-            {visivel && <Brilho x={cx} y={252} raio={44} tinta="luzQuebra" aceso parado={parado} />}
-            <circle cx={cx} cy={252} r={23} fill={TINTA.elevado} stroke={QUEBRA} strokeWidth={1.6} />
-            <g transform={`translate(${cx} 252)`}>
-              <TracoDeLuz d={traco} cor={QUEBRA} largura={2.2} halo={2.4} parado={parado} />
+            {visivel && (
+              <Brilho x={cx} y={ATO_Y} raio={42} tinta="luzQuebra" aceso parado={parado} />
+            )}
+            {/* Escala no grupo de FORA, animação no de dentro: framer escreve o
+                `transform` do nó que anima e apagaria este `translate`. */}
+            <g transform={`translate(${cx} ${ATO_Y}) scale(1.3)`}>
+              <TracoDeLuz d={traco} cor={QUEBRA} largura={2.1} halo={2.4} parado={parado} />
             </g>
           </motion.g>
         );
@@ -213,10 +312,39 @@ function Atos({ visivel, parado }: { visivel: boolean; parado: boolean }) {
 const ESCUDO = 'M 0 -50 L 42 -33 L 42 6 C 42 34 22 50 0 58 C -22 50 -42 34 -42 6 L -42 -33 Z';
 const RACHADURA = 'M 2 -48 l -13 24 l 15 11 l -11 26 l 9 13';
 
-/** O escudo: aceso enquanto a rotina se cumpre, rachado quando ela quebra. */
-function Escudo({ quebrado, parado }: { quebrado: boolean; parado: boolean }) {
+/** Os três estados do escudo, na ordem em que a cena os visita. */
+type EstadoDoEscudo = 'esperando' | 'inteiro' | 'quebrado';
+
+/** A cor do contorno em cada estado — cinza enquanto ninguém ganhou nada. */
+function tracoDoEscudo(
+  estado: EstadoDoEscudo,
+  tintas: (nome: 'certo' | 'errado') => string,
+): string {
+  switch (estado) {
+    case 'quebrado':
+      return tintas('errado');
+    case 'inteiro':
+      return tintas('certo');
+    case 'esperando':
+      return TRACO;
+    default:
+      throw new Error(`estado de escudo desconhecido: ${String(estado)}`);
+  }
+}
+
+/**
+ * O escudo: cinza enquanto a semana corre, verde quando ela fecha, rachado
+ * quando um dos três atos acontece.
+ *
+ * O `esperando` é novo e é a mesma regra do dia por fazer: o direito ainda não
+ * foi conquistado, então ele é contorno, não prêmio. O escudo aceso desde o
+ * primeiro quadro gastava o verde antes de a rotina ter feito por merecer, e
+ * era mais um verde que não julgava nada.
+ */
+function Escudo({ estado, parado }: { estado: EstadoDoEscudo; parado: boolean }) {
   const tintas = useTintas();
-  const cor = quebrado ? QUEBRA : CERTO;
+  const quebrado = estado === 'quebrado';
+  const inteiro = estado === 'inteiro';
   return (
     <g>
       <Brilho
@@ -224,15 +352,28 @@ function Escudo({ quebrado, parado }: { quebrado: boolean; parado: boolean }) {
         y={248}
         raio={92}
         tinta={quebrado ? 'luzQuebra' : 'luzCerta'}
-        aceso
+        aceso={estado !== 'esperando'}
         parado={parado}
       />
       <g transform="translate(438 248) scale(0.95)">
         <path d={ESCUDO} fill={tintas('vidro')} />
-        <TracoDeLuz d={ESCUDO} cor={quebrado ? tintas('errado') : tintas('certo')} largura={2.8} parado={parado} />
-        {quebrado ? (
-          <TracoDeLuz d={RACHADURA} cor={cor} largura={3} parado={parado} riscando duracao={0.5} />
-        ) : (
+        <TracoDeLuz
+          d={ESCUDO}
+          cor={tracoDoEscudo(estado, tintas)}
+          largura={2.8}
+          parado={parado}
+        />
+        {quebrado && (
+          <TracoDeLuz
+            d={RACHADURA}
+            cor={QUEBRA}
+            largura={3}
+            parado={parado}
+            riscando
+            duracao={0.5}
+          />
+        )}
+        {inteiro && (
           <Marca tipo="certo" x={0} y={4} escala={1.6} cor={TINTA.protege} parado={parado} />
         )}
       </g>
@@ -240,7 +381,7 @@ function Escudo({ quebrado, parado }: { quebrado: boolean; parado: boolean }) {
         x={438}
         y={248}
         raio={78}
-        ativo={!quebrado}
+        ativo={inteiro}
         parado={parado}
         quantidade={8}
         cores={[CERTO, ARCO[5]]}
@@ -248,6 +389,12 @@ function Escudo({ quebrado, parado }: { quebrado: boolean; parado: boolean }) {
       />
     </g>
   );
+}
+
+/** Qual escudo a fase pede. */
+function escudoDaFase(fase: number): EstadoDoEscudo {
+  if (fase === QUEBRA_FASE) return 'quebrado';
+  return fase >= CUMPRIDA ? 'inteiro' : 'esperando';
 }
 
 export default function CenaGarantia() {
@@ -275,7 +422,7 @@ export default function CenaGarantia() {
       {publicando && diaAtivo > 0 && <Vinte4Horas indice={diaAtivo} parado={parado} />}
 
       <Atos visivel={fase === QUEBRA_FASE} parado={parado} />
-      <Escudo quebrado={fase === QUEBRA_FASE} parado={parado} />
+      <Escudo estado={escudoDaFase(fase)} parado={parado} />
     </Palco>
   );
 }
