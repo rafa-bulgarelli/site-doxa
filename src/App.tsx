@@ -1,6 +1,10 @@
 import { Suspense, lazy, useEffect, useState, type ReactNode } from 'react';
 import { ANCORA_FORMS, HREF_FORMS } from './ancoras';
 import { ROTA_BASE } from './manual/config';
+// Apelidada porque o nome é o mesmo nos dois módulos, e é assim que deve ser:
+// cada um guarda o endereço dele em `config.ts`, e quem junta os dois é este
+// arquivo — a única peça do site que sabe que as duas rotas existem.
+import { ROTA_BASE as ROTA_DO_CONVERSOR } from './conversor/config';
 import { ProvedorDeIdioma, useIdioma, type PorIdioma } from './idioma';
 import { usarNaTela } from './hooks/usarNaTela';
 import { Hero } from './components/Hero';
@@ -54,13 +58,23 @@ const Leads = lazy(() => import('./leads/Rota'));
 const Manual = lazy(() => import('./manual/Rota'));
 
 /**
+ * O conversor de documentos, sob a ROTA_BASE dele (`conversor/config.ts`).
+ *
+ * Terceira ferramenta interna, mesmo desenho das duas anteriores: `lazy`,
+ * porque quem veio ver a página de vendas não baixa um byte de uma ferramenta
+ * de trabalho que ele nem tem login para abrir.
+ */
+const Conversor = lazy(() => import('./conversor/Rota'));
+
+/**
  * Qual página está sendo pedida.
  *
- * Um `switch` no caminho, e não um roteador: o site tem TRÊS rotas, e nenhuma
- * navega para as outras — a Central e o manual se chegam por URL colada, não
- * por link da landing. `react-router` resolveria isto com 12 kB e um provider
- * em volta da página inteira; a navegação que existe de verdade é interna ao
- * manual, e o roteador dela vive lá dentro, do tamanho que ela precisa.
+ * Um `switch` no caminho, e não um roteador: o site tem QUATRO rotas, e nenhuma
+ * navega para as outras — a Central, o manual e o conversor se chegam por URL
+ * colada, não por link da landing. `react-router` resolveria isto com 12 kB e
+ * um provider em volta da página inteira; a navegação que existe de verdade é
+ * interna ao manual, e o roteador dela vive lá dentro, do tamanho que ela
+ * precisa.
  *
  * A `vercel.json` já reescreve tudo para o `index.html`, então qualquer uma
  * delas chega aqui inteira depois de um recarregamento ou de um link colado.
@@ -72,6 +86,11 @@ function ehCentralDeLeads() {
 function ehManual() {
   const caminho = window.location.pathname.replace(/\/+$/, '');
   return caminho === ROTA_BASE || caminho.startsWith(`${ROTA_BASE}/`);
+}
+
+function ehConversor() {
+  const caminho = window.location.pathname.replace(/\/+$/, '');
+  return caminho === ROTA_DO_CONVERSOR || caminho.startsWith(`${ROTA_DO_CONVERSOR}/`);
 }
 
 /**
@@ -164,6 +183,7 @@ export default function App() {
   // do manual nunca sai da base dele, e quem a escuta é o roteador de lá.
   const [naCentral] = useState(ehCentralDeLeads);
   const [noManual] = useState(ehManual);
+  const [noConversor] = useState(ehConversor);
 
   /**
    * Os pedaços de baixo, buscados assim que o navegador fica ocioso.
@@ -311,6 +331,14 @@ export default function App() {
     return (
       <Suspense fallback={<div className="min-h-screen bg-doxa-bg" aria-hidden />}>
         <Manual />
+      </Suspense>
+    );
+  }
+
+  if (noConversor) {
+    return (
+      <Suspense fallback={<div className="min-h-screen bg-doxa-bg" aria-hidden />}>
+        <Conversor />
       </Suspense>
     );
   }
