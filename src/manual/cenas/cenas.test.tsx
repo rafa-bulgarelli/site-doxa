@@ -47,6 +47,7 @@ import SemCompra from './itens/SemCompra';
 import PergunteAntes from './itens/PergunteAntes';
 import ExemplosDeFotos, { Quadro } from './ExemplosDeFotos';
 import { cenaDaSecao, cenaDoItem } from './contrato';
+import { ARCO } from './luz';
 
 interface CenaDoTeste {
   /** O slug da seção, ou o código da regra no caso das mini-cenas. */
@@ -170,13 +171,68 @@ describe('as cenas com movimento reduzido', () => {
 });
 
 /**
- * O quadro agora tem duas metades, e o teste segue a divisão:
+ * ─── A CENA DA GA-2, QUE JÁ CONTOU O FATO ERRADO ─────────────────────────────
+ *
+ * Ela desenhava 20+20+20=60 — "vinte em cada rede" —, e o combinado é o
+ * contrário: **60 vídeos ÚNICOS, cada um publicado nas três redes**. O erro não
+ * apareceu em teste nenhum porque desenho não tem asserção óbvia; o que dá para
+ * cobrar, e é o que se cobra aqui, são as duas assinaturas da versão errada:
+ * um número ao lado de cada rede (a divisão escrita) e o 20 em si.
+ */
+describe('a cena dos sessenta (GA-2)', () => {
+  /** Todo texto que a cena escreve — em cena, texto é sempre número. */
+  function numerosEscritos(html: string): readonly string[] {
+    return [...html.matchAll(/<text[^>]*>([^<]*)<\/text>/g)].map((achado) => achado[1]);
+  }
+
+  /** Quantas vezes o glifo do vídeo é desenhado com a cor da origem. */
+  function videosDesenhados(html: string): number {
+    return [...html.matchAll(new RegExp(`fill="${ARCO[0]}"`, 'g'))].length;
+  }
+
+  it('escreve UM número no quadro que ensina, e ele é o 60', () => {
+    preferencia.reduzido = true;
+    try {
+      const html = desenhar(Sessenta);
+      // Um número por rede seria a divisão de volta, com outra roupa. A cena
+      // tem direito a um número só: o total de vídeos únicos.
+      expect(numerosEscritos(html)).toEqual(['60']);
+    } finally {
+      preferencia.reduzido = false;
+    }
+  });
+
+  it('não escreve 20 em fase nenhuma, nem na primeira', () => {
+    expect(desenhar(Sessenta)).not.toContain('>20<');
+    preferencia.reduzido = true;
+    try {
+      expect(desenhar(Sessenta)).not.toContain('>20<');
+    } finally {
+      preferencia.reduzido = false;
+    }
+  });
+
+  it('entrega às três redes o MESMO vídeo, e não um pedaço para cada', () => {
+    // O antídoto contra a leitura de divisão é o cartão REPETIDO: o vídeo da
+    // esquerda mais uma cópia igual em cada rede. Quatro é o mínimo — a pilha
+    // que fecha a cena desenha o mesmo glifo mais algumas vezes.
+    preferencia.reduzido = true;
+    try {
+      expect(videosDesenhados(desenhar(Sessenta))).toBeGreaterThanOrEqual(4);
+    } finally {
+      preferencia.reduzido = false;
+    }
+  });
+});
+
+/**
+ * O quadro tem duas metades, e o teste segue a divisão:
  *
  * - `Quadro` é o miolo puro, os doze cartões — é dele que se cobra a foto, o
- *   rótulo e o `alt`, porque é ele que a pessoa vê depois de pedir para ver.
- * - `ExemplosDeFotos` é o de fora, com o estado do reveal. Sem DOM não há
- *   clique, então dele se cobra o ESTADO INICIAL: o convite existe, as doze
- *   fotos ainda não, e o guia em PDF está lá desde o primeiro instante.
+ *   rótulo e o `alt`.
+ * - `ExemplosDeFotos` é o de fora: o quadro inteiro MAIS o guia em PDF. Não há
+ *   estado nenhum a cobrar (houve um reveal por clique, e ele caiu), então o
+ *   que se cobra dele é o primeiro desenho — que já é o desenho final.
  */
 describe('o quadro de exemplos de foto', () => {
   const html = renderToStaticMarkup(<Quadro />);
@@ -278,33 +334,40 @@ describe('o quadro de exemplos de foto', () => {
   });
 });
 
-describe('o quadro que se revela', () => {
+describe('o quadro que nasce aberto', () => {
   /** Os `<li>` que nascem invisíveis, esperando a vez de entrar. */
   function cartoesEntrando(html: string): number {
     return [...html.matchAll(/<li[^>]*style="opacity:0/g)].length;
   }
 
-  it('não mostra foto nenhuma antes de alguém pedir para ver', () => {
-    // O estado inicial é o que chega no primeiro desenho da página. Doze fotos
-    // abertas de saída são a parede que o reveal existe para desmontar — e o
-    // teste é o único lugar em que isso se prova sem clicar.
+  it('mostra as doze fotos no primeiro desenho, sem botão-convite', () => {
+    // O pedido do dono, em uma frase: "deixe essa seção sempre aberta". Houve
+    // uma versão com um botão "ver os exemplos" na frente do quadro, e ela
+    // cobrava um toque para mostrar justamente o conteúdo da etapa. Este teste
+    // é o que segura a volta dela: o primeiro desenho da página já é o quadro.
     const inicial = renderToStaticMarkup(<ExemplosDeFotos />);
-    expect(inicial).not.toContain('<img');
-    expect(inicial).not.toContain('/manual/fotos/');
-    expect(inicial).toContain('Ver os 12 exemplos de fotos');
+    expect([...inicial.matchAll(/<img/g)].length).toBe(12);
+    expect(inicial).toContain('/manual/fotos/');
+    expect(inicial).toContain('Assim serve');
+    expect(inicial).toContain('Assim não serve');
+    // Nenhum `<button>` no primeiro desenho: o convite era um, e cobrar a
+    // ausência do ELEMENTO pega qualquer redação nova do mesmo botão.
+    expect(inicial).not.toContain('<button');
   });
 
   it('faz os doze cartões entrarem um a um, os que servem primeiro', () => {
-    // A prova possível sem DOM: todos os doze nascem em `opacity:0` (logo,
-    // ENTRAM) e a ordem do markup é serve → não serve, que é a ordem do atraso.
+    // A entrada escalonada sobreviveu à queda do convite: a etapa monta quando
+    // o cliente chega nela, e é aí que os cartões entram. A prova possível sem
+    // DOM: todos os doze nascem em `opacity:0` (logo, ENTRAM) e a ordem do
+    // markup é serve → não serve, que é a ordem do atraso.
     const html = renderToStaticMarkup(<Quadro />);
     expect(cartoesEntrando(html)).toBe(12);
     expect(html.indexOf('serve-de-frente')).toBeLessThan(html.indexOf('nao-serve-'));
   });
 
   it('entrega os doze de uma vez a quem pediu menos movimento', () => {
-    // Reveal em conta-gotas para quem pediu menos movimento é o contrário do
-    // que foi pedido: o quadro tem de nascer inteiro, sem estilo de transição.
+    // Quadro em conta-gotas para quem pediu menos movimento é o contrário do
+    // que foi pedido: ele tem de nascer inteiro, sem estilo de transição.
     preferencia.reduzido = true;
     try {
       const html = renderToStaticMarkup(<Quadro />);
@@ -317,7 +380,7 @@ describe('o quadro que se revela', () => {
 
   it('põe o guia em PDF em destaque, em aba nova, desde o primeiro instante', () => {
     // O guia é o elemento de maior destaque da seção — o botão CHEIO, branco
-    // sobre preto. Ele não espera o reveal: aparece antes e continua depois.
+    // sobre preto —, e é ele que responde "como tiro uma que sirva".
     const inicial = renderToStaticMarkup(<ExemplosDeFotos />);
     expect(inicial).toContain('href="/manual/guia-de-fotos.pdf"');
     expect(inicial).toContain('target="_blank"');
