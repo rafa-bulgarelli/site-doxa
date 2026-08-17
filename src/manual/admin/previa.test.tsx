@@ -217,12 +217,24 @@ describe('a prévia no lugar do cliente', () => {
     expect(html).not.toContain('<input');
   });
 
-  it('o capítulo de leitura sai inteiro, com o conteúdo da versão vigente', () => {
-    const html = emPasso({ tipo: 'capitulo', indice: 0 });
-    expect(html).toContain('A sua voz');
-    expect(html).toContain('Grave num lugar silencioso');
-    expect(html).toContain('Capítulo 1 de 2');
-    expect(html).toContain('Entendi →');
+  it('o capítulo de leitura anda POR TELAS, com o conteúdo da versão vigente', () => {
+    // A parede caiu também aqui: a abertura promete o caminho e não despeja o
+    // capítulo. É de graça — a prévia reusa o fluxo do cliente, tela por tela.
+    const abertura = emPasso({ tipo: 'capitulo', indice: 0 });
+    expect(abertura).toContain('A sua voz');
+    expect(abertura).toContain('Capítulo 1 de 2');
+    expect(abertura).toContain('Começar →');
+    expect(abertura).not.toContain('Grave num lugar silencioso');
+
+    const cartao = emPasso({ tipo: 'capitulo', indice: 0, etapa: 1 });
+    expect(cartao).toContain('Grave num lugar silencioso');
+    expect(cartao).toContain('Passo 1 de 1');
+  });
+
+  it('a prévia mostra os prints reais da plataforma, um por tela', () => {
+    const html = emPasso({ tipo: 'capitulo', indice: 0, etapa: 2 });
+    expect(html).toContain('Na plataforma, é assim');
+    expect(html.match(/src="\/manual\/prints\//g)?.length).toBe(1);
   });
 
   it('o capítulo de aceites virou UMA TELA POR ITEM, e a prévia anda por elas', () => {
@@ -261,6 +273,10 @@ describe('a prévia no lugar do cliente', () => {
   it('em passo nenhum a prévia oferece concluir — nem nas etapas de item', () => {
     expect(desenhar(<Previa versao={VERSAO} />)).not.toContain(BOTAO_DE_CONCLUIR);
     expect(emPasso({ tipo: 'identificacao' })).not.toContain(BOTAO_DE_CONCLUIR);
+    // As telas novas do capítulo de leitura entram na mesma prova: cartão e
+    // print são passo do fluxo, e passo do fluxo não pode gravar aceite.
+    expect(emPasso({ tipo: 'capitulo', indice: 0, etapa: 1 })).not.toContain(BOTAO_DE_CONCLUIR);
+    expect(emPasso({ tipo: 'capitulo', indice: 0, etapa: 2 })).not.toContain(BOTAO_DE_CONCLUIR);
     expect(emPasso({ tipo: 'capitulo', indice: 1 })).not.toContain(BOTAO_DE_CONCLUIR);
     expect(emPasso({ tipo: 'capitulo', indice: 1, etapa: 1 })).not.toContain(BOTAO_DE_CONCLUIR);
     expect(emPasso({ tipo: 'capitulo', indice: 1, etapa: 2 })).not.toContain(BOTAO_DE_CONCLUIR);
