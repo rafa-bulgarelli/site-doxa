@@ -23,7 +23,6 @@ import {
   etapaDeRetomada,
   etapasDo,
   faltamNa,
-  feitioDo,
   impedimentosDoAceite,
   informativasDa,
   marcadasCanonicas,
@@ -152,10 +151,11 @@ describe('capítulos e termos', () => {
   });
 
   it('o feitio do capítulo sai dos dados, nunca do slug', () => {
-    expect(feitioDo(S1)).toBe('aceites');
-    expect(feitioDo(secao('so-leitura', 9, [regra('x', 1, { obrigatoria: false })]))).toBe(
-      'leitura',
-    );
+    // Com obrigatória, o capítulo cobra aceite; sem nenhuma, só explica. Quem
+    // diz isso agora é a forma das ETAPAS — não existe mais um "feitio" à parte.
+    expect(etapasDo(S1).some((etapa) => etapa.tipo === 'item')).toBe(true);
+    const soLeitura = secao('so-leitura', 9, [regra('x', 1, { obrigatoria: false })]);
+    expect(etapasDo(soLeitura).some((etapa) => etapa.tipo === 'item')).toBe(false);
     expect(informativasDa(S1).map((r) => r.id)).toEqual(['r3']);
   });
 });
@@ -195,9 +195,24 @@ describe('as etapas de um capítulo', () => {
     ]);
   });
 
-  it('capítulo sem obrigatória continua sendo uma leitura só', () => {
-    const soLeitura = secao('so-leitura', 9, [regra('x', 1, { obrigatoria: false })]);
-    expect(etapasDo(soLeitura).map((etapa) => etapa.tipo)).toEqual(['leitura']);
+  it('capítulo sem obrigatória vira UMA TELA POR CARTÃO — a parede morreu', () => {
+    const soLeitura = secao('so-leitura', 9, [
+      regra('x', 1, { obrigatoria: false }),
+      regra('y', 2, { obrigatoria: false }),
+    ]);
+    const etapas = etapasDo(soLeitura);
+    expect(etapas.map((etapa) => etapa.tipo)).toEqual(['intro', 'cartao', 'cartao']);
+    // A promessa do caminho sai da conta das telas, nunca escrita à mão.
+    expect(etapas[0]).toEqual({ tipo: 'intro', itens: 0, passos: 2 });
+    expect(etapas.map((etapa) => (etapa.tipo === 'cartao' ? etapa.regra.id : null))).toEqual([
+      null,
+      'x',
+      'y',
+    ]);
+  });
+
+  it('capítulo vazio abre e fecha na intro, sem tela órfã', () => {
+    expect(etapasDo(secao('vazio', 9, [])).map((etapa) => etapa.tipo)).toEqual(['intro']);
   });
 
   it('sem informativa não há interlúdio para desenhar', () => {
@@ -206,7 +221,7 @@ describe('as etapas de um capítulo', () => {
 
   it('o capítulo do clone ganha a etapa dos exemplos de foto, no fim', () => {
     const clone = secao('clone', 8, [regra('c1', 1, { obrigatoria: false })]);
-    expect(etapasDo(clone).map((etapa) => etapa.tipo)).toEqual(['leitura', 'fotos']);
+    expect(etapasDo(clone).map((etapa) => etapa.tipo)).toEqual(['intro', 'cartao', 'fotos']);
   });
 
   it('o gate agora é por ETAPA: cada item cobra a confirmação dele mesmo', () => {
@@ -244,8 +259,159 @@ describe('as etapas de um capítulo', () => {
     // Tudo marcado: a última etapa, e não o item 1 de novo — reandar um
     // caminho terminado é o jeito rápido de o cliente fechar a aba.
     expect(etapaDeRetomada(S1, ['r1', 'r2'])).toBe(3);
-    // Capítulo sem item nenhum abre no começo, que é a única etapa que ele tem.
+    // Capítulo sem item nenhum abre no começo, que é a intro.
     expect(etapaDeRetomada(secao('so-leitura', 9, [regra('x', 1, { obrigatoria: false })]), [])).toBe(0);
+  });
+});
+
+/* ─── OS PRINTS DA PLATAFORMA, ANCORADOS NO CARTÃO QUE ELES PROVAM ─────────── */
+
+describe('os prints entram como etapa, na âncora deles', () => {
+  /** O onboarding real: os códigos ON-1 e ON-2 são as âncoras da série 12.2x. */
+  const ONBOARDING = secao('onboarding', 1, [
+    regra('on-1', 1, { obrigatoria: false }),
+    regra('on-2', 2, { obrigatoria: false }),
+  ]);
+
+  it('o print entra na tela SEGUINTE à do cartão que ele prova', () => {
+    const etapas = etapasDo(ONBOARDING);
+    expect(etapas.map((etapa) => etapa.tipo)).toEqual([
+      'intro',
+      'cartao',
+      'print',
+      'print',
+      'print',
+      'cartao',
+      'print',
+    ]);
+    // Os três prints do Doxa Scan provam o ON-1; o das redes prova o ON-2.
+    expect(etapas.map((etapa) => (etapa.tipo === 'print' ? etapa.print.slug : null))).toEqual([
+      null,
+      null,
+      'onboarding-scan',
+      'onboarding-negocio',
+      'onboarding-autoridade',
+      null,
+      'onboarding-redes',
+    ]);
+  });
+
+  it('print sem âncora vai para o fim do capítulo, na ordem em que está no dado', () => {
+    const voz = secao('voz', 2, [regra('vz-1', 1, { obrigatoria: false })]);
+    const etapas = etapasDo(voz);
+    expect(etapas.map((etapa) => etapa.tipo)).toEqual([
+      'intro',
+      'cartao',
+      'print',
+      'print',
+      'print',
+      'print',
+    ]);
+    expect(
+      etapas.flatMap((etapa) => (etapa.tipo === 'print' ? [etapa.print.slug] : [])),
+    ).toEqual(['voz-minha-voz', 'voz-clone-de-voz', 'voz-verificar', 'voz-pendente']);
+  });
+
+  it('âncora de um código que a versão não tem cai no fim — nada se perde', () => {
+    // Uma v2 antiga, com outros códigos na mesma seção: os prints continuam no
+    // caminho, só sem a costura fina com o cartão.
+    const antigo = secao('onboarding', 1, [regra('outro', 1, { obrigatoria: false })]);
+    const etapas = etapasDo(antigo);
+    expect(etapas.map((etapa) => etapa.tipo)).toEqual([
+      'intro',
+      'cartao',
+      'print',
+      'print',
+      'print',
+      'print',
+    ]);
+  });
+
+  it('capítulo sem print no mapa não ganha etapa nenhuma de print', () => {
+    expect(etapasDo(S1).some((etapa) => etapa.tipo === 'print')).toBe(false);
+  });
+});
+
+/* ─── OS PARES TRAVA → DESTRAVA ────────────────────────────────────────────── */
+
+/**
+ * A garantia como ela fica na v5: cada obrigatória seguida da informativa que
+ * conta o que ela LIBERA, e o respiro (a última informativa) fechando tudo.
+ */
+const GARANTIA_V5 = secao('garantia', 4, [
+  regra('g1', 10),
+  regra('g1p', 15, { obrigatoria: false }),
+  regra('g2', 20),
+  regra('g2p', 25, { obrigatoria: false }),
+  regra('g9', 95, { obrigatoria: false }),
+]);
+
+/** A garantia como ela está NO AR (v4): oito itens e o respiro, sem par nenhum. */
+const GARANTIA_V4 = secao('garantia', 4, [
+  regra('g1', 1),
+  regra('g2', 2),
+  regra('g9', 9, { obrigatoria: false }),
+]);
+
+describe('os pares trava → destrava', () => {
+  it('a informativa colada na obrigatória vira a destrava DELA', () => {
+    const etapas = etapasDo(GARANTIA_V5);
+    expect(etapas.map((etapa) => etapa.tipo)).toEqual([
+      'intro',
+      'item',
+      'destrava',
+      'item',
+      'destrava',
+      'respiro',
+    ]);
+    const [, item, destrava] = etapas;
+    if (item.tipo !== 'item' || destrava.tipo !== 'destrava') throw new Error('esperava o par');
+    expect(item.regra.id).toBe('g1');
+    expect(item.comDestrava).toBe(true);
+    // A trava do par é a OBRIGATÓRIA; o alívio é a informativa.
+    expect(destrava.regra.id).toBe('g1');
+    expect(destrava.alivio.id).toBe('g1p');
+  });
+
+  it('a última informativa do capítulo continua sendo o respiro, nunca uma destrava', () => {
+    const etapas = etapasDo(GARANTIA_V5);
+    const respiro = etapas[etapas.length - 1];
+    if (respiro.tipo !== 'respiro') throw new Error('esperava o respiro no fim');
+    expect(respiro.regras.map((uma) => uma.id)).toEqual(['g9']);
+  });
+
+  it('a v4 no ar não ganha par nenhum: a caixa fica no item, como sempre foi', () => {
+    const etapas = etapasDo(GARANTIA_V4);
+    expect(etapas.map((etapa) => etapa.tipo)).toEqual(['intro', 'item', 'item', 'respiro']);
+    expect(etapas.every((etapa) => etapa.tipo !== 'item' || !etapa.comDestrava)).toBe(true);
+  });
+
+  it('com par, quem trava é a DESTRAVA — e o item deixa passar', () => {
+    const [, item, destrava] = etapasDo(GARANTIA_V5);
+    expect(podeAvancarDaEtapa(item, [])).toBe(true);
+    expect(podeAvancarDaEtapa(destrava, [])).toBe(false);
+    // O que abre a porta é o id da OBRIGATÓRIA: a informativa nunca vira aceite.
+    expect(podeAvancarDaEtapa(destrava, ['g1p'])).toBe(false);
+    expect(podeAvancarDaEtapa(destrava, ['g1'])).toBe(true);
+  });
+
+  it('sem par, quem trava continua sendo o item', () => {
+    const [, item] = etapasDo(GARANTIA_V4);
+    expect(podeAvancarDaEtapa(item, [])).toBe(false);
+    expect(podeAvancarDaEtapa(item, ['g1'])).toBe(true);
+  });
+
+  it('a saída do capítulo cobra todas as obrigatórias, destrava ou não', () => {
+    const versao: Versao = { ...VERSAO, secoes: [GARANTIA_V5] };
+    const fim: Passo = { tipo: 'capitulo', indice: 0, etapa: 5 };
+    expect(podeAvancarDoPasso(fim, versao, ['g1'])).toBe(false);
+    expect(podeAvancarDoPasso(fim, versao, ['g1', 'g2'])).toBe(true);
+  });
+
+  it('a retomada cai na TRAVA do primeiro par não confirmado, não na destrava', () => {
+    expect(etapaDeRetomada(GARANTIA_V5, [])).toBe(1);
+    expect(etapaDeRetomada(GARANTIA_V5, ['g1'])).toBe(3);
+    expect(etapaDeRetomada(GARANTIA_V5, ['g1', 'g2'])).toBe(5);
   });
 });
 
