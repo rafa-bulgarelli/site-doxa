@@ -27,6 +27,15 @@ import Intacto from './itens/Intacto';
 import SemImpulso from './itens/SemImpulso';
 import SemCompra from './itens/SemCompra';
 import PergunteAntes from './itens/PergunteAntes';
+import Redes from './passos/Redes';
+import Contexto from './passos/Contexto';
+import UmCanal from './passos/UmCanal';
+import Silencio from './passos/Silencio';
+import FalaNatural from './passos/FalaNatural';
+import Gravador from './passos/Gravador';
+import FotoNitida from './passos/FotoNitida';
+import SemFiltro from './passos/SemFiltro';
+import Aproximacao from './passos/Aproximacao';
 
 /** Uma cena não recebe nada: ela conta a própria história em loop discreto. */
 export type Cena = ComponentType;
@@ -61,4 +70,26 @@ const CENAS_DOS_ITENS: Record<string, Cena> = {
 
 export function cenaDoItem(codigo: string): Cena | null {
   return CENAS_DOS_ITENS[codigo] ?? null;
+}
+
+/**
+ * A mini-cena de cada PASSO dos capítulos 1–3 — o mesmo desenho dos itens da
+ * garantia, estendido: a regra informativa que vira "Passo X de Y" abre com a
+ * animação que conta AQUELE passo. Código sem cena → passo sem ilustração,
+ * sem erro. `ON-0` é a regra nova do seed v7 (redes sociais primeiro).
+ */
+const CENAS_DOS_PASSOS: Record<string, Cena> = {
+  'ON-0': Redes,
+  'ON-1': Contexto,
+  'ON-2': UmCanal,
+  'VZ-1': Silencio,
+  'VZ-2': FalaNatural,
+  'VZ-3': Gravador,
+  'CL-1': FotoNitida,
+  'CL-2': SemFiltro,
+  'CL-3': Aproximacao,
+};
+
+export function cenaDoPasso(codigo: string): Cena | null {
+  return CENAS_DOS_PASSOS[codigo] ?? null;
 }

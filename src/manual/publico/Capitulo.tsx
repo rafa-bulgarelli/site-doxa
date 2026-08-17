@@ -18,7 +18,7 @@
  * A única exceção é o quadro de fotos do clone (`SLUG_DO_CLONE`), que é
  * ilustração e não cobra nada: slug sem quadro simplesmente não tem a etapa.
  */
-import { cenaDaSecao } from '../cenas/contrato';
+import { cenaDaSecao, cenaDoPasso } from '../cenas/contrato';
 import ExemplosDeFotos from '../cenas/ExemplosDeFotos';
 import { Interludio, TelaDoItem } from './Aceites';
 import {
@@ -44,6 +44,26 @@ import type { Regra, Secao } from '../tipos';
 
 function Cena({ slug }: { slug: string }) {
   const Desenho = cenaDaSecao(slug);
+  if (Desenho == null) return null;
+  return (
+    <div className="mb-8">
+      <Desenho />
+    </div>
+  );
+}
+
+/**
+ * A mini-cena de UM passo — o mesmo desenho que a garantia já usa no item
+ * (`Aceites.tsx`), estendido aos capítulos que só explicam: cada "Passo X de Y"
+ * abre com a animação daquele passo, e a animação é o que explica FAZENDO,
+ * antes de o texto falar.
+ *
+ * O vocabulário é o `codigo` da regra no banco, não a posição na tela: código
+ * sem cena (toda versão antiga do manual, um seed novo que renomeou) fica sem
+ * ilustração e a etapa continua inteira — sem erro e sem buraco.
+ */
+function MiniCenaDoPasso({ codigo }: { codigo: string }) {
+  const Desenho = cenaDoPasso(codigo);
   if (Desenho == null) return null;
   return (
     <div className="mb-8">
@@ -192,6 +212,10 @@ function TelaDoCartao({
 }) {
   return (
     <Entrada>
+      {/* A cena ACIMA do rótulo, como na tela do item: o desenho é a primeira
+          coisa que se vê, e "Passo 2 de 3" é orientação de onde se está — não
+          a abertura do assunto. */}
+      <MiniCenaDoPasso codigo={regra.codigo} />
       <Rotulo>
         Passo {numero} de {total}
       </Rotulo>
