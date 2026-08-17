@@ -172,27 +172,103 @@ describe('as cenas com movimento reduzido', () => {
 describe('o quadro de exemplos de foto', () => {
   const html = renderToStaticMarkup(<ExemplosDeFotos />);
 
+  interface FotoDoQuadro {
+    readonly src: string;
+    readonly alt: string;
+  }
+
+  /** Cada `<img>` do quadro, com o par src/alt que chega a quem não vê. */
+  function fotos(): readonly FotoDoQuadro[] {
+    return [...html.matchAll(/<img[^>]*>/g)].map((achado) => {
+      const tag = achado[0];
+      const src = /src="([^"]*)"/.exec(tag);
+      const alt = /alt="([^"]*)"/.exec(tag);
+      if (src == null || alt == null) throw new Error(`<img> sem src ou sem alt: ${tag}`);
+      return { src: src[1], alt: alt[1] };
+    });
+  }
+
+  const SERVE = [
+    'serve-de-frente',
+    'serve-cenario-real',
+    'serve-boa-luz',
+    'serve-natural',
+    'serve-boca-em-fala',
+    'serve-sentado',
+  ];
+  const NAO_SERVE = [
+    'nao-serve-maos-no-rosto',
+    'nao-serve-bracos-cruzados',
+    'nao-serve-de-pe',
+    'nao-serve-longe',
+    'nao-serve-reflexo',
+    'nao-serve-de-pe-sorrindo',
+  ];
+
   it('mostra os dois grupos, com o veredito escrito em palavra', () => {
     expect(html).toContain('Assim serve');
     expect(html).toContain('Assim não serve');
   });
 
-  it('dá um motivo de uma palavra a cada exemplo que não serve', () => {
-    for (const motivo of ['Escura', 'Óculos', 'Filtro', 'Longe', 'Borrada']) {
-      expect(html).toContain(motivo);
-    }
-    for (const virtude of ['De frente', 'Boa luz', 'Sorrindo', 'Fundo limpo']) {
+  it('dá um rótulo curto a cada um dos doze cartões', () => {
+    for (const virtude of [
+      'De frente',
+      'Cenário real',
+      'Boa luz',
+      'Natural',
+      'Boca em fala',
+      'Sentado',
+    ]) {
       expect(html).toContain(virtude);
+    }
+    for (const motivo of [
+      'Mãos no rosto',
+      'Braços cruzados',
+      'De pé',
+      'Longe',
+      'Reflexo',
+      'De pé, sorrindo',
+    ]) {
+      expect(html).toContain(motivo);
     }
   });
 
-  it('esconde os DESENHOS do leitor de tela, e só eles', () => {
-    // Este quadro não é uma cena: os rótulos são a informação, e um
+  it('mostra as doze fotos de verdade, seis de cada lado', () => {
+    // O caminho do asset é escrito à mão no componente: um erro de digitação
+    // some em silêncio no navegador (imagem quebrada, nada no console), e é
+    // aqui que ele tem de aparecer.
+    const encontrados = fotos().map((foto) => foto.src);
+    const esperados = [...SERVE, ...NAO_SERVE].map((nome) => `/manual/fotos/${nome}.avif`);
+    expect(encontrados).toEqual(esperados);
+  });
+
+  it('descreve cada foto para quem não a vê, e diz o veredito no fim', () => {
+    // A troca dos retratos desenhados por fotos mudou a natureza da prova de
+    // acessibilidade: antes bastava esconder o desenho, agora cada foto TEM de
+    // falar. Um alt vazio aqui seria uma coluna inteira muda.
+    const encontradas = fotos();
+    expect(encontradas.length).toBe(12);
+    for (const { src, alt } of encontradas) {
+      expect(alt.length).toBeGreaterThan(20);
+      const veredito = src.includes('/nao-serve-') ? '— não serve' : '— serve';
+      expect(alt.endsWith(veredito)).toBe(true);
+    }
+  });
+
+  it('esconde os SELOS do leitor de tela, e só eles', () => {
+    // Este quadro não é uma cena: os rótulos e os `alt` são a informação, e um
     // `aria-hidden` no bloco inteiro entregaria uma tela muda a quem mais
     // precisa da lista. Cada `aria-hidden` do markup tem de estar num `<svg>`.
     const escondidos = [...html.matchAll(/<(\w+)[^>]*aria-hidden/g)].map((achado) => achado[1]);
     expect(escondidos.length).toBeGreaterThan(0);
     expect(new Set(escondidos)).toEqual(new Set(['svg']));
+  });
+
+  it('oferece o guia de fotos em PDF, em aba nova', () => {
+    expect(html).toContain('href="/manual/guia-de-fotos.pdf"');
+    expect(html).toContain('target="_blank"');
+    expect(html).toContain('rel="noreferrer"');
+    expect(html).toContain('Baixar o guia de fotos (PDF)');
   });
 
   it('escreve o rótulo em corpo legível — nada de letra de 12px', () => {
