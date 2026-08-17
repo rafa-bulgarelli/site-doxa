@@ -5,12 +5,31 @@
  *
  * O contador sobe. As barras crescem junto, as três redes acendem uma a uma, e
  * o número fecha em 1M com o visto. A soma é o ponto: nenhuma rede sozinha
- * precisa chegar lá — é o total que conta, e é por isso que os três anéis
+ * precisa chegar lá — é o total que conta, e é por isso que os três fios
  * apontam para o MESMO número.
+ *
+ * ─── O QUE MUDOU NA RODADA DO POLIMENTO ──────────────────────────────────────
+ *
+ * 1. **A rede virou o ícone de verdade.** Antes era um glifo genérico (play,
+ *    quadrado, anel) preso dentro de um círculo cinza, e o dono nomeou o defeito
+ *    duas vezes: "afogado", "enforcado". O círculo era a jaula. Agora vem de
+ *    `redes.tsx` — YouTube, TikTok, Instagram desenhados soltos, com o respiro
+ *    que eles já têm, e mais espaçados um do outro.
+ *
+ * 2. **Acender virou uma passagem, não um estalo.** A rede apagada e a rede
+ *    acesa são o MESMO glifo desenhado duas vezes, uma por cima da outra: o que
+ *    anima é a opacidade da de cima. Trocar a cor no atributo mudaria o desenho
+ *    entre dois quadros — cross-fade é o que faz a rede "acender" em vez de
+ *    "trocar".
+ *
+ * 3. **O número ENTRA subindo.** O contador remonta a cada valor (`key`), então
+ *    o valor novo nasce um pouco abaixo e sobe até o lugar. Um `<text>` que só
+ *    troca de conteúdo pisca; este sobe, que é o gesto de um contador.
  */
-import { Legenda, Marca, TINTA } from '../pecas';
-import { ARCO, Brilho, Faiscas, TracoDeLuz, corDoArco, useTintas } from '../luz';
-import { MiniPalco, Sinal, TRES_REDES } from './comuns';
+import { Legenda, Marca, TINTA, TRACO, TRACO_ACESO } from '../pecas';
+import { Brilho, Faiscas, TracoDeLuz, corDoArco, useTintas } from '../luz';
+import { MiniPalco } from './comuns';
+import { IconeDaRede, REDES_REAIS } from '../redes';
 import { motion } from 'framer-motion';
 import { EASE, tempo, useRoteiro } from '../tempo';
 
@@ -32,7 +51,30 @@ const BARRAS = [
 ] as const;
 
 const BASE = 120;
-const REDE_Y = [34, 75, 116] as const;
+
+/**
+ * Onde a soma acontece: o número no meio do palco.
+ *
+ * O corpo é 48, e não os 54 de antes, por uma razão que só aparece na fase do
+ * meio: "320K" tem quatro caracteres e, em 54, a perna do K entrava embaixo dos
+ * fios que chegam em 322 — o número ficava rabiscado justamente no quadro em
+ * que ele é a informação. Em 48, e com o centro 16 à esquerda, sobra folga.
+ */
+const SOMA_X = 244;
+const SOMA_Y = 76;
+const SOMA_CORPO = 48;
+
+/**
+ * A coluna das redes e a altura de cada uma.
+ *
+ * 43 de passo para um ícone de 32: sobra folga de 11 entre um glifo e o
+ * seguinte, e 16 de margem para a borda de cima e a de baixo do palco. Com o
+ * círculo de antes, o mesmo passo deixava dois anéis quase encostados — sem a
+ * jaula, o espaço que sobra é o que faz os três respirarem.
+ */
+const REDE_X = 412;
+const REDE_Y = [32, 75, 118] as const;
+const REDE_TAMANHO = 32;
 
 /** As barras do acumulado: sobem juntas e ganham cor do arco da esquerda à direita. */
 function Barras({ fase, parado }: { fase: number; parado: boolean }) {
@@ -49,9 +91,9 @@ function Barras({ fase, parado }: { fase: number; parado: boolean }) {
           initial={{ attrY: BASE - altura, height: altura }}
           animate={{ attrY: BASE - altura, height: altura }}
           transition={{
-            duration: tempo(parado, 0.6),
+            duration: tempo(parado, 0.75),
             ease: EASE,
-            delay: tempo(parado, indice * 0.06),
+            delay: tempo(parado, indice * 0.08),
           }}
         />
       ))}
@@ -59,44 +101,65 @@ function Barras({ fase, parado }: { fase: number; parado: boolean }) {
   );
 }
 
-/** Os três anéis somando no mesmo número. */
-function Redes({ acesas, parado }: { acesas: number; parado: boolean }) {
+/** O contador da soma — o valor novo nasce embaixo e sobe até o lugar. */
+function Contador({ valor, parado }: { valor: string; parado: boolean }) {
+  return (
+    <motion.g
+      initial={{ opacity: parado ? 1 : 0, y: parado ? 0 : 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: tempo(parado, 0.55), ease: EASE }}
+    >
+      <Legenda x={SOMA_X} y={SOMA_Y + 14} corpo={SOMA_CORPO} tinta="arco">
+        {valor}
+      </Legenda>
+    </motion.g>
+  );
+}
+
+/** Uma rede: o glifo apagado, o mesmo glifo aceso por cima e o fio até a soma. */
+function Rede({ indice, acesa, parado }: { indice: number; acesa: boolean; parado: boolean }) {
   const tintas = useTintas();
+  const rede = REDES_REAIS[indice];
+  const y = REDE_Y[indice];
   return (
     <g>
-      {TRES_REDES.map((rede, indice) => {
-        const acesa = indice < acesas;
-        const cy = REDE_Y[indice];
-        return (
-          <g key={rede}>
-            {acesa && (
-              <TracoDeLuz
-                d={`M 396 ${cy} C 360 ${cy}, 350 76, 322 76`}
-                cor={tintas('arco')}
-                largura={1.6}
-                halo={2.6}
-                parado={parado}
-                riscando
-                duracao={0.6}
-                atraso={indice * 0.12}
-              />
-            )}
-            <Sinal
-              rede={rede}
-              cx={418}
-              cy={cy}
-              raio={18}
-              cor={acesa ? ARCO[indice + 2] : TINTA.linha}
-            />
-          </g>
-        );
-      })}
+      {/*
+       * O halo é curto (26) de propósito: três clarões de 40 empilhados nesta
+       * coluna se somavam numa mancha quente só, e o que se via do lado direito
+       * do palco era a mancha, não as três redes.
+       */}
+      <Brilho x={REDE_X} y={y} raio={26} tinta="luzQuente" aceso={acesa} parado={parado} />
+      {acesa && (
+        <TracoDeLuz
+          d={`M ${REDE_X - 26} ${y} C 360 ${y}, 350 ${SOMA_Y}, 322 ${SOMA_Y}`}
+          cor={tintas('arco')}
+          largura={1.6}
+          halo={2.6}
+          parado={parado}
+          riscando
+          duracao={0.7}
+          atraso={indice * 0.14}
+        />
+      )}
+      <IconeDaRede rede={rede} x={REDE_X} y={y} tamanho={REDE_TAMANHO} cor={TRACO} acesa={false} />
+      <motion.g
+        initial={{ opacity: parado && acesa ? 1 : 0 }}
+        animate={{ opacity: acesa ? 1 : 0 }}
+        transition={{
+          duration: tempo(parado, 0.55),
+          ease: EASE,
+          delay: tempo(parado, indice * 0.14),
+        }}
+      >
+        <IconeDaRede rede={rede} x={REDE_X} y={y} tamanho={REDE_TAMANHO} cor={TRACO_ACESO} />
+      </motion.g>
     </g>
   );
 }
 
 export default function Meta() {
   const { fase, parado } = useRoteiro(FASES, VISTO);
+  const acesas = REDES_ACESAS[fase];
 
   return (
     <MiniPalco fase={fase}>
@@ -105,18 +168,18 @@ export default function Meta() {
         90 dias
       </Legenda>
 
-      <Brilho x={264} y={70} raio={92} tinta="luz" aceso={fase >= CHEIO} parado={parado} />
-      <Legenda x={264} y={90} corpo={54} tinta="arco">
-        {VALORES[fase]}
-      </Legenda>
-      <Faiscas x={264} y={70} raio={78} ativo={fase === CHEIO} parado={parado} quantidade={9} />
+      <Brilho x={SOMA_X} y={SOMA_Y - 6} raio={92} tinta="luz" aceso={fase >= CHEIO} parado={parado} />
+      <Contador key={VALORES[fase]} valor={VALORES[fase]} parado={parado} />
+      <Faiscas x={SOMA_X} y={SOMA_Y - 6} raio={78} ativo={fase === CHEIO} parado={parado} quantidade={9} />
 
-      <Redes acesas={REDES_ACESAS[fase]} parado={parado} />
+      {REDES_REAIS.map((rede, indice) => (
+        <Rede key={rede} indice={indice} acesa={indice < acesas} parado={parado} />
+      ))}
 
       {fase === VISTO && (
         <g>
-          <Brilho x={264} y={126} raio={40} tinta="luzCerta" aceso parado={parado} />
-          <Marca tipo="certo" x={264} y={126} cor={TINTA.protege} escala={0.95} parado={parado} />
+          <Brilho x={SOMA_X} y={126} raio={40} tinta="luzCerta" aceso parado={parado} />
+          <Marca tipo="certo" x={SOMA_X} y={126} cor={TINTA.protege} escala={0.95} parado={parado} />
         </g>
       )}
     </MiniPalco>
