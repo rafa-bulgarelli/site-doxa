@@ -28,25 +28,30 @@
  *    `alt` de cada foto são a informação — quem usa leitor de tela ouve a foto
  *    descrita E o veredito. Escondidos ficam só os SELOS, que são desenho.
  *
- * ─── E POR QUE OS DOZE NÃO NASCEM NA TELA ────────────────────────────────────
+ * ─── E POR QUE OS DOZE JÁ NASCEM NA TELA ─────────────────────────────────────
  *
- * Doze fotos abertas de uma vez são uma parede: quem chega rola por elas como
- * quem rola por um banco de imagens, e nenhuma é olhada. Agora existe um
- * convite ("ver os exemplos"), e os cartões ENTRAM um a um — primeiro os seis
- * que servem, depois os seis que não servem. O escalonamento é o que faz o olho
- * pousar em cada foto por um instante, que é justamente o que se pede que a
- * pessoa faça com a foto dela.
+ * O quadro fica SEMPRE ABERTO — sem botão, sem clique, sem "ver os exemplos".
+ * Houve uma versão com convite, e ela custava um toque para mostrar aquilo que
+ * é o próprio conteúdo da etapa: quem chega em "sua foto" chegou para ver foto.
+ * Um clique a mais entre a pessoa e a resposta é um lugar a mais para ela
+ * desistir, e o quadro escondido não ensina ninguém.
+ *
+ * O que ficou da versão anterior é a ENTRADA: os cartões aparecem um a um na
+ * montagem da etapa — primeiro os seis que servem, depois os seis que não
+ * servem. O escalonamento é o que faz o olho pousar em cada foto por um
+ * instante, que é justamente o que se pede que a pessoa faça com a foto dela; a
+ * etapa monta quando o cliente chega nela, então a entrada continua caindo no
+ * momento em que ele está olhando.
  *
  * A ordem da entrada é a ordem da GRADE, e isso é decisão, não descuido: um
  * atraso que pula de um canto para o outro do quadro lê como pisca-pisca, e
- * reordenar os cartões para "revelar numa ordem melhor" mudaria as posições de
+ * reordenar os cartões para "entrar numa ordem melhor" mudaria as posições de
  * um quadro que já foi aprovado como está.
  *
  * `useReducedMotion` entrega os doze de uma vez, sem entrada nenhuma — quem
  * pediu menos movimento continua recebendo o quadro inteiro, e não um quadro
  * que aparece em conta-gotas.
  */
-import { useState } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
 import type { MotionProps } from 'framer-motion';
 import { EASE } from './tempo';
@@ -263,11 +268,11 @@ function Grupo({ titulo, serve, exemplos, inicio, animar }: GrupoProps) {
 }
 
 /**
- * Os doze cartões, sem estado nenhum — é este pedaço que o teste desenha.
+ * Os doze cartões — o miolo do quadro, exportado para o teste desenhar sozinho.
  *
- * Ele existe separado do componente de fora por um motivo prático: o teste roda
- * em `renderToStaticMarkup`, onde não há clique. Sem um miolo exportado, provar
- * que os doze `alt` continuam de pé exigiria um DOM e uma dependência nova.
+ * Ele continua separado do componente de fora depois que o convite caiu: é a
+ * unidade que o teste cobra foto a foto (`src`, rótulo e `alt`) sem arrastar
+ * junto o botão do guia, que é outro assunto e tem o seu próprio teste.
  */
 export function Quadro() {
   const animar = !(useReducedMotion() ?? false);
@@ -285,16 +290,7 @@ export function Quadro() {
   );
 }
 
-/* ─── O CONVITE E O GUIA ───────────────────────────────────────────────────── */
-
-// O desenho do botão secundário de `publico/pecas`, repetido de propósito:
-// `cenas/` não importa de `publico/` (é a direção de import do módulo), e uma
-// peça compartilhada só para esta classe custaria mais do que a repetição.
-const BOTAO_SECUNDARIO =
-  'inline-flex min-h-[52px] w-full items-center justify-center gap-2 rounded-full ' +
-  'border border-white/[0.14] px-6 text-[17px] text-white/80 transition-colors ' +
-  'hover:bg-white/[0.06] hover:text-white focus-visible:outline-none focus-visible:ring-2 ' +
-  'focus-visible:ring-white/70 focus-visible:ring-offset-2 focus-visible:ring-offset-doxa-bg';
+/* ─── O GUIA ───────────────────────────────────────────────────────────────── */
 
 /** O botão branco e cheio: o elemento mais claro — e mais alto — da seção. */
 const BOTAO_DO_GUIA =
@@ -302,15 +298,6 @@ const BOTAO_DO_GUIA =
   'bg-white px-6 text-[18px] font-medium text-black transition-colors hover:bg-white/90 ' +
   'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70 ' +
   'focus-visible:ring-offset-2 focus-visible:ring-offset-doxa-bg';
-
-/** O convite que abre o quadro — nada aparece antes de alguém pedir. */
-function Convite({ aoAbrir }: { aoAbrir: () => void }) {
-  return (
-    <button type="button" onClick={aoAbrir} className={BOTAO_SECUNDARIO}>
-      Ver os 12 exemplos de fotos
-    </button>
-  );
-}
 
 /**
  * O guia completo, e o elemento de maior destaque da seção.
@@ -343,13 +330,12 @@ function GuiaEmPdf() {
 }
 
 export default function ExemplosDeFotos() {
-  const [revelado, setRevelado] = useState(false);
-  // Nada de `focus()` no quadro recém-aberto: foco na montagem é o que faz a
-  // página rolar sozinha neste site (as seções são `lazy`), e o quadro já nasce
-  // exatamente onde o botão estava.
+  // Sem estado e sem `focus()`: o quadro inteiro nasce na tela, e foco na
+  // montagem é justamente o que faz a página rolar sozinha neste site (as
+  // seções são `lazy`, então uma delas monta depois do primeiro desenho).
   return (
     <div className="space-y-6">
-      {revelado ? <Quadro /> : <Convite aoAbrir={() => setRevelado(true)} />}
+      <Quadro />
       <GuiaEmPdf />
     </div>
   );
