@@ -45,7 +45,7 @@ import Intacto from './itens/Intacto';
 import SemImpulso from './itens/SemImpulso';
 import SemCompra from './itens/SemCompra';
 import PergunteAntes from './itens/PergunteAntes';
-import ExemplosDeFotos from './ExemplosDeFotos';
+import ExemplosDeFotos, { Quadro } from './ExemplosDeFotos';
 import { cenaDaSecao, cenaDoItem } from './contrato';
 
 interface CenaDoTeste {
@@ -169,8 +169,17 @@ describe('as cenas com movimento reduzido', () => {
   }
 });
 
+/**
+ * O quadro agora tem duas metades, e o teste segue a divisão:
+ *
+ * - `Quadro` é o miolo puro, os doze cartões — é dele que se cobra a foto, o
+ *   rótulo e o `alt`, porque é ele que a pessoa vê depois de pedir para ver.
+ * - `ExemplosDeFotos` é o de fora, com o estado do reveal. Sem DOM não há
+ *   clique, então dele se cobra o ESTADO INICIAL: o convite existe, as doze
+ *   fotos ainda não, e o guia em PDF está lá desde o primeiro instante.
+ */
 describe('o quadro de exemplos de foto', () => {
-  const html = renderToStaticMarkup(<ExemplosDeFotos />);
+  const html = renderToStaticMarkup(<Quadro />);
 
   interface FotoDoQuadro {
     readonly src: string;
@@ -264,14 +273,58 @@ describe('o quadro de exemplos de foto', () => {
     expect(new Set(escondidos)).toEqual(new Set(['svg']));
   });
 
-  it('oferece o guia de fotos em PDF, em aba nova', () => {
-    expect(html).toContain('href="/manual/guia-de-fotos.pdf"');
-    expect(html).toContain('target="_blank"');
-    expect(html).toContain('rel="noreferrer"');
-    expect(html).toContain('Baixar o guia de fotos (PDF)');
-  });
-
   it('escreve o rótulo em corpo legível — nada de letra de 12px', () => {
     expect(html).toContain('text-[16px]');
+  });
+});
+
+describe('o quadro que se revela', () => {
+  /** Os `<li>` que nascem invisíveis, esperando a vez de entrar. */
+  function cartoesEntrando(html: string): number {
+    return [...html.matchAll(/<li[^>]*style="opacity:0/g)].length;
+  }
+
+  it('não mostra foto nenhuma antes de alguém pedir para ver', () => {
+    // O estado inicial é o que chega no primeiro desenho da página. Doze fotos
+    // abertas de saída são a parede que o reveal existe para desmontar — e o
+    // teste é o único lugar em que isso se prova sem clicar.
+    const inicial = renderToStaticMarkup(<ExemplosDeFotos />);
+    expect(inicial).not.toContain('<img');
+    expect(inicial).not.toContain('/manual/fotos/');
+    expect(inicial).toContain('Ver os 12 exemplos de fotos');
+  });
+
+  it('faz os doze cartões entrarem um a um, os que servem primeiro', () => {
+    // A prova possível sem DOM: todos os doze nascem em `opacity:0` (logo,
+    // ENTRAM) e a ordem do markup é serve → não serve, que é a ordem do atraso.
+    const html = renderToStaticMarkup(<Quadro />);
+    expect(cartoesEntrando(html)).toBe(12);
+    expect(html.indexOf('serve-de-frente')).toBeLessThan(html.indexOf('nao-serve-'));
+  });
+
+  it('entrega os doze de uma vez a quem pediu menos movimento', () => {
+    // Reveal em conta-gotas para quem pediu menos movimento é o contrário do
+    // que foi pedido: o quadro tem de nascer inteiro, sem estilo de transição.
+    preferencia.reduzido = true;
+    try {
+      const html = renderToStaticMarkup(<Quadro />);
+      expect(cartoesEntrando(html)).toBe(0);
+      expect([...html.matchAll(/<img/g)].length).toBe(12);
+    } finally {
+      preferencia.reduzido = false;
+    }
+  });
+
+  it('põe o guia em PDF em destaque, em aba nova, desde o primeiro instante', () => {
+    // O guia é o elemento de maior destaque da seção — o botão CHEIO, branco
+    // sobre preto. Ele não espera o reveal: aparece antes e continua depois.
+    const inicial = renderToStaticMarkup(<ExemplosDeFotos />);
+    expect(inicial).toContain('href="/manual/guia-de-fotos.pdf"');
+    expect(inicial).toContain('target="_blank"');
+    expect(inicial).toContain('rel="noreferrer"');
+    expect(inicial).toContain('Baixe nosso guia de fotos');
+    expect(inicial).toContain('como tirar as suas melhores fotos');
+    expect(inicial).toContain('bg-white');
+    expect(inicial).toContain('text-black');
   });
 });
