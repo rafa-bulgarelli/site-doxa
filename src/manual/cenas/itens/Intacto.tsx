@@ -1,145 +1,306 @@
 /**
- * ─── MINI-CENA: INTACTO (GA-5) ───────────────────────────────────────────────
+ * ─── MINI-CENA: O LACRE (GA-5) ───────────────────────────────────────────────
  *
  * O item: **o vídeo vai no ar exatamente como foi entregue.**
  *
- * O arquivo sai da DOXA e chega publicado do outro lado — e o sinal de igual
- * entre os dois é a regra inteira. Aí a tesoura, a música e a marca d'água
- * tentam encostar, e as três são recusadas em vermelho.
+ * O vídeo sai da tela da DOXA com um lacre aceso e atravessa até a tela do
+ * publicado. No meio do caminho UMA tesoura desce para encostar nele e bate num
+ * arco vermelho: não passa. O vídeo chega ao ar com o MESMO lacre — nem um
+ * traço diferente — e o visto verde fecha a cena. Baixou, publicou, não mexeu.
  *
- * O igual acende ANTES das ferramentas aparecerem de propósito: primeiro a
- * pessoa vê o que é para acontecer, depois o que não é. Na ordem contrária, a
- * cena vira uma lista de proibições, e proibição sem promessa não convence
- * ninguém.
+ * O lacre não muda de cor em nenhum instante, e isso é o argumento inteiro: o
+ * verde do fim está na moldura do publicado e no visto, não nele. Um lacre que
+ * troca de cor no fim seria um lacre que foi mexido.
+ *
+ * ─── POR QUE ESTA VERSÃO EXISTE (a anterior foi reprovada) ───────────────────
+ *
+ * A primeira Intacto punha TRÊS ferramentas ao mesmo tempo, cada uma presa
+ * dentro de um selo redondo apertado, sobre setas em degradê e duas barras
+ * coloridas — e o veredito do dono foi "grossa, junta, sem hierarquia, tudo
+ * colorido, horrível; clássico exemplo do que não fazer". O conserto não é de
+ * traço, é de QUANTIDADE: uma ferramenta só, o ícone solto (sem a jaula do
+ * círculo em volta), base inteira em cinza e branco, VERMELHO só no instante da
+ * recusa e VERDE só no veredito. O que sobra respira, e é por isso que sobra.
  */
-import { Marca, TINTA } from '../pecas';
-import { ARCO, Brilho, CERTO, Faiscas, QUEBRA, TracoDeLuz } from '../luz';
-import { Cartao, MiniPalco, Selo } from './comuns';
+import { Marca, Painel, TINTA, TRACO, TRACO_ACESO } from '../pecas';
+import { Brilho, CERTO, Faiscas, QUEBRA, TracoDeLuz, useTintas } from '../luz';
+import { MiniPalco } from './comuns';
 import { motion } from 'framer-motion';
-import { tempo, useRoteiro } from '../tempo';
+import { EASE, tempo, useRoteiro } from '../tempo';
 
-const FASES = [1200, 1500, 1800, 2400] as const;
-const IGUAL = 1;
-const TENTAM = 2;
-const INTACTO = 3;
+/** Sai da DOXA · atravessa · a tesoura é barrada · chega ao ar. */
+const FASES = [1200, 1400, 1800, 2600] as const;
+const ATRAVESSA = 1;
+const BARRADA = 2;
+const NO_AR = 3;
 
-/** A tesoura, a música e a marca d'água: os três jeitos de encostar no vídeo. */
-const FERRAMENTAS = [
-  {
-    x: 168,
-    glifo: 'M -9 -10 L 7 7 M 9 -10 L -7 7 M -9 10 a 3.2 3.2 0 1 0 0.1 0 M 9 10 a 3.2 3.2 0 1 0 0.1 0',
-  },
-  { x: 240, glifo: 'M -4 8 v -17 l 13 -3 v 17 M -4 8 a 4 3.2 0 1 0 0.1 0 M 9 5 a 4 3.2 0 1 0 0.1 0' },
-  { x: 312, glifo: 'M -9 -9 h 18 v 18 h -18 z M 1 1 h 6 v 6 h -6 z' },
-] as const;
+/**
+ * A altura do percurso: as duas telas e o vídeo vivem todos nesta linha.
+ *
+ * Ela desce um pouco abaixo do meio do palco de propósito — a faixa de cima
+ * é onde a tesoura desce, e ela precisa caber inteira, com folga do arco que a
+ * barra e da borda da moldura.
+ */
+const LINHA_Y = 84;
+const MEIO_X = 240;
 
-interface RecusadasProps {
-  readonly visivel: boolean;
-  /** Depois do veredito elas continuam na tela, mas fracas: já foram negadas. */
-  readonly esmaecendo: boolean;
-  readonly parado: boolean;
-}
+/** As duas telas: a da DOXA e a do publicado, do mesmo tamanho, bem afastadas. */
+const TELA_Y = 46;
+const TELA_L = 112;
+const TELA_A = 76;
+const ORIGEM_X = 14;
+const DESTINO_X = 354;
+const ORIGEM_CENTRO = ORIGEM_X + TELA_L / 2;
+const DESTINO_CENTRO = DESTINO_X + TELA_L / 2;
 
-/** As três recusadas, cada uma com o seu corte. */
-function Recusadas({ visivel, esmaecendo, parado }: RecusadasProps) {
-  const forca = esmaecendo ? 0.3 : 1;
+/**
+ * Onde o vídeo está em cada fase, e quanto do trilho já ficou aceso atrás dele.
+ *
+ * O meio do caminho é a parada de DUAS fases: o vídeo chega nele e fica parado
+ * enquanto a tesoura tenta. Uma posição intermediária a mais faria o cartão
+ * encostar na moldura da origem e cobrir o trecho aceso do trilho — o percurso
+ * sumiria justo na fase que existe para mostrá-lo.
+ */
+const PARADA = [ORIGEM_CENTRO, MEIO_X, MEIO_X, DESTINO_CENTRO] as const;
+const PERCORRIDO = [0, 0.5, 0.5, 1] as const;
+
+/** O trilho entre as duas telas — começa e termina longe das molduras. */
+const TRILHO = 'M 134 84 H 346';
+
+/**
+ * O cartão do vídeo é bem menor que a moldura das telas: caixa dentro de caixa
+ * com dois dedos de folga lê como erro de alinhamento, e com quinze lê como um
+ * vídeo DENTRO de uma tela.
+ */
+const CARTAO_L = 78;
+const CARTAO_A = 46;
+
+/** O play do vídeo, à esquerda do cartão. */
+const PLAY = `M -27 ${LINHA_Y - 10} L -12 ${LINHA_Y} L -27 ${LINHA_Y + 10} z`;
+
+/**
+ * O lacre: o anel, o ponto no meio e as duas fitas caindo.
+ *
+ * É o selo de cera de sempre, e não um cadeado: o cadeado já é o desenho da
+ * GA-3 ("travado até dar a hora"), e o mesmo glifo com dois sentidos em dois
+ * itens vizinhos confunde mais do que ilustra.
+ */
+const LACRE = 'M 0 -11 a 11 11 0 1 1 -0.1 0 M -5.5 10 v 8 l 5.5 -4 l 5.5 4 v -8';
+
+/**
+ * A tesoura, de lâmina para baixo: as argolas em cima, o corte descendo.
+ *
+ * O halo dela é magro (menos de duas vezes o traço) porque num glifo deste
+ * tamanho um halo gordo fecha o vão das argolas e o cruzamento das lâminas — o
+ * que sobra é uma mancha vermelha em forma de nada, e a cena perde a única
+ * ferramenta que tem.
+ */
+const TESOURA =
+  'M -10.4 11.5 L 8 -8 M 10.4 11.5 L -8 -8 M -10.4 -11.5 a 3.7 3.7 0 1 0 0.1 0 ' +
+  'M 10.4 -11.5 a 3.7 3.7 0 1 0 0.1 0';
+
+/** O arco que barra a tesoura: um escudo curto, logo acima do cartão. */
+const BARREIRA = 'M 202 52 Q 240 32 278 52';
+
+/**
+ * O caminho, em duas passadas: o pontilhado do trajeto todo e o traço aceso do
+ * que já foi andado.
+ *
+ * São dois `path` separados de propósito: `pathLength` e `strokeDasharray`
+ * disputam o mesmo atributo, e animar o comprimento de uma linha pontilhada
+ * devolve um pontilhado que anda, não uma linha que cresce.
+ */
+function Trilho({ percorrido, parado }: { percorrido: number; parado: boolean }) {
   return (
     <g>
-      {FERRAMENTAS.map(({ x, glifo }, indice) => (
-        <motion.g
-          key={x}
-          initial={false}
-          animate={{ opacity: visivel ? forca : 0, y: visivel ? 0 : -12 }}
-          transition={{ duration: tempo(parado, 0.45), delay: tempo(parado, indice * 0.12) }}
-        >
-          <Selo x={x} y={30} glifo={glifo} cor={QUEBRA} raio={22} parado={parado} />
-          <TracoDeLuz
-            d={`M ${x - 20} ${48} L ${x + 20} ${12}`}
-            cor={QUEBRA}
-            largura={2.4}
-            halo={2.4}
-            parado={parado}
-          />
-        </motion.g>
-      ))}
+      <path
+        d={TRILHO}
+        fill="none"
+        stroke={TRACO}
+        strokeWidth={1.6}
+        strokeDasharray="5 9"
+        strokeLinecap="round"
+      />
+      <motion.path
+        d={TRILHO}
+        fill="none"
+        stroke={TRACO_ACESO}
+        strokeWidth={1.8}
+        strokeLinecap="round"
+        initial={{ pathLength: percorrido }}
+        animate={{ pathLength: percorrido }}
+        transition={{ duration: tempo(parado, 0.9), ease: EASE }}
+      />
     </g>
   );
 }
 
 /**
- * O caminho do arquivo: seta, igual, seta.
+ * O vídeo lacrado, viajando.
  *
- * O igual é DESENHADO, e não escrito: em serifa, num corpo que caiba entre as
- * duas setas, o glifo "=" vira dois fiapos de dois pixels.
+ * O deslocamento é a PRÓPRIA animação, então o desenho nasce todo em volta do
+ * zero horizontal: um `translate` no mesmo nó que anima seria apagado pelo
+ * `transform` que o framer escreve no primeiro quadro.
  */
-function Trilho({ publicou, parado }: { publicou: boolean; parado: boolean }) {
+function VideoLacrado({ x, parado }: { x: number; parado: boolean }) {
+  const tintas = useTintas();
+  const caixa = {
+    x: -CARTAO_L / 2,
+    y: LINHA_Y - CARTAO_A / 2,
+    width: CARTAO_L,
+    height: CARTAO_A,
+    rx: 11,
+  } as const;
+  return (
+    <motion.g
+      // `initial` com a posição da vez, e não `initial={false}`: dentro de um
+      // SVG o framer só escreve o `transform` depois de MEDIR o nó, e quem
+      // desenha o mesmo componente sem medida — o `renderToStaticMarkup` do
+      // teste, e qualquer conferência por SSR — recebe o cartão na origem do
+      // palco, metade dele fora da moldura. Com o valor em `initial` a
+      // intenção fica no código, e não só no navegador.
+      initial={{ x }}
+      animate={{ x }}
+      transition={{ duration: tempo(parado, 0.9), ease: EASE }}
+    >
+      <rect {...caixa} fill={TINTA.superficie} />
+      <rect {...caixa} fill={tintas('vidro')} />
+      <rect {...caixa} fill="none" stroke={TRACO_ACESO} strokeWidth={1.5} />
+      <path d={PLAY} fill={TRACO_ACESO} />
+      <g transform={`translate(16 ${LINHA_Y - 5})`}>
+        <TracoDeLuz d={LACRE} cor={TINTA.branco} largura={2} halo={2.4} parado={parado} />
+        <circle cx={0} cy={0} r={3.3} fill={TINTA.branco} />
+      </g>
+    </motion.g>
+  );
+}
+
+/** A tesoura desce, encosta no arco e some — a única ferramenta da cena. */
+function Tesoura({ tentando, parado }: { tentando: boolean; parado: boolean }) {
+  const alvo = { opacity: tentando ? 1 : 0, y: tentando ? 0 : -32 };
+  return (
+    // O `translate` fica no grupo de FORA: o framer escreve `transform` no nó
+    // que anima, e o deslocamento seria apagado no primeiro quadro.
+    <g transform={`translate(${MEIO_X} 22)`}>
+      <motion.g
+        initial={alvo}
+        animate={alvo}
+        transition={{ duration: tempo(parado, 0.5), ease: EASE }}
+      >
+        <TracoDeLuz d={TESOURA} cor={QUEBRA} largura={2.1} halo={1.9} parado={parado} />
+      </motion.g>
+    </g>
+  );
+}
+
+/**
+ * A tela da DOXA.
+ *
+ * Ela esmaece quando o vídeo sai dela: a atenção anda junto com o que está
+ * acontecendo, e uma caixa vazia acesa no canto disputaria o olho com a tela
+ * que importa.
+ */
+function TelaDaDoxa({ fase, parado }: { fase: number; parado: boolean }) {
   return (
     <g>
-      {publicou && (
-        <TracoDeLuz
-          d="M 142 84 h 48 m -14 -9 l 14 9 l -14 9"
-          cor={ARCO[3]}
-          largura={2}
-          halo={2.4}
-          parado={parado}
-          riscando
-          duracao={0.6}
-        />
-      )}
-      <motion.g
-        initial={false}
-        animate={{ opacity: publicou ? 1 : 0.25 }}
-        transition={{ duration: tempo(parado, 0.5) }}
-      >
-        <rect x={218} y={76} width={44} height={7} rx={3.5} fill={ARCO[1]} />
-        <rect x={218} y={92} width={44} height={7} rx={3.5} fill={ARCO[4]} />
-      </motion.g>
-      {publicou && (
-        <TracoDeLuz
-          d="M 290 84 h 48 m -14 -9 l 14 9 l -14 9"
-          cor={ARCO[4]}
-          largura={2}
-          halo={2.4}
-          parado={parado}
-          riscando
-          duracao={0.6}
-          atraso={0.2}
-        />
-      )}
+      <Brilho
+        x={ORIGEM_CENTRO}
+        y={LINHA_Y}
+        raio={74}
+        tinta="luz"
+        aceso={fase <= ATRAVESSA}
+        parado={parado}
+      />
+      <Painel
+        x={ORIGEM_X}
+        y={TELA_Y}
+        largura={TELA_L}
+        altura={TELA_A}
+        raio={12}
+        cor={fase === 0 ? TRACO_ACESO : TRACO}
+        vidro
+      />
+    </g>
+  );
+}
+
+/** A tela do publicado: um contorno tracejado esperando, e verde quando enche. */
+function TelaDoPublicado({ chegou, parado }: { chegou: boolean; parado: boolean }) {
+  return (
+    <g>
+      <Brilho
+        x={DESTINO_CENTRO}
+        y={LINHA_Y}
+        raio={78}
+        tinta="luzCerta"
+        aceso={chegou}
+        parado={parado}
+      />
+      <Painel
+        x={DESTINO_X}
+        y={TELA_Y}
+        largura={TELA_L}
+        altura={TELA_A}
+        raio={12}
+        cor={chegou ? undefined : TINTA.linha}
+        tinta={chegou ? 'certo' : undefined}
+        tracejado={!chegou}
+        vidro={chegou}
+      />
+    </g>
+  );
+}
+
+/** O arco vermelho — o único vermelho da cena, e só enquanto a tesoura tenta. */
+function Barreira({ parado }: { parado: boolean }) {
+  return (
+    <g>
+      <Brilho x={MEIO_X} y={44} raio={68} tinta="luzQuebra" aceso parado={parado} achatar={0.6} />
+      <TracoDeLuz
+        d={BARREIRA}
+        cor={QUEBRA}
+        largura={3}
+        halo={2.6}
+        parado={parado}
+        riscando
+        duracao={0.45}
+        atraso={0.3}
+      />
+    </g>
+  );
+}
+
+/** O veredito: o visto no canto da tela que recebeu o vídeo, e as faíscas. */
+function Veredito({ parado }: { parado: boolean }) {
+  return (
+    <g>
+      <Marca tipo="certo" x={464} y={128} cor={TINTA.protege} escala={0.9} parado={parado} />
+      <Faiscas
+        x={DESTINO_CENTRO}
+        y={LINHA_Y}
+        raio={64}
+        ativo
+        parado={parado}
+        quantidade={8}
+        cores={[CERTO]}
+      />
     </g>
   );
 }
 
 export default function Intacto() {
-  const { fase, parado } = useRoteiro(FASES, INTACTO);
-  const publicou = fase >= IGUAL;
+  const { fase, parado } = useRoteiro(FASES, NO_AR);
+  const chegou = fase >= NO_AR;
 
   return (
     <MiniPalco fase={fase}>
-      <Brilho x={78} y={92} raio={72} tinta="luzQuente" aceso parado={parado} />
-      <Cartao x={26} y={62} largura={104} altura={62} cor={ARCO[0]} tinta="arco" vidro />
-
-      <Trilho publicou={publicou} parado={parado} />
-
-      <Brilho x={402} y={92} raio={76} tinta="luzCerta" aceso={fase >= INTACTO} parado={parado} />
-      <Cartao
-        x={350}
-        y={62}
-        largura={104}
-        altura={62}
-        cor={fase >= INTACTO ? CERTO : TINTA.linha}
-        tinta={fase >= INTACTO ? 'certo' : undefined}
-        vidro={publicou}
-      />
-
-      <Recusadas visivel={fase >= TENTAM} esmaecendo={fase >= INTACTO} parado={parado} />
-
-      {fase >= INTACTO && (
-        <g>
-          <Marca tipo="certo" x={440} y={116} cor={TINTA.protege} escala={0.85} parado={parado} />
-          <Faiscas x={402} y={92} raio={62} ativo parado={parado} quantidade={7} cores={[CERTO]} />
-        </g>
-      )}
+      <TelaDaDoxa fase={fase} parado={parado} />
+      <Trilho percorrido={PERCORRIDO[fase]} parado={parado} />
+      <TelaDoPublicado chegou={chegou} parado={parado} />
+      <VideoLacrado x={PARADA[fase]} parado={parado} />
+      {fase === BARRADA && <Barreira parado={parado} />}
+      <Tesoura tentando={fase === BARRADA} parado={parado} />
+      {chegou && <Veredito parado={parado} />}
     </MiniPalco>
   );
 }
