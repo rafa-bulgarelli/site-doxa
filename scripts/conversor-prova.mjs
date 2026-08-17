@@ -195,7 +195,14 @@ async function main() {
   }
 
   const { clientId, clientSecret } = lerAmbiente();
-  const entrada = await readFile(caminho);
+  // O ENOENT cru ecoaria o caminho digitado — e o caminho carrega o nome do
+  // contrato, que esta saída não pode imprimir (ela é colada em report).
+  let entrada;
+  try {
+    entrada = await readFile(caminho);
+  } catch {
+    throw new Error('nao consegui ler o arquivo do caminho informado — confira o caminho e tente de novo');
+  }
   console.log(`entrada: ${entrada.byteLength} bytes`);
 
   const comeco = Date.now();
@@ -215,7 +222,13 @@ async function main() {
     console.log(`tempo total: ${Date.now() - comeco} ms`);
     console.log('gravado ao lado do original, mesmo nome, extensao .docx');
   } finally {
-    console.log(`limpeza: HTTP ${await apagarAsset(auth, assetID)}`);
+    // A limpeza não pode ENGOLIR o erro da conversão: um throw aqui dentro
+    // substituiria o diagnóstico real pelo da rede.
+    try {
+      console.log(`limpeza: HTTP ${await apagarAsset(auth, assetID)}`);
+    } catch {
+      console.log('limpeza: falhou (rede) — o asset expira sozinho no provedor');
+    }
   }
 }
 
