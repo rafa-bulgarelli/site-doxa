@@ -121,6 +121,32 @@ const CLONE: Secao = {
   ],
 };
 
+/**
+ * O onboarding também fica FORA da `VERSAO`, pelo mesmo motivo do clone: ele
+ * existe aqui para provar os prints reais da plataforma, e dentro da versão
+ * mudaria a contagem que a abertura promete.
+ */
+const ONBOARDING: Secao = {
+  id: 's-onboarding',
+  slug: 'onboarding',
+  titulo: 'O onboarding',
+  descricao: 'As respostas do onboarding são a matéria-prima dos seus vídeos.',
+  ordem: 8,
+  regras: [
+    {
+      id: 'ob1',
+      codigo: 'OB-1',
+      titulo: 'Responda concreto',
+      instrucao: 'Nada de resposta genérica.',
+      porque: 'É desse texto que saem os roteiros.',
+      exemplo: 'Diga o número, não "muitos clientes".',
+      severidade: 'normal',
+      obrigatoria: false,
+      ordem: 1,
+    },
+  ],
+};
+
 const TERMOS: Secao = {
   id: 's-termos',
   slug: 'termos',
@@ -433,6 +459,69 @@ describe('as telas do caminho', () => {
     );
     expect(html).not.toContain('<a href');
     expect(html).toContain('Baixar meu comprovante em PDF');
+  });
+});
+
+/* ─── OS PRINTS REAIS DA PLATAFORMA ────────────────────────────────────────── */
+
+/** Um capítulo solto, fora da `VERSAO` — para não mexer na contagem da abertura. */
+function capituloAvulso(secao: Secao, etapa = 0): string {
+  return desenhar(
+    <Capitulo
+      capitulo={secao}
+      posicao={1}
+      total={1}
+      etapa={etapa}
+      marcadas={[]}
+      aoAlternar={nada}
+      aoAvancar={nada}
+      aoVoltar={nada}
+    />,
+  );
+}
+
+/** As tags `<img>` de print que a tela produziu, inteiras, para inspecionar. */
+function imagensDePrint(html: string): string[] {
+  return html.match(/<img[^>]*src="\/manual\/prints\/[^>]*>/g) ?? [];
+}
+
+function altDe(tag: string): string {
+  return /alt="([^"]*)"/.exec(tag)?.[1] ?? '';
+}
+
+describe('os prints reais da plataforma', () => {
+  it('o capítulo do onboarding mostra os 3 prints, depois dos cartões', () => {
+    const html = capituloAvulso(ONBOARDING);
+    expect(html).toContain('Na plataforma, é assim');
+    expect(html.match(/src="\/manual\/prints\/onboarding-/g)?.length).toBe(3);
+    expect(imagensDePrint(html)).toHaveLength(3);
+    // O cartão vem ANTES do print: primeiro o que fazer, depois onde fazer.
+    expect(html.indexOf('Responda concreto')).toBeLessThan(html.indexOf('/manual/prints/'));
+  });
+
+  it('o capítulo da voz mostra os 2 prints', () => {
+    const html = capitulo(0);
+    expect(html.match(/src="\/manual\/prints\/voz-/g)?.length).toBe(2);
+    expect(imagensDePrint(html)).toHaveLength(2);
+    // Print não substitui o texto do capítulo — ele entra junto.
+    expect(html).toContain('Grave num lugar silencioso');
+  });
+
+  it('todo print carrega alt de verdade e reserva o próprio espaço', () => {
+    for (const tag of [...imagensDePrint(capituloAvulso(ONBOARDING)), ...imagensDePrint(capitulo(0))]) {
+      // `alt` descritivo: a imagem carrega informação que não está escrita.
+      expect(altDe(tag).length).toBeGreaterThan(40);
+      expect(tag).toContain('width="1400"');
+      expect(tag).toMatch(/height="\d+"/);
+      expect(tag).toContain('loading="lazy"');
+    }
+  });
+
+  it('capítulo sem print não abre o bloco', () => {
+    for (const html of [capituloAvulso(CLONE), capitulo(1)]) {
+      expect(html).not.toContain('/manual/prints/');
+      expect(html).not.toContain('Na plataforma, é assim');
+    }
   });
 });
 
