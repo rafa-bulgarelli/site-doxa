@@ -67,14 +67,23 @@ const Manual = lazy(() => import('./manual/Rota'));
 const Conversor = lazy(() => import('./conversor/Rota'));
 
 /**
+ * O painel do time, na rota `/admin`.
+ *
+ * A porta de entrada das outras três: uma senha, e dali sai o menu com todas as
+ * ferramentas internas. `lazy` pelo mesmo motivo delas — quem veio ver a página
+ * de vendas não baixa um byte de um painel que não tem login para abrir.
+ */
+const Admin = lazy(() => import('./admin/Rota'));
+
+/**
  * Qual página está sendo pedida.
  *
- * Um `switch` no caminho, e não um roteador: o site tem QUATRO rotas, e nenhuma
- * navega para as outras — a Central, o manual e o conversor se chegam por URL
- * colada, não por link da landing. `react-router` resolveria isto com 12 kB e
- * um provider em volta da página inteira; a navegação que existe de verdade é
- * interna ao manual, e o roteador dela vive lá dentro, do tamanho que ela
- * precisa.
+ * Um `switch` no caminho, e não um roteador: o site tem CINCO rotas, e a única
+ * que aponta para as outras é o painel — a Central, o manual e o conversor se
+ * chegam por URL colada ou por um cartão de `/admin`, nunca por link da
+ * landing. `react-router` resolveria isto com 12 kB e um provider em volta da
+ * página inteira; a navegação que existe de verdade é interna ao manual, e o
+ * roteador dela vive lá dentro, do tamanho que ela precisa.
  *
  * A `vercel.json` já reescreve tudo para o `index.html`, então qualquer uma
  * delas chega aqui inteira depois de um recarregamento ou de um link colado.
@@ -91,6 +100,18 @@ function ehManual() {
 function ehConversor() {
   const caminho = window.location.pathname.replace(/\/+$/, '');
   return caminho === ROTA_DO_CONVERSOR || caminho.startsWith(`${ROTA_DO_CONVERSOR}/`);
+}
+
+/**
+ * O painel: caminho EXATO, sem prefixo.
+ *
+ * As outras duas casam por prefixo porque têm caminho interno; esta não pode,
+ * porque `/manual-doxa/admin` é a área do time DENTRO do manual e um teste de
+ * prefixo mal escrito a roubaria para cá. `/admin` é uma tela só, e nada mora
+ * embaixo dela.
+ */
+function ehAdmin() {
+  return window.location.pathname.replace(/\/+$/, '') === '/admin';
 }
 
 /**
@@ -184,6 +205,7 @@ export default function App() {
   const [naCentral] = useState(ehCentralDeLeads);
   const [noManual] = useState(ehManual);
   const [noConversor] = useState(ehConversor);
+  const [noPainel] = useState(ehAdmin);
 
   /**
    * Os pedaços de baixo, buscados assim que o navegador fica ocioso.
@@ -339,6 +361,14 @@ export default function App() {
     return (
       <Suspense fallback={<div className="min-h-screen bg-doxa-bg" aria-hidden />}>
         <Conversor />
+      </Suspense>
+    );
+  }
+
+  if (noPainel) {
+    return (
+      <Suspense fallback={<div className="min-h-screen bg-doxa-bg" aria-hidden />}>
+        <Admin />
       </Suspense>
     );
   }
