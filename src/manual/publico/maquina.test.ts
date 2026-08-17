@@ -307,9 +307,11 @@ describe('os prints entram como etapa, na âncora deles', () => {
       'print',
       'print',
     ]);
+    // A ordem é a do que ACONTECE: enviar as amostras, ver a verificação
+    // pendente, fazer a verificação — e só então o treinamento.
     expect(
       etapas.flatMap((etapa) => (etapa.tipo === 'print' ? [etapa.print.slug] : [])),
-    ).toEqual(['voz-minha-voz', 'voz-clone-de-voz', 'voz-verificar', 'voz-pendente']);
+    ).toEqual(['voz-minha-voz', 'voz-clone-de-voz', 'voz-pendente', 'voz-verificar']);
   });
 
   it('âncora de um código que a versão não tem cai no fim — nada se perde', () => {
@@ -332,11 +334,15 @@ describe('os prints entram como etapa, na âncora deles', () => {
   });
 });
 
-/* ─── OS PARES TRAVA → DESTRAVA ────────────────────────────────────────────── */
+/* ─── A INFORMATIVA ENSANDUICHADA NÃO VIRA TELA ────────────────────────────── */
 
 /**
- * A garantia como ela fica na v5: cada obrigatória seguida da informativa que
- * conta o que ela LIBERA, e o respiro (a última informativa) fechando tudo.
+ * A garantia como ela está NOS DADOS da v5: cada obrigatória seguida de uma
+ * informativa ("o que isso libera"), e o `g9` — o Respire — fechando.
+ *
+ * O convite FIXA a versão, então o cliente que abriu um link da v5 vai ler
+ * estes dados para sempre. É por isso que esta fixture não some junto com a v6:
+ * ela é o mundo real de alguém.
  */
 const GARANTIA_V5 = secao('garantia', 4, [
   regra('g1', 10),
@@ -346,72 +352,71 @@ const GARANTIA_V5 = secao('garantia', 4, [
   regra('g9', 95, { obrigatoria: false }),
 ]);
 
-/** A garantia como ela está NO AR (v4): oito itens e o respiro, sem par nenhum. */
+/** A garantia como ela está NO AR (v4): os itens e o respiro, nada no meio. */
 const GARANTIA_V4 = secao('garantia', 4, [
   regra('g1', 1),
   regra('g2', 2),
   regra('g9', 9, { obrigatoria: false }),
 ]);
 
-describe('os pares trava → destrava', () => {
-  it('a informativa colada na obrigatória vira a destrava DELA', () => {
-    const etapas = etapasDo(GARANTIA_V5);
-    expect(etapas.map((etapa) => etapa.tipo)).toEqual([
-      'intro',
-      'item',
-      'destrava',
-      'item',
-      'destrava',
-      'respiro',
-    ]);
-    const [, item, destrava] = etapas;
-    if (item.tipo !== 'item' || destrava.tipo !== 'destrava') throw new Error('esperava o par');
-    expect(item.regra.id).toBe('g1');
-    expect(item.comDestrava).toBe(true);
-    // A trava do par é a OBRIGATÓRIA; o alívio é a informativa.
-    expect(destrava.regra.id).toBe('g1');
-    expect(destrava.alivio.id).toBe('g1p');
+describe('a informativa no meio do capítulo que cobra aceite', () => {
+  it('NÃO vira etapa nenhuma: o caminho da v5 é o mesmo da v4', () => {
+    const daV5 = etapasDo(GARANTIA_V5).map((etapa) => etapa.tipo);
+    expect(daV5).toEqual(['intro', 'item', 'item', 'respiro']);
+    // A contagem de telas bate com a da v4 — nenhuma tela nasceu do dado novo.
+    expect(daV5).toEqual(etapasDo(GARANTIA_V4).map((etapa) => etapa.tipo));
+    expect(etapasDo(GARANTIA_V5).length).toBe(etapasDo(GARANTIA_V4).length);
   });
 
-  it('a última informativa do capítulo continua sendo o respiro, nunca uma destrava', () => {
+  it('o respiro é a série FINAL de informativas — a do MEIO fica de fora', () => {
     const etapas = etapasDo(GARANTIA_V5);
     const respiro = etapas[etapas.length - 1];
     if (respiro.tipo !== 'respiro') throw new Error('esperava o respiro no fim');
-    expect(respiro.regras.map((uma) => uma.id)).toEqual(['g9']);
+    // Depois do último item vêm `g2p` e `g9`: essa é a série final, e ela cabe
+    // numa tela. A `g1p`, ensanduichada entre os itens, não aparece em lugar
+    // nenhum — empilhar as 8 "Pode" da v5 aqui era a parede que o dono reprovou.
+    expect(respiro.regras.map((uma) => uma.id)).toEqual(['g2p', 'g9']);
+    expect(respiro.regras.some((uma) => uma.id === 'g1p')).toBe(false);
   });
 
-  it('a v4 no ar não ganha par nenhum: a caixa fica no item, como sempre foi', () => {
-    const etapas = etapasDo(GARANTIA_V4);
-    expect(etapas.map((etapa) => etapa.tipo)).toEqual(['intro', 'item', 'item', 'respiro']);
-    expect(etapas.every((etapa) => etapa.tipo !== 'item' || !etapa.comDestrava)).toBe(true);
+  it('informativa do meio some do capítulo inteiro, não só do respiro', () => {
+    const noMeio = secao('garantia', 4, [
+      regra('g1', 10),
+      regra('g1p', 15, { obrigatoria: false }),
+      regra('g2', 20),
+    ]);
+    const etapas = etapasDo(noMeio);
+    expect(etapas.map((etapa) => etapa.tipo)).toEqual(['intro', 'item', 'item']);
+    const ids = etapas.flatMap((etapa) => {
+      if (etapa.tipo === 'item') return [etapa.regra.id];
+      return etapa.tipo === 'respiro' ? etapa.regras.map((uma) => uma.id) : [];
+    });
+    expect(ids).toEqual(['g1', 'g2']);
   });
 
-  it('com par, quem trava é a DESTRAVA — e o item deixa passar', () => {
-    const [, item, destrava] = etapasDo(GARANTIA_V5);
-    expect(podeAvancarDaEtapa(item, [])).toBe(true);
-    expect(podeAvancarDaEtapa(destrava, [])).toBe(false);
-    // O que abre a porta é o id da OBRIGATÓRIA: a informativa nunca vira aceite.
-    expect(podeAvancarDaEtapa(destrava, ['g1p'])).toBe(false);
-    expect(podeAvancarDaEtapa(destrava, ['g1'])).toBe(true);
-  });
-
-  it('sem par, quem trava continua sendo o item', () => {
-    const [, item] = etapasDo(GARANTIA_V4);
+  it('o item obrigatório trava na tela DELE, sempre — não existe mais tela do par', () => {
+    const [, item] = etapasDo(GARANTIA_V5);
     expect(podeAvancarDaEtapa(item, [])).toBe(false);
     expect(podeAvancarDaEtapa(item, ['g1'])).toBe(true);
+    // Marcar a informativa não abre porta nenhuma: ela nunca vira aceite.
+    expect(podeAvancarDaEtapa(item, ['g1p'])).toBe(false);
+    const [, daV4] = etapasDo(GARANTIA_V4);
+    expect(podeAvancarDaEtapa(daV4, [])).toBe(false);
+    expect(podeAvancarDaEtapa(daV4, ['g1'])).toBe(true);
   });
 
-  it('a saída do capítulo cobra todas as obrigatórias, destrava ou não', () => {
+  it('a saída do capítulo continua cobrando TODAS as obrigatórias', () => {
     const versao: Versao = { ...VERSAO, secoes: [GARANTIA_V5] };
-    const fim: Passo = { tipo: 'capitulo', indice: 0, etapa: 5 };
+    const fim: Passo = { tipo: 'capitulo', indice: 0, etapa: 3 };
     expect(podeAvancarDoPasso(fim, versao, ['g1'])).toBe(false);
     expect(podeAvancarDoPasso(fim, versao, ['g1', 'g2'])).toBe(true);
   });
 
-  it('a retomada cai na TRAVA do primeiro par não confirmado, não na destrava', () => {
+  it('a retomada cai no primeiro item não marcado, com os dados da v5', () => {
     expect(etapaDeRetomada(GARANTIA_V5, [])).toBe(1);
-    expect(etapaDeRetomada(GARANTIA_V5, ['g1'])).toBe(3);
-    expect(etapaDeRetomada(GARANTIA_V5, ['g1', 'g2'])).toBe(5);
+    expect(etapaDeRetomada(GARANTIA_V5, ['g1'])).toBe(2);
+    // Tudo confirmado: a última etapa, que é o respiro.
+    expect(etapaDeRetomada(GARANTIA_V5, ['g1', 'g2'])).toBe(3);
   });
 });
 

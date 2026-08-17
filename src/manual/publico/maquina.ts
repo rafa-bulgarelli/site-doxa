@@ -113,11 +113,9 @@ export const SLUG_DO_CLONE = 'clone';
  *
  * `intro` abre QUALQUER capítulo (a cena grande, o título, o contexto e a
  * promessa do caminho); `cartao` é UMA regra informativa explicada sozinha;
- * `print` é UMA imagem da plataforma; `item` é UMA regra obrigatória; a
- * `destrava` é o par dela — o que a regra impede à esquerda, o que ela libera à
- * direita — e é lá que a confirmação acontece quando o par existe; `respiro` é
- * o interlúdio positivo com as informativas que sobraram; `fotos` é o quadro de
- * exemplos do clone.
+ * `print` é UMA imagem da plataforma; `item` é UMA regra obrigatória, e é na
+ * tela dele que a confirmação acontece — sempre; `respiro` é o interlúdio
+ * positivo do fim do capítulo; `fotos` é o quadro de exemplos do clone.
  *
  * Não existe mais tela que despeje o capítulo inteiro: o feitio `leitura` foi
  * removido porque era exatamente a parede de texto que o dono reprovou ("uma
@@ -127,40 +125,36 @@ export type Etapa =
   | { tipo: 'intro'; itens: number; passos: number }
   | { tipo: 'cartao'; regra: Regra; numero: number; total: number }
   | { tipo: 'print'; print: Print }
-  | { tipo: 'item'; regra: Regra; numero: number; total: number; comDestrava: boolean }
-  | { tipo: 'destrava'; regra: Regra; alivio: Regra }
+  | { tipo: 'item'; regra: Regra; numero: number; total: number }
   | { tipo: 'respiro'; regras: Regra[] }
   | { tipo: 'fotos' };
 
 /**
- * A destrava de uma obrigatória: a informativa IMEDIATAMENTE seguinte a ela.
+ * O respiro: a série FINAL de informativas do capítulo — as que vêm depois da
+ * última obrigatória. E só elas.
  *
- * É dirigido a DADOS, não a código: quem monta o par é a `ordem` do banco — na
- * v5, `GA-3` em 30 e `GA-3P` em 35 — e nada aqui conhece código de regra.
+ * A regra existe por causa de um dado que não dá para desfazer: os convites
+ * FIXAM a versão do manual, então um cliente com convite da v5 vai ler os dados
+ * da v5 (com as informativas `GA-1P`..`GA-8P` intercaladas entre os itens) para
+ * sempre. Informativa no MEIO de um capítulo que cobra aceite não vira etapa
+ * nenhuma: empilhá-las todas no respiro devolveria a parede de texto que o dono
+ * reprovou, e cada uma numa tela dobraria o caminho que ele mandou encurtar.
  *
- * A segunda condição é a que faz a v4 (a versão no ar enquanto a v5 não é
- * aplicada) continuar exatamente como está: **a última informativa do capítulo
- * é sempre o respiro, nunca a destrava de alguém**. O capítulo fecha no alívio,
- * e é por isso que o `GA-9` da v4 — informativa logo depois do `GA-8` — segue
- * sendo o interlúdio do fim, com a confirmação do GA-8 na tela dele, como
- * sempre foi. Versão sem informativa intercalada nenhuma não tem par nenhum.
+ * O `GA-9` da v4 e da v5 — a última regra do capítulo, informativa — continua
+ * sendo exatamente o que sempre foi: o interlúdio do fim. Num convite preso à
+ * v5, o `GA-8P` (que vem DEPOIS do último item) entra no respiro junto com ele:
+ * são duas notas numa tela, não oito — que é o limite entre respiro e parede.
+ *
+ * Capítulo SEM obrigatória nenhuma não passa por aqui: lá toda regra vira
+ * cartão, e nada se perde.
  */
-function destravaDe(secao: Secao, regra: Regra): Regra | undefined {
-  const regras = regrasEmOrdem(secao);
-  const indice = regras.findIndex((outra) => outra.id === regra.id) + 1;
-  const seguinte = regras[indice];
-  if (seguinte == null || seguinte.obrigatoria) return undefined;
-  return indice === regras.length - 1 ? undefined : seguinte;
-}
-
-/** As informativas que NÃO são destrava de ninguém — o alívio do fim. */
 function respiroDe(secao: Secao): Regra[] {
-  const destravas = new Set(
-    obrigatoriasDa(secao)
-      .map((regra) => destravaDe(secao, regra)?.id)
-      .filter((id): id is string => id != null),
-  );
-  return informativasDa(secao).filter((regra) => !destravas.has(regra.id));
+  const regras = regrasEmOrdem(secao);
+  let ultimaObrigatoria = -1;
+  regras.forEach((regra, indice) => {
+    if (regra.obrigatoria) ultimaObrigatoria = indice;
+  });
+  return regras.slice(ultimaObrigatoria + 1).filter((regra) => !regra.obrigatoria);
 }
 
 interface PrintsDoCapitulo {
@@ -189,11 +183,14 @@ function printsDoCapitulo(secao: Secao): PrintsDoCapitulo {
 /**
  * As etapas do capítulo, DERIVADAS dos dados.
  *
- * N obrigatórias = N telas de item (mais a destrava de cada uma que tiver par);
- * capítulo sem obrigatória = uma tela por regra, com os prints da plataforma
- * entrando logo depois do cartão que eles provam. Nada aqui conta até oito nem
- * sabe o que é a garantia: uma versão antiga do manual atravessa isto sem um
- * único caso especial, e uma versão com dez itens ganha dez telas sozinha.
+ * N obrigatórias = N telas de item; capítulo sem obrigatória = uma tela por
+ * regra, com os prints da plataforma entrando logo depois do cartão que eles
+ * provam. Nada aqui conta até oito nem sabe o que é a garantia: uma versão
+ * antiga do manual atravessa isto sem um único caso especial, e uma versão com
+ * dez itens ganha dez telas sozinha.
+ *
+ * Num capítulo que cobra aceite, informativa só aparece no RESPIRO do fim
+ * (`respiroDe`) — a do meio da lista não vira tela nenhuma.
  */
 export function etapasDo(secao: Secao): Etapa[] {
   const obrigatorias = obrigatoriasDa(secao);
@@ -204,12 +201,8 @@ export function etapasDo(secao: Secao): Etapa[] {
 
   if (obrigatorias.length > 0) {
     obrigatorias.forEach((regra, indice) => {
-      const alivio = destravaDe(secao, regra);
       const total = obrigatorias.length;
-      etapas.push({ tipo: 'item', regra, numero: indice + 1, total, comDestrava: alivio != null });
-      // A parte boa vem colada na regra que a explica: primeiro o que não pode,
-      // na tela seguinte o que continua podendo — e é ali que se confirma.
-      if (alivio != null) etapas.push({ tipo: 'destrava', regra, alivio });
+      etapas.push({ tipo: 'item', regra, numero: indice + 1, total });
       etapas.push(...printsApos(regra.codigo));
     });
     // O alívio que sobrou vem DEPOIS do último item, e sozinho na tela: no meio
@@ -243,19 +236,15 @@ export function etapaAtualDe(secao: Secao, indice: number): Etapa | undefined {
 }
 
 /**
- * O gate por ETAPA: quem cobra é a tela onde a caixa está.
+ * O gate por ETAPA: a tela do item cobra o item dela, SEMPRE.
  *
- * Sem par, a caixa fica na tela do item e é ele que trava — o comportamento de
- * sempre, e o que a v4 no ar continua fazendo. Com par, a caixa desce para a
- * destrava (não se pede aceite antes de contar a parte boa), então o item
- * deixa passar e a trava é a destrava. A confirmação continua sendo a da
- * OBRIGATÓRIA nos dois casos: a informativa nunca vira aceite.
+ * A caixa mora na tela da regra obrigatória e é ela que trava — sem exceção,
+ * sem tela intermediária, sem confirmação adiada. Só regra `obrigatoria` vira
+ * aceite: informativa não tem caixa em tela nenhuma.
  */
 export function podeAvancarDaEtapa(etapa: Etapa, marcadas: readonly string[]): boolean {
   switch (etapa.tipo) {
     case 'item':
-      return etapa.comDestrava || marcadas.includes(etapa.regra.id);
-    case 'destrava':
       return marcadas.includes(etapa.regra.id);
     case 'intro':
     case 'cartao':
@@ -298,11 +287,10 @@ export function podeAvancarDoPasso(
 /**
  * Onde reabrir DENTRO do capítulo: o primeiro item ainda não marcado.
  *
- * É a tela do ITEM, nunca a da destrava — com par, a pessoa volta para a regra
- * e lê de novo o que não pode antes de reencontrar a confirmação do outro lado.
- * Quem já marcou tudo cai na última etapa: reapresentar o item 1 a quem já o
- * confirmou é fazer a pessoa reandar um caminho que ela terminou. Capítulo sem
- * item nenhum abre no começo, que é a intro.
+ * É a tela do ITEM, que é onde a caixa está — a pessoa relê a regra e confirma
+ * ali mesmo. Quem já marcou tudo cai na última etapa: reapresentar o item 1 a
+ * quem já o confirmou é fazer a pessoa reandar um caminho que ela terminou.
+ * Capítulo sem item nenhum abre no começo, que é a intro.
  */
 export function etapaDeRetomada(secao: Secao, marcadas: readonly string[]): number {
   const etapas = etapasDo(secao);
