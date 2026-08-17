@@ -126,8 +126,12 @@ const CLONE: Secao = {
  * existe aqui para provar os prints reais da plataforma, e dentro da versão
  * mudaria a contagem que a abertura promete.
  *
- * Os códigos são os DE VERDADE (ON-1, ON-2) porque é por eles que os prints se
- * ancoram: com códigos inventados, o teste provaria uma âncora que não existe.
+ * Os códigos são os DE VERDADE (ON-0, ON-1, ON-2) porque é por eles que os
+ * prints e as mini-cenas se ancoram: com códigos inventados, o teste provaria
+ * uma âncora que não existe.
+ *
+ * É o onboarding da V7 — `ON-0`, as redes sociais, ABRE o capítulo (seed
+ * `manual-seed-v7.sql`), e o print das redes se ancora nela.
  */
 const ONBOARDING: Secao = {
   id: 's-onboarding',
@@ -136,6 +140,17 @@ const ONBOARDING: Secao = {
   descricao: 'As respostas do onboarding são a matéria-prima dos seus vídeos.',
   ordem: 8,
   regras: [
+    {
+      id: 'on0',
+      codigo: 'ON-0',
+      titulo: 'Comece pelos perfis de redes sociais',
+      instrucao: 'Preencha os links dos seus três perfis e confira letra por letra.',
+      porque: 'São esses links que a rotina de publicação usa.',
+      exemplo: 'Copie o link dentro do app da rede, sem digitar à mão.',
+      severidade: 'normal',
+      obrigatoria: false,
+      ordem: 0,
+    },
     {
       id: 'on1',
       codigo: 'ON-1',
@@ -532,28 +547,42 @@ function altDe(tag: string): string {
 
 describe('os prints reais da plataforma', () => {
   it('cada print é uma TELA sozinha — nunca uma pilha de imagens', () => {
-    // Etapa 2: a primeira depois do cartão do ON-1, que é a âncora dela.
+    // Etapa 2: a primeira depois do cartão do ON-0, que é a âncora dela.
     const html = capituloAvulso(ONBOARDING, 2);
     expect(html).toContain('Na plataforma, é assim');
     expect(imagensDePrint(html)).toHaveLength(1);
-    expect(html).toContain('/manual/prints/onboarding-scan-v2.avif');
+    expect(html).toContain('/manual/prints/onboarding-redes-v2.avif');
     // O print vem sozinho: o cartão que ele prova ficou na tela anterior.
-    expect(html).not.toContain('Um canal, uma pessoa');
+    expect(html).not.toContain('Comece pelos perfis de redes sociais');
     expect(html).toContain('Próximo →');
   });
 
   it('o print entra DEPOIS do cartão que ele prova, e cada âncora tem o seu', () => {
-    // intro · ON-1 · scan · negócio · autoridade · ON-2 · redes.
+    // intro · ON-0 · redes · ON-1 · scan · negócio · autoridade · ON-2.
     const daVez = (etapa: number): string => {
       const tags = imagensDePrint(capituloAvulso(ONBOARDING, etapa));
       return tags.length === 1 ? /src="([^"]*)"/.exec(tags[0])?.[1] ?? '' : `${tags.length} prints`;
     };
-    expect(capituloAvulso(ONBOARDING, 1)).toContain('Suas respostas viram os seus vídeos');
-    expect(daVez(2)).toBe('/manual/prints/onboarding-scan-v2.avif');
-    expect(daVez(3)).toBe('/manual/prints/onboarding-negocio-v2.avif');
-    expect(daVez(4)).toBe('/manual/prints/onboarding-autoridade-v2.avif');
-    expect(capituloAvulso(ONBOARDING, 5)).toContain('Um canal, uma pessoa');
-    expect(daVez(6)).toBe('/manual/prints/onboarding-redes-v2.avif');
+    expect(capituloAvulso(ONBOARDING, 1)).toContain('Comece pelos perfis de redes sociais');
+    expect(daVez(2)).toBe('/manual/prints/onboarding-redes-v2.avif');
+    expect(capituloAvulso(ONBOARDING, 3)).toContain('Suas respostas viram os seus vídeos');
+    expect(daVez(4)).toBe('/manual/prints/onboarding-scan-v2.avif');
+    expect(daVez(5)).toBe('/manual/prints/onboarding-negocio-v2.avif');
+    expect(daVez(6)).toBe('/manual/prints/onboarding-autoridade-v2.avif');
+    expect(capituloAvulso(ONBOARDING, 7)).toContain('Um canal, uma pessoa');
+  });
+
+  it('a legenda das redes fala do que se FAZ, e não de "no fim do onboarding"', () => {
+    // A posição mudou (as redes abrem o capítulo), então a legenda que prometia
+    // o fim do onboarding virou mentira — e ela precisa continuar verdadeira
+    // também para o convite preso à v6, onde o print cai no fim.
+    const html = capituloAvulso(ONBOARDING, 2);
+    expect(html).not.toContain('No fim do onboarding');
+    expect(html).toContain('confira letra por letra');
+    // O `alt` descreve a TELA da plataforma, e a tela não diz posição nenhuma.
+    const [tag] = imagensDePrint(html);
+    expect(altDe(tag)).toContain('Perfis de Redes Sociais');
+    expect(altDe(tag)).not.toContain('fim do onboarding');
   });
 
   it('a série da voz fecha o capítulo na ordem real: enviar, pendente, verificar', () => {
@@ -570,7 +599,7 @@ describe('os prints reais da plataforma', () => {
   });
 
   it('todo print carrega alt de verdade, é `-v2` e reserva o próprio espaço', () => {
-    const doOnboarding = [2, 3, 4, 6].map((etapa) => capituloAvulso(ONBOARDING, etapa));
+    const doOnboarding = [2, 4, 5, 6].map((etapa) => capituloAvulso(ONBOARDING, etapa));
     const daVoz = [2, 3, 4, 5].map((etapa) => capitulo(0, etapa));
     const tags = [...doOnboarding, ...daVoz].flatMap(imagensDePrint);
     // Os OITO prints da plataforma, um por tela.
@@ -594,6 +623,44 @@ describe('os prints reais da plataforma', () => {
       expect(html).not.toContain('/manual/prints/');
       expect(html).not.toContain('Na plataforma, é assim');
     }
+  });
+});
+
+/* ─── A MINI-CENA DE CADA PASSO ────────────────────────────────────────────── */
+
+/**
+ * O slot da animação na tela do "Passo X de Y".
+ *
+ * O teste afirma só o que é DECISÃO: que a tela do cartão pede a cena pelo
+ * `codigo` da regra e a desenha. Como a cena é por dentro é assunto dela — aqui
+ * `<svg` é a marca de que o desenho chegou, e as peças da tela não trazem
+ * nenhum, então ele só pode ter vindo do slot.
+ */
+describe('a mini-cena do passo, na tela do cartão', () => {
+  it('a tela de cada passo abre com a cena daquele passo', () => {
+    // As três telas de cartão do onboarding da v7: ON-0, ON-1 e ON-2.
+    for (const etapa of [1, 3, 7]) {
+      const html = capituloAvulso(ONBOARDING, etapa);
+      expect(html).toContain('Passo ');
+      expect(html).toContain('<svg');
+    }
+    // E não é privilégio do onboarding: o passo VZ-1 do capítulo da voz também.
+    expect(capitulo(0, 1)).toContain('<svg');
+  });
+
+  it('código sem cena deixa a etapa inteira, e sem ilustração nenhuma', () => {
+    // Um seed que renomeasse a regra, ou uma versão antiga do manual: o cartão
+    // continua na tela, só sem desenho. O slug também é inventado — assim nem a
+    // cena do capítulo entra na conta.
+    const semCena: Secao = {
+      ...ONBOARDING,
+      slug: 'sem-cena',
+      regras: [{ ...ONBOARDING.regras[0], id: 'xx9', codigo: 'XX-9', ordem: 1 }],
+    };
+    const html = capituloAvulso(semCena, 1);
+    expect(html).toContain('Comece pelos perfis de redes sociais');
+    expect(html).toContain('Passo 1 de 1');
+    expect(html).not.toContain('<svg');
   });
 });
 

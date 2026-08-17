@@ -105,6 +105,13 @@ const PRINTS: Record<string, readonly Print[]> = {
       altura: 747,
       apos: 'ON-1',
     },
+    // A ÂNCORA DESTE É A PRIMEIRA REGRA DO CAPÍTULO, não a última: da v7 em
+    // diante o `ON-0` ("Comece pelos perfis de redes sociais") abre o
+    // onboarding, e o print prova a tela logo depois dele. Num convite preso à
+    // v6 — que não tem `ON-0` — este print vira "solto" e cai no fim do
+    // capítulo, exatamente onde ele sempre esteve: a degradação é o
+    // comportamento antigo, não um erro. Por isso a legenda fala do que o
+    // cliente FAZ na plataforma, e nunca de em que tela do manual ela está.
     {
       slug: 'onboarding-redes',
       src: '/manual/prints/onboarding-redes-v2.avif',
@@ -113,11 +120,12 @@ const PRINTS: Record<string, readonly Print[]> = {
         'perfil do TikTok e canal do YouTube preenchidos com os links, e embaixo a confirmação ' +
         'em verde de que os perfis fornecidos estão corretos.',
       legenda:
-        'No fim do onboarding entram os três perfis. São eles que a rotina de publicação usa — ' +
-        'confira letra por letra antes de confirmar.',
+        'Preencha os três perfis logo no começo: Instagram, TikTok e YouTube. São eles que a ' +
+        'rotina de publicação usa — copie cada link dentro do app da rede e confira letra por ' +
+        'letra antes de confirmar.',
       largura: 960,
       altura: 583,
-      apos: 'ON-2',
+      apos: 'ON-0',
     },
   ],
   // A ORDEM aqui é a ordem REAL do que acontece na plataforma: enviar as

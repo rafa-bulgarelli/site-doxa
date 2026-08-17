@@ -267,8 +267,25 @@ describe('as etapas de um capítulo', () => {
 /* ─── OS PRINTS DA PLATAFORMA, ANCORADOS NO CARTÃO QUE ELES PROVAM ─────────── */
 
 describe('os prints entram como etapa, na âncora deles', () => {
-  /** O onboarding real: os códigos ON-1 e ON-2 são as âncoras da série 12.2x. */
+  /**
+   * O onboarding da V7: `ON-0` (as redes sociais) abre o capítulo, e é nela que
+   * o print das redes se ancora. Os códigos são os DE VERDADE porque é por eles
+   * que os prints se ancoram — com códigos inventados, o teste provaria uma
+   * âncora que não existe.
+   */
   const ONBOARDING = secao('onboarding', 1, [
+    regra('on-0', 0, { obrigatoria: false }),
+    regra('on-1', 1, { obrigatoria: false }),
+    regra('on-2', 2, { obrigatoria: false }),
+  ]);
+
+  /**
+   * O onboarding da V6 — o mundo de quem tem convite ABERTO hoje.
+   *
+   * Não é fixture morta: o convite FIXA a versão, então esse cliente vai ler a
+   * v6 até concluir. Sem `ON-0`, o print das redes fica sem âncora viva.
+   */
+  const ONBOARDING_V6 = secao('onboarding', 1, [
     regra('on-1', 1, { obrigatoria: false }),
     regra('on-2', 2, { obrigatoria: false }),
   ]);
@@ -279,21 +296,54 @@ describe('os prints entram como etapa, na âncora deles', () => {
       'intro',
       'cartao',
       'print',
+      'cartao',
+      'print',
       'print',
       'print',
       'cartao',
-      'print',
     ]);
-    // Os três prints do Doxa Scan provam o ON-1; o das redes prova o ON-2.
+    // O print das redes prova o ON-0, que ABRE o capítulo; os três do Doxa Scan
+    // provam o ON-1. O ON-2 fecha sem print nenhum.
     expect(etapas.map((etapa) => (etapa.tipo === 'print' ? etapa.print.slug : null))).toEqual([
       null,
+      null,
+      'onboarding-redes',
       null,
       'onboarding-scan',
       'onboarding-negocio',
       'onboarding-autoridade',
       null,
+    ]);
+  });
+
+  it('sem o ON-0 (um convite preso à v6) o print das redes cai no FIM, como hoje', () => {
+    const etapas = etapasDo(ONBOARDING_V6);
+    expect(etapas.map((etapa) => etapa.tipo)).toEqual([
+      'intro',
+      'cartao',
+      'print',
+      'print',
+      'print',
+      'cartao',
+      'print',
+    ]);
+    // A degradação é o comportamento ANTIGO, não um erro: a âncora `ON-0` não
+    // existe nessa versão, o print vira solto e fecha o capítulo.
+    expect(etapas.flatMap((etapa) => (etapa.tipo === 'print' ? [etapa.print.slug] : []))).toEqual([
+      'onboarding-scan',
+      'onboarding-negocio',
+      'onboarding-autoridade',
       'onboarding-redes',
     ]);
+    // O das redes é a ÚLTIMA tela do capítulo — o lugar dele hoje, no ar.
+    const ultima = etapas[etapas.length - 1];
+    if (ultima.tipo !== 'print') throw new Error('esperava um print fechando o capítulo');
+    expect(ultima.print.slug).toBe('onboarding-redes');
+    // E nenhuma tela some no caminho: são os mesmos quatro prints das duas
+    // versões, só em lugares diferentes.
+    expect(etapas.filter((etapa) => etapa.tipo === 'print')).toHaveLength(
+      etapasDo(ONBOARDING).filter((etapa) => etapa.tipo === 'print').length,
+    );
   });
 
   it('print sem âncora vai para o fim do capítulo, na ordem em que está no dado', () => {
