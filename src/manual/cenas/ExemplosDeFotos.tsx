@@ -27,7 +27,29 @@
  *    inteiras; este quadro não é uma cena. Rótulos, títulos dos grupos e o
  *    `alt` de cada foto são a informação — quem usa leitor de tela ouve a foto
  *    descrita E o veredito. Escondidos ficam só os SELOS, que são desenho.
+ *
+ * ─── E POR QUE OS DOZE NÃO NASCEM NA TELA ────────────────────────────────────
+ *
+ * Doze fotos abertas de uma vez são uma parede: quem chega rola por elas como
+ * quem rola por um banco de imagens, e nenhuma é olhada. Agora existe um
+ * convite ("ver os exemplos"), e os cartões ENTRAM um a um — primeiro os seis
+ * que servem, depois os seis que não servem. O escalonamento é o que faz o olho
+ * pousar em cada foto por um instante, que é justamente o que se pede que a
+ * pessoa faça com a foto dela.
+ *
+ * A ordem da entrada é a ordem da GRADE, e isso é decisão, não descuido: um
+ * atraso que pula de um canto para o outro do quadro lê como pisca-pisca, e
+ * reordenar os cartões para "revelar numa ordem melhor" mudaria as posições de
+ * um quadro que já foi aprovado como está.
+ *
+ * `useReducedMotion` entrega os doze de uma vez, sem entrada nenhuma — quem
+ * pediu menos movimento continua recebendo o quadro inteiro, e não um quadro
+ * que aparece em conta-gotas.
  */
+import { useState } from 'react';
+import { motion, useReducedMotion } from 'framer-motion';
+import type { MotionProps } from 'framer-motion';
+import { EASE } from './tempo';
 
 interface Exemplo {
   /** O caminho literal do asset — escrito à mão, um por cartão. */
@@ -133,6 +155,15 @@ const NAO_SERVE: readonly Exemplo[] = [
 const VERDE = '#34D399';
 const VERMELHO = '#F87171';
 
+/**
+ * O intervalo entre um cartão e o próximo, em segundos.
+ *
+ * Doze cartões a 0,09 fecham a revelação em pouco mais de um segundo e meio
+ * contando a transição do último. Mais lento que isso e o quadro vira espera;
+ * mais rápido e os doze aparecem juntos, que é o que se está tentando evitar.
+ */
+const PASSO = 0.09;
+
 /* ─── O CARTÃO E OS DOIS GRUPOS ────────────────────────────────────────────── */
 
 /** O selo do veredito: o visto verde ou o xis vermelho, sempre com a palavra. */
@@ -153,9 +184,29 @@ function Selo({ serve }: { serve: boolean }) {
   );
 }
 
-function Cartao({ exemplo, serve }: { exemplo: Exemplo; serve: boolean }) {
+interface CartaoProps {
+  readonly exemplo: Exemplo;
+  readonly serve: boolean;
+  /** A posição do cartão na revelação inteira — 0 a 11, não 0 a 5. */
+  readonly ordem: number;
+  readonly animar: boolean;
+}
+
+function Cartao({ exemplo, serve, ordem, animar }: CartaoProps) {
+  // Sem animação, o `motion.li` desenha um `<li>` limpo, sem estilo inline: é o
+  // mesmo cartão de antes, e não uma cópia dele parada no fim da transição.
+  const entrada: MotionProps = animar
+    ? {
+        initial: { opacity: 0, y: 14 },
+        animate: { opacity: 1, y: 0 },
+        transition: { duration: 0.45, ease: EASE, delay: ordem * PASSO },
+      }
+    : {};
   return (
-    <li className="overflow-hidden rounded-2xl border border-doxa-line bg-doxa-surface">
+    <motion.li
+      {...entrada}
+      className="overflow-hidden rounded-2xl border border-doxa-line bg-doxa-surface"
+    >
       {/* A moldura manda no formato; `object-cover` absorve as proporções
           diferentes das fotos sem esticar ninguém. */}
       <div className="aspect-[4/5] w-full bg-doxa-raised">
@@ -173,19 +224,20 @@ function Cartao({ exemplo, serve }: { exemplo: Exemplo; serve: boolean }) {
         <Selo serve={serve} />
         <span className="text-[16px] leading-tight text-white/80">{exemplo.rotulo}</span>
       </div>
-    </li>
+    </motion.li>
   );
 }
 
-function Grupo({
-  titulo,
-  serve,
-  exemplos,
-}: {
-  titulo: string;
-  serve: boolean;
-  exemplos: readonly Exemplo[];
-}) {
+interface GrupoProps {
+  readonly titulo: string;
+  readonly serve: boolean;
+  readonly exemplos: readonly Exemplo[];
+  /** Quantos cartões já entraram antes deste grupo. */
+  readonly inicio: number;
+  readonly animar: boolean;
+}
+
+function Grupo({ titulo, serve, exemplos, inicio, animar }: GrupoProps) {
   return (
     <section>
       <h4 className="flex items-center gap-2 text-[17px] font-medium text-white/85">
@@ -196,28 +248,81 @@ function Grupo({
           colunas no celular deixariam o rosto pequeno demais para julgar a luz,
           que é justamente o que se pede para olhar. */}
       <ul className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3">
-        {exemplos.map((exemplo) => (
-          <Cartao key={exemplo.src} exemplo={exemplo} serve={serve} />
+        {exemplos.map((exemplo, indice) => (
+          <Cartao
+            key={exemplo.src}
+            exemplo={exemplo}
+            serve={serve}
+            ordem={inicio + indice}
+            animar={animar}
+          />
         ))}
       </ul>
     </section>
   );
 }
 
-// O mesmo desenho do botão secundário de `publico/pecas`, repetido de propósito:
+/**
+ * Os doze cartões, sem estado nenhum — é este pedaço que o teste desenha.
+ *
+ * Ele existe separado do componente de fora por um motivo prático: o teste roda
+ * em `renderToStaticMarkup`, onde não há clique. Sem um miolo exportado, provar
+ * que os doze `alt` continuam de pé exigiria um DOM e uma dependência nova.
+ */
+export function Quadro() {
+  const animar = !(useReducedMotion() ?? false);
+  return (
+    <div className="space-y-8">
+      <Grupo titulo="Assim serve" serve exemplos={SERVE} inicio={0} animar={animar} />
+      <Grupo
+        titulo="Assim não serve"
+        serve={false}
+        exemplos={NAO_SERVE}
+        inicio={SERVE.length}
+        animar={animar}
+      />
+    </div>
+  );
+}
+
+/* ─── O CONVITE E O GUIA ───────────────────────────────────────────────────── */
+
+// O desenho do botão secundário de `publico/pecas`, repetido de propósito:
 // `cenas/` não importa de `publico/` (é a direção de import do módulo), e uma
 // peça compartilhada só para esta classe custaria mais do que a repetição.
-const BOTAO_DO_GUIA =
+const BOTAO_SECUNDARIO =
   'inline-flex min-h-[52px] w-full items-center justify-center gap-2 rounded-full ' +
   'border border-white/[0.14] px-6 text-[17px] text-white/80 transition-colors ' +
   'hover:bg-white/[0.06] hover:text-white focus-visible:outline-none focus-visible:ring-2 ' +
   'focus-visible:ring-white/70 focus-visible:ring-offset-2 focus-visible:ring-offset-doxa-bg';
 
-/** O guia completo, para quem quer ler antes de escolher a foto. */
+/** O botão branco e cheio: o elemento mais claro — e mais alto — da seção. */
+const BOTAO_DO_GUIA =
+  'inline-flex min-h-[64px] w-full items-center justify-center gap-3 rounded-full ' +
+  'bg-white px-6 text-[18px] font-medium text-black transition-colors hover:bg-white/90 ' +
+  'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70 ' +
+  'focus-visible:ring-offset-2 focus-visible:ring-offset-doxa-bg';
+
+/** O convite que abre o quadro — nada aparece antes de alguém pedir. */
+function Convite({ aoAbrir }: { aoAbrir: () => void }) {
+  return (
+    <button type="button" onClick={aoAbrir} className={BOTAO_SECUNDARIO}>
+      Ver os 12 exemplos de fotos
+    </button>
+  );
+}
+
+/**
+ * O guia completo, e o elemento de maior destaque da seção.
+ *
+ * Ele é o que resolve a dúvida INTEIRA — os doze cartões respondem "essa
+ * serve?", o guia responde "como tiro uma que sirva". Discreto no rodapé, como
+ * era antes, ele quase não era clicado.
+ */
 function GuiaEmPdf() {
   return (
     <a href="/manual/guia-de-fotos.pdf" target="_blank" rel="noreferrer" className={BOTAO_DO_GUIA}>
-      <svg aria-hidden viewBox="0 0 24 24" className="h-5 w-5 shrink-0" focusable="false">
+      <svg aria-hidden viewBox="0 0 24 24" className="h-6 w-6 shrink-0" focusable="false">
         <path
           d="M 12 4 v 11 m 0 0 l -4 -4 m 4 4 l 4 -4 M 5 19 h 14"
           fill="none"
@@ -227,16 +332,24 @@ function GuiaEmPdf() {
           strokeLinejoin="round"
         />
       </svg>
-      Baixar o guia de fotos (PDF)
+      <span className="text-left">
+        Baixe nosso guia de fotos
+        <span className="block text-[15px] font-normal text-black/60">
+          como tirar as suas melhores fotos
+        </span>
+      </span>
     </a>
   );
 }
 
 export default function ExemplosDeFotos() {
+  const [revelado, setRevelado] = useState(false);
+  // Nada de `focus()` no quadro recém-aberto: foco na montagem é o que faz a
+  // página rolar sozinha neste site (as seções são `lazy`), e o quadro já nasce
+  // exatamente onde o botão estava.
   return (
-    <div className="space-y-8">
-      <Grupo titulo="Assim serve" serve exemplos={SERVE} />
-      <Grupo titulo="Assim não serve" serve={false} exemplos={NAO_SERVE} />
+    <div className="space-y-6">
+      {revelado ? <Quadro /> : <Convite aoAbrir={() => setRevelado(true)} />}
       <GuiaEmPdf />
     </div>
   );

@@ -67,8 +67,19 @@ function Marca({ marcada }: { marcada: boolean }) {
  * polegar, em pé, e um erro de clique aqui é o cliente confirmando o que não
  * leu. Por marcar, ela leva o anel da Siri com a isca — é o único gesto que
  * falta na tela. Marcada, o anel sai e entra o verde.
+ *
+ * O texto muda de lugar quando o item tem destrava: na tela do par, a frase é
+ * "Li, concordo" porque o que se acabou de ler são as DUAS metades.
  */
-function ConfirmacaoDoItem({ marcada, aoAlternar }: { marcada: boolean; aoAlternar: () => void }) {
+function ConfirmacaoDoItem({
+  marcada,
+  aoAlternar,
+  texto = 'Li, entendi e concordo com este item',
+}: {
+  marcada: boolean;
+  aoAlternar: () => void;
+  texto?: string;
+}) {
   return (
     <label
       style={marcada ? undefined : ANEL_SIRI}
@@ -81,7 +92,7 @@ function ConfirmacaoDoItem({ marcada, aoAlternar }: { marcada: boolean; aoAltern
       <input type="checkbox" checked={marcada} onChange={aoAlternar} className="peer sr-only" />
       <Marca marcada={marcada} />
       <span className={`text-[17px] leading-[1.45] ${marcada ? 'text-white' : 'text-white/80'}`}>
-        Li, entendi e concordo com este item
+        {texto}
       </span>
     </label>
   );
@@ -150,9 +161,18 @@ interface PropsDoItem {
   /** Um booleano por item obrigatório do capítulo, na ordem — a trilha os desenha. */
   confirmados: readonly boolean[];
   aoAlternar: (id: string) => void;
+  /** `true` quando a confirmação foi para a tela de destrava, logo adiante. */
+  comDestrava?: boolean;
 }
 
-export function TelaDoItem({ regra, numero, total, confirmados, aoAlternar }: PropsDoItem) {
+export function TelaDoItem({
+  regra,
+  numero,
+  total,
+  confirmados,
+  aoAlternar,
+  comDestrava = false,
+}: PropsDoItem) {
   const marcada = confirmados[numero - 1] === true;
   // A cor do item vem da fita da marca, pela POSIÇÃO dele: oito itens em oito
   // tons vizinhos leem como uma sequência, e não como oito avisos diferentes.
@@ -174,7 +194,90 @@ export function TelaDoItem({ regra, numero, total, confirmados, aoAlternar }: Pr
       <PorQueProtege regra={regra} cor={cor} />
       {regra.severidade === 'critica' && <AvisoCritico />}
 
-      <ConfirmacaoDoItem marcada={marcada} aoAlternar={() => aoAlternar(regra.id)} />
+      {/* Com destrava, a caixa NÃO fica aqui: ela desce para a tela do par, e o
+          cliente só confirma depois de ver o que a regra libera. Sem destrava
+          (a v4 no ar, qualquer versão antiga), tudo segue como sempre foi. */}
+      {!comDestrava && (
+        <ConfirmacaoDoItem marcada={marcada} aoAlternar={() => aoAlternar(regra.id)} />
+      )}
+    </Entrada>
+  );
+}
+
+/* ─── A DESTRAVA: O QUE A REGRA LIBERA ─────────────────────────────────────── */
+
+/** Uma metade do par. Vermelho é o que não pode; verde é o que continua podendo. */
+function MetadeDoPar({
+  rotulo,
+  regra,
+  tom,
+}: {
+  rotulo: string;
+  regra: Regra;
+  tom: 'trava' | 'alivio';
+}) {
+  const cor =
+    tom === 'trava'
+      ? 'border-rose-400/30 bg-rose-400/[0.05]'
+      : 'border-emerald-400/30 bg-emerald-400/[0.06]';
+  const marca = tom === 'trava' ? 'text-rose-300/90' : 'text-emerald-300/90';
+  return (
+    <article className={`rounded-3xl border p-6 ${cor}`}>
+      <p className={`text-[14px] uppercase tracking-[0.16em] ${marca}`}>{rotulo}</p>
+      <h3 className="mt-3 font-serif text-[24px] leading-[1.15] text-white sm:text-[26px]">
+        {regra.titulo}
+      </h3>
+      <p className="mt-3 text-[17px] leading-[1.7] text-white/75">{regra.instrucao}</p>
+    </article>
+  );
+}
+
+/**
+ * O par trava → destrava, numa tela.
+ *
+ * A regra sozinha lê como perda; a regra ao lado do que ela libera lê como
+ * troca — e é a troca que é verdade. Por isso a confirmação vive AQUI quando o
+ * par existe: quem marca já viu as duas metades, não só a que cobra.
+ *
+ * A caixa alterna o id da OBRIGATÓRIA (`regra`), nunca o da informativa: o
+ * aceite que vai para o banco continua sendo exatamente o mesmo de antes, e o
+ * `manual_concluir` só olha para `obrigatoria` do lado de lá.
+ *
+ * No celular as duas metades empilham (uma coluna); do `sm` para cima ficam
+ * lado a lado, que é onde a comparação acontece de relance.
+ */
+export function TelaDaDestrava({
+  regra,
+  alivio,
+  marcada,
+  aoAlternar,
+}: {
+  regra: Regra;
+  alivio: Regra;
+  marcada: boolean;
+  aoAlternar: (id: string) => void;
+}) {
+  return (
+    <Entrada>
+      <Rotulo>O que muda para você</Rotulo>
+      <div className="mt-5 grid gap-4 sm:grid-cols-2">
+        <MetadeDoPar rotulo="Não pode" regra={regra} tom="trava" />
+        <MetadeDoPar rotulo="Pode" regra={alivio} tom="alivio" />
+      </div>
+      {alivio.porque.trim().length > 0 && (
+        <p className="mt-6 text-[17px] leading-[1.7] text-white/65">{alivio.porque}</p>
+      )}
+      {alivio.exemplo.trim().length > 0 && (
+        <p className="mt-3 text-[17px] leading-[1.7] text-white/65">
+          <span className="text-white/45">Na prática: </span>
+          {alivio.exemplo}
+        </p>
+      )}
+      <ConfirmacaoDoItem
+        marcada={marcada}
+        aoAlternar={() => aoAlternar(regra.id)}
+        texto="Li, concordo com este item"
+      />
     </Entrada>
   );
 }

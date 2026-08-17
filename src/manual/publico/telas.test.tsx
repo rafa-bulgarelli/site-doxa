@@ -125,6 +125,9 @@ const CLONE: Secao = {
  * O onboarding também fica FORA da `VERSAO`, pelo mesmo motivo do clone: ele
  * existe aqui para provar os prints reais da plataforma, e dentro da versão
  * mudaria a contagem que a abertura promete.
+ *
+ * Os códigos são os DE VERDADE (ON-1, ON-2) porque é por eles que os prints se
+ * ancoram: com códigos inventados, o teste provaria uma âncora que não existe.
  */
 const ONBOARDING: Secao = {
   id: 's-onboarding',
@@ -134,15 +137,26 @@ const ONBOARDING: Secao = {
   ordem: 8,
   regras: [
     {
-      id: 'ob1',
-      codigo: 'OB-1',
-      titulo: 'Responda concreto',
+      id: 'on1',
+      codigo: 'ON-1',
+      titulo: 'Suas respostas viram os seus vídeos',
       instrucao: 'Nada de resposta genérica.',
       porque: 'É desse texto que saem os roteiros.',
       exemplo: 'Diga o número, não "muitos clientes".',
       severidade: 'normal',
       obrigatoria: false,
       ordem: 1,
+    },
+    {
+      id: 'on2',
+      codigo: 'ON-2',
+      titulo: 'Um canal, uma pessoa',
+      instrucao: 'Escolha quem do seu time fala com a DOXA.',
+      porque: 'Com um canal só, nada se perde no meio do caminho.',
+      exemplo: '"Quem fala com a DOXA é a Ana", decidido no primeiro dia.',
+      severidade: 'normal',
+      obrigatoria: false,
+      ordem: 2,
     },
   ],
 };
@@ -269,17 +283,36 @@ describe('as telas do caminho', () => {
     expect(html).not.toContain('<input');
   });
 
-  it('capítulo informativo NÃO renderiza checkbox — só explica e libera o Entendi', () => {
+  it('capítulo informativo ABRE prometendo o caminho, e não despeja o conteúdo', () => {
     const html = capitulo(0);
     expect(html).toContain('A sua voz');
-    expect(html).toContain('Grave num lugar silencioso');
     expect(html).toContain('Capítulo 1 de 2');
-    expect(html).toContain('Entendi →');
-    // A promessa do redesenho: capítulo que explica não cobra caixa nenhuma.
+    // A voz tem 1 cartão + os 4 prints da plataforma = 5 telas depois da intro.
+    expect(html).toContain('São 5 passos curtos — um por tela.');
+    expect(html).toContain('Começar →');
+    // A parede morreu: o conteúdo do capítulo NÃO está todo nesta tela.
+    expect(html).not.toContain('Grave num lugar silencioso');
+    expect(html).not.toContain('/manual/prints/');
     expect(html).not.toContain('<input');
     expect(html).not.toContain('type="checkbox"');
     // E, sem nada a travar, o botão nasce aberto.
     expect(html).not.toContain(BOTAO_TRAVADO);
+  });
+
+  it('cada cartão do capítulo informativo é uma TELA, sem cobrar caixa nenhuma', () => {
+    const html = capitulo(0, 1);
+    expect(html).toContain('Passo 1 de 1');
+    expect(html).toContain('Grave num lugar silencioso');
+    expect(html).toContain('Próximo →');
+    expect(html).not.toContain('type="checkbox"');
+    expect(html).not.toContain(BOTAO_TRAVADO);
+  });
+
+  it('a última tela do capítulo informativo fecha no "Entendi"', () => {
+    // A etapa 5 é o quarto print da voz — a última do capítulo.
+    const html = capitulo(0, 5);
+    expect(html).toContain('Entendi →');
+    expect(html).not.toContain('Ir para a revisão final');
   });
 
   it('o capítulo da garantia ABRE explicando, sem cobrar caixa nenhuma', () => {
@@ -333,7 +366,8 @@ describe('as telas do caminho', () => {
         capitulo={CLONE}
         posicao={1}
         total={1}
-        etapa={1}
+        /* intro (0) · cartão do CL-1 (1) · exemplos de foto (2). */
+        etapa={2}
         marcadas={[]}
         aoAlternar={nada}
         aoAvancar={nada}
@@ -490,25 +524,49 @@ function altDe(tag: string): string {
 }
 
 describe('os prints reais da plataforma', () => {
-  it('o capítulo do onboarding mostra os 3 prints, depois dos cartões', () => {
-    const html = capituloAvulso(ONBOARDING);
+  it('cada print é uma TELA sozinha — nunca uma pilha de imagens', () => {
+    // Etapa 2: a primeira depois do cartão do ON-1, que é a âncora dela.
+    const html = capituloAvulso(ONBOARDING, 2);
     expect(html).toContain('Na plataforma, é assim');
-    expect(html.match(/src="\/manual\/prints\/onboarding-/g)?.length).toBe(3);
-    expect(imagensDePrint(html)).toHaveLength(3);
-    // O cartão vem ANTES do print: primeiro o que fazer, depois onde fazer.
-    expect(html.indexOf('Responda concreto')).toBeLessThan(html.indexOf('/manual/prints/'));
+    expect(imagensDePrint(html)).toHaveLength(1);
+    expect(html).toContain('/manual/prints/onboarding-scan.avif');
+    // O print vem sozinho: o cartão que ele prova ficou na tela anterior.
+    expect(html).not.toContain('Um canal, uma pessoa');
+    expect(html).toContain('Próximo →');
   });
 
-  it('o capítulo da voz mostra os 2 prints', () => {
-    const html = capitulo(0);
-    expect(html.match(/src="\/manual\/prints\/voz-/g)?.length).toBe(2);
-    expect(imagensDePrint(html)).toHaveLength(2);
-    // Print não substitui o texto do capítulo — ele entra junto.
-    expect(html).toContain('Grave num lugar silencioso');
+  it('o print entra DEPOIS do cartão que ele prova, e cada âncora tem o seu', () => {
+    // intro · ON-1 · scan · negócio · autoridade · ON-2 · redes.
+    const daVez = (etapa: number): string => {
+      const tags = imagensDePrint(capituloAvulso(ONBOARDING, etapa));
+      return tags.length === 1 ? /src="([^"]*)"/.exec(tags[0])?.[1] ?? '' : `${tags.length} prints`;
+    };
+    expect(capituloAvulso(ONBOARDING, 1)).toContain('Suas respostas viram os seus vídeos');
+    expect(daVez(2)).toBe('/manual/prints/onboarding-scan.avif');
+    expect(daVez(3)).toBe('/manual/prints/onboarding-negocio.avif');
+    expect(daVez(4)).toBe('/manual/prints/onboarding-autoridade.avif');
+    expect(capituloAvulso(ONBOARDING, 5)).toContain('Um canal, uma pessoa');
+    expect(daVez(6)).toBe('/manual/prints/onboarding-redes.avif');
+  });
+
+  it('a série da voz fecha o capítulo, na ordem do "como vai ser na prática"', () => {
+    const caminho = [2, 3, 4, 5].map((etapa) => {
+      const [tag] = imagensDePrint(capitulo(0, etapa));
+      return /src="([^"]*)"/.exec(tag ?? '')?.[1] ?? '';
+    });
+    expect(caminho).toEqual([
+      '/manual/prints/voz-minha-voz.avif',
+      '/manual/prints/voz-clone-de-voz.avif',
+      '/manual/prints/voz-verificar.avif',
+      '/manual/prints/voz-pendente.avif',
+    ]);
   });
 
   it('todo print carrega alt de verdade e reserva o próprio espaço', () => {
-    for (const tag of [...imagensDePrint(capituloAvulso(ONBOARDING)), ...imagensDePrint(capitulo(0))]) {
+    const telas = [2, 3, 4, 6].map((etapa) => capituloAvulso(ONBOARDING, etapa));
+    const tags = [...telas, capitulo(0, 2), capitulo(0, 5)].flatMap(imagensDePrint);
+    expect(tags).toHaveLength(6);
+    for (const tag of tags) {
       // `alt` descritivo: a imagem carrega informação que não está escrita.
       expect(altDe(tag).length).toBeGreaterThan(40);
       expect(tag).toContain('width="1400"');
@@ -517,11 +575,92 @@ describe('os prints reais da plataforma', () => {
     }
   });
 
-  it('capítulo sem print não abre o bloco', () => {
-    for (const html of [capituloAvulso(CLONE), capitulo(1)]) {
+  it('capítulo sem print não ganha etapa de print em lugar nenhum', () => {
+    const semPrint = [capituloAvulso(CLONE, 0), capituloAvulso(CLONE, 1), capitulo(1), capitulo(1, 1)];
+    for (const html of semPrint) {
       expect(html).not.toContain('/manual/prints/');
       expect(html).not.toContain('Na plataforma, é assim');
     }
+  });
+});
+
+/* ─── A TELA DO PAR: O QUE TRAVA E O QUE LIBERA ────────────────────────────── */
+
+/**
+ * A garantia como ela fica com o conteúdo da v5: cada item seguido da
+ * informativa que conta o que ele LIBERA, e o respiro fechando o capítulo.
+ */
+const GARANTIA_COM_PAR: Secao = {
+  ...GARANTIA,
+  id: 's-garantia-v5',
+  regras: [
+    { ...GARANTIA.regras[0], ordem: 10 },
+    {
+      id: 'ga1p',
+      codigo: 'GA-1P',
+      titulo: 'A meta é nossa, não sua',
+      instrucao: 'Quem persegue o número é a DOXA. Do seu lado, a tarefa é publicar.',
+      porque: 'A produção é nossa; a rotina é sua.',
+      exemplo: 'Não precisa acompanhar visualização todo dia.',
+      severidade: 'normal',
+      obrigatoria: false,
+      ordem: 15,
+    },
+    { ...GARANTIA.regras[1], ordem: 20 },
+    { ...GARANTIA.regras[2], ordem: 95 },
+  ],
+};
+
+describe('o par trava → destrava', () => {
+  function comPar(etapa: number, marcadas: string[] = []): string {
+    return desenhar(
+      <Capitulo
+        capitulo={GARANTIA_COM_PAR}
+        posicao={1}
+        total={2}
+        etapa={etapa}
+        marcadas={marcadas}
+        aoAlternar={nada}
+        aoAvancar={nada}
+        aoVoltar={nada}
+      />,
+    );
+  }
+
+  it('o item com destrava não pede confirmação: ele anuncia o que vem', () => {
+    const html = comPar(1);
+    expect(html).toContain('Item 1 de 2');
+    expect(html).toContain('Um milhão em 90 dias');
+    // A caixa desceu para a tela do par — aqui não há nada a marcar nem a travar.
+    expect(html).not.toContain('type="checkbox"');
+    expect(html).not.toContain(BOTAO_TRAVADO);
+    expect(html).toContain('Ver o que isso libera →');
+  });
+
+  it('a destrava mostra as duas metades e trava até a pessoa concordar', () => {
+    const html = comPar(2);
+    expect(html).toContain('Não pode');
+    expect(html).toContain('Pode');
+    expect(html).toContain('Um milhão em 90 dias');
+    expect(html).toContain('A meta é nossa, não sua');
+    expect(html.match(/type="checkbox"/g)?.length).toBe(1);
+    expect(html).toContain('Li, concordo com este item');
+    expect(html).toContain('Confirme o item acima para continuar.');
+    expect(html).toContain(BOTAO_TRAVADO);
+  });
+
+  it('marcada a obrigatória do par, a destrava libera o caminho', () => {
+    const html = comPar(2, ['ga1']);
+    expect(html).not.toContain(BOTAO_TRAVADO);
+    expect(html).toContain('Continuar →');
+    // Marcar a informativa não abre porta nenhuma: ela nunca vira aceite.
+    expect(comPar(2, ['ga1p'])).toContain(BOTAO_TRAVADO);
+  });
+
+  it('item SEM destrava continua com a caixa na tela dele — a v4 no ar', () => {
+    const html = capitulo(1, 1);
+    expect(html.match(/type="checkbox"/g)?.length).toBe(1);
+    expect(html).toContain('Li, entendi e concordo com este item');
   });
 });
 
