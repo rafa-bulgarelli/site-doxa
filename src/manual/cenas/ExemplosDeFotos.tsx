@@ -4,158 +4,134 @@
  * O quadro mais mastigado do manual, e o que economiza mais ida e volta: a
  * pergunta "essa serve?" chega TODA semana, e ela chega porque a instrução em
  * texto ("foto nítida, de frente, com boa luz") não descreve nenhuma foto que a
- * pessoa tenha na mão. Um retrato ao lado da palavra descreve.
+ * pessoa tenha na mão. Uma FOTO ao lado da palavra descreve.
  *
- * Três decisões que este arquivo carrega:
+ * Quatro decisões que este arquivo carrega:
  *
- * 1. **O motivo é UMA palavra.** "Escura", "óculos", "filtro". Frase explicando
- *    por que a foto escura não serve é frase que ninguém lê num quadro de oito
- *    cartões — e a palavra basta para a pessoa olhar a própria foto e decidir.
+ * 1. **A regra que os doze cartões ensinam é uma só**: a foto do clone é a
+ *    pessoa SENTADA, como quem grava, com a boca em posição de fala e sem
+ *    sorriso congelado. Por isso "De pé" e "De pé, sorrindo" estão na coluna
+ *    vermelha mesmo sendo fotos boas — boas para outra coisa.
  *
- * 2. **Aqui o texto NÃO é decorativo.** As cenas do manual são `aria-hidden`
- *    inteiras; este quadro não é uma cena. Os rótulos e os títulos dos dois
- *    grupos são a informação, então quem usa leitor de tela recebe "Serve:
- *    frontal, boa luz…" em palavras. Só os DESENHOS ficam escondidos.
+ * 2. **O motivo é o rótulo, e o rótulo é curto.** "Boa luz", "Reflexo",
+ *    "Longe". Frase explicando por que a foto de longe não serve é frase que
+ *    ninguém lê num quadro de doze cartões — e a palavra basta para a pessoa
+ *    olhar a própria foto e decidir.
  *
- * 3. **Os retratos são provisórios por desenho.** O dono vai mandar fotos de
- *    verdade; trocar é substituir `<Retrato>` por `<img>` dentro do mesmo
- *    quadrado — a moldura, o selo e o rótulo continuam onde estão.
+ * 3. **A fonte da verdade são os arquivos de `public` → `manual` → `fotos`,** e o
+ *    caminho de cada um está escrito por extenso aqui embaixo. Nada de montar
+ *    `src` por template: caminho montado quebra em silêncio (imagem some, nada
+ *    no console) e o build não avisa.
+ *
+ * 4. **Aqui o texto NÃO é decorativo.** As cenas do manual são `aria-hidden`
+ *    inteiras; este quadro não é uma cena. Rótulos, títulos dos grupos e o
+ *    `alt` de cada foto são a informação — quem usa leitor de tela ouve a foto
+ *    descrita E o veredito. Escondidos ficam só os SELOS, que são desenho.
  */
-import { useId } from 'react';
-import { CORES } from '../../components/faq/cores';
-
-/** O que cada retrato ilustra — a feição é o argumento do cartão. */
-type Feicao =
-  | 'frontal'
-  | 'luz'
-  | 'sorriso'
-  | 'fundo'
-  | 'escura'
-  | 'oculos'
-  | 'filtro'
-  | 'longe'
-  | 'borrada';
 
 interface Exemplo {
-  readonly feicao: Feicao;
+  /** O caminho literal do asset — escrito à mão, um por cartão. */
+  readonly src: string;
   /** O rótulo do cartão: uma palavra, ou duas quando a segunda é inevitável. */
   readonly rotulo: string;
+  /** A foto descrita E julgada, para quem não vê a imagem. */
+  readonly alt: string;
+  readonly largura: number;
+  readonly altura: number;
 }
 
 const SERVE: readonly Exemplo[] = [
-  { feicao: 'frontal', rotulo: 'De frente' },
-  { feicao: 'luz', rotulo: 'Boa luz' },
-  { feicao: 'sorriso', rotulo: 'Sorrindo' },
-  { feicao: 'fundo', rotulo: 'Fundo limpo' },
+  {
+    src: '/manual/fotos/serve-de-frente.avif',
+    rotulo: 'De frente',
+    alt: 'Homem sentado de frente para a câmera, com o rosto inteiro no quadro — serve',
+    largura: 450,
+    altura: 800,
+  },
+  {
+    src: '/manual/fotos/serve-cenario-real.avif',
+    rotulo: 'Cenário real',
+    alt: 'Homem sentado no estúdio em que grava, com microfone e painel ao fundo — serve',
+    largura: 450,
+    altura: 800,
+  },
+  {
+    src: '/manual/fotos/serve-boa-luz.avif',
+    rotulo: 'Boa luz',
+    alt: 'Homem com o rosto bem iluminado, sem sombra cobrindo os olhos — serve',
+    largura: 450,
+    altura: 800,
+  },
+  {
+    src: '/manual/fotos/serve-natural.avif',
+    rotulo: 'Natural',
+    alt: 'Homem sentado na poltrona com expressão natural, sem pose — serve',
+    largura: 450,
+    altura: 800,
+  },
+  {
+    src: '/manual/fotos/serve-boca-em-fala.avif',
+    rotulo: 'Boca em fala',
+    alt: 'Mulher sentada diante do microfone, com a boca aberta em posição de fala — serve',
+    largura: 469,
+    altura: 800,
+  },
+  {
+    src: '/manual/fotos/serve-sentado.avif',
+    rotulo: 'Sentado',
+    alt: 'Homem sentado como quem vai gravar, enquadrado do peito para cima — serve',
+    largura: 450,
+    altura: 800,
+  },
 ];
 
 const NAO_SERVE: readonly Exemplo[] = [
-  { feicao: 'escura', rotulo: 'Escura' },
-  { feicao: 'oculos', rotulo: 'Óculos' },
-  { feicao: 'filtro', rotulo: 'Filtro' },
-  { feicao: 'longe', rotulo: 'Longe' },
-  { feicao: 'borrada', rotulo: 'Borrada' },
+  {
+    src: '/manual/fotos/nao-serve-maos-no-rosto.avif',
+    rotulo: 'Mãos no rosto',
+    alt: 'Homem com as mãos apoiadas no queixo, tapando parte do rosto — não serve',
+    largura: 533,
+    altura: 800,
+  },
+  {
+    src: '/manual/fotos/nao-serve-bracos-cruzados.avif',
+    rotulo: 'Braços cruzados',
+    alt: 'Homem em pé com os braços cruzados na frente do corpo — não serve',
+    largura: 533,
+    altura: 800,
+  },
+  {
+    src: '/manual/fotos/nao-serve-de-pe.avif',
+    rotulo: 'De pé',
+    alt: 'Homem de pé, de corpo inteiro, fora da posição de quem grava sentado — não serve',
+    largura: 533,
+    altura: 800,
+  },
+  {
+    src: '/manual/fotos/nao-serve-longe.avif',
+    rotulo: 'Longe',
+    alt: 'Homem em pé no fundo do cômodo, com o rosto pequeno no quadro — não serve',
+    largura: 600,
+    altura: 800,
+  },
+  {
+    src: '/manual/fotos/nao-serve-reflexo.avif',
+    rotulo: 'Reflexo',
+    alt: 'Homem de óculos com o reflexo da luz nas lentes cobrindo os olhos — não serve',
+    largura: 533,
+    altura: 800,
+  },
+  {
+    src: '/manual/fotos/nao-serve-de-pe-sorrindo.avif',
+    rotulo: 'De pé, sorrindo',
+    alt: 'Mulher em pé, com sorriso aberto e posado para retrato — não serve',
+    largura: 534,
+    altura: 800,
+  },
 ];
 
 const VERDE = '#34D399';
 const VERMELHO = '#F87171';
-
-/* ─── O RETRATO ────────────────────────────────────────────────────────────── */
-
-/** A boca: fechada, ou aberta com os dentes à mostra. */
-function Boca({ sorrindo, cor }: { sorrindo: boolean; cor: string }) {
-  if (!sorrindo) {
-    return <path d="M 40 58 q 10 7 20 0" fill="none" stroke={cor} strokeWidth={2.4} strokeLinecap="round" />;
-  }
-  return (
-    <g>
-      <path d="M 38 56 q 12 16 24 0 z" fill="none" stroke={cor} strokeWidth={2.4} strokeLinejoin="round" />
-      <path d="M 39.5 57.5 h 21" stroke={cor} strokeWidth={3.4} strokeLinecap="round" />
-    </g>
-  );
-}
-
-interface CabecaProps {
-  readonly cor: string;
-  readonly sorrindo: boolean;
-  readonly oculos: boolean;
-}
-
-/** Cabeça, ombros, olhos — o mesmo desenho em todos os nove cartões. */
-function Cabeca({ cor, sorrindo, oculos }: CabecaProps) {
-  return (
-    <g fill="none" stroke={cor} strokeWidth={2.6} strokeLinecap="round">
-      <circle cx={50} cy={46} r={27} />
-      <path d="M 14 116 a 36 32 0 0 1 72 0" />
-      {oculos ? (
-        <g>
-          <rect x={31} y={36} width={17} height={13} rx={4} fill={cor} stroke="none" />
-          <rect x={52} y={36} width={17} height={13} rx={4} fill={cor} stroke="none" />
-          <path d="M 48 41 h 4" />
-        </g>
-      ) : (
-        <g>
-          <path d="M 40 41 v 3" />
-          <path d="M 60 41 v 3" />
-        </g>
-      )}
-      <Boca sorrindo={sorrindo} cor={cor} />
-    </g>
-  );
-}
-
-/** Quantas vezes o rosto é redesenhado, e com que desvio — o borrão sem filtro. */
-const BORRAO = [
-  { dx: -2.5, opacidade: 0.35 },
-  { dx: 2.5, opacidade: 0.35 },
-  { dx: 0, opacidade: 0.55 },
-] as const;
-
-/**
- * O retrato ilustrado de um exemplo.
- *
- * O borrão é feito com três cópias deslocadas, e não com `feGaussianBlur`: o
- * filtro custa uma passada de renderização por cartão, e são nove cartões numa
- * página que já carrega cena animada. Três traços dão a mesma leitura.
- */
-function Retrato({ feicao }: { feicao: Feicao }) {
-  const id = `filtro${useId().replace(/:/g, '')}`;
-  const clara = feicao !== 'escura';
-  const cor = clara ? 'rgba(255,255,255,0.82)' : 'rgba(255,255,255,0.2)';
-  const escala = feicao === 'longe' ? 'translate(28 34) scale(0.44)' : undefined;
-  return (
-    <svg aria-hidden viewBox="0 0 100 120" className="h-full w-full" focusable="false">
-      <defs>
-        <linearGradient id={id} x1="0" y1="0" x2="1" y2="1">
-          {CORES.map((tom, indice) => (
-            <stop key={tom} offset={`${(indice * 100) / (CORES.length - 1)}%`} stopColor={tom} />
-          ))}
-        </linearGradient>
-      </defs>
-      {/* A luz vem de cima; o fundo limpo é a parede sem nada atrás. Cada cartão
-          do grupo "serve" precisa de UM sinal próprio, ou os quatro viram o
-          mesmo rosto com quatro legendas. */}
-      {feicao === 'luz' && <ellipse cx={50} cy={30} rx={54} ry={40} fill="rgba(255,255,255,0.12)" />}
-      {feicao === 'fundo' && <rect width={100} height={120} fill="rgba(255,255,255,0.05)" />}
-      <g transform={escala}>
-        {feicao === 'borrada' ? (
-          BORRAO.map(({ dx, opacidade }) => (
-            <g key={dx} transform={`translate(${dx} 0)`} opacity={opacidade}>
-              <Cabeca cor={cor} sorrindo={false} oculos={false} />
-            </g>
-          ))
-        ) : (
-          <Cabeca
-            cor={cor}
-            sorrindo={feicao === 'sorriso'}
-            oculos={feicao === 'oculos'}
-          />
-        )}
-      </g>
-      {feicao === 'filtro' && <rect width={100} height={120} fill={`url(#${id})`} opacity={0.45} />}
-    </svg>
-  );
-}
 
 /* ─── O CARTÃO E OS DOIS GRUPOS ────────────────────────────────────────────── */
 
@@ -180,8 +156,18 @@ function Selo({ serve }: { serve: boolean }) {
 function Cartao({ exemplo, serve }: { exemplo: Exemplo; serve: boolean }) {
   return (
     <li className="overflow-hidden rounded-2xl border border-doxa-line bg-doxa-surface">
+      {/* A moldura manda no formato; `object-cover` absorve as proporções
+          diferentes das fotos sem esticar ninguém. */}
       <div className="aspect-[4/5] w-full bg-doxa-raised">
-        <Retrato feicao={exemplo.feicao} />
+        <img
+          src={exemplo.src}
+          alt={exemplo.alt}
+          width={exemplo.largura}
+          height={exemplo.altura}
+          loading="lazy"
+          decoding="async"
+          className="h-full w-full object-cover"
+        />
       </div>
       <div className="flex items-center gap-2 px-3 py-3">
         <Selo serve={serve} />
@@ -206,12 +192,43 @@ function Grupo({
         <Selo serve={serve} />
         {titulo}
       </h4>
-      <ul className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
+      {/* Seis cartões por grupo: 2×3 no celular, 3×2 a partir do `sm`. Três
+          colunas no celular deixariam o rosto pequeno demais para julgar a luz,
+          que é justamente o que se pede para olhar. */}
+      <ul className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3">
         {exemplos.map((exemplo) => (
-          <Cartao key={exemplo.feicao} exemplo={exemplo} serve={serve} />
+          <Cartao key={exemplo.src} exemplo={exemplo} serve={serve} />
         ))}
       </ul>
     </section>
+  );
+}
+
+// O mesmo desenho do botão secundário de `publico/pecas`, repetido de propósito:
+// `cenas/` não importa de `publico/` (é a direção de import do módulo), e uma
+// peça compartilhada só para esta classe custaria mais do que a repetição.
+const BOTAO_DO_GUIA =
+  'inline-flex min-h-[52px] w-full items-center justify-center gap-2 rounded-full ' +
+  'border border-white/[0.14] px-6 text-[17px] text-white/80 transition-colors ' +
+  'hover:bg-white/[0.06] hover:text-white focus-visible:outline-none focus-visible:ring-2 ' +
+  'focus-visible:ring-white/70 focus-visible:ring-offset-2 focus-visible:ring-offset-doxa-bg';
+
+/** O guia completo, para quem quer ler antes de escolher a foto. */
+function GuiaEmPdf() {
+  return (
+    <a href="/manual/guia-de-fotos.pdf" target="_blank" rel="noreferrer" className={BOTAO_DO_GUIA}>
+      <svg aria-hidden viewBox="0 0 24 24" className="h-5 w-5 shrink-0" focusable="false">
+        <path
+          d="M 12 4 v 11 m 0 0 l -4 -4 m 4 4 l 4 -4 M 5 19 h 14"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth={1.8}
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
+      Baixar o guia de fotos (PDF)
+    </a>
   );
 }
 
@@ -220,6 +237,7 @@ export default function ExemplosDeFotos() {
     <div className="space-y-8">
       <Grupo titulo="Assim serve" serve exemplos={SERVE} />
       <Grupo titulo="Assim não serve" serve={false} exemplos={NAO_SERVE} />
+      <GuiaEmPdf />
     </div>
   );
 }

@@ -18,6 +18,7 @@
 import { cenaDaSecao } from '../cenas/contrato';
 import ExemplosDeFotos from '../cenas/ExemplosDeFotos';
 import { Interludio, TelaDoItem } from './Aceites';
+import Prints from './Prints';
 import {
   Botao,
   BotaoDiscreto,
@@ -118,6 +119,10 @@ function TelaDeLeitura({ capitulo, regras }: { capitulo: Secao; regras: Regra[] 
           <CartaoDeLeitura key={regra.id} regra={regra} />
         ))}
       </div>
+      {/* Os prints reais da plataforma vêm DEPOIS dos cartões, e só nos
+          capítulos que têm um (o próprio bloco decide pelo slug): primeiro o
+          cliente lê o que precisa fazer, depois vê a tela onde vai fazer. */}
+      <Prints slug={capitulo.slug} />
     </Entrada>
   );
 }
