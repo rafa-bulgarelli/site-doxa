@@ -11,8 +11,8 @@
  *
  * Agora TODO capítulo é uma sequência: intro → uma tela por cartão, com o print
  * da plataforma logo depois do cartão que ele prova → (na garantia) uma tela por
- * item, com a destrava do par colada nele. Quem decide quantas telas são é
- * `etapasDo`, a partir dos DADOS — uma versão antiga do manual atravessa isto
+ * item, com a confirmação na tela do próprio item. Quem decide quantas telas são
+ * é `etapasDo`, a partir dos DADOS — uma versão antiga do manual atravessa isto
  * sem um único caso especial, e uma versão com dez itens ganha dez telas.
  *
  * A única exceção é o quadro de fotos do clone (`SLUG_DO_CLONE`), que é
@@ -20,7 +20,7 @@
  */
 import { cenaDaSecao } from '../cenas/contrato';
 import ExemplosDeFotos from '../cenas/ExemplosDeFotos';
-import { Interludio, TelaDaDestrava, TelaDoItem } from './Aceites';
+import { Interludio, TelaDoItem } from './Aceites';
 import {
   Botao,
   BotaoDiscreto,
@@ -258,16 +258,6 @@ function CorpoDaEtapa({
           total={etapa.total}
           confirmados={obrigatorias.map((regra) => marcadas.includes(regra.id))}
           aoAlternar={aoAlternar}
-          comDestrava={etapa.comDestrava}
-        />
-      );
-    case 'destrava':
-      return (
-        <TelaDaDestrava
-          regra={etapa.regra}
-          alivio={etapa.alivio}
-          marcada={marcadas.includes(etapa.regra.id)}
-          aoAlternar={aoAlternar}
         />
       );
     case 'respiro':
@@ -377,12 +367,7 @@ function rotuloDoAvanco(
       // caminho ele mentiria: ainda falta coisa para ler.
       return ultimaDoCapitulo ? 'Entendi →' : 'Próximo →';
     case 'item':
-      // Com destrava, o botão ANUNCIA a próxima tela: é ela que devolve o que a
-      // regra libera, e ninguém rola até lá se o botão só disser "continuar".
-      if (etapa.comDestrava) return 'Ver o que isso libera →';
       return etapa.numero < etapa.total ? 'Próximo item →' : 'Continuar →';
-    case 'destrava':
-      return 'Continuar →';
     case 'fotos':
       return 'Entendi →';
     case 'respiro':
@@ -396,9 +381,9 @@ function rotuloDoAvanco(
  * O rodapé.
  *
  * Fora da tela que cobra aceite não há o que travar, e um botão que não responde
- * ao toque seria mentira. Onde a caixa está — o item sem par, a destrava do par
- * — ele só acende com ela marcada, e a tela DIZ o que falta antes de o cliente
- * tentar: botão apagado sem explicação é o jeito mais rápido de perder alguém.
+ * ao toque seria mentira. Na tela do item — onde a caixa está — ele só acende
+ * com ela marcada, e a tela DIZ o que falta antes de o cliente tentar: botão
+ * apagado sem explicação é o jeito mais rápido de perder alguém.
  */
 function Rodape({
   etapa,

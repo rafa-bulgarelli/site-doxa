@@ -344,9 +344,16 @@ describe('as telas do caminho', () => {
     expect(html).not.toContain('Ir para a revisão final');
   });
 
-  it('o item crítico avisa que descumprir quebra a garantia', () => {
-    expect(capitulo(1, 2)).toContain('Este item, descumprido, pode quebrar a garantia.');
-    expect(capitulo(1, 2)).toContain('Item 2 de 2');
+  it('a tela do item é ENXUTA: regra, caixa e botões — nada mais', () => {
+    const html = capitulo(1, 2);
+    expect(html).toContain('Item 2 de 2');
+    expect(html).toContain('Baixou, publicou — sem editar nada');
+    expect(html).toContain('Li, entendi e concordo com este item');
+    // O que o dono mandou tirar da tela do item, na rodada de correção: a
+    // revelação do porquê (com o "Na prática") e o aviso do item crítico.
+    expect(html).not.toContain('Por que isso protege você');
+    expect(html).not.toContain('Na prática:');
+    expect(html).not.toContain('Este item, descumprido');
   });
 
   it('depois do último item vem o interlúdio — e ele não cobra nada', () => {
@@ -529,7 +536,7 @@ describe('os prints reais da plataforma', () => {
     const html = capituloAvulso(ONBOARDING, 2);
     expect(html).toContain('Na plataforma, é assim');
     expect(imagensDePrint(html)).toHaveLength(1);
-    expect(html).toContain('/manual/prints/onboarding-scan.avif');
+    expect(html).toContain('/manual/prints/onboarding-scan-v2.avif');
     // O print vem sozinho: o cartão que ele prova ficou na tela anterior.
     expect(html).not.toContain('Um canal, uma pessoa');
     expect(html).toContain('Próximo →');
@@ -542,34 +549,40 @@ describe('os prints reais da plataforma', () => {
       return tags.length === 1 ? /src="([^"]*)"/.exec(tags[0])?.[1] ?? '' : `${tags.length} prints`;
     };
     expect(capituloAvulso(ONBOARDING, 1)).toContain('Suas respostas viram os seus vídeos');
-    expect(daVez(2)).toBe('/manual/prints/onboarding-scan.avif');
-    expect(daVez(3)).toBe('/manual/prints/onboarding-negocio.avif');
-    expect(daVez(4)).toBe('/manual/prints/onboarding-autoridade.avif');
+    expect(daVez(2)).toBe('/manual/prints/onboarding-scan-v2.avif');
+    expect(daVez(3)).toBe('/manual/prints/onboarding-negocio-v2.avif');
+    expect(daVez(4)).toBe('/manual/prints/onboarding-autoridade-v2.avif');
     expect(capituloAvulso(ONBOARDING, 5)).toContain('Um canal, uma pessoa');
-    expect(daVez(6)).toBe('/manual/prints/onboarding-redes.avif');
+    expect(daVez(6)).toBe('/manual/prints/onboarding-redes-v2.avif');
   });
 
-  it('a série da voz fecha o capítulo, na ordem do "como vai ser na prática"', () => {
+  it('a série da voz fecha o capítulo na ordem real: enviar, pendente, verificar', () => {
     const caminho = [2, 3, 4, 5].map((etapa) => {
       const [tag] = imagensDePrint(capitulo(0, etapa));
       return /src="([^"]*)"/.exec(tag ?? '')?.[1] ?? '';
     });
     expect(caminho).toEqual([
-      '/manual/prints/voz-minha-voz.avif',
-      '/manual/prints/voz-clone-de-voz.avif',
-      '/manual/prints/voz-verificar.avif',
-      '/manual/prints/voz-pendente.avif',
+      '/manual/prints/voz-minha-voz-v2.avif',
+      '/manual/prints/voz-clone-de-voz-v2.avif',
+      '/manual/prints/voz-pendente-v2.avif',
+      '/manual/prints/voz-verificar-v2.avif',
     ]);
   });
 
-  it('todo print carrega alt de verdade e reserva o próprio espaço', () => {
-    const telas = [2, 3, 4, 6].map((etapa) => capituloAvulso(ONBOARDING, etapa));
-    const tags = [...telas, capitulo(0, 2), capitulo(0, 5)].flatMap(imagensDePrint);
-    expect(tags).toHaveLength(6);
+  it('todo print carrega alt de verdade, é `-v2` e reserva o próprio espaço', () => {
+    const doOnboarding = [2, 3, 4, 6].map((etapa) => capituloAvulso(ONBOARDING, etapa));
+    const daVoz = [2, 3, 4, 5].map((etapa) => capitulo(0, etapa));
+    const tags = [...doOnboarding, ...daVoz].flatMap(imagensDePrint);
+    // Os OITO prints da plataforma, um por tela.
+    expect(tags).toHaveLength(8);
     for (const tag of tags) {
       // `alt` descritivo: a imagem carrega informação que não está escrita.
       expect(altDe(tag).length).toBeGreaterThan(40);
-      expect(tag).toContain('width="1400"');
+      // 960px é a largura dos arquivos `-v2`, os únicos que o navegador do
+      // cliente decodifica: acima disso o `sips` grava AVIF em grade, e a
+      // moldura chega VAZIA na tela dele.
+      expect(tag).toContain('width="960"');
+      expect(tag).toMatch(/src="\/manual\/prints\/[a-z-]+-v2\.avif"/);
       expect(tag).toMatch(/height="\d+"/);
       expect(tag).toContain('loading="lazy"');
     }
@@ -584,13 +597,17 @@ describe('os prints reais da plataforma', () => {
   });
 });
 
-/* ─── A TELA DO PAR: O QUE TRAVA E O QUE LIBERA ────────────────────────────── */
+/* ─── O CLIENTE QUE ABRIU UM LINK DA V5 ────────────────────────────────────── */
 
 /**
- * A garantia como ela fica com o conteúdo da v5: cada item seguido da
- * informativa que conta o que ele LIBERA, e o respiro fechando o capítulo.
+ * A garantia com os DADOS da v5: cada item seguido de uma informativa ("o que
+ * isso libera"), e a última regra fechando o capítulo.
+ *
+ * Ela não sai daqui junto com a v6: o convite fixa a versão, então quem abriu
+ * um link da v5 vai ler estes dados para sempre — e o que se prova abaixo é que
+ * a tela dele é a MESMA das outras versões, sem tela extra nenhuma.
  */
-const GARANTIA_COM_PAR: Secao = {
+const GARANTIA_V5: Secao = {
   ...GARANTIA,
   id: 's-garantia-v5',
   regras: [
@@ -611,11 +628,11 @@ const GARANTIA_COM_PAR: Secao = {
   ],
 };
 
-describe('o par trava → destrava', () => {
-  function comPar(etapa: number, marcadas: string[] = []): string {
+describe('o capítulo com os dados da v5', () => {
+  function daV5(etapa: number, marcadas: string[] = []): string {
     return desenhar(
       <Capitulo
-        capitulo={GARANTIA_COM_PAR}
+        capitulo={GARANTIA_V5}
         posicao={1}
         total={2}
         etapa={etapa}
@@ -627,40 +644,41 @@ describe('o par trava → destrava', () => {
     );
   }
 
-  it('o item com destrava não pede confirmação: ele anuncia o que vem', () => {
-    const html = comPar(1);
+  it('o item cobra a confirmação na tela dele, e trava ali mesmo', () => {
+    const html = daV5(1);
     expect(html).toContain('Item 1 de 2');
     expect(html).toContain('Um milhão em 90 dias');
-    // A caixa desceu para a tela do par — aqui não há nada a marcar nem a travar.
-    expect(html).not.toContain('type="checkbox"');
-    expect(html).not.toContain(BOTAO_TRAVADO);
-    expect(html).toContain('Ver o que isso libera →');
-  });
-
-  it('a destrava mostra as duas metades e trava até a pessoa concordar', () => {
-    const html = comPar(2);
-    expect(html).toContain('Não pode');
-    expect(html).toContain('Pode');
-    expect(html).toContain('Um milhão em 90 dias');
-    expect(html).toContain('A meta é nossa, não sua');
-    expect(html.match(/type="checkbox"/g)?.length).toBe(1);
-    expect(html).toContain('Li, concordo com este item');
-    expect(html).toContain('Confirme o item acima para continuar.');
-    expect(html).toContain(BOTAO_TRAVADO);
-  });
-
-  it('marcada a obrigatória do par, a destrava libera o caminho', () => {
-    const html = comPar(2, ['ga1']);
-    expect(html).not.toContain(BOTAO_TRAVADO);
-    expect(html).toContain('Continuar →');
-    // Marcar a informativa não abre porta nenhuma: ela nunca vira aceite.
-    expect(comPar(2, ['ga1p'])).toContain(BOTAO_TRAVADO);
-  });
-
-  it('item SEM destrava continua com a caixa na tela dele — a v4 no ar', () => {
-    const html = capitulo(1, 1);
     expect(html.match(/type="checkbox"/g)?.length).toBe(1);
     expect(html).toContain('Li, entendi e concordo com este item');
+    expect(html).toContain('Confirme o item acima para continuar.');
+    expect(html).toContain(BOTAO_TRAVADO);
+    // A tela do par morreu: o botão deste item leva ao PRÓXIMO ITEM, e não a
+    // uma tela intermediária que devolvia o que a regra libera.
+    expect(html).toContain('Próximo item →');
+    expect(html).not.toContain('Não pode');
+  });
+
+  it('marcado o item, o caminho abre — e marcar a informativa não abre nada', () => {
+    expect(daV5(1, ['ga1'])).not.toContain(BOTAO_TRAVADO);
+    expect(daV5(1, ['ga1'])).toContain('Próximo item →');
+    expect(daV5(1, ['ga1p'])).toContain(BOTAO_TRAVADO);
+  });
+
+  it('a informativa ensanduichada não vira tela: a etapa 2 já é o item 2', () => {
+    const html = daV5(2);
+    expect(html).toContain('Item 2 de 2');
+    expect(html).toContain('Baixou, publicou — sem editar nada');
+    // O texto da informativa do meio não aparece em tela nenhuma do capítulo.
+    for (const etapa of [0, 1, 2, 3]) {
+      expect(daV5(etapa, ['ga1', 'ga2'])).not.toContain('A meta é nossa, não sua');
+    }
+  });
+
+  it('o respiro do fim é só a última regra, e ele não cobra nada', () => {
+    const html = daV5(3, ['ga1', 'ga2']);
+    expect(html).toContain('Respire');
+    expect(html).toContain('O que NÃO quebra a garantia');
+    expect(html).not.toContain('type="checkbox"');
   });
 });
 
