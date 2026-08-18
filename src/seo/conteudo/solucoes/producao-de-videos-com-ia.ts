@@ -211,7 +211,7 @@ export const pagina: Pagina = {
       tipo: 'destaque',
       variante: 'nota',
       texto:
-        'Ferramenta não é estratégia. Qualquer empresa pode assinar as mesmas cinco contas; o que decide o resultado é o volume de testes e o critério para descartar rápido o que não funciona.',
+        'O que decide o resultado não é a conta assinada, e sim o processo em volta dela. O mapa de onde a IA entra numa operação de marketing — e de onde ela não entra — está em [IA no marketing](/guias/ia-no-marketing).',
     },
     {
       tipo: 'titulo',

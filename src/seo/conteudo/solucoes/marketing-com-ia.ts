@@ -199,7 +199,7 @@ export const pagina: Pagina = {
       tipo: 'destaque',
       variante: 'nota',
       texto:
-        'Ferramenta é commodity: as mesmas contas estão a um cartão de distância do seu concorrente. O que não é commodity é o volume de testes e a disposição de descartar rápido o que não funciona.',
+        'Ferramenta é commodity: as mesmas contas estão a um cartão de distância do seu concorrente. O que não é commodity — o volume de testes e o critério de descarte — está desenvolvido em [IA no marketing](/guias/ia-no-marketing).',
     },
     {
       tipo: 'titulo',
