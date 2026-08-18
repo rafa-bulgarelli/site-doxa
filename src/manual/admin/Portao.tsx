@@ -14,7 +14,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { BookLock } from 'lucide-react';
 import { entrar } from '../../leads/deposito';
-import { APAGADO } from './pecas';
+import { APAGADO, ROTULO } from './pecas';
 
 export function Portao({ aoEntrar }: { aoEntrar: () => void }) {
   const [senha, setSenha] = useState('');
@@ -47,7 +47,9 @@ export function Portao({ aoEntrar }: { aoEntrar: () => void }) {
   return (
     <main className="flex min-h-screen items-center justify-center bg-doxa-bg px-5 py-16">
       <div className="w-full max-w-sm">
-        <span className="inline-flex items-center gap-2 rounded-full border border-white/[0.12] bg-white/[0.04] px-3 py-1.5 text-[11px] uppercase tracking-[0.16em] text-white/50">
+        <span
+          className={`inline-flex items-center gap-2 rounded-full border border-white/[0.12] bg-white/[0.04] px-3 py-1.5 ${ROTULO}`}
+        >
           <BookLock className="h-3 w-3" strokeWidth={2} />
           Manual DOXA
         </span>

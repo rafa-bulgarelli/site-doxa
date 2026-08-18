@@ -32,7 +32,7 @@ import { PreviaDoManual } from './PreviaDoManual';
 import { VersaoEditor } from './VersaoEditor';
 import { Versoes } from './Versoes';
 import { VisaoGeral } from './VisaoGeral';
-import { Aviso, BOTAO_BORDA } from './pecas';
+import { Aviso, BOTAO_BORDA, ROTULO } from './pecas';
 import { usarAdmin } from './usarAdmin';
 import type { EstadoDoPainel } from './usarAdmin';
 import type { Situacao } from './filtrar';
@@ -129,7 +129,9 @@ function Area({
       <div className="mx-auto w-full max-w-screen-2xl">
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div>
-            <span className="inline-flex items-center gap-2 rounded-full border border-white/[0.12] bg-white/[0.04] px-3 py-1.5 text-[11px] uppercase tracking-[0.16em] text-white/50">
+            <span
+              className={`inline-flex items-center gap-2 rounded-full border border-white/[0.12] bg-white/[0.04] px-3 py-1.5 ${ROTULO}`}
+            >
               <BookLock className="h-3 w-3" strokeWidth={2} />
               Manual DOXA
             </span>

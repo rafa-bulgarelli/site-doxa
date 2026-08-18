@@ -72,6 +72,18 @@ export function situacaoDo(convite: ConviteLinha, agora: number): Situacao {
   }
 }
 
+/**
+ * Se o convite pode ser APAGADO.
+ *
+ * Concluído não se exclui: ele carrega a prova, e o trigger do banco recusa
+ * venha de onde vier (`convite concluido e prova — nao se apaga`). A API
+ * devolveria 409 de qualquer jeito; esconder o botão é dizer a mesma regra
+ * ANTES do clique, que é quando a informação ainda serve para alguma coisa.
+ */
+export function podeExcluir(convite: ConviteLinha): boolean {
+  return convite.status !== 'concluido';
+}
+
 /** Onde a busca procura. O que o CX teria na ponta da língua. */
 function palheiro(convite: ConviteLinha): string {
   return simplificar([convite.empresa, convite.email, convite.nome_cliente ?? ''].join(' '));
@@ -147,6 +159,8 @@ export interface RascunhoDeConvite {
   nomeCliente: string;
   /** `YYYY-MM-DD` do campo de data, ou vazio para convite sem prazo. */
   expiraEm: string;
+  /** O link de cadastro na plataforma Doxa. Vazio = a tela final não oferece botão. */
+  invitePlataforma: string;
 }
 
 export const CONVITE_EM_BRANCO: RascunhoDeConvite = {
@@ -154,6 +168,7 @@ export const CONVITE_EM_BRANCO: RascunhoDeConvite = {
   empresa: '',
   nomeCliente: '',
   expiraEm: '',
+  invitePlataforma: '',
 };
 
 /*
@@ -162,6 +177,15 @@ export const CONVITE_EM_BRANCO: RascunhoDeConvite = {
  * ANTES do envio; quem decide continua sendo o banco.
  */
 const EMAIL = /^[^@\s]+@[^@\s]+\.[^@\s]{2,}$/;
+
+/*
+ * O MESMO `check` de `manual_convites.invite_plataforma`: começa em http(s) e
+ * cabe em 500 caracteres. O esquema não é firula — endereço colado sem ele
+ * (`app.doxa.com/x`) o navegador lê como caminho do NOSSO site, e o botão da
+ * tela final levaria o cliente a um 404 nosso em vez de ao cadastro.
+ */
+const ENDERECO = /^https?:\/\//;
+const ENDERECO_MAXIMO = 500;
 
 /** Os problemas do formulário, por campo. Objeto vazio = pode enviar. */
 export function validarConvite(
@@ -182,6 +206,12 @@ export function validarConvite(
     const prazo = new Date(`${rascunho.expiraEm}T23:59:59`).getTime();
     if (Number.isNaN(prazo)) problemas.expiraEm = 'Data inválida.';
     else if (prazo < agora) problemas.expiraEm = 'Um convite que já nasce vencido não abre.';
+  }
+  const invite = rascunho.invitePlataforma.trim();
+  if (invite.length > 0 && !ENDERECO.test(invite)) {
+    problemas.invitePlataforma = 'O link precisa começar com https:// — ou deixe em branco.';
+  } else if (invite.length > ENDERECO_MAXIMO) {
+    problemas.invitePlataforma = `O link passa de ${ENDERECO_MAXIMO} caracteres e o banco recusa.`;
   }
   return problemas;
 }
@@ -204,5 +234,7 @@ export function pedidoDeCriacao(rascunho: RascunhoDeConvite): PedidoConviteCriar
   if (rascunho.expiraEm.length > 0) {
     pedido.expira_em = new Date(`${rascunho.expiraEm}T23:59:59`).toISOString();
   }
+  const invite = rascunho.invitePlataforma.trim();
+  if (invite.length > 0) pedido.invite_plataforma = invite;
   return pedido;
 }
