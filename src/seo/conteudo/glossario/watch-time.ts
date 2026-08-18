@@ -52,7 +52,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'O vídeo A parece muito melhor pela retenção, e é mesmo melhor no que ele se propôs a fazer. Mas o vídeo B segurou cada pessoa por mais tempo. Os dois números medem coisas diferentes, e usar só um deles leva a decisões ruins: pela retenção você cortaria o B; pelo watch time você abandonaria o A.',
+        'Os dois vídeos da tabela são números inventados para ilustrar a leitura, e não a medição de ninguém. O vídeo A parece muito melhor pela retenção, e é mesmo melhor no que ele se propôs a fazer. Mas o vídeo B segurou cada pessoa por mais tempo. Os dois números medem coisas diferentes, e usar só um deles leva a decisões ruins: pela retenção você cortaria o B; pelo watch time você abandonaria o A.',
     },
     {
       tipo: 'titulo',
