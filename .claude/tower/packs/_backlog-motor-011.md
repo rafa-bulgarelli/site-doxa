@@ -17,3 +17,10 @@ Quem abre a track: sessão principal (assento do gestor). Um item por linha, com
 - [ ] `Rodape.tsx` ano calculado no build (congela até o próximo deploy). (collector)
 - [ ] `vercel build` imprime 59× TS2835 em `api/**` (moduleResolution node16 do builder
       da Vercel) — pré-existente, não falha, fora do card; relatar ao dono. (gate)
+- [ ] LANDING (decisão do dono, não do motor): `/#faq` vindo das páginas SEO (rodapé
+      "Perguntas") abre no topo da home — só `#forms` tem seguro de montagem em
+      `App.tsx`. Dar o mesmo seguro ao `#faq` (import do chunk `Faq` + rolar) é ~10
+      linhas na landing; ou trocar o link do rodapé SEO para não prometer FAQ.
+      (collector T1)
+- [ ] `App.tsx` chegada com `#forms`: `Promise.all` dos imports das seções acima do alvo
+      antes de rolar (robustez; hipótese do collector, não confirmada). (collector T1)
