@@ -111,6 +111,11 @@ export const pagina: Pagina = {
       texto: 'Um milhão de views. Ou seu dinheiro de volta.',
     },
     {
+      tipo: 'paragrafo',
+      texto:
+        'Essa é a manchete; a letra dela é esta: a Doxa trabalha com metas de performance definidas em contrato. A operação é estruturada para atingir o volume de visualizações acordado dentro do período estabelecido e, caso a meta não seja alcançada, aplicam-se as condições de garantia previstas no contrato. A meta é sobre a performance total contratada, somada entre as três redes — nunca sobre um vídeo específico deste canal.',
+    },
+    {
       tipo: 'titulo',
       nivel: 2,
       texto: 'O que muda no canal de uma empresa',
