@@ -21,16 +21,41 @@
  * 3. **O quadro final se sustenta parado.** É ele que quem pediu menos movimento
  *    recebe, e é ele que fica na cabeça de quem só passou os olhos.
  *
- * O texto do link é desenhado como BLOCOS, não como letra: uma URL escrita num
- * palco de 480 por 150 vira fiapo de 4px no celular, e ainda precisaria de
- * tradução. Bloco a bloco também é o que deixa o caractere errado ser UM ponto
- * na linha — que é a leitura "letra por letra" que o passo pede.
+ * ─── POR QUE O TEXTO FOI REDESENHADO (revisão do dono) ───────────────────────
+ *
+ * O link continua sendo desenhado como BLOCOS, e não como letra: uma URL escrita
+ * num palco de 480 por 150 vira fiapo de 4px no celular, e ainda precisaria de
+ * tradução. Só que a primeira versão dava a cada bloco a MESMA altura, o mesmo
+ * canto redondo e quase a mesma largura — e o dono leu o resultado pelo que ele
+ * era: "parece código de barras".
+ *
+ * O que faz um borrão de texto parecer texto não é a variação de largura: é a
+ * ESTRUTURA. Aqui ela está inteira, e é o que a versão nova acrescenta:
+ *
+ *   · **Palavras, não uma fileira.** As letras andam coladas (2,6 de vão) e as
+ *     palavras se separam por um vão quase três vezes maior. Fileira de vão
+ *     constante é código de barras; bloco de letra com respiro entre grupos é
+ *     palavra.
+ *   · **Linha de base, com quem sobe e quem desce.** Uma em cada quatro letras
+ *     tem haste para cima e uma em cada sete desce abaixo da linha. É o
+ *     serrilhado do miolo do texto que o olho reconhece de longe, mesmo sem ler.
+ *   · **A gramática do endereço.** O `https` entra APAGADO — é a parte que
+ *     ninguém digita —, e depois dele vêm as duas barras, o ponto do domínio e a
+ *     barra do perfil, cada um no seu lugar. É isso que faz ler "link", e não
+ *     "um monte de tracinhos".
+ *   · **Canto quase reto.** Bloco com canto de 3 num corpo de 8 é uma pílula;
+ *     em 1,5 ele volta a ser letra.
+ *
+ * E o selo de cada linha agora é o ÍCONE REAL da rede (`../redes`), sem o
+ * círculo cinza em volta: o passo é sobre as três redes, e a forma genérica
+ * enjaulada é o defeito que o dono nomeou duas vezes.
  */
 import { motion } from 'framer-motion';
 import { Marca, Painel, TINTA, TRACO, TRACO_ACESO } from '../pecas';
 import { Brilho, QUEBRA, TracoDeLuz } from '../luz';
-import { MiniPalco, Sinal } from '../itens/comuns';
-import type { Rede } from '../itens/comuns';
+import { MiniPalco } from '../itens/comuns';
+import { IconeDaRede } from '../redes';
+import type { RedeReal } from '../redes';
 import { EASE, tempo, useRoteiro } from '../tempo';
 
 /**
@@ -45,38 +70,70 @@ const CORRIGIDO = 2;
 const CONFERIDO = 3;
 
 /** A geometria da faixa: três linhas, num lugar só. */
-const SINAL_X = 36;
-const CAMPO_X = 64;
-const CAMPO_LARGURA = 318;
+const ICONE_X = 34;
+const ICONE_TAMANHO = 26;
+const CAMPO_X = 62;
+const CAMPO_LARGURA = 320;
 const CAMPO_ALTURA = 30;
-const LETRA_X = 82;
-const LETRA_ALTURA = 9;
-const VAO = 4;
-const MARCA_X = 418;
+const LETRA_X = 80;
+const MARCA_X = 420;
 
-/** As larguras dos blocos de texto — sortidas, para não virar código de barras. */
-const LARGURAS = [7, 5, 9, 6, 4, 8, 5, 7, 6, 9, 5, 6, 8, 4, 7] as const;
+/** O corpo da letra, e o quanto sobe uma haste e desce um rabo. */
+const CORPO = 8;
+const SOBE = 3.5;
+const DESCE = 3;
+/** Vão entre letras da mesma palavra, e vão entre palavras. */
+const VAO_LETRA = 2.6;
+const VAO_PALAVRA = 7;
 
-/** Depois do quarto bloco entra a barra do endereço: é o que faz ler "link". */
-const SEPARADOR = 3;
+/** As larguras, sortidas: da letra fina de uma haste à larga de duas pernas. */
+const LARGURAS = [6, 4, 7, 5, 9, 3, 6, 8, 5, 7, 4, 6, 9, 5, 7, 3, 6, 5] as const;
+
+/** Os pedaços de um endereço, na ordem em que ele se escreve. */
+type TipoDePontuacao = 'ponto' | 'barra' | 'duasBarras';
+
+interface Pedaco {
+  readonly tipo: 'palavra' | TipoDePontuacao;
+  /** Quantas letras, quando o pedaço é palavra. */
+  readonly letras?: number;
+  /** O `https` é apagado: é a parte do endereço que ninguém digita. */
+  readonly apagada?: boolean;
+}
+
+/** O esqueleto comum: `https` apagado, as duas barras, e o resto por linha. */
+const PREFIXO: readonly Pedaco[] = [
+  { tipo: 'palavra', letras: 5, apagada: true },
+  { tipo: 'duasBarras' },
+];
+
+/** Um endereço de perfil: domínio, ponto, `com`, barra e o nome do perfil. */
+function endereco(dominio: number, perfil: number): readonly Pedaco[] {
+  return [
+    ...PREFIXO,
+    { tipo: 'palavra', letras: dominio },
+    { tipo: 'ponto' },
+    { tipo: 'palavra', letras: 3 },
+    { tipo: 'barra' },
+    { tipo: 'palavra', letras: perfil },
+  ];
+}
 
 interface LinhaDoLink {
-  readonly rede: Rede;
+  readonly rede: RedeReal;
   readonly centro: number;
-  readonly blocos: number;
+  readonly pedacos: readonly Pedaco[];
   /** De onde a linha começa a ler `LARGURAS` — uma linha igual à outra denuncia. */
   readonly giro: number;
 }
 
-const LINHAS = [
-  { rede: 'quadrado', centro: 30, blocos: 17, giro: 0 },
-  { rede: 'anel', centro: 75, blocos: 20, giro: 4 },
-  { rede: 'play', centro: 120, blocos: 15, giro: 9 },
-] as const satisfies readonly LinhaDoLink[];
+const LINHAS: readonly LinhaDoLink[] = [
+  { rede: 'youtube', centro: 30, pedacos: endereco(7, 8), giro: 0 },
+  { rede: 'tiktok', centro: 75, pedacos: endereco(6, 9), giro: 5 },
+  { rede: 'instagram', centro: 120, pedacos: endereco(9, 6), giro: 11 },
+];
 
-/** Qual linha entra torta, e em qual bloco. O erro é UM, e no meio da tela. */
+/** Qual linha entra torta. O erro é UM, e no meio da tela. */
 const LINHA_ERRADA = 1;
-const BLOCO_ERRADO = 9;
 
 /** O que a linha é AGORA — a fase e o estado num lugar só, nunca acumulados. */
 type Estado = 'vazio' | 'quebrado' | 'corrigindo' | 'conferido';
@@ -114,48 +171,125 @@ function bordaDoCampo(estado: Estado): string {
   }
 }
 
-interface Bloco {
+interface Letra {
   readonly x: number;
   readonly largura: number;
+  /** O topo da letra, medido do centro da linha: quem sobe começa mais alto. */
+  readonly topo: number;
+  readonly altura: number;
+  readonly apagada: boolean;
 }
 
-/** Onde cada bloco cai, com o vão maior no lugar da barra do endereço. */
-function blocosDaLinha(quantidade: number, giro: number): readonly Bloco[] {
-  const saida: Bloco[] = [];
+interface Separador {
+  readonly tipo: TipoDePontuacao;
+  readonly x: number;
+}
+
+interface Escrita {
+  readonly letras: readonly Letra[];
+  readonly separadores: readonly Separador[];
+}
+
+/** A largura que cada sinal de pontuação ocupa antes do próximo pedaço. */
+const LARGURA_DA_PONTUACAO: Record<TipoDePontuacao, number> = {
+  ponto: 4,
+  barra: 6,
+  duasBarras: 12,
+};
+
+/** A letra número `ordem` da escrita: largura sorteada, haste e rabo por ritmo. */
+function letraDe(x: number, ordem: number, apagada: boolean): Letra {
+  const largura = LARGURAS[ordem % LARGURAS.length];
+  // Uma em cada quatro sobe e uma em cada sete desce: é o serrilhado do miolo
+  // do texto, e é ele que o olho reconhece como escrita antes de ler qualquer
+  // coisa. Sem isso, blocos de mesma altura em fila são código de barras.
+  const sobe = ordem % 4 === 1 ? SOBE : 0;
+  const desce = ordem % 7 === 3 ? DESCE : 0;
+  return { x, largura, topo: -CORPO / 2 - sobe, altura: CORPO + sobe + desce, apagada };
+}
+
+/** O endereço inteiro em coordenadas: onde cai cada letra e cada pontuação. */
+function escrever(pedacos: readonly Pedaco[], giro: number): Escrita {
+  const letras: Letra[] = [];
+  const separadores: Separador[] = [];
   let x = LETRA_X;
-  for (let indice = 0; indice < quantidade; indice += 1) {
-    const largura = LARGURAS[(indice + giro) % LARGURAS.length];
-    saida.push({ x, largura });
-    x += largura + VAO + (indice === SEPARADOR ? 9 : 0);
+  for (const pedaco of pedacos) {
+    if (pedaco.tipo === 'palavra') {
+      const quantas = pedaco.letras ?? 0;
+      for (let indice = 0; indice < quantas; indice += 1) {
+        const letra = letraDe(x, letras.length + giro, pedaco.apagada === true);
+        letras.push(letra);
+        x += letra.largura + VAO_LETRA;
+      }
+      x += VAO_PALAVRA - VAO_LETRA;
+      continue;
+    }
+    separadores.push({ tipo: pedaco.tipo, x });
+    x += LARGURA_DA_PONTUACAO[pedaco.tipo] + VAO_PALAVRA;
   }
-  return saida;
+  return { letras, separadores };
 }
 
-interface BlocoDeTextoProps {
-  readonly bloco: Bloco;
+/**
+ * Qual letra entra torta: a quinta contada do fim, dentro do nome do perfil.
+ *
+ * Contar do fim é o que mantém o erro no NOME — a parte que se digita — em
+ * qualquer linha, sem depender de quantas letras o domínio tem.
+ */
+function indiceDaQuebra(total: number): number {
+  return Math.max(0, total - 5);
+}
+
+interface LetraProps {
+  readonly letra: Letra;
   readonly centro: number;
-  readonly oculto: boolean;
-  /** O bloco que ENTROU no lugar do errado — nasce branco para ser visto. */
-  readonly trocado: boolean;
+  readonly oculta: boolean;
+  /** A letra que ENTROU no lugar da errada — nasce branca para ser vista. */
+  readonly trocada: boolean;
   readonly atraso: number;
   readonly parado: boolean;
 }
 
-/** Um "caractere" do link. Entra por opacidade, um atrás do outro. */
-function BlocoDeTexto({ bloco, centro, oculto, trocado, atraso, parado }: BlocoDeTextoProps) {
-  if (oculto) return null;
+/** Uma "letra" do link. Entra por opacidade, uma atrás da outra. */
+function LetraDoLink({ letra, centro, oculta, trocada, atraso, parado }: LetraProps) {
+  if (oculta) return null;
+  const cor = trocada ? TINTA.branco : letra.apagada ? TINTA.apagado : TRACO_ACESO;
   return (
     <motion.rect
-      x={bloco.x}
-      y={centro - LETRA_ALTURA / 2}
-      width={bloco.largura}
-      height={LETRA_ALTURA}
-      rx={3}
-      fill={trocado ? TINTA.branco : TRACO_ACESO}
+      x={letra.x}
+      y={centro + letra.topo}
+      width={letra.largura}
+      height={letra.altura}
+      // Canto quase reto: em 3 o bloco vira pílula, e pílula em fila é o
+      // código de barras que o dono viu na primeira versão.
+      rx={1.5}
+      fill={cor}
       initial={{ opacity: parado ? 1 : 0 }}
       animate={{ opacity: 1 }}
-      transition={{ duration: tempo(parado, 0.28), ease: EASE, delay: tempo(parado, atraso) }}
+      transition={{ duration: tempo(parado, 0.24), ease: EASE, delay: tempo(parado, atraso) }}
     />
+  );
+}
+
+/** O ponto do domínio e as barras do endereço — a gramática que diz "link". */
+function Pontuacao({ separador, centro }: { separador: Separador; centro: number }) {
+  const base = centro + CORPO / 2;
+  if (separador.tipo === 'ponto') {
+    return <rect x={separador.x} y={base - 2.6} width={2.6} height={2.6} fill={TINTA.apagado} />;
+  }
+  const barras = separador.tipo === 'duasBarras' ? [0, 6] : [0];
+  return (
+    <g>
+      {barras.map((deslocamento) => (
+        <path
+          key={deslocamento}
+          d={`M ${separador.x + deslocamento} ${base + 1} l 5 ${-CORPO - 4}`}
+          stroke={TINTA.apagado}
+          strokeWidth={1.7}
+          strokeLinecap="round"
+        />
+      ))}
+    </g>
   );
 }
 
@@ -163,31 +297,31 @@ interface TextoProps {
   readonly linha: LinhaDoLink;
   readonly estado: Estado;
   readonly errada: boolean;
-  /** A ordem da linha na pilha: é ela que escalona a entrada dos blocos. */
+  /** A ordem da linha na pilha: é ela que escalona a entrada das letras. */
   readonly ordem: number;
   readonly parado: boolean;
 }
 
 /**
- * O link escrito em blocos — e, na linha torta, o caractere que não fecha.
+ * O link escrito em blocos — e, na linha torta, a letra que não fecha.
  *
- * O bloco corrigido nasce BRANCO enquanto os vizinhos ficam no cinza do texto:
- * é o jeito de apontar "foi este aqui que mudou" sem uma seta, sem uma legenda
+ * A letra corrigida nasce BRANCA enquanto as vizinhas ficam no cinza do texto:
+ * é o jeito de apontar "foi esta aqui que mudou" sem uma seta, sem uma legenda
  * e sem gastar mais uma cor.
  */
 function TextoDoLink({ linha, estado, errada, ordem, parado }: TextoProps) {
   if (estado === 'vazio') return null;
-  const blocos = blocosDaLinha(linha.blocos, linha.giro);
-  const atraso = ordem * 0.22;
-  const trocando = errada && estado === 'corrigindo';
+  const { letras, separadores } = escrever(linha.pedacos, linha.giro);
+  const quebrada = indiceDaQuebra(letras.length);
+  const atraso = ordem * 0.2;
   return (
     <g>
       {/* O clarão BRANCO no lugar exato onde estava o xis: é ele que faz a
-          correção ser vista: sem o clarão, o bloco novo entra no meio de
-          dezenove iguais e a fase inteira passa sem ninguém notar. */}
-      {trocando && (
+          correção ser vista — sem o clarão, a letra nova entra no meio de trinta
+          iguais e a fase inteira passa sem ninguém notar. */}
+      {errada && estado === 'corrigindo' && (
         <Brilho
-          x={blocos[BLOCO_ERRADO].x + 3}
+          x={letras[quebrada].x + 3}
           y={linha.centro}
           raio={40}
           tinta="luz"
@@ -195,33 +329,34 @@ function TextoDoLink({ linha, estado, errada, ordem, parado }: TextoProps) {
           parado={parado}
         />
       )}
-      {blocos.map((bloco, indice) => (
-        <BlocoDeTexto
-          key={bloco.x}
-          bloco={bloco}
+      {separadores.map((separador) => (
+        <Pontuacao
+          key={`${separador.tipo}-${separador.x}`}
+          separador={separador}
           centro={linha.centro}
-          // O bloco que quebrou não é desenhado: no lugar dele vai o xis.
-          oculto={errada && estado === 'quebrado' && indice === BLOCO_ERRADO}
-          trocado={errada && indice === BLOCO_ERRADO}
-          atraso={atraso + indice * 0.04}
+        />
+      ))}
+      {letras.map((letra, indice) => (
+        <LetraDoLink
+          key={letra.x}
+          letra={letra}
+          centro={linha.centro}
+          // A letra que quebrou não é desenhada: no lugar dela vai o xis.
+          oculta={errada && estado === 'quebrado' && indice === quebrada}
+          trocada={errada && indice === quebrada}
+          atraso={atraso + indice * 0.028}
           parado={parado}
         />
       ))}
-      <path
-        d={`M ${blocos[SEPARADOR + 1].x - 6} ${linha.centro + 6} l 5 -12`}
-        stroke={TINTA.apagado}
-        strokeWidth={1.8}
-        strokeLinecap="round"
-      />
       {errada && estado === 'quebrado' && (
-        <CaractereTorto x={blocos[BLOCO_ERRADO].x + 3} y={linha.centro} parado={parado} />
+        <LetraTorta x={letras[quebrada].x + 3} y={linha.centro} parado={parado} />
       )}
     </g>
   );
 }
 
-/** O caractere que não serve: um xis vermelho no lugar do bloco, e o clarão. */
-function CaractereTorto({ x, y, parado }: { x: number; y: number; parado: boolean }) {
+/** A letra que não serve: um xis vermelho no lugar do bloco, e o clarão. */
+function LetraTorta({ x, y, parado }: { x: number; y: number; parado: boolean }) {
   return (
     <g>
       <Brilho x={x} y={y} raio={38} tinta="luzQuebra" aceso parado={parado} />
@@ -248,18 +383,18 @@ interface LinhaProps {
   readonly parado: boolean;
 }
 
-/** Uma rede: o selo, o campo, o link em blocos e o veredito na ponta. */
+/** Uma rede: o ícone, o campo, o link em blocos e o veredito na ponta. */
 function LinhaDeLink({ linha, ordem, estado, errada, parado }: LinhaProps) {
   const conferido = estado === 'conferido';
   const quebrado = estado === 'quebrado';
   return (
     <g>
-      <Sinal
+      <IconeDaRede
         rede={linha.rede}
-        cx={SINAL_X}
-        cy={linha.centro}
+        x={ICONE_X}
+        y={linha.centro}
+        tamanho={ICONE_TAMANHO}
         cor={conferido ? TRACO_ACESO : TINTA.apagado}
-        raio={13}
       />
       <Painel
         x={CAMPO_X}
@@ -270,13 +405,7 @@ function LinhaDeLink({ linha, ordem, estado, errada, parado }: LinhaProps) {
         vidro={conferido}
         raio={9}
       />
-      <TextoDoLink
-        linha={linha}
-        estado={estado}
-        errada={errada}
-        ordem={ordem}
-        parado={parado}
-      />
+      <TextoDoLink linha={linha} estado={estado} errada={errada} ordem={ordem} parado={parado} />
       {(conferido || quebrado) && (
         <Marca
           tipo={conferido ? 'certo' : 'errado'}

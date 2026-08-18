@@ -3,13 +3,36 @@
  *
  * O item: **na dúvida, pergunte à equipe ANTES de fazer.**
  *
- * A cena tem dois caminhos saindo da mesma dúvida. Em cima, o caminho de quem
- * pergunta: a mensagem chega à equipe e volta com o visto. Embaixo, o de quem
- * fez sem perguntar: um traço pontilhado que termina num escudo rachado.
+ * A cena tem dois caminhos saindo da MESMA dúvida. Em cima, o de quem pergunta:
+ * a mensagem chega à equipe e volta com o visto. Embaixo, o de quem fez sem
+ * perguntar: um traço pontilhado que termina num escudo rachado.
  *
  * Os dois ficam na tela ao mesmo tempo no fim, e é isso que a cena tem de dizer.
  * Alternados, virariam duas histórias; juntos, viram uma escolha — que é o que
  * o item de fato é.
+ *
+ * ─── O QUE MUDOU NA RODADA DO POLIMENTO ──────────────────────────────────────
+ *
+ * O dono aprovou a ideia e reprovou a composição: "alinhar ao centro, espaçar o
+ * ícone da conversa, hierarquia". O desenho antigo tinha os três defeitos ao
+ * mesmo tempo — o caminho certo corria colado no topo do palco, o de baixo
+ * cabia no rodapé, e o conjunto inteiro ficava acima do centro; o pontilhado
+ * parava no ar, 50 unidades antes do escudo; e o glifo da conversa tinha 26 de
+ * largura dentro de um selo de 50, encostando na borda dos dois lados.
+ *
+ * 1. **Centro.** As duas linhas (44 e 110) são simétricas em volta do meio do
+ *    palco, e os dois caminhos saem do MESMO ponto — a borda do balão — em vez
+ *    de um sair do lado e o outro do rodapé. Uma dúvida, duas saídas.
+ * 2. **Respiro.** Balão, conversa e desfecho ficam a ~164 de distância um do
+ *    outro, e o selo cresceu para 28 de raio: o glifo agora tem folga em volta,
+ *    em vez de encostar na jaula.
+ * 3. **Hierarquia.** O caminho certo é o que tem luz: traço cheio, seta, selo
+ *    aceso, visto grande com faísca. O errado é pontilhado e cinza do começo ao
+ *    fim, e só o desfecho — o escudo rachado — é vermelho. Cor onde ela
+ *    significa; o resto é traço.
+ *
+ * O quadro parado passou a ser o ÚLTIMO (os dois caminhos na tela), e não o do
+ * meio: quem pediu menos movimento recebia só metade da escolha.
  */
 import { Legenda, Marca, TINTA, TRACO } from '../pecas';
 import { ARCO, Brilho, CERTO, Faiscas, QUEBRA, TracoDeLuz, useTintas } from '../luz';
@@ -22,10 +45,27 @@ const MENSAGEM = 1;
 const VISTO = 2;
 const SEM_PERGUNTAR = 3;
 
-const ALTO = 56;
-const BAIXO = 118;
+/** As duas linhas da escolha, simétricas em volta do meio do palco (75). */
+const ALTO = 44;
+const BAIXO = 110;
 
-/** O escudo pequeno do caminho de baixo — o mesmo desenho da cena da garantia. */
+/** As três estações da leitura, da esquerda para a direita. */
+const DUVIDA_X = 80;
+const DUVIDA_Y = 68;
+const CONVERSA_X = 244;
+const FIM_X = 406;
+
+/**
+ * O balão da dúvida, desenhado na ORIGEM — o `translate` mora no grupo de fora.
+ *
+ * O rabicho aponta para baixo e para a esquerda, como o de qualquer balão de
+ * fala: para a direita, ele brigaria com os dois caminhos que saem dali.
+ */
+const BALAO =
+  'M -28 -28 H 28 A 12 12 0 0 1 40 -16 V 16 A 12 12 0 0 1 28 28 H -6 L -20 42' +
+  ' V 28 H -28 A 12 12 0 0 1 -40 16 V -16 A 12 12 0 0 1 -28 -28 Z';
+
+/** O escudo do caminho de baixo — o mesmo desenho da cena da garantia. */
 const ESCUDO = 'M 0 -26 L 22 -17 L 22 3 C 22 17 11 26 0 30 C -11 26 -22 17 -22 3 L -22 -17 Z';
 const RACHADURA = 'M 1 -24 l -7 12 l 8 6 l -6 13 l 4 7';
 
@@ -34,14 +74,11 @@ function Duvida({ parado }: { parado: boolean }) {
   const tintas = useTintas();
   return (
     <g>
-      <Brilho x={64} y={ALTO} raio={72} tinta="luzQuente" aceso parado={parado} />
-      <path
-        d="M 22 26 h 84 a 12 12 0 0 1 12 12 v 30 a 12 12 0 0 1 -12 12 h -30 l -14 14 v -14 h -40 a 12 12 0 0 1 -12 -12 v -30 a 12 12 0 0 1 12 -12 z"
-        fill={TINTA.elevado}
-        stroke={tintas('arco')}
-        strokeWidth={1.8}
-      />
-      <Legenda x={64} y={66} corpo={36} tinta="arco">
+      <Brilho x={DUVIDA_X} y={DUVIDA_Y} raio={76} tinta="luzQuente" aceso parado={parado} />
+      <g transform={`translate(${DUVIDA_X} ${DUVIDA_Y})`}>
+        <path d={BALAO} fill={TINTA.elevado} stroke={tintas('arco')} strokeWidth={1.8} />
+      </g>
+      <Legenda x={DUVIDA_X} y={DUVIDA_Y + 13} corpo={36} tinta="arco">
         ?
       </Legenda>
     </g>
@@ -51,12 +88,13 @@ function Duvida({ parado }: { parado: boolean }) {
 /** O caminho de cima: a mensagem chega à equipe e volta com o visto. */
 function CaminhoCerto({ fase, parado }: { fase: number; parado: boolean }) {
   const tintas = useTintas();
+  const perguntou = fase >= MENSAGEM;
   const respondeu = fase >= VISTO;
   return (
     <g>
-      {fase >= MENSAGEM && (
+      {perguntou && (
         <TracoDeLuz
-          d={`M 130 ${ALTO} h 42 m -13 -9 l 13 9 l -13 9`}
+          d={`M 126 60 C 164 60, 172 ${ALTO}, 208 ${ALTO} m -13 -9 l 13 9 l -13 9`}
           cor={tintas('arco')}
           largura={2}
           halo={2.4}
@@ -65,19 +103,24 @@ function CaminhoCerto({ fase, parado }: { fase: number; parado: boolean }) {
           duracao={0.5}
         />
       )}
-      <Brilho x={214} y={ALTO} raio={58} tinta="luzQuente" aceso={fase >= MENSAGEM} parado={parado} />
+      <Brilho x={CONVERSA_X} y={ALTO} raio={58} tinta="luzQuente" aceso={perguntou} parado={parado} />
+      {/*
+       * O glifo encolheu junto com o selo crescendo: 22 de largura dentro de um
+       * círculo de 54 deixa 16 de folga de cada lado. Antes eram 26 dentro de
+       * 50, e o balão encostava na borda — o "afogado" que o dono nomeou.
+       */}
       <Selo
-        x={214}
+        x={CONVERSA_X}
         y={ALTO}
-        glifo="M -13 -9 h 26 v 17 h -17 l -9 8 z"
-        cor={fase >= MENSAGEM ? ARCO[4] : TINTA.linha}
-        raio={25}
+        glifo="M -11 -8 h 22 v 15 h -14 l -8 7 z"
+        cor={perguntou ? ARCO[4] : TINTA.linha}
+        raio={27}
         parado={parado}
       />
       {respondeu && (
         <>
           <TracoDeLuz
-            d={`M 252 ${ALTO} h 42 m -13 -9 l 13 9 l -13 9`}
+            d={`M 280 ${ALTO} h 84 m -13 -9 l 13 9 l -13 9`}
             cor={CERTO}
             largura={2}
             halo={2.4}
@@ -85,9 +128,9 @@ function CaminhoCerto({ fase, parado }: { fase: number; parado: boolean }) {
             riscando
             duracao={0.5}
           />
-          <Brilho x={352} y={ALTO} raio={62} tinta="luzCerta" aceso parado={parado} />
-          <Marca tipo="certo" x={352} y={ALTO} cor={TINTA.protege} escala={1.3} parado={parado} />
-          <Faiscas x={352} y={ALTO} raio={56} ativo parado={parado} quantidade={8} cores={[CERTO]} />
+          <Brilho x={FIM_X} y={ALTO} raio={50} tinta="luzCerta" aceso parado={parado} />
+          <Marca tipo="certo" x={FIM_X} y={ALTO} cor={TINTA.protege} escala={1.25} parado={parado} />
+          <Faiscas x={FIM_X} y={ALTO} raio={48} ativo parado={parado} quantidade={8} cores={[CERTO]} />
         </>
       )}
     </g>
@@ -98,19 +141,21 @@ function CaminhoCerto({ fase, parado }: { fase: number; parado: boolean }) {
 function CaminhoErrado({ visivel, parado }: { visivel: boolean; parado: boolean }) {
   return (
     <motion.g
-      initial={false}
+      initial={{ opacity: parado && visivel ? 1 : 0 }}
       animate={{ opacity: visivel ? 1 : 0 }}
       transition={{ duration: tempo(parado, 0.5) }}
     >
+      {/* O pontilhado ENCOSTA no escudo: parado no ar, ele lia como um traço
+          esquecido no meio do palco em vez de um caminho que dá em algum lugar. */}
       <path
-        d={`M 96 96 C 96 ${BAIXO}, 140 ${BAIXO}, 300 ${BAIXO}`}
+        d={`M 126 84 C 214 84, 236 ${BAIXO}, ${FIM_X - 28} ${BAIXO}`}
         fill="none"
         stroke={TRACO}
         strokeWidth={1.8}
         strokeDasharray="6 6"
       />
-      <Brilho x={352} y={BAIXO} raio={58} tinta="luzQuebra" aceso={visivel} parado={parado} />
-      <g transform={`translate(352 ${BAIXO})`}>
+      <Brilho x={FIM_X} y={BAIXO} raio={50} tinta="luzQuebra" aceso={visivel} parado={parado} />
+      <g transform={`translate(${FIM_X} ${BAIXO}) scale(0.85)`}>
         <TracoDeLuz d={ESCUDO} cor={QUEBRA} largura={2} halo={2.6} parado={parado} />
         {visivel && (
           <TracoDeLuz
@@ -129,7 +174,9 @@ function CaminhoErrado({ visivel, parado }: { visivel: boolean; parado: boolean 
 }
 
 export default function PergunteAntes() {
-  const { fase, parado } = useRoteiro(FASES, VISTO);
+  // O quadro parado é o ÚLTIMO: é ele que tem os DOIS caminhos, e a cena existe
+  // para mostrar a escolha inteira, não metade dela.
+  const { fase, parado } = useRoteiro(FASES, SEM_PERGUNTAR);
 
   return (
     <MiniPalco fase={fase}>

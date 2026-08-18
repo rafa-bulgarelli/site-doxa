@@ -72,49 +72,6 @@ export function Cartao({
   );
 }
 
-/** Os três desenhos de rede: o play, o quadrado e o anel. */
-const REDES = ['play', 'quadrado', 'anel'] as const;
-export type Rede = (typeof REDES)[number];
-
-interface SinalProps {
-  readonly rede: Rede;
-  readonly cx: number;
-  readonly cy: number;
-  readonly cor: string;
-  readonly raio?: number;
-}
-
-/** Uma rede, no anel de sempre — o mesmo vocabulário da cena da garantia. */
-export function Sinal({ rede, cx, cy, cor, raio = 20 }: SinalProps) {
-  const marca = raio * 0.35;
-  return (
-    <g>
-      <circle cx={cx} cy={cy} r={raio} fill={TINTA.elevado} stroke={cor} strokeWidth={1.6} />
-      {rede === 'play' && (
-        <path
-          d={`M ${cx - marca * 0.6} ${cy - marca} l ${marca * 1.7} ${marca} l ${-marca * 1.7} ${marca} z`}
-          fill={cor}
-        />
-      )}
-      {rede === 'quadrado' && (
-        <rect
-          x={cx - marca}
-          y={cy - marca}
-          width={marca * 2}
-          height={marca * 2}
-          rx={marca * 0.5}
-          fill={cor}
-        />
-      )}
-      {rede === 'anel' && (
-        <circle cx={cx} cy={cy} r={marca} fill="none" stroke={cor} strokeWidth={2.4} />
-      )}
-    </g>
-  );
-}
-
-export const TRES_REDES: readonly Rede[] = REDES;
-
 interface SeloProps {
   readonly x: number;
   readonly y: number;
