@@ -70,7 +70,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'O detalhe que muda a conta é que **o arquivo é o mesmo**. Um vídeo vertical, curto e legendado já pronto para o feed não precisa de nova edição para entrar aqui. O trabalho adicional é de upload, não de produção — e é raro que o segundo maior custo de uma operação de conteúdo seja tão próximo de zero.',
+        'O detalhe que muda a conta é que **o arquivo é o mesmo**. Um vídeo vertical, curto e legendado já pronto para o feed não precisa de nova edição para entrar aqui. O trabalho adicional é de upload, não de produção — e é raro que ampliar a distribuição de uma operação de conteúdo custe tão pouco.',
     },
     {
       tipo: 'titulo',

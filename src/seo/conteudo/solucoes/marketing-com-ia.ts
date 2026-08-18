@@ -105,7 +105,7 @@ export const pagina: Pagina = {
         {
           titulo: 'Distribuição',
           texto:
-            'Publicar com constância, nas redes onde o público está, sem atropelar o vídeo do dia anterior. A IA ajuda a versionar, mas cadência é disciplina operacional — e é onde a maioria trava no segundo mês.',
+            'Publicar com constância, sem atropelar o vídeo do dia anterior. A IA ajuda a versionar, mas cadência é disciplina operacional — e é onde a maioria trava no segundo mês.',
         },
         {
           titulo: 'Decisão',
@@ -117,7 +117,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'Quase todo investimento em "marketing com IA" cai inteiro na camada de produção e não toca a primeira nem a última. O resultado é previsível: muito conteúdo, nenhuma opinião, e um perfil que publica todo dia sem que ninguém lembre de um único vídeo.',
+        'Quase todo investimento em "marketing com IA" cai inteiro na camada de produção e não toca a primeira nem a última. O resultado é previsível: muito conteúdo, nenhuma opinião, e um perfil que publica todo dia sem que ninguém lembre de nada.',
     },
     {
       tipo: 'titulo',
@@ -127,7 +127,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'A Doxa opera a camada de produção de vídeo e a estratégia de distribuição do que produz. O começo é o mesmo em toda operação, e só a primeira etapa pede o tempo do cliente:',
+        'A Doxa opera a camada de produção de vídeo e a estratégia de distribuição do que produz. São três passos, e só o primeiro pede o seu tempo:',
     },
     {
       tipo: 'passos',
@@ -171,7 +171,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'Quem digita "agência de marketing com IA" quase sempre quer uma coisa concreta: alguém que assuma o conteúdo. Vale dizer com todas as letras o que a Doxa é e o que ela não é, porque as duas respostas mudam a conversa antes de ela começar.',
+        'Quem digita "agência de marketing com IA" quase sempre quer uma coisa concreta: alguém que assuma o conteúdo. Vale dizer com todas as letras o que a Doxa é e o que ela não é, porque as duas respostas mudam a conversa.',
     },
     {
       tipo: 'lista',
@@ -195,13 +195,13 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'A pipeline da Doxa roda sobre ferramentas de mercado: HeyGen, ChatGPT, Claude, Meta e ElevenLabs. São ferramentas usadas, nada além disso — nenhuma é parceira da Doxa nem endossa o que está escrito aqui. E é por serem de mercado que elas não explicam resultado nenhum.',
+        'A pipeline da Doxa roda sobre ferramentas de mercado: HeyGen, ChatGPT, Claude, Meta e ElevenLabs. São ferramentas usadas, nada além disso — nenhuma é parceira da Doxa nem endossa este texto. E é por serem de mercado que elas não explicam resultado nenhum.',
     },
     {
       tipo: 'destaque',
       variante: 'nota',
       texto:
-        'Ferramenta é commodity: as mesmas contas estão a um cartão de crédito de distância do seu concorrente. O que não é commodity é o volume de testes rodando ao mesmo tempo e a disposição de descartar rápido o que não funciona.',
+        'Ferramenta é commodity: as mesmas contas estão a um cartão de distância do seu concorrente. O que não é commodity é o volume de testes e a disposição de descartar rápido o que não funciona.',
     },
     {
       tipo: 'titulo',
@@ -213,8 +213,8 @@ export const pagina: Pagina = {
       itens: [
         'Funciona para empresas que querem transformar conteúdo em um canal previsível e escalável de crescimento, e para marcas que precisam ganhar relevância e ocupar espaço de forma consistente.',
         'Funciona em empresa pequena, desde que exista potencial para transformar conteúdo em um canal relevante de crescimento.',
-        'Não funciona como substituto de operação comercial: conteúdo gera demanda e audiência, não fecha venda no lugar do seu time.',
-        'Não funciona para quem quer um vídeo por mês. Sem volume não há dado, e sem dado a operação vira palpite caro.',
+        'Não funciona como substituto de operação comercial: conteúdo gera demanda, não fecha venda no lugar do seu time.',
+        'Não funciona para quem quer um vídeo por mês: sem volume não há dado, e sem dado a operação vira palpite caro.',
       ],
     },
     {
