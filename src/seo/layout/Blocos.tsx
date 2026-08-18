@@ -100,7 +100,9 @@ function Passos({ itens }: { itens: readonly Passo[] }): ReactElement {
           key={passo.titulo}
           className="rounded-xl border border-doxa-line bg-doxa-surface p-5 md:p-6"
         >
-          <span className="font-serif text-2xl text-white/30">
+          {/* /45 e não /30: o numeral é texto grande (24px), então a régua é
+              3:1 — e 30% sobre `bg-doxa-surface` dá 2,28:1, reprovado. */}
+          <span className="font-serif text-2xl text-white/45">
             {String(indice + 1).padStart(2, '0')}
           </span>
           <h3 className="mt-2 font-serif text-xl text-white">{passo.titulo}</h3>
@@ -230,7 +232,9 @@ export function BlocoDoCorpo({ bloco }: { bloco: Bloco }): ReactElement {
     case 'destaque':
       return (
         <aside className={`my-8 rounded-xl border p-5 md:p-6 ${ESTILO_DESTAQUE[bloco.variante]}`}>
-          <p className="text-[11px] uppercase tracking-[0.2em] text-white/40">
+          {/* 11px é texto pequeno: a régua é 4,5:1, e 40% sobre
+              `bg-doxa-raised` dava 3,6:1. */}
+          <p className="text-[11px] uppercase tracking-[0.2em] text-white/55">
             {ROTULO_DESTAQUE[bloco.variante]}
           </p>
           <p className="mt-2 text-[15px] leading-relaxed text-white/80">

@@ -51,11 +51,14 @@ export function Cabecalho(): ReactElement {
           aria-label="Seções"
           className="flex flex-wrap items-center gap-x-4 gap-y-2 sm:gap-x-7"
         >
+          {/* `text-white/60` e não /45: branco a 45% sobre preto dá 4,42:1, e a
+              WCAG AA pede 4,5:1 para texto de 13px. A diferença é invisível a
+              olho nu e é a única coisa entre esta página e A11Y 100. */}
           {secoes().map((secao) => (
             <a
               key={secao.url}
               href={secao.url}
-              className="whitespace-nowrap text-[13px] text-white/45 transition-colors hover:text-white"
+              className="whitespace-nowrap text-[13px] text-white/60 transition-colors hover:text-white"
             >
               {secao.h1}
             </a>
