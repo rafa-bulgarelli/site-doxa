@@ -157,21 +157,6 @@ export const pagina: Pagina = {
       tipo: 'faq',
       itens: [
         {
-          pergunta: 'As visualizações do TikTok são orgânicas?',
-          resposta:
-            'As visualizações contabilizadas nas metas da Doxa são 100% orgânicas, provenientes da distribuição dos conteúdos produzidos dentro da nossa operação. Sem depender da compra de mídia para atingir as metas contratadas.',
-        },
-        {
-          pergunta: 'Vocês conseguem garantir que meu conteúdo vai viralizar no TikTok?',
-          resposta:
-            'Não garantimos que um vídeo específico vai viralizar. O que fazemos é construir uma operação com volume, dados e testes suficientes para aumentar significativamente as chances de alcançar grandes audiências. Nossa garantia está relacionada à performance total contratada, e não ao desempenho de um único conteúdo.',
-        },
-        {
-          pergunta: 'Minha empresa é pequena. Faz sentido trabalhar com a Doxa?',
-          resposta:
-            'Empresas pequenas também podem trabalhar com a Doxa, desde que exista potencial para transformar conteúdo em um canal relevante de crescimento. O mais importante não é o tamanho da empresa, e sim os objetivos, o mercado, o produto e a capacidade de aproveitar a audiência gerada pela operação.',
-        },
-        {
           pergunta: 'Preciso postar todo dia?',
           resposta:
             'A rotina combinada com quem já é cliente da Doxa prevê no máximo um vídeo da operação por dia útil, com pelo menos 24 horas entre um e outro, porque peças publicadas juntas competem pela mesma janela de entrega. O volume exato de cada operação é definido pela estratégia e pela meta de performance do cliente.',

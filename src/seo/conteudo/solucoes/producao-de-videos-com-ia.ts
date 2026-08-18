@@ -237,11 +237,6 @@ export const pagina: Pagina = {
             'A Doxa consegue assumir grande parte da operação de conteúdo. No onboarding entendemos quais materiais — imagens, vídeos, áudios ou participações — serão necessários. A necessidade de gravação do cliente varia conforme o formato escolhido para a marca.',
         },
         {
-          pergunta: 'As visualizações são orgânicas?',
-          resposta:
-            'As visualizações contabilizadas nas metas da Doxa são 100% orgânicas, provenientes da distribuição dos conteúdos produzidos dentro da nossa operação. Sem depender da compra de mídia para atingir as metas contratadas.',
-        },
-        {
           pergunta: 'E se os primeiros vídeos não performarem bem?',
           resposta:
             'Os primeiros conteúdos que performam abaixo do esperado fazem parte do processo: eles geram dados sobre audiência, temas, formatos, hooks e narrativas. A estratégia da Doxa não depende de acertar todos os vídeos. Quando identificamos padrões de maior performance, aumentamos a produção em torno do que funciona e descartamos rápido o que não funciona.',
