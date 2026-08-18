@@ -173,7 +173,7 @@ export const pagina: Pagina = {
       tipo: 'destaque',
       variante: 'doxa',
       texto:
-        'Na Doxa, esse método é a própria operação: 60 conteúdos únicos em 90 dias, um por dia útil, o mesmo arquivo publicado no Instagram, no TikTok e no YouTube Shorts, sem impulsionamento em nenhum deles — as visualizações contabilizadas nas metas são 100% orgânicas. Quem publica é o cliente, no perfil dele.',
+        'Na Doxa, esse método é a própria operação, e os números são condição de quem já é cliente: 60 conteúdos únicos em 90 dias, um por dia útil, o mesmo arquivo publicado no Instagram, no TikTok e no YouTube Shorts, sem impulsionamento em nenhum deles, conforme as condições e o prazo do contrato. As visualizações contabilizadas nas metas são 100% orgânicas, e quem publica é o cliente, no perfil dele.',
     },
     {
       tipo: 'titulo',

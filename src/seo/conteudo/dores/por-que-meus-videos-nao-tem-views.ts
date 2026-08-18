@@ -102,7 +102,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        '**O teste:** conte quantos vídeos você publicou nos últimos trinta dias. Se foram menos de uns doze, é provavelmente esta. **O que fazer:** subir a frequência antes de refinar qualquer coisa. Como referência de ordem de grandeza, a operação da Doxa trabalha com sessenta conteúdos únicos em noventa dias, um por dia útil — não porque o número seja mágico, mas porque é a partir dessa faixa que dá para separar padrão de acaso.',
+        '**O teste:** conte quantos vídeos você publicou nos últimos trinta dias. Se foram menos de uns doze, é provavelmente esta. **O que fazer:** subir a frequência antes de refinar qualquer coisa. Como referência de ordem de grandeza, a operação da Doxa trabalha com sessenta conteúdos únicos em noventa dias, um por dia útil, condição de quem já é cliente conforme as condições e o prazo do contrato — não porque o número seja mágico, mas porque é a partir dessa faixa que dá para separar padrão de acaso.',
     },
     {
       tipo: 'titulo',

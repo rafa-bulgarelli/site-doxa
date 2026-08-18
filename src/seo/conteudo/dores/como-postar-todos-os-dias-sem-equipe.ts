@@ -138,7 +138,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'Todo dia útil, na maior parte dos casos, e não sete dias por semana. A operação da Doxa usa como referência sessenta conteúdos únicos em noventa dias — um por dia útil —, e o fim de semana fica fora dessa contagem. Para uma pessoa sozinha, cinco por semana é um alvo alto mas alcançável; três por semana mantidos por seis meses vale mais do que sete por semana durante três semanas.',
+        'Todo dia útil, na maior parte dos casos, e não sete dias por semana. A operação da Doxa usa como referência sessenta conteúdos únicos em noventa dias — um por dia útil, condição de quem já é cliente, conforme as condições e o prazo do contrato —, e o fim de semana fica fora dessa contagem. Para uma pessoa sozinha, cinco por semana é um alvo alto mas alcançável; três por semana mantidos por seis meses vale mais do que sete por semana durante três semanas.',
     },
     {
       tipo: 'titulo',
