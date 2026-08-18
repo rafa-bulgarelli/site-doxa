@@ -27,7 +27,7 @@ export const pagina: Pagina = {
     'CTA é a frase que pede uma ação específica de quem assistiu. O que ela precisa ter, onde entra num vídeo curto e por que pedir duas coisas anula as duas.',
   h1: 'CTA',
   resumo:
-    'CTA é a sigla de call to action, ou chamada para ação: a frase que pede de quem assistiu uma ação concreta e única. Ela não é o fim do vídeo por convenção — é o único momento em que a peça transforma atenção em alguma coisa.',
+    'Não é o fim do vídeo por convenção: é o momento em que a peça transforma atenção em alguma coisa.',
   intencao: 'informacional',
   palavrasChave: [
     'cta',

@@ -21,7 +21,7 @@ export const pagina: Pagina = {
     'Roteiro de vídeo curto é o texto que define o que será dito e mostrado, na ordem. O que ele contém, o que o diferencia de um roteiro longo e por que existe.',
   h1: 'Roteiro de vídeo curto',
   resumo:
-    'Roteiro de vídeo curto é o texto que define, antes de qualquer gravação, o que vai ser dito e mostrado e em que ordem. Em quinze a sessenta segundos não há espaço para improviso: cada frase ocupa uma fatia grande do total, e é o roteiro que decide qual delas fica.',
+    'Em quinze a sessenta segundos não há espaço para improviso: cada frase ocupa uma fatia grande do total, e é o roteiro que decide qual delas fica.',
   intencao: 'informacional',
   // A dona da busca exata "roteiro de vídeo curto" é a página de tutorial,
   // /guias/como-escrever-roteiro-de-video-curto (keyword-map:130). Aqui fica a

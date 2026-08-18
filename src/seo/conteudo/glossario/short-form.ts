@@ -19,7 +19,7 @@ export const pagina: Pagina = {
     'Short-form é o vídeo curto e vertical distribuído por recomendação. O que define o formato, onde ele vive e o que o diferencia de um vídeo curto qualquer.',
   h1: 'Short-form',
   resumo:
-    'Short-form é o nome em inglês do vídeo curto e vertical distribuído por recomendação — o que no Brasil se chama de Reels, TikTok ou Shorts, conforme a rede. A duração é a parte menos importante da definição.',
+    'No Brasil o mesmo formato é chamado de Reels, TikTok ou Shorts, conforme a rede — e a duração é a parte menos importante da definição.',
   intencao: 'informacional',
   palavrasChave: ['short form', 'vídeo short form', 'formato curto vertical'],
   hubs: ['/guias/videos-curtos'],

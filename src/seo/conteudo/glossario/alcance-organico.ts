@@ -19,7 +19,7 @@ export const pagina: Pagina = {
     'Alcance orgânico é quanta gente diferente viu o seu conteúdo sem que ninguém pagasse por isso. O que ele mede, como se calcula e a diferença para impressões.',
   h1: 'Alcance orgânico',
   resumo:
-    'Alcance orgânico é o número de pessoas diferentes que viram o seu conteúdo sem que ninguém tenha pagado para que ele aparecesse. É a métrica que separa distribuição conquistada de distribuição comprada.',
+    'A métrica que separa distribuição conquistada de distribuição comprada — e a que mais se confunde com impressões.',
   intencao: 'informacional',
   palavrasChave: ['alcance orgânico', 'o que é alcance orgânico', 'alcance x impressões'],
   hubs: ['/guias/marketing-organico'],

@@ -21,7 +21,7 @@ export const pagina: Pagina = {
     'O que se sabe sobre a distribuição do TikTok: como um vídeo é testado com um grupo pequeno, que sinais pesam e o que é mito sobre o funcionamento.',
   h1: 'Algoritmo do TikTok',
   resumo:
-    'O algoritmo do TikTok é o sistema que decide para quem cada vídeo é mostrado. Ele funciona por testes sucessivos: mostra a um grupo pequeno, observa o comportamento e amplia ou interrompe a entrega a partir do que viu.',
+    'Funciona por testes sucessivos: mostra a um grupo pequeno, observa o comportamento e amplia ou interrompe a entrega a partir do que viu.',
   intencao: 'informacional',
   palavrasChave: [
     'algoritmo do tiktok',

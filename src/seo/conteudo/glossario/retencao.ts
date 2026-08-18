@@ -15,7 +15,7 @@ export const pagina: Pagina = {
     'Retenção é a proporção de pessoas que continua assistindo em cada instante do vídeo. Como ler a curva e o que cada formato de queda costuma indicar.',
   h1: 'Retenção',
   resumo:
-    'Retenção é a proporção de pessoas que ainda está assistindo em cada instante do vídeo. É a métrica que mostra onde você perdeu gente, e não apenas quantas ficaram — o que faz dela a mais útil para consertar um vídeo.',
+    'A métrica que mostra onde você perdeu gente, e não apenas quantas ficaram — o que faz dela a mais útil para consertar um vídeo.',
   intencao: 'informacional',
   palavrasChave: ['retenção de vídeo', 'taxa de retenção', 'curva de retenção'],
   hubs: ['/guias/videos-curtos'],

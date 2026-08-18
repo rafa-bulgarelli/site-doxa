@@ -35,7 +35,7 @@ export const pagina: Pagina = {
     'Clone digital é a réplica da imagem e da voz de alguém real, feita com material dessa pessoa. Por que são duas autorizações e o que combinar antes do vídeo.',
   h1: 'Clone digital',
   resumo:
-    'Clone digital é a réplica de uma pessoa real — a imagem dela e a voz dela — construída a partir de material que ela mesma forneceu, e usada para gravar vídeos sem que ela precise gravar. O detalhe que define o termo é a origem: um clone é de alguém específico, e por isso depende da autorização dessa pessoa.',
+    'O detalhe que define o termo é a origem: um clone é de alguém específico, e por isso depende da autorização dessa pessoa.',
   intencao: 'informacional',
   palavrasChave: [
     'clone digital',

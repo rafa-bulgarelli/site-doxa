@@ -19,7 +19,7 @@ export const pagina: Pagina = {
     'Feed recomendado é a aba que mostra conteúdo de perfis que você não segue. O que muda quando a distribuição deixa de depender da sua lista de seguidores.',
   h1: 'Feed recomendado',
   resumo:
-    'Feed recomendado é a tela em que a plataforma mostra conteúdo escolhido por ela, e não pela sua lista de quem você segue. É onde ficam o "Para você" do TikTok, a aba de Reels e a de Shorts — e é a superfície em que um perfil pequeno pode alcançar gente que nunca ouviu falar dele.',
+    'Onde ficam o "Para você" do TikTok, a aba de Reels e a de Shorts — a superfície em que um perfil pequeno pode alcançar gente que nunca ouviu falar dele.',
   intencao: 'informacional',
   palavrasChave: [
     'feed recomendado',

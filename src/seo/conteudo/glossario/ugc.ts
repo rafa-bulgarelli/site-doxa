@@ -16,7 +16,7 @@ export const pagina: Pagina = {
     'UGC é conteúdo gerado pelo usuário. O que a sigla queria dizer originalmente, o que ela passou a significar no mercado e por que a confusão importa.',
   h1: 'UGC',
   resumo:
-    'UGC é a sigla de user generated content, ou conteúdo gerado pelo usuário: material publicado por pessoas comuns, e não pela marca. No mercado brasileiro a palavra ganhou um segundo sentido, e essa ambiguidade cria mal-entendidos caros em briefing.',
+    'No mercado brasileiro a palavra ganhou um segundo sentido, e essa ambiguidade cria mal-entendidos caros em briefing.',
   intencao: 'informacional',
   palavrasChave: ['ugc', 'user generated content', 'ugc creator significado'],
   hubs: ['/guias/videos-curtos'],

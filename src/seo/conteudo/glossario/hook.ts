@@ -15,7 +15,7 @@ export const pagina: Pagina = {
     'Hook é a abertura que decide se alguém continua assistindo. O que ele precisa fazer nos primeiros segundos e por que ele vale mais que o resto do vídeo.',
   h1: 'Hook',
   resumo:
-    'Hook é a abertura de um vídeo — as primeiras palavras e a primeira imagem — e a única função dela é impedir que a pessoa vá para o próximo vídeo. Num feed de vídeo curto, é o pedaço que decide o alcance de tudo que vem depois.',
+    'Num feed de vídeo curto, é o pedaço que decide o alcance de tudo que vem depois.',
   intencao: 'informacional',
   palavrasChave: ['hook', 'o que é hook em vídeo', 'gancho de vídeo', 'primeiros segundos'],
   hubs: ['/guias/videos-curtos'],

@@ -26,7 +26,7 @@ export const pagina: Pagina = {
     'Legenda embutida é o texto queimado nos quadros do vídeo, que não se desliga. Como ela difere da legenda automática e o que cada uma resolve.',
   h1: 'Legenda embutida',
   resumo:
-    'Legenda embutida é o texto gravado dentro da imagem do vídeo, quadro a quadro, que aparece para qualquer pessoa e não pode ser desligado. É diferente da legenda que a plataforma gera por cima e que o espectador pode ativar ou não.',
+    'Diferente da legenda que a plataforma gera por cima, que o espectador pode ativar ou não.',
   intencao: 'informacional',
   palavrasChave: [
     'legenda embutida',

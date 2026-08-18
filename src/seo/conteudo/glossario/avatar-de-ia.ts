@@ -23,7 +23,7 @@ export const pagina: Pagina = {
     'Avatar de IA é a imagem de uma pessoa gerada por software para falar num vídeo. Como ele é construído, para que serve e onde ele ainda não convence.',
   h1: 'Avatar de IA',
   resumo:
-    'Avatar de IA é a imagem de uma pessoa, gerada por software, que apresenta um vídeo no lugar de uma gravação com câmera. Ele pode ser um personagem inventado ou a réplica de alguém real, e essa diferença muda tudo no uso.',
+    'Pode ser um personagem inventado ou a réplica de alguém real, e é essa diferença que muda tudo no uso.',
   intencao: 'informacional',
   palavrasChave: ['avatar de ia', 'ai avatar', 'apresentador virtual'],
   hubs: ['/guias/ia-no-marketing'],

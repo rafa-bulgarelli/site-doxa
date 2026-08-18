@@ -19,7 +19,7 @@ export const pagina: Pagina = {
     'Impressões contam quantas vezes um conteúdo apareceu na tela, repetições incluídas. Como elas diferem de visualizações e o que a frequência revela.',
   h1: 'Impressões',
   resumo:
-    'Impressões é o número de vezes que um conteúdo apareceu na tela de alguém, contando as repetições da mesma pessoa. Costuma ser o maior número do painel e o que menos diz sozinho — porque ele mede exibição, não interesse.',
+    'Costuma ser o maior número do painel e o que menos diz sozinho — porque mede exibição, não interesse.',
   intencao: 'informacional',
   palavrasChave: [
     'impressões',

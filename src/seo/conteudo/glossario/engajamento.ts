@@ -25,7 +25,7 @@ export const pagina: Pagina = {
     'Engajamento é a soma das ações que uma pessoa faz além de assistir. O que entra na conta, os dois denominadores possíveis e por que a taxa engana.',
   h1: 'Engajamento',
   resumo:
-    'Engajamento é a soma das ações que as pessoas fazem num conteúdo além de simplesmente vê-lo: curtir, comentar, compartilhar, salvar, clicar e seguir. É uma medida de reação — e não de quanta gente foi alcançada, que é outra métrica.',
+    'Uma medida de reação — e não de quanta gente foi alcançada, que é outra métrica.',
   intencao: 'informacional',
   palavrasChave: [
     'engajamento',
