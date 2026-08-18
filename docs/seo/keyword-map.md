@@ -55,7 +55,7 @@ Legenda: **tipo** = o `Tipo` do motor · **intent** = `informacional` (I) ·
 | /guias/como-viralizar-no-tiktok | guia | marketing-no-tiktok | I | como viralizar no tiktok, viralizar no tiktok, ganhar views no tiktok, vídeo viral tiktok | Como viralizar no TikTok: o que dá para controlar e o que não dá | existe | ← /guias/marketing-no-tiktok → /glossario/algoritmo-do-tiktok, /glossario/hook | P2 |
 | /guias/como-crescer-no-instagram-organicamente | guia | reels-no-instagram | I | crescer no instagram organicamente, ganhar seguidores sem pagar, alcance orgânico instagram | Como crescer no Instagram organicamente sem impulsionar nada | existe | ← /guias/reels-no-instagram → /guias/como-aumentar-o-alcance-organico | P2 |
 | /guias/como-fazer-videos-curtos-que-prendem | guia | videos-curtos | I | como fazer vídeo curto, prender atenção no vídeo, retenção de vídeo, primeiros segundos do vídeo | Como fazer vídeos curtos que prendem: hook, ritmo e os três primeiros segundos | existe | ← /guias/videos-curtos → /glossario/hook, /glossario/retencao, /glossario/watch-time | P2 |
-| /guias/estrategia-de-conteudo-para-empresas | guia | marketing-organico | I | estratégia de conteúdo, planejamento de conteúdo para empresas, plano de conteúdo redes sociais | Estratégia de conteúdo para empresas: do objetivo comercial ao vídeo publicado | planejada | ← /guias/marketing-organico → /solucoes/conteudo-organico-para-empresas | P2 |
+| /guias/estrategia-de-conteudo-para-empresas | guia | marketing-organico | I | estratégia de conteúdo, planejamento de conteúdo para empresas, plano de conteúdo redes sociais | Estratégia de conteúdo para empresas: do objetivo comercial ao vídeo publicado | existe | ← /guias/marketing-organico → /solucoes/conteudo-organico-para-empresas | P2 |
 | /guias/como-usar-ia-no-marketing | guia | ia-no-marketing | I | como usar ia no marketing, ia para criar conteúdo, ferramentas de ia para marketing | Como usar IA no marketing sem publicar conteúdo genérico | planejada | ← /guias/ia-no-marketing → /solucoes/marketing-com-ia | P2 |
 | /guias/o-que-e-avatar-de-ia | guia | ia-no-marketing | I | o que é avatar de ia, avatar digital, apresentador de ia, avatar virtual para vídeo | O que é um avatar de IA e quando ele substitui a câmera | existe | ← /guias/ia-no-marketing → /glossario/avatar-de-ia, /solucoes/clone-de-ia-para-videos | P2 |
 | /guias/o-que-e-ugc | guia | videos-curtos | I | o que é ugc, user generated content, ugc creator, conteúdo gerado pelo usuário | O que é UGC, o que não é, e por que a palavra virou duas coisas diferentes | existe | ← /guias/videos-curtos → /glossario/ugc, /comparativos/ugc-vs-conteudo-de-marca | P2 |
@@ -151,7 +151,7 @@ existir.
 | /glossario/legenda-embutida | glossario | videos-curtos | 2 | 5 | 2 | 5 | 100 | "legendado" é palavra da entrega; verbete curto |
 | /glossario/cta | glossario | marketing-organico | 2 | 3 | 4 | 3 | 72 | genérico demais para ser prioridade |
 
-## Rodada 2 — em execução (2026-08-18, madrugada)
+## Rodada 2 — CONCLUÍDA (2026-08-18, 02:20; PRs #55–#57)
 
 Selecionadas do backlog pela nota, evitando canibalização com a FASE 1. Já estão em
 `src/seo/rotas-planejadas.ts`. Puladas de propósito: `/solucoes/avatar-de-ia-para-empresas`
@@ -162,7 +162,7 @@ para-empresas` (colide com orgânico/escala), `/comparativos/heygen-vs-gravacao-
 
 | Track | URLs |
 |---|---|
-| `track-seo-rodada-2-guias` | como-produzir-60-videos-em-90-dias · como-usar-o-mesmo-video-nas-tres-redes · como-fazer-hook-de-video-curto · como-escrever-roteiro-de-video-curto · quantas-vezes-postar-por-dia-no-tiktok · como-medir-resultado-de-conteudo-organico · o-que-e-uma-agencia-de-marketing-com-ia · como-crescer-no-youtube-shorts · marketing-de-conteudo-para-b2b (+ opcionais já planejadas: como-usar-ia-no-marketing, estrategia-de-conteudo-para-empresas) |
+| `track-seo-rodada-2-guias` | como-produzir-60-videos-em-90-dias · como-usar-o-mesmo-video-nas-tres-redes · como-fazer-hook-de-video-curto · como-escrever-roteiro-de-video-curto · quantas-vezes-postar-por-dia-no-tiktok · como-medir-resultado-de-conteudo-organico · o-que-e-uma-agencia-de-marketing-com-ia · como-crescer-no-youtube-shorts · marketing-de-conteudo-para-b2b (+ estrategia-de-conteudo-para-empresas; **como-usar-ia-no-marketing NÃO escrita e retirada do contrato** — eixo com 3 donos) |
 | `track-seo-rodada-2-comparativos-glossario` | freelancer-vs-agencia-de-conteudo · conteudo-organico-vs-influenciador · engajamento · impressoes · clone-digital · roteiro-de-video-curto · legenda-embutida · feed-recomendado · cta |
 | `track-seo-rodada-2-dores-solucoes` | por-que-meu-instagram-parou-de-crescer · conteudo-para-redes-sociais-com-ia · clone-de-voz-para-videos |
 
