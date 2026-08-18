@@ -228,7 +228,7 @@ export const pagina: Pagina = {
         {
           pergunta: 'Legenda automática serve ou preciso legendar manualmente?',
           resposta:
-            'A automática resolve a acessibilidade e erra em nome próprio, número e termo técnico — que costumam ser justamente as palavras que carregam a informação. O caminho barato é gerar automático e revisar as palavras-chave da peça, cuidando também do posicionamento: legenda coberta pela interface da rede é legenda que ninguém leu.',
+            'A automática resolve a acessibilidade e costuma errar em nome próprio, número e termo técnico — que costumam ser justamente as palavras que carregam a informação. O caminho barato é gerar automático e revisar as palavras-chave da peça, cuidando também do posicionamento: legenda coberta pela interface da rede é legenda que ninguém leu.',
         },
         {
           pergunta: 'O mesmo vídeo pode ir para TikTok, Reels e Shorts?',
