@@ -24,3 +24,4 @@ Quem abre a track: sessão principal (assento do gestor). Um item por linha, com
       (collector T1)
 - [ ] `App.tsx` chegada com `#forms`: `Promise.all` dos imports das seções acima do alvo
       antes de rolar (robustez; hipótese do collector, não confirmada). (collector T1)
+- [ ] VERIFY de rodada: medir palavras pelo `seo:audit` (corpo puro), não pelo `<main>` — o cromo come 60–90 palavras (R2-B). Idem: teto de palavras e FAQ única não são testados (R2-A) — virar teste ou tirar do pack.
