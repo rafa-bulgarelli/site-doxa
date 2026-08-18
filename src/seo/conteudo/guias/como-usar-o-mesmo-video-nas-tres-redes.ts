@@ -70,7 +70,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'As três redes pedem a mesma coisa: vídeo vertical, curto, distribuído por recomendação para gente que não segue o perfil. Isso torna a peça intercambiável de verdade — não é reaproveitamento preguiçoso, é distribuição: triplica a chance de encontrar a audiência sem triplicar a produção.',
+        'As três redes pedem a mesma coisa: vídeo vertical, curto, distribuído por recomendação para gente que não segue o perfil. Isso torna a peça intercambiável de verdade — o mesmo arquivo entra nas três sem nova edição, e por isso ampliar a distribuição não cobra nada da produção.',
     },
     {
       tipo: 'paragrafo',
@@ -147,7 +147,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'O que precisa ser respeitado é o intervalo **dentro de cada rede**: dois vídeos publicados perto demais no mesmo perfil disputam a mesma audiência ali, e um atropela o alcance do outro. A régua de trabalho é de 24 horas de relógio entre uma publicação e a próxima naquele perfil — se saiu segunda às 22h, o próximo a partir das 22h de terça. Publicar em três redes não conta como três vídeos; conta como um, três vezes.',
+        'O que precisa ser respeitado é o intervalo **dentro de cada rede** — e vale o mesmo que está em [como viralizar no TikTok](/guias/como-viralizar-no-tiktok): dois vídeos publicados perto demais no mesmo perfil disputam a mesma audiência ali, e um atropela o alcance do outro. A régua de 24 horas de relógio entre uma publicação e a próxima naquele perfil é a que a Doxa combina com quem já é cliente, e ela se copia sem contratar nada. Publicar em três redes não conta como três vídeos; conta como um, três vezes.',
     },
     {
       tipo: 'titulo',
@@ -157,13 +157,13 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'A parte que confunde vem depois: a mesma peça devolve resultados muito diferentes nas três, e a tentação é concluir que duas delas "não funcionam". Cada rede conta visualização com o próprio critério e distribui para um público diferente, então comparar o número de uma com o da outra mede a rede, não o vídeo.',
+        'A parte que confunde vem depois: a mesma peça devolve resultados muito diferentes nas três, e a tentação é concluir que duas delas "não funcionam". A leitura correta desses números é assunto de [como medir resultado de conteúdo orgânico](/guias/como-medir-resultado-de-conteudo-organico); o que vale registrar aqui são os quatro cuidados de quem publica em três lugares de uma vez.',
     },
     {
       tipo: 'lista',
       itens: [
         '**Compare cada rede com ela mesma.** O vídeo de terça contra o de quinta, no mesmo perfil, é a única comparação limpa.',
-        '**Some para medir a operação, separe para medir a peça.** O total das três diz quanto alcance o trimestre gerou; o número isolado diz onde aquele assunto pegou.',
+        '**Some para medir a operação, separe para medir a peça.** O total das três dimensiona o trimestre; o número isolado diz em que rede aquele assunto pegou.',
         '**Olhe a fatia de quem não segue o perfil** em cada uma. É o recorte que mostra se a peça está encontrando gente nova ou circulando entre conhecidos.',
         '**Não desligue a rede que rende menos** antes de um trimestre inteiro. Ela é a que custa menos para manter — o arquivo já existe.',
       ],
@@ -190,7 +190,7 @@ export const pagina: Pagina = {
         {
           pergunta: 'A rede reduz o alcance de um vídeo que veio de outra plataforma?',
           resposta:
-            'Não há regra pública que diga isso nessas palavras, e quem afirma um número está inventando. O que é observável é mais simples: o arquivo baixado de outra rede vem com selo, com o nome de outro perfil em cima da imagem e com qualidade menor, e quem assiste percebe. O problema é do arquivo, não de uma punição — e some quando a peça sai do editor em vez de sair do botão de download.',
+            'O que se vê é mais simples do que a teoria: o arquivo baixado de outra rede vem com selo, com o nome de outro perfil em cima da imagem e com qualidade menor, e quem assiste percebe. Antes de discutir distribuição, portanto, o problema é do arquivo — e ele some quando a peça sai do editor em vez de sair do botão de download.',
         },
         {
           pergunta: 'Preciso escrever uma descrição diferente em cada rede?',
@@ -228,7 +228,9 @@ export const pagina: Pagina = {
  * [x]  6. Intenção própria: a PEÇA em três redes. A escolha entre redes é de
  *          /comparativos/tiktok-vs-instagram; "baixou, publicou" é de
  *          /solucoes/videos-curtos-para-empresas; a cadência é de
- *          /guias/como-viralizar-no-tiktok (resumida em uma frase).
+ *          /guias/como-viralizar-no-tiktok (uma frase + LINK no corpo); a
+ *          leitura dos números é de /guias/como-medir-resultado-de-conteudo-
+ *          organico (uma frase + LINK).
  * [x]  7. Incremental: a régua de área segura, a pasta como arquivo mestre e a
  *          leitura de três números não comparáveis. Nada disso está na SERP.
  * [x]  8. title (61 caracteres), description e H1 exclusivos; H2 em hierarquia.
