@@ -332,9 +332,13 @@ create trigger manual_so_entra
   before update or delete on public.manual_aceite_itens
   for each row execute function public.manual_so_entra();
 
+-- Evento é imutável (UPDATE barrado), mas o DELETE passa: ele só acontece pelo
+-- CASCADE da exclusão de um convite — a RLS não dá delete a papel nenhum, e a
+-- API nunca apaga evento direto. Barrar o delete aqui mataria a exclusão de
+-- convite inteira (o cascade dispara o trigger da filha).
 drop trigger if exists manual_so_entra on public.manual_eventos;
 create trigger manual_so_entra
-  before update or delete on public.manual_eventos
+  before update on public.manual_eventos
   for each row execute function public.manual_so_entra();
 
 -- Convite não se apaga (revoga-se), e as colunas de identidade não mudam:
