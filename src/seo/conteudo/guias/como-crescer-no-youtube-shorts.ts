@@ -83,7 +83,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'É a diferença mais concreta em relação às outras duas redes: no YouTube o título é um campo visível, que aparece junto do vídeo e é o texto que a busca da plataforma encontra. Nas outras redes, a legenda é apoio; aqui, o título é porta de entrada — e continua sendo porta meses depois, quando a peça já saiu de circulação no feed.',
+        'É a diferença de escrita mais visível em relação às outras duas redes: no YouTube o título é um campo próprio, que aparece junto do vídeo e é lido pela busca da plataforma. As outras duas também indexam texto, mas ali o campo costuma funcionar como legenda de apoio; aqui ele é porta de entrada — e continua sendo porta meses depois, quando a peça já saiu de circulação no feed.',
     },
     {
       tipo: 'lista',
@@ -98,7 +98,7 @@ export const pagina: Pagina = {
       tipo: 'destaque',
       variante: 'nota',
       texto:
-        'Como o título continua encontrável depois, o Shorts é a única das três redes em que vale gastar dois minutos por peça escrevendo esse campo — e é o único trabalho adicional real de publicar ali.',
+        'Como o título continua encontrável depois, é a rede em que esses dois minutos por peça rendem por mais tempo — e esse é praticamente todo o trabalho adicional de publicar ali.',
     },
     {
       tipo: 'titulo',
@@ -111,7 +111,7 @@ export const pagina: Pagina = {
         {
           titulo: 'Suba o que você já produziu, um por dia',
           texto:
-            'Se a sua empresa já publica vertical em outra rede, o acervo existe. O arquivo é o mesmo — a exportação limpa está em [como usar o mesmo vídeo nas três redes](/guias/como-usar-o-mesmo-video-nas-tres-redes) — e o custo é de upload, não de produção.',
+            'Se a sua empresa já publica vertical em outra rede, o acervo existe: nada precisa ser gravado de novo para começar aqui. A exportação limpa, sem selo de outra plataforma, está em [como usar o mesmo vídeo nas três redes](/guias/como-usar-o-mesmo-video-nas-tres-redes).',
         },
         {
           titulo: 'Escreva um título de busca para cada um',
@@ -151,13 +151,13 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'Duas coisas atrasam a leitura no Shorts. A primeira é que uma peça pode continuar recebendo visualização bem depois da estreia, o que faz o resultado de uma semana mudar na semana seguinte. A segunda é que inscritos são um indicador atrasado por natureza: a pessoa costuma assistir a vários vídeos antes de decidir. Comparar mês a mês, e não dia a dia, é o que evita conclusão errada — o resto da rotina de medição está em [como medir resultado de conteúdo orgânico](/guias/como-medir-resultado-de-conteudo-organico).',
+        'O ritmo de leitura aqui é mais lento do que nas outras duas redes, e isso muda o método, não só a paciência: fechar a conta de uma semana no domingo produz um número que ainda vai mudar. A janela que funciona é o mês, e a comparação útil é entre títulos — quais assuntos continuaram sendo procurados depois que a peça saiu do feed. O resto da rotina está em [como medir resultado de conteúdo orgânico](/guias/como-medir-resultado-de-conteudo-organico).',
     },
     {
       tipo: 'destaque',
       variante: 'doxa',
       texto:
-        'O YouTube Shorts é uma das três redes da operação da Doxa, ao lado do Instagram e do TikTok, e a meta é de views somadas entre elas — conforme as condições e o prazo do contrato. É por isso que a rotina combinada com quem já é cliente prevê o mesmo arquivo nas três, no mesmo dia: deixar uma de fora não muda só o alcance dela, muda a conta inteira.',
+        'O que esta página descreve como trabalho de upload é, numa operação contratada, apenas a terceira publicação de uma peça que já existe: na Doxa, o YouTube Shorts é uma das três redes, ao lado do Instagram e do TikTok, com as visualizações somadas entre elas conforme as condições e o prazo do contrato. Por que a rede compensa comercialmente é assunto de [YouTube Shorts para empresas](/plataformas/youtube-shorts-para-empresas); aqui o ponto é que o custo de entrar nela é o de escrever um título.',
     },
     {
       tipo: 'titulo',
@@ -180,7 +180,7 @@ export const pagina: Pagina = {
         {
           pergunta: 'Quantos inscritos são necessários para começar a aparecer?',
           resposta:
-            'Nenhum. O feed de Shorts é de recomendação, o que significa que a peça é oferecida a quem não conhece o canal desde o primeiro dia — e é justamente por isso que o número de inscritos é o último indicador a se mexer. Ele é consequência do trabalho, não condição para começá-lo.',
+            'Nenhum. O feed de Shorts é de recomendação, o que significa que a peça é oferecida a quem não conhece o canal desde o primeiro dia. Um canal recém-aberto e um canal antigo entram nessa fila em pé de igualdade quanto a isso; o que os separa é o acervo de títulos que cada um já deixou encontrável.',
         },
       ],
     },
