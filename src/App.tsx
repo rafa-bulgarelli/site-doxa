@@ -323,9 +323,18 @@ export default function App() {
       }
     };
 
-    // O link profundo vindo de fora, na chegada.
+    // O link profundo vindo de fora, na chegada. As TRÊS seções acima do alvo,
+    // e não só a dele: `Comparacao` pode pintar antes de `HowItWorks` e
+    // `ProofWall`, e aí o `#forms` está numa posição que ainda vai descer —
+    // o salto miraria o lugar velho. `allSettled` porque um pedaço que falha
+    // não pode cancelar a rolagem: o alvo é o de baixo, e o retry por quadro
+    // continua cobrindo o resto.
     if (window.location.hash === HREF_FORMS) {
-      void import('./components/Comparacao').then(() => rolarQuandoChegar(60));
+      void Promise.allSettled([
+        import('./components/HowItWorks'),
+        import('./components/ProofWall'),
+        import('./components/Comparacao'),
+      ]).then(() => rolarQuandoChegar(60));
     }
 
     const aoClicar = (evento: MouseEvent) => {

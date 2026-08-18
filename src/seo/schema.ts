@@ -146,7 +146,7 @@ export function webPage(dados: DadosWebPage): NoJsonLd {
     name: dados.titulo,
     description: dados.descricao,
     url: urlAbsoluta(dados.url),
-    inLanguage: dados.idioma ?? 'pt-BR',
+    inLanguage: dados.idioma ?? IDIOMA,
     isPartOf: { '@type': 'WebSite', name: NOME, url: urlAbsoluta('/') },
   };
   // `dateModified` ausente em vez de `undefined`: o JSON.stringify some com a
@@ -179,10 +179,14 @@ export function breadcrumbList(migalhas: readonly Migalha[]): NoJsonLd {
 /**
  * O `FAQPage` de um bloco `faq`.
  *
- * Assinado e pronto, mas ainda NÃO ligado à casca: a track de fundação decide
- * onde ele entra junto com `Organization`, `WebSite` e `Article`. Emitir dois
- * grafos concorrentes na mesma página antes dessa decisão é o caminho curto
- * para o Rich Results Test reclamar de duplicata.
+ * Ligado à casca por `prerender/entrada.tsx`, e SÓ quando a página tem bloco
+ * `faq` — as mesmas perguntas que o `<details>` desenha, vindas do mesmo objeto
+ * de conteúdo. É a condição do §46: nunca marcar o que não aparece.
+ *
+ * Ele entra ao lado de `Article`/`WebPage` e `BreadcrumbList`, e nunca junto de
+ * um segundo nó do mesmo `@type` — dois grafos concorrentes na mesma página é o
+ * caminho curto para o Rich Results Test reclamar de duplicata. `seo.test.ts`
+ * cobra as duas coisas: um `@type` por página, e FAQPage se e só se há bloco.
  */
 export function faqPage(itens: readonly Faq[]): NoJsonLd {
   if (itens.length === 0) throw new Error('FAQPage sem pergunta nenhuma.');

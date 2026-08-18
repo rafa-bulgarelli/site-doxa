@@ -27,6 +27,7 @@ describe('deveManterFragmento', () => {
 
   it('apaga no voltar/avançar', () => {
     expect(deveManterFragmento('back_forward', '#faq')).toBe(false);
+    expect(deveManterFragmento('back_forward', '#forms')).toBe(false);
   });
 
   // O caso que esta função existe para permitir: o botão "Falar com a Doxa" de
@@ -41,6 +42,22 @@ describe('deveManterFragmento', () => {
 
   it('não tem o que manter sem fragmento', () => {
     expect(deveManterFragmento('navigate', '')).toBe(false);
+  });
+
+  /**
+   * A âncora que NINGUÉM honra não sobrevive.
+   *
+   * `#faq` chega aqui de verdade — é o link "Perguntas" do rodapé de toda
+   * página SEO. Só que o seguro de montagem do `App.tsx` existe para `#forms` e
+   * para mais nada, e o FAQ da landing é `lazy`: preservado, o fragmento
+   * dependeria de o navegador reencontrar a âncora antes do `load`, o que é uma
+   * corrida com a rede. Melhor o defeito determinístico (abre no topo) do que o
+   * que muda a cada visita.
+   */
+  it('apaga qualquer âncora que a landing não saiba honrar', () => {
+    expect(deveManterFragmento('navigate', '#faq')).toBe(false);
+    expect(deveManterFragmento('navigate', '#pedido')).toBe(false);
+    expect(deveManterFragmento('navigate', '#qualquer-coisa')).toBe(false);
   });
 
   // `prerender` é uma página que o navegador abriu adiantado e depois ativou —

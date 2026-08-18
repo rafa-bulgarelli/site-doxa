@@ -32,11 +32,15 @@ import './index.css';
  * a Doxa" que aponta para `/#forms`, e apagar o fragmento dele jogava no topo da
  * home justamente quem tinha acabado de pedir o formulário.
  *
- * A regra ficou de um tamanho só: apaga quando o fragmento é HERANÇA (reload,
- * voltar/avançar, ou navegador que não sabe dizer) e mantém quando ele é
- * INTENÇÃO (navegação nova). Quem decide é `fragmento.ts`, que é puro e testado
- * nas cinco combinações; aqui em cima só se pergunta ao navegador como a página
- * abriu.
+ * A regra é estreita de propósito: **só `#forms` sobrevive, e só numa navegação
+ * nova.** Não é "mantém quando é intenção" — é "mantém a única intenção que
+ * esta página sabe honrar". O seguro que espera a seção `lazy` montar e rola
+ * até ela existe para `#forms` e para mais nada (logo abaixo, no `App`);
+ * preservar `#faq` — que o rodapé das páginas SEO aponta — deixaria o salto na
+ * mão da rede, acontecendo numa visita e não na outra. Reload, voltar/avançar e
+ * navegador que não sabe dizer continuam limpando, como sempre. Quem decide é
+ * `fragmento.ts`, que é puro e testado combinação por combinação; aqui em cima
+ * só se pergunta ao navegador como a página abriu.
  *
  * `window.scrollTo(0, 0)` continua INCONDICIONAL. Mantido o fragmento, o alvo
  * (`#forms`, na comparação `lazy`) ainda não existe no documento, então não há

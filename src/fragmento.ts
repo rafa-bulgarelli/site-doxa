@@ -17,11 +17,31 @@
  * que o fragmento é herança; `navigate` é alguém chegando agora, com o endereço
  * que escolheu.
  *
- * Este arquivo é PURO de propósito — nada de `window`, nada de `history`. É o
- * que permite ao teste rodar as cinco combinações sem navegador nenhum, e é
- * onde a regra fica legível: no `main.tsx` ela seria mais um `if` no meio de um
- * bloco que já roda antes do React existir.
+ * ─── E POR QUE SÓ `#forms`, E NÃO QUALQUER ÂNCORA ────────────────────────────
+ *
+ * Porque preservar um fragmento não é a mesma coisa que HONRAR um fragmento, e
+ * quem honra é o `App.tsx` — que tem um seguro de montagem para `#forms` e para
+ * mais nada. O rodapé das páginas SEO leva "Perguntas" para `/#faq`, e o FAQ da
+ * landing é `lazy` como todo o resto: no instante em que o documento carrega, o
+ * elemento `#faq` não existe. O navegador tenta reencontrar a âncora enquanto o
+ * documento não terminou de carregar e desiste no `load` — ou seja, o resultado
+ * passa a depender da rede. Numa conexão rápida a seção monta a tempo e a
+ * página salta; numa lenta, ela não monta, o salto não acontece e a pessoa fica
+ * no topo com `#faq` na barra de endereço. Duas visitas idênticas, dois
+ * comportamentos.
+ *
+ * Preferir o defeito DETERMINÍSTICO: sem seguro que o honre, o fragmento é
+ * apagado como sempre foi. O dia em que `#faq` ganhar o mesmo tratamento de
+ * `#forms` no `App.tsx`, é uma linha aqui — e o teste ao lado cobra as duas
+ * pontas juntas.
+ *
+ * Este arquivo é PURO de propósito — nada de `window`, nada de `history`. A
+ * única importação é `ancoras.ts`, que é um punhado de `const` string e o dono
+ * dos ids da landing. É o que permite ao teste rodar todas as combinações sem
+ * navegador nenhum, e é onde a regra fica legível: no `main.tsx` ela seria mais
+ * um `if` no meio de um bloco que já roda antes do React existir.
  */
+import { HREF_FORMS } from './ancoras';
 
 /**
  * O mínimo de uma entrada de `performance.getEntriesByType('navigation')`.
@@ -49,16 +69,27 @@ export function tipoDeNavegacao(entradas: readonly EntradaDeNavegacao[]): string
 /**
  * O fragmento sobrevive ao boot?
  *
- * Só numa navegação nova e com fragmento de verdade. Fora disso a resposta é
- * não, e o `main.tsx` limpa a barra como sempre fez.
+ * DUAS condições, e as duas têm de valer:
+ *
+ *  1. o fragmento é `#forms` — o único que a landing sabe honrar (ver acima);
+ *  2. a página foi aberta numa navegação NOVA.
+ *
+ * Fora disso a resposta é não, e o `main.tsx` limpa a barra como sempre fez.
  *
  * `undefined` (o navegador não sabe dizer) cai no comportamento ANTIGO, e não
  * no novo: um site que abre no meio da página é um defeito que todo mundo vê;
  * um link profundo que abre no topo é uma comodidade que se perde. Na dúvida,
  * perde-se a comodidade.
+ *
+ * `prerender` fica do lado do `navigate`, e é a leitura literal do que ele
+ * significa: a página foi montada adiantada e depois ATIVADA por um clique. Do
+ * ponto de vista de quem clicou, é uma chegada — não uma volta ao que já estava
+ * aberto, que é o caso de `reload` e `back_forward`. Qualquer tipo futuro que o
+ * navegador invente cai aqui também, e é de propósito: a lista curta é a das
+ * duas situações em que o fragmento comprovadamente é herança.
  */
 export function deveManterFragmento(tipo: string | undefined, hash: string): boolean {
-  if (hash === '') return false;
+  if (hash !== HREF_FORMS) return false;
   if (tipo == null) return false;
   return tipo !== 'reload' && tipo !== 'back_forward';
 }

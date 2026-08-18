@@ -173,7 +173,7 @@ describe('o JSON-LD da landing', () => {
     if (typeof grafo !== 'object' || grafo === null || !('@graph' in grafo)) {
       throw new Error('O JSON-LD da landing não tem @graph.');
     }
-    const nos = (grafo as { '@graph': unknown })['@graph'];
+    const nos: unknown = grafo['@graph'];
     if (!Array.isArray(nos)) throw new Error('O @graph da landing não é lista.');
 
     // `@context` mora no nó de fora do grafo, então ele sai da comparação.
