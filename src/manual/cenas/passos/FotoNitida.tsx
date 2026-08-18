@@ -25,6 +25,7 @@
  */
 import { Marca, Painel, TINTA, TRACO, TRACO_ACESO } from '../pecas';
 import { Brilho, TracoDeLuz } from '../luz';
+import { FechoDoArco } from '../fecho';
 import { MiniPalco } from '../itens/comuns';
 import { Rosto } from './comuns';
 import { useRoteiro } from '../tempo';
@@ -168,6 +169,7 @@ export default function FotoNitida() {
         <g>
           <Brilho x={404} y={ROSTO_Y} raio={48} tinta="luzCerta" aceso parado={parado} />
           <Marca tipo="certo" x={404} y={ROSTO_Y} cor={TINTA.protege} escala={1.05} parado={parado} />
+          <FechoDoArco x={404} y={ROSTO_Y + 14} escala={0.9} parado={parado} />
         </g>
       )}
     </MiniPalco>

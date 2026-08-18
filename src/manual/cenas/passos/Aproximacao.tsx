@@ -26,6 +26,7 @@
 import { motion } from 'framer-motion';
 import { Marca, Painel, TINTA, TRACO, TRACO_ACESO } from '../pecas';
 import { Brilho, TracoDeLuz } from '../luz';
+import { FechoDoArco } from '../fecho';
 import { MiniPalco } from '../itens/comuns';
 import { Rosto } from './comuns';
 import { EASE, tempo, useRoteiro } from '../tempo';
@@ -115,6 +116,7 @@ export default function Aproximacao() {
         <g>
           <Brilho x={424} y={EIXO} raio={46} tinta="luzCerta" aceso parado={parado} />
           <Marca tipo="certo" x={424} y={EIXO} cor={TINTA.protege} escala={1} parado={parado} />
+          <FechoDoArco x={424} y={EIXO + 13} escala={0.9} parado={parado} />
         </g>
       )}
     </MiniPalco>

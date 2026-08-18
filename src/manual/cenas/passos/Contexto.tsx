@@ -31,6 +31,7 @@
  */
 import { Barra, Marca, Painel, TINTA, TRACO, TRACO_ACESO } from '../pecas';
 import { Brilho } from '../luz';
+import { FechoDoArco } from '../fecho';
 import { MiniPalco } from '../itens/comuns';
 import { motion } from 'framer-motion';
 import { EASE, tempo, useRoteiro } from '../tempo';
@@ -142,10 +143,17 @@ export default function Contexto() {
       />
       <Resposta fase={fase} parado={parado} />
 
+      {/*
+       * O visto subiu da terceira linha (118) para a segunda (100) e levou o
+       * degradê consigo: em 118 o carimbo terminava a 12 da borda de baixo do
+       * campo, e o sublinhado atravessaria a moldura. Na altura da segunda
+       * linha os dois cabem dentro do campo, com folga dos dois lados.
+       */}
       {fase >= VISTO && (
         <g>
-          <Brilho x={418} y={118} raio={44} tinta="luzCerta" aceso parado={parado} />
-          <Marca tipo="certo" x={418} y={118} cor={TINTA.protege} escala={0.9} parado={parado} />
+          <Brilho x={418} y={100} raio={44} tinta="luzCerta" aceso parado={parado} />
+          <Marca tipo="certo" x={418} y={100} cor={TINTA.protege} escala={0.9} parado={parado} />
+          <FechoDoArco x={418} y={112} escala={0.85} parado={parado} />
         </g>
       )}
     </MiniPalco>

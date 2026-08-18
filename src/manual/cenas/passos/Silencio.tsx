@@ -46,6 +46,7 @@
 import { motion } from 'framer-motion';
 import { Marca, TINTA, TRACO_ACESO } from '../pecas';
 import { Brilho, QUEBRA, TracoDeLuz } from '../luz';
+import { FechoDoArco } from '../fecho';
 import { MiniPalco } from '../itens/comuns';
 import { EASE, tempo, useRoteiro } from '../tempo';
 
@@ -248,6 +249,10 @@ export default function Silencio() {
         <g>
           <Brilho x={420} y={EIXO} raio={46} tinta="luzCerta" aceso parado={parado} />
           <Marca tipo="certo" x={420} y={EIXO} cor={TINTA.protege} escala={1.05} parado={parado} />
+          {/* O "tchan" que o dono pediu nesta cena: o degradê entra JUNTO com o
+              visto, no quadro em que o lugar calou e a onda ficou limpa. Antes
+              dele não — enquanto há barulho, não há o que comemorar. */}
+          <FechoDoArco x={420} y={EIXO + 14} escala={0.9} parado={parado} />
         </g>
       )}
     </MiniPalco>

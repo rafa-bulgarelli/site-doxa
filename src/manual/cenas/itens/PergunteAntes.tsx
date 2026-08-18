@@ -36,6 +36,7 @@
  */
 import { Legenda, Marca, TINTA, TRACO } from '../pecas';
 import { ARCO, Brilho, CERTO, Faiscas, QUEBRA, TracoDeLuz, useTintas } from '../luz';
+import { FechoDoArco } from '../fecho';
 import { MiniPalco, Selo } from './comuns';
 import { motion } from 'framer-motion';
 import { tempo, useRoteiro } from '../tempo';
@@ -130,6 +131,10 @@ function CaminhoCerto({ fase, parado }: { fase: number; parado: boolean }) {
           />
           <Brilho x={FIM_X} y={ALTO} raio={50} tinta="luzCerta" aceso parado={parado} />
           <Marca tipo="certo" x={FIM_X} y={ALTO} cor={TINTA.protege} escala={1.25} parado={parado} />
+          {/* Só o caminho de CIMA ganha o degradê. A cena põe os dois desfechos
+              lado a lado de propósito, e é o contraste que ensina: quem perguntou
+              tem cor, quem não perguntou tem um escudo rachado. */}
+          <FechoDoArco x={FIM_X} y={ALTO + 16} escala={1} parado={parado} />
           <Faiscas x={FIM_X} y={ALTO} raio={48} ativo parado={parado} quantidade={8} cores={[CERTO]} />
         </>
       )}

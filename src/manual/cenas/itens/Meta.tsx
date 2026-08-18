@@ -28,6 +28,7 @@
  */
 import { Legenda, Marca, TINTA, TRACO, TRACO_ACESO } from '../pecas';
 import { Brilho, Faiscas, TracoDeLuz, corDoArco, useTintas } from '../luz';
+import { FechoDoArco } from '../fecho';
 import { MiniPalco } from './comuns';
 import { IconeDaRede, REDES_REAIS } from '../redes';
 import { motion } from 'framer-motion';
@@ -176,10 +177,16 @@ export default function Meta() {
         <Rede key={rede} indice={indice} acesa={indice < acesas} parado={parado} />
       ))}
 
+      {/*
+       * O visto subiu de 126 para 112 para dar chão ao fecho: em 126 o carimbo
+       * já terminava a 138 num palco de 150, e o degradê embaixo dele sairia
+       * pela borda. A faixa que sobra à direita do "90 dias" estava vazia.
+       */}
       {fase === VISTO && (
         <g>
-          <Brilho x={SOMA_X} y={126} raio={40} tinta="luzCerta" aceso parado={parado} />
-          <Marca tipo="certo" x={SOMA_X} y={126} cor={TINTA.protege} escala={0.95} parado={parado} />
+          <Brilho x={SOMA_X} y={112} raio={40} tinta="luzCerta" aceso parado={parado} />
+          <Marca tipo="certo" x={SOMA_X} y={112} cor={TINTA.protege} escala={0.95} parado={parado} />
+          <FechoDoArco x={SOMA_X} y={124} escala={0.85} parado={parado} />
         </g>
       )}
     </MiniPalco>

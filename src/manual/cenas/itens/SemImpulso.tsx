@@ -35,6 +35,7 @@
  */
 import { Marca, Painel, TINTA, TRACO } from '../pecas';
 import { ARCO, Brilho, CERTO, Faiscas, QUEBRA, TracoDeLuz } from '../luz';
+import { FechoDoArco } from '../fecho';
 import { Cartao, MiniPalco } from './comuns';
 import { motion } from 'framer-motion';
 import { EASE, tempo, useRoteiro } from '../tempo';
@@ -200,6 +201,10 @@ function PrimeiroVideo({ limpo, parado }: { limpo: boolean; parado: boolean }) {
       {limpo && (
         <g>
           <Marca tipo="certo" x={438} y={122} cor={TINTA.protege} escala={0.85} parado={parado} />
+          {/* Embaixo do CARTÃO, não do visto: o carimbo desta cena mora na quina
+              do palco e não tem chão sobrando. O que deu certo é o primeiro
+              vídeo entrar limpo, e é ele que o degradê sublinha. */}
+          <FechoDoArco x={389} y={112} escala={0.9} parado={parado} />
           <Faiscas
             x={388}
             y={BOTAO_MEIO}

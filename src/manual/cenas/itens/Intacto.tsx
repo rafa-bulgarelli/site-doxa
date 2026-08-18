@@ -24,6 +24,7 @@
  */
 import { Marca, Painel, TINTA, TRACO, TRACO_ACESO } from '../pecas';
 import { Brilho, CERTO, Faiscas, QUEBRA, TracoDeLuz, useTintas } from '../luz';
+import { FechoDoArco } from '../fecho';
 import { MiniPalco } from './comuns';
 import { motion } from 'framer-motion';
 import { EASE, tempo, useRoteiro } from '../tempo';
@@ -270,11 +271,19 @@ function Barreira({ parado }: { parado: boolean }) {
   );
 }
 
-/** O veredito: o visto no canto da tela que recebeu o vídeo, e as faíscas. */
+/**
+ * O veredito: o visto no canto da tela que recebeu o vídeo, e as faíscas.
+ *
+ * O degradê fica embaixo da TELA, e não embaixo do visto: aqui o carimbo mora na
+ * quina inferior direita do palco, e um sublinhado ali sairia pela borda. O que
+ * deu certo é o vídeo ter chegado ao ar do jeito que saiu — então é a tela do
+ * publicado que ganha o chão colorido.
+ */
 function Veredito({ parado }: { parado: boolean }) {
   return (
     <g>
       <Marca tipo="certo" x={464} y={128} cor={TINTA.protege} escala={0.9} parado={parado} />
+      <FechoDoArco x={DESTINO_CENTRO} y={126} escala={0.85} parado={parado} />
       <Faiscas
         x={DESTINO_CENTRO}
         y={LINHA_Y}

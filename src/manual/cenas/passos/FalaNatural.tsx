@@ -24,6 +24,7 @@
 import { motion } from 'framer-motion';
 import { Marca, Painel, TINTA, TRACO_ACESO } from '../pecas';
 import { Brilho, QUEBRA } from '../luz';
+import { FechoDoArco } from '../fecho';
 import { MiniPalco } from '../itens/comuns';
 import { OndaDeFala } from './comuns';
 import { EASE, tempo, useRoteiro } from '../tempo';
@@ -155,6 +156,10 @@ export default function FalaNatural() {
         <g>
           <Brilho x={394} y={EIXO} raio={48} tinta="luzCerta" aceso parado={parado} />
           <Marca tipo="certo" x={394} y={EIXO} cor={TINTA.protege} escala={1.05} parado={parado} />
+          {/* O degradê só na fase em que a onda volta a ser CRUA: na fase da
+              cerca a mesma cena está errada, e cor de comemoração ali elogiaria
+              justamente o que a regra recusa. */}
+          <FechoDoArco x={394} y={EIXO + 14} escala={0.9} parado={parado} />
         </g>
       )}
     </MiniPalco>

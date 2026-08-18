@@ -46,6 +46,7 @@
 import { motion } from 'framer-motion';
 import { Legenda, Marca, Painel, Palco, TINTA, TRACO, TRACO_ACESO } from './pecas';
 import { ARCO, Brilho, CERTO, Faiscas, Poeira, QUEBRA, TracoDeLuz, useTintas } from './luz';
+import { FechoDoArco } from './fecho';
 import { IconeDaRede, REDES_REAIS } from './redes';
 import { EASE, tempo, useRoteiro } from './tempo';
 
@@ -373,9 +374,18 @@ function Escudo({ estado, parado }: { estado: EstadoDoEscudo; parado: boolean })
             duracao={0.5}
           />
         )}
+        {/*
+         * O visto subiu seis unidades para abrir a faixa do fecho. O escudo
+         * afina para a ponta, então o degradê só cabe embaixo do carimbo se o
+         * carimbo não estiver no meio geométrico — e um visto centrado num
+         * escudo já puxava para baixo por causa da barriga da forma.
+         */}
         {inteiro && (
-          <Marca tipo="certo" x={0} y={4} escala={1.6} cor={TINTA.protege} parado={parado} />
+          <Marca tipo="certo" x={0} y={-2} escala={1.6} cor={TINTA.protege} parado={parado} />
         )}
+        {/* Dentro do grupo do escudo: o degradê acompanha a escala da forma que
+            ele fecha, em vez de virar uma medida solta no palco. */}
+        {inteiro && <FechoDoArco x={0} y={19} escala={0.82} parado={parado} />}
       </g>
       <Faiscas
         x={438}
