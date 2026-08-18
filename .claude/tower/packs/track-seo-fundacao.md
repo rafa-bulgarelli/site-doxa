@@ -154,6 +154,7 @@ com a Doxa" de qualquer página nova CHEGA no formulário da landing — hoje o
 - public/llms.txt
 - scripts/og-imagem.mjs
 - scripts/seo-audit.mjs
+- scripts/prerender.mjs
 - package.json
 - src/main.tsx
 - src/App.tsx
