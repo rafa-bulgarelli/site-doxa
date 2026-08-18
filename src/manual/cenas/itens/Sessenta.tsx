@@ -48,6 +48,7 @@
  */
 import { Legenda, Marca, TINTA, TRACO, TRACO_ACESO } from '../pecas';
 import { ARCO, Brilho, Faiscas, TracoDeLuz, useTintas } from '../luz';
+import { FechoDoArco } from '../fecho';
 import { Cartao, MiniPalco } from './comuns';
 import { IconeDaRede, REDES_REAIS } from '../redes';
 import { motion } from 'framer-motion';
@@ -268,6 +269,7 @@ export default function Sessenta() {
           <Faiscas x={88} y={72} raio={60} ativo parado={parado} quantidade={9} />
           <Brilho x={412} y={76} raio={44} tinta="luzCerta" aceso parado={parado} />
           <Marca tipo="certo" x={412} y={76} cor={TINTA.protege} escala={0.95} parado={parado} />
+          <FechoDoArco x={412} y={88} escala={0.9} parado={parado} />
         </g>
       )}
     </MiniPalco>

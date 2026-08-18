@@ -30,6 +30,7 @@ import { motion } from 'framer-motion';
 import { Barra, Legenda, Marca, Painel, Palco, TINTA, TRACO, TRACO_ACESO } from './pecas';
 import type { Tinta } from './luz';
 import { Brilho, Faiscas, Poeira } from './luz';
+import { FechoDoArco } from './fecho';
 import { EASE, tempo, useRoteiro } from './tempo';
 
 /**
@@ -162,21 +163,34 @@ function Campo({ fase, parado }: { fase: number; parado: boolean }) {
   );
 }
 
-/** O carimbo do fim: o visto verde aceso, com as faíscas da mesma cor. */
+/**
+ * O carimbo do fim: o visto verde aceso, as faíscas da mesma cor e o degradê.
+ *
+ * A faísca continua VERDE — ver o cabeçalho: o arco solto sobre o campo já foi
+ * reprovado aqui uma vez, e o motivo não mudou. O degradê que entra é outra
+ * coisa e mora em outro lugar: ele não paira sobre o conteúdo, ele SUBLINHA o
+ * veredito, no instante em que o veredito acontece.
+ */
 function Fecho({ parado }: { parado: boolean }) {
   return (
     <g>
-      <Brilho x={478} y={182} raio={62} tinta="luzCerta" aceso parado={parado} />
-      <Marca tipo="certo" x={478} y={182} cor={TINTA.protege} escala={1.2} parado={parado} />
+      <Brilho x={478} y={168} raio={62} tinta="luzCerta" aceso parado={parado} />
+      <Marca tipo="certo" x={478} y={168} cor={TINTA.protege} escala={1.2} parado={parado} />
       <Faiscas
         x={478}
-        y={182}
+        y={168}
         raio={54}
         ativo
         parado={parado}
         quantidade={7}
         cores={[TINTA.protege]}
       />
+      {/* O visto subiu de 182 para 168 e o degradê ocupou a faixa que ele
+          deixou. Em 182 o carimbo terminava a 12 da borda de baixo do campo, e
+          o sublinhado ATRAVESSAVA a moldura — o mesmo "linhas cortando as
+          bordas" que o dono nomeou na cena dos balões. Agora os dois cabem
+          dentro do campo, com dez de folga até a borda. */}
+      <FechoDoArco x={478} y={186} escala={0.9} parado={parado} />
     </g>
   );
 }

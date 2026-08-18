@@ -25,6 +25,7 @@
 import { motion } from 'framer-motion';
 import { Barra, Marca, Painel, TINTA, TRACO, TRACO_ACESO } from '../pecas';
 import { Brilho, TracoDeLuz } from '../luz';
+import { FechoDoArco } from '../fecho';
 import { MiniPalco } from '../itens/comuns';
 import { EASE, tempo, useRoteiro } from '../tempo';
 
@@ -46,14 +47,37 @@ interface BalaoDaVoz {
   readonly falas: readonly [number, number];
 }
 
-/** O do meio é o maior e o mais centrado — ele é quem vira o canal. */
+/**
+ * O do meio é o maior e o mais centrado — ele é quem vira o canal.
+ *
+ * ─── O CONSERTO QUE O DONO PEDIU NESTA FILEIRA ───────────────────────────────
+ *
+ * O veredito dele, olhando o balão de cima: "muito exprimido, muito junto,
+ * linhas cortando as bordas — mais elegante, mais espaçado, maior hierarquia".
+ * O defeito era medível, e era o mesmo nos três: as duas linhas de fala caíam em
+ * `y + 11` e `y + 23`, um par de números FIXO, enquanto a altura da caixa
+ * variava de 30 a 46. Num balão de 30, a segunda linha terminava a UMA unidade
+ * da borda de baixo — literalmente cortando-a; no de 46, sobravam dezessete
+ * embaixo e onze em cima, e a fala nadava fora do centro.
+ *
+ * Agora a posição das linhas é DERIVADA da altura da caixa (ver `Balao`), então
+ * todo balão nasce com o mesmo respiro em cima e embaixo, qualquer que seja o
+ * tamanho dele. As três caixas também cresceram e se afastaram — 36, 46 e 32 de
+ * altura, na hierarquia que a cena quer contar: o do meio é o canal, e é o maior.
+ */
 const BALOES: readonly BalaoDaVoz[] = [
-  { x: 22, y: 6, largura: 112, altura: 32, falas: [70, 44] },
+  // Este saiu de 22 para 18: o rabicho dele descia para dentro da faixa do
+  // balão do meio, e "muito junto" também era isso.
+  { x: 18, y: 6, largura: 112, altura: 36, falas: [70, 44] },
   { x: 44, y: 48, largura: 134, altura: 46, falas: [92, 62] },
   // O terceiro entra mais à direita: três balões empilhados na mesma margem
   // leem como lista, e o que a primeira fase precisa dizer é DESENCONTRO.
-  { x: 112, y: 100, largura: 106, altura: 30, falas: [62, 38] },
+  { x: 112, y: 98, largura: 106, altura: 32, falas: [62, 38] },
 ];
+
+/** A altura de uma linha de fala, e o vão que separa as duas. */
+const FALA_ALTURA = 6;
+const FALA_VAO = 8;
 
 const CANAL_INDICE = 1;
 
@@ -76,6 +100,11 @@ function Balao({ balao, aceso, recuado, parado }: BalaoProps) {
   const { x, y, largura, altura, falas } = balao;
   const base = y + altura;
   const cor = aceso ? TRACO_ACESO : TRACO;
+  // As duas linhas ficam CENTRADAS na caixa, e é a caixa que manda: com um
+  // deslocamento fixo, o balão baixo terminava com a segunda linha encostada na
+  // borda de baixo — o "linhas cortando as bordas" que o dono nomeou.
+  const bloco = FALA_ALTURA * 2 + FALA_VAO;
+  const primeiraLinha = y + (altura - bloco) / 2;
   return (
     <motion.g
       initial={false}
@@ -104,9 +133,9 @@ function Balao({ balao, aceso, recuado, parado }: BalaoProps) {
         <Barra
           key={comprimento}
           x={x + 16}
-          y={y + 11 + indice * 12}
+          y={primeiraLinha + indice * (FALA_ALTURA + FALA_VAO)}
           largura={comprimento}
-          altura={6}
+          altura={FALA_ALTURA}
           cor={aceso ? TRACO_ACESO : TINTA.apagado}
           parado={parado}
           atraso={indice * 0.1}
@@ -164,6 +193,7 @@ export default function UmCanal() {
         <g>
           <Brilho x={414} y={EIXO} raio={46} tinta="luzCerta" aceso parado={parado} />
           <Marca tipo="certo" x={414} y={EIXO} cor={TINTA.protege} escala={1} parado={parado} />
+          <FechoDoArco x={414} y={EIXO + 13} escala={0.95} parado={parado} />
         </g>
       )}
     </MiniPalco>
