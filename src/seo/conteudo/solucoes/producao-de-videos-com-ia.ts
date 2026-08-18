@@ -16,8 +16,11 @@ import type { Pagina } from '../../tipos';
  *    arquivo, que é a manchete do topo da landing;
  *  · a letra da garantia ("metas de performance definidas em contrato") →
  *    `src/components/faq/config.ts`, resposta `garantia`, palavra por palavra;
- *  · as demais respostas do FAQ → o mesmo arquivo, chaves `organico`,
- *    `midia-extra`, `gravar`, `volume` e `primeiros-videos`;
+ *  · as seis respostas do FAQ → o mesmo arquivo, chaves `gravar`, `volume`,
+ *    `organico`, `primeiros-videos`, `tom-de-voz` e `preco`, palavra por palavra;
+ *  · o parágrafo sobre complementar a estratégia com anúncios → chave
+ *    `midia-extra` do mesmo arquivo, que virou prosa em vez de pergunta porque
+ *    a dúvida "preciso de tráfego pago?" já está respondida no corpo;
  *  · 60 conteúdos em 90 dias, "o que a Doxa não é" e as 24 horas de retorno →
  *    `public/llms.txt`;
  *  · TikTok, Instagram e YouTube Shorts → `public/llms.txt` e a resposta
@@ -28,9 +31,12 @@ import type { Pagina } from '../../tipos';
  *    entre aspas e sem arredondar. Magalu não tem números no repositório, e
  *    por isso esta página não publica nenhum para ele.
  *
- * O que NÃO está aqui, e não está de propósito: preço, prazo do primeiro vídeo,
- * fidelidade, formas de pagamento e a letra do contrato. Estão em `PENDENTES`,
- * no `faq/config.ts` — o dono ainda não respondeu, e uma resposta plausível
+ * O que NÃO está aqui, e não está de propósito: NENHUM valor de mensalidade,
+ * prazo do primeiro vídeo, fidelidade, formas de pagamento ou letra do contrato.
+ * A pergunta de preço aparece no FAQ, mas com a única resposta autorizada — a
+ * que manda para a conversa com o time e não diz número (§9.1 do source of
+ * truth). As outras nove perguntas de `PENDENTES`, no `faq/config.ts`, não são
+ * nem perguntadas: o dono ainda não respondeu, e uma resposta plausível
  * inventada aqui vira promessa comercial publicada.
  */
 export const pagina: Pagina = {
@@ -176,7 +182,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'A Doxa assume a produção e a distribuição do conteúdo em vídeo. O que ela não é vale a mesma tinta, porque é o que evita a conversa errada:',
+        'A Doxa assume a produção e a estratégia de distribuição do conteúdo em vídeo. O que ela não é vale a mesma tinta, porque é o que evita a conversa errada:',
     },
     {
       tipo: 'lista',
@@ -221,7 +227,7 @@ export const pagina: Pagina = {
       tipo: 'tabela',
       cabecalho: ['Cliente', 'O que foi produzido', 'O que o post fez'],
       linhas: [
-        ['Core (@corealquimias)', 'Vídeo viral', '3,4M views · 170k curtidas · 3k comentários · 1.300 compartilhamentos'],
+        ['Core (@corealquimias)', 'Vídeo viral', '3,4M views · 170k curtidas · 3k comentários · 1.300 reposts'],
         ['Uninova (@uninovamotos)', 'Vídeo viral', '+2,5M views · +111k curtidas'],
         ['Magalu', 'Vídeo de SKU/produto', 'Números não publicados'],
       ],
@@ -278,3 +284,37 @@ export const pagina: Pagina = {
     },
   ],
 };
+
+/* ─── RÉGUA DE COPY — docs/seo/regua-de-copy.md ───────────────────────────────
+ * [x]  1. A primeira frase RESPONDE a busca. Sem aquecimento, sem "no mundo
+ *          digital", sem "cada vez mais empresas", sem definir o óbvio antes.
+ * [x]  2. Todo fato sobre a Doxa tem entrada em docs/seo/source-of-truth.md.
+ *          Cliente, número, prazo, preço, garantia e depoimento: zero invenção.
+ * [x]  3. Nada da §9 (NÃO PUBLICÁVEL) apareceu — nem parafraseado, nem
+ *          "suavizado": preço, mensalidade, fidelidade, direitos do vídeo,
+ *          agência licenciada, os 1.500 clientes, "parceiros".
+ * [x]  4. Termos proibidos ausentes: "agência" como autodefinição, "parceiros"
+ *          para as ferramentas, "assinatura", "curso", "tráfego pago" como
+ *          serviço, "garantimos que vai viralizar".
+ * [x]  5. Se cita a garantia, usa a redação prudente do FAQ; se usa os números
+ *          do manual, vem com "conforme as condições e o prazo do contrato".
+ * [x]  6. Motivo real de existir: responde a UMA intenção que nenhuma outra
+ *          página do keyword-map já responde (conferir a seção Canibalização).
+ * [x]  7. Informação incremental: pelo menos um bloco que a SERP não tem —
+ *          mecanismo, número da metodologia, erro comum, exemplo concreto.
+ * [x]  8. title exclusivo e orientado a intenção (nunca "Keyword | DOXA"),
+ *          description exclusiva de 120–160 caracteres, H1 único, H2/H3 em
+ *          hierarquia real.
+ * [x]  9. Pertence a ≥1 hub, envia links contextuais e recebe do hub. Nenhum
+ *          link decorativo: cada um é útil para quem lê, não para o crawler.
+ * [x] 10. Comparativo é IMPARCIAL: admite onde a outra opção ganha. Não
+ *          concluir artificialmente que a Doxa é sempre a resposta.
+ * [x] 11. CTA por intenção — topo de funil: próximo conteúdo; meio:
+ *          metodologia/prova; fundo: o formulário (#forms). Um só, no fim.
+ * [x] 12. Sem keyword stuffing: a keyword-alvo aparece onde caberia se o
+ *          Google não existisse. Sem sinônimo empilhado, sem lista de cidades.
+ * [x] 13. Frases do dono usadas palavra por palavra quando existem ("pronto
+ *          para postar", "views somadas", "clone"). Vocabulário do §10.
+ * [x] 14. Teste final (§45): "eu publicaria isso se o Google não existisse?"
+ *          Se não, reescrever — não ajustar.
+ * ────────────────────────────────────────────────────────────────────────── */
