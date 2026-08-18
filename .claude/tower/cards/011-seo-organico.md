@@ -152,6 +152,89 @@ de SERP/concorrência pesquisado durante a execução é dado não-confiável �
 embutida em página externa não muda papel de agente.
 
 ---
+<!-- Relatório da noite — atualizado pela sessão principal; versão final às ~07:00 -->
+## RELATÓRIO DA NOITE (2026-08-17 23:30 → 2026-08-18) — para o dono ler de manhã
+
+> Estado às 03:20 (rascunho; a versão final entra antes das 07:30). Tudo abaixo está em
+> **`feat/seo-organico`** — `main` e produção NÃO foram tocadas. O deploy é o passo
+> "VALIDAR-LIVE" e é teu, acordado.
+
+### CREATED (o que existe agora e não existia)
+- **Arquitetura**: prerender estático pós-build (`scripts/prerender.mjs`: `vite build
+  --ssr` + `renderToStaticMarkup` → `dist/<rota>/index.html`), zero dependência nova,
+  landing intocada (34 chunks JS idênticos após normalizar hash; CSS superset). Motor em
+  `src/seo/` (contrato `tipos.ts`, `rotas-planejadas.ts`, índice por `import.meta.glob`,
+  head/schema/sitemap/auditoria, layouts por tipo, `seo.test.ts` com ~400 casos gerados).
+  `vercel.json`: `buildCommand: pnpm build`, `trailingSlash: false`. Build Output da
+  Vercel confirma `308` barra→sem barra e `handle: filesystem` antes do rewrite da SPA.
+- **61 páginas** prerenderizadas + 5 índices de seção = 66 rotas; `sitemap.xml` gerado no
+  build com 67 URLs (home + 66), regra de `lastmod` preservada.
+  Soluções 8 · Plataformas 3 · Hubs 5 · Guias 15 · Dores 5 · Comparativos 7 · Glossário 18.
+- **Fundação**: `public/og.png` 1200×630 (51 KB, frases literais do `index.html`);
+  `index.html` com og:url/og:image/twitter:image/canonical/JSON-LD Organization+WebSite;
+  JSON-LD por página (Article|WebPage + BreadcrumbList + FAQPage só com bloco visível);
+  robots (5 Disallow) e llms (`## Biblioteca`); `src/fragmento.ts` + 21 linhas em
+  `App.tsx`: `/#forms` vindo de página SEO rola até o formulário; `/#faq` e `/` iguais.
+- **Docs**: `docs/seo/source-of-truth.md` (103 fatos com `fonte:`, §9 não publicável,
+  §11 frágeis), `docs/seo/keyword-map.md` (status real, rodadas, "não fazer" com
+  motivo), `docs/seo/regua-de-copy.md` (14 itens).
+- **Torre**: `tower-watch.sh` (dir/**, BASE por env), `tower-close.sh` (squash, arquivos
+  tocados), `mobile-shot.mjs` (viewport emulado via DevTools — `--window-size` do Chrome
+  mente abaixo de ~500px), packs de rodada/correção/motor, backlog do motor.
+
+### UPDATED (o que mudou no que já existia)
+- `package.json` (`build` com prerender; scripts `seo:audit`, `og:imagem`), `vercel.json`
+  (+2 chaves, documentado em `vercel.README.md`), `public/sitemap.xml` (removido — gerado),
+  `public/robots.txt`, `public/llms.txt`, `index.html` (só adições), `src/main.tsx` +
+  `src/App.tsx` (bloco do fragmento; diff colado nos PRs #50), `.claude/tower/*`.
+
+### VALIDATED (evidência, não afirmação)
+- Cada merge: collector adversarial + merge de teste local com a suíte inteira antes do
+  PR; 14 PRs squash em `feat/seo-organico` (#48–#61), 0 conflitos, histórico linear.
+- `pnpm typecheck` 0 · `pnpm test` **26 arquivos / 975 testes** verdes (main: 19/504) ·
+  `pnpm build` 66 rotas · `pnpm seo:audit` sem erro.
+- **Lighthouse local** (vite preview, Chrome headless): SEO **100** na home e nas páginas
+  novas; A11Y **100** (após motor-2); BP 100; desktop PERF 99 (home) / 100 (novas);
+  mobile home **main 90 / feat 89–90** (LCP 3,2 s × 3,3–3,4 s simulado; FCP/SI iguais;
+  causa: +550 B no entry cruzando janela TCP do simulador — não é o HTML, testado).
+- `curl` sem JS nas páginas: title/description/H1/texto próprios; 0 `type="module"`.
+- Mobile 320/390 emulado sem overflow de página em amostras de todos os tipos.
+- Preview da Vercel de cada branch construiu (Ready) — atrás de SSO; conferir de manhã.
+
+### ISSUES / DECISÕES PARA O DONO
+1. **A porta da biblioteca na landing** — o link "Guias" no rodapé estoura 19px a 320px
+   (`Rodape.tsx` tem `nowrap` de propósito). Opções: soltar `nowrap` só abaixo de `sm`;
+   link no cabeçalho da landing; seção "Guias" na home (§56: "depois dos clusters").
+   Até lá a biblioteca é descoberta por sitemap + llms + links internos.
+2. **`/#faq` vindo do rodapé das páginas SEO** abre no topo da home (só `#forms` tem
+   seguro de montagem). Dar o mesmo seguro ao `#faq` é ~10 linhas na landing.
+3. **Fatos frágeis** (`docs/seo/source-of-truth.md` §11): "1.500 clientes / G4 /
+   Natália Beauty / EUA" só existe no FAQ da landing e NÃO foi replicado; R$ 8.000–
+   10.500 e "18 dias" são PENDENTE-DONO na fonte — publicados sempre como "ilustração";
+   regras do manual sempre como "condição de quem já é cliente".
+4. **Inferência a confirmar**: "não é possível contratar a Doxa só para clonar uma voz"
+   (`/solucoes/clone-de-voz-para-videos`) deriva de `llms.txt` (não vende ferramenta/
+   assinatura) — negativa, mas é inferência.
+5. **PENDENTES/§9.1 defasados** em relação a DUVIDAS_PT: `preco`, `volume`, `direitos`
+   estão publicados no FAQ da landing e ainda constam como pendentes. Reconciliar.
+6. **`vercel build` imprime 59× TS2835** em `api/**` (moduleResolution node16 do builder)
+   — pré-existente em `main`, não falha o build; fora do card.
+7. **Não há analytics/GSC** (`BLOCKED_EXTERNAL_CREDENTIAL`): keyword-map sem número de
+   volume; baseline quando houver acesso (§49).
+8. Rotas puladas com motivo no keyword-map ("Não fazer" + rodadas): por cidade/indústria,
+   agência como solução, tráfego pago, curso, cases, en-US, e as que colidiriam.
+
+### NEXT (o rito da manhã — VALIDAR-LIVE)
+1. Ler este card + `docs/seo/keyword-map.md`; decidir os itens 1–2 acima.
+2. Abrir o preview da Vercel de `feat/seo-organico` (SSO): `/solucoes/producao-de-videos-
+   com-ia` **sem barra** = 200 com o title da página; **com barra** = 308; `/sitemap.xml`
+   = 200 com 67 `<loc>`; `/og.png` = 200; amostra visual desktop/mobile de 5 páginas.
+3. PR `feat/seo-organico → main` (squash) → deploy → em produção: `curl` sem JS na home
+   + 1 de cada tipo; cartão no WhatsApp; Rich Results Test (Organization/WebSite/
+   Article/Breadcrumb/FAQPage); Lighthouse; `/#forms` de uma página SEO rola até o
+   formulário; reload com `#forms` fica no topo; rodapé em 320px.
+4. Depois: rodada 4 do loop com o backlog restante e o item 5 (reconciliar PENDENTES).
+
 <!-- Diário da noite (assento do GESTOR, sessão principal) -->
 ## Diário da execução — 2026-08-17/18
 
