@@ -40,6 +40,7 @@ function convite(extra: Partial<ConviteLinha> = {}): ConviteLinha {
     email: 'contato@empresa.com',
     empresa: 'Empresa',
     nome_cliente: null,
+    invite_plataforma: null,
     versao_id: 'v1',
     status: 'pendente',
     expira_em: null,
