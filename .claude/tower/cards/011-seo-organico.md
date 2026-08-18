@@ -2,9 +2,9 @@
 
 - **Tipo:** feature (estratégia + implementação em escala)
 - **Aberto em:** 2026-08-17
-- **Status:** **EXECUTADO na noite de 2026-08-17→18 — aguardando VALIDAR-LIVE do dono.**
-  `feat/seo-organico` @ `e51ccaa` (PRs #48–#66). `main`/produção intocadas. Relatório
-  final e decisões pendentes na seção "RELATÓRIO DA NOITE" abaixo.
+- **Status:** **ENTREGUE — mergeado em `main` (PR #67, `569a0a7`, 2026-08-18 08:45) e
+  VALIDADO-LIVE em www.doxaviral.com** (evidência abaixo). Ficam abertas só as decisões
+  do dono listadas em "ISSUES" (porta na landing, `#faq`, inferências, PENDENTES).
 
 ## ⏰ JANELA DE EXECUÇÃO — ordem explícita do dono (2026-08-17)
 
@@ -262,6 +262,27 @@ embutida em página externa não muda papel de agente.
    rodapé em 320px; `robots.txt` servido (Cloudflare prepende bloco — `diff` com o local).
 4. Depois: item 5 (reconciliar PENDENTES), item 1 (porta na landing), e a rodada 4
    quando houver insumo/GSC.
+
+### VALIDADO-LIVE (2026-08-18 ~09:00, produção www.doxaviral.com — domínio com L)
+- OK explícito do dono → PR #67 squash em `main` (`569a0a7`) → deploy da Vercel.
+- `curl` sem JS: home `<title>Doxa — Um milhão de views…`, og:image absoluto, canonical,
+  JSON-LD Organization+WebSite; 5 páginas de tipos diferentes com title/H1 próprios,
+  0 `type="module"`, canonical certo, JSON-LD por tipo (WebPage/Article + Breadcrumb +
+  FAQPage só onde há FAQ).
+- Roteamento: `/solucoes/producao-de-videos-com-ia` **200** sem barra, **308** com barra
+  (como o Build Output previa); `/sitemap.xml` 200 com **69 `<loc>`** e `lastmod` da
+  home preservado (2026-08-10); `/og.png` 200 PNG 1200×630; `/llms.txt` com
+  `## Biblioteca`; `robots.txt` servido = bloco do Cloudflare + o do repo (5 Disallow +
+  `/manual-doxa` sem barra + Sitemap). TTFB 55–70 ms, sem redirects, compressão ok.
+- Lighthouse em produção — SEO **100** / A11Y **100** / BP **100** em home e páginas;
+  desktop PERF 100; mobile: páginas 98–100; home 87 na 1ª medição (cache frio, SI 4,4 s)
+  e **93–94** nas seguintes (LCP 2,7–2,8 s) — acima do baseline local de `main` (90).
+- `/#forms` vindo de fora, em produção: hash mantido, scrollY 7762, topo do `#forms` = 0
+  (rola até o formulário); `/` fica no topo.
+- Não medido por mim (precisa de humano/ferramenta do Google): cartão do WhatsApp; Rich
+  Results Test (`https://search.google.com/test/rich-results?url=https://www.doxaviral.com/solucoes/producao-de-videos-com-ia`);
+  visual em aparelho real. Soft-404: `/guias/nao-existe` devolve 200 com a landing (é o
+  rewrite da SPA, pré-existente para qualquer caminho desconhecido) — backlog.
 
 <!-- Diário da noite (assento do GESTOR, sessão principal) -->
 ## Diário da execução — 2026-08-17/18
