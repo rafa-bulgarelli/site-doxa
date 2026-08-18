@@ -189,6 +189,15 @@ embutida em página externa não muda papel de agente.
   `.claude/tower/bin/mobile-shot.mjs` (viewport emulado via DevTools; `--window-size`
   do Chrome mente abaixo de ~500px). **FASE 1 aberta**: 4 executores.
 
+- **~00:50** — T1 `track-seo-fundacao` READY (`af9a8b1`: 26/590 verdes; cabeçalho
+  mobile 463→320px medido; `/#forms` rola na chegada — 15 linhas em `App.tsx`; og.png
+  51 KB; JSON-LD por página; sem `datePublished` — decisão §46, contrato só tem
+  `atualizadoEm`) → collector em andamento. T2 `track-seo-conteudo-solucoes` READY
+  (8 páginas novas: 5 soluções + 3 plataformas, 977–1400 palavras; 24/569) →
+  collector editorial em andamento. Lições de processo: `pnpm preview` colide entre
+  worktrees (usar `--strictPort`); scratchpad é compartilhado (subdir por track);
+  grep de palavras do pack era cego a strings multilinha — medir no `<main>` do dist.
+
 <!-- Preenchido pelo GESTOR -->
 ## Plano
 
