@@ -25,6 +25,7 @@
  */
 import { Legenda, Marca, Painel, TINTA } from '../pecas';
 import { Brilho, CERTO, Faiscas, QUEBRA, TracoDeLuz, corDoArco, useTintas } from '../luz';
+import { FechoDoArco } from '../fecho';
 import { MiniPalco } from './comuns';
 import { motion } from 'framer-motion';
 import { EASE, tempo, useRoteiro } from '../tempo';
@@ -240,6 +241,7 @@ function Veredito({ parado }: { parado: boolean }) {
     <g>
       <Brilho x={428} y={86} raio={54} tinta="luzCerta" aceso parado={parado} />
       <Marca tipo="certo" x={428} y={86} cor={TINTA.protege} escala={1.15} parado={parado} />
+      <FechoDoArco x={428} y={101} escala={0.95} parado={parado} />
       <Faiscas x={428} y={86} raio={50} ativo parado={parado} quantidade={7} cores={[CERTO]} />
     </g>
   );

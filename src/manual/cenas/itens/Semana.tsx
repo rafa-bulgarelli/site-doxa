@@ -39,6 +39,7 @@
  */
 import { Legenda, Marca, Painel, TINTA, TRACO, TRACO_ACESO } from '../pecas';
 import { ARCO, Brilho, CERTO, Faiscas, QUEBRA, corDoArco } from '../luz';
+import { FechoDoArco } from '../fecho';
 import { MiniPalco } from './comuns';
 import { motion } from 'framer-motion';
 import { EASE, tempo, useRoteiro } from '../tempo';
@@ -61,9 +62,16 @@ const ESQUERDA = 22;
 const LARGURA = 52;
 const TOPO = 28;
 const ALTURA = 46;
-/** A faixa do veredito e a faixa da letra — cada uma com o seu respiro. */
+/**
+ * A faixa do veredito e a faixa da letra — cada uma com o seu respiro.
+ *
+ * A letra desceu de 134 para 138 para abrir a faixa do fecho: entre o visto da
+ * sexta e a letra dela passou a correr o degradê, e com 134 ele encostava nos
+ * dois. Sobram 12 até a borda de baixo do palco, e nenhuma das sete letras
+ * (S T Q Q S S D) tem perna que desça.
+ */
 const MARCA_Y = 97;
-const LETRA_Y = 134;
+const LETRA_Y = 138;
 
 /** O centro do enésimo dia — a única conta de posição desta cena. */
 function centroDoDia(indice: number): number {
@@ -193,6 +201,17 @@ export default function Semana() {
           quantidade={6}
           cores={[CERTO, ARCO[5]]}
         />
+      )}
+
+      {/*
+       * O fecho sublinha a SEXTA, e não a semana inteira: o quadro final desta
+       * cena tem um xis no meio dele — a quarta perdida —, e um degradê correndo
+       * por baixo dos sete diria "deu tudo certo" por cima de um dia que não
+       * deu. Embaixo da sexta ele diz o que de fato aconteceu: a rotina voltou e
+       * fechou a semana.
+       */}
+      {fase >= SEMANA && (
+        <FechoDoArco x={centroDoDia(SEXTA)} y={MARCA_Y + 10} escala={0.62} parado={parado} />
       )}
     </MiniPalco>
   );

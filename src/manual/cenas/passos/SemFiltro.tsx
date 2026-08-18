@@ -27,6 +27,7 @@
 import { motion } from 'framer-motion';
 import { Marca, Painel, TINTA, TRACO, TRACO_ACESO } from '../pecas';
 import { Brilho, QUEBRA } from '../luz';
+import { FechoDoArco } from '../fecho';
 import { MiniPalco } from '../itens/comuns';
 import { Rosto } from './comuns';
 import { EASE, tempo, useRoteiro } from '../tempo';
@@ -142,6 +143,10 @@ function Veredito({ tipo, parado }: VereditoProps) {
         escala={1.1}
         parado={parado}
       />
+      {/* O xis e o visto dividem o ponto, mas não o degradê: ele é do acerto. O
+          mesmo carimbo com o mesmo chão colorido nas duas fases diria que tanto
+          faz — e a cena inteira existe para dizer que não tanto faz. */}
+      {certo && <FechoDoArco x={VEREDITO_X} y={ROSTO_Y + 14} escala={0.9} parado={parado} />}
     </g>
   );
 }

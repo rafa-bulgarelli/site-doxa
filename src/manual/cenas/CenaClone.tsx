@@ -51,6 +51,7 @@
 import { motion } from 'framer-motion';
 import { Marca, Painel, Palco, TINTA, TRACO, TRACO_ACESO } from './pecas';
 import { Brilho, QUEBRA, TracoDeLuz } from './luz';
+import { FechoDoArco } from './fecho';
 import { EASE, tempo, useRoteiro } from './tempo';
 
 /**
@@ -260,6 +261,15 @@ function QuadroDoClone({ completo, parado }: { completo: boolean; parado: boolea
             <Rosto cor={TINTA.branco} oculos={false} tracejado brilho />
           </g>
         </motion.g>
+      )}
+      {/*
+       * O fecho sublinha o QUADRO, e não um visto: esta cena não termina em
+       * carimbo — ela termina no clone existindo, que é o "deu certo" dela. O
+       * verde do visto continua onde sempre esteve, na foto aprovada, julgando
+       * a matéria-prima; o degradê marca o resultado.
+       */}
+      {completo && (
+        <FechoDoArco x={CLONE_X} y={QUADRO.y + QUADRO.altura + 2} escala={1.05} parado={parado} />
       )}
     </g>
   );

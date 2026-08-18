@@ -25,6 +25,7 @@
  */
 import { Marca, Painel, TINTA, TRACO, TRACO_ACESO } from '../pecas';
 import { Brilho } from '../luz';
+import { FechoDoArco } from '../fecho';
 import { MiniPalco } from '../itens/comuns';
 import { OndaDeFala, PontoDeGravar } from './comuns';
 import { useRoteiro } from '../tempo';
@@ -33,16 +34,41 @@ import { useRoteiro } from '../tempo';
 const FASES = [1400, 1500, 1500, 3400] as const;
 const FECHADO = 3;
 
-const CELULAR = { x: 18, y: 22, largura: 64, altura: 106 } as const;
+const CELULAR = { x: 14, y: 22, largura: 64, altura: 106 } as const;
 const CARTAO = { y: 44, largura: 100, altura: 62 } as const;
 const EIXO = 75;
 
-/** Onde cai cada trecho, e o que se falou em cada um deles. */
+/**
+ * Onde cai cada trecho, e o que se falou em cada um deles.
+ *
+ * ─── O CONSERTO QUE O DONO PEDIU AQUI ────────────────────────────────────────
+ *
+ * O veredito dele, olhando as caixinhas: "MUITO ESPREMIDAS — melhorar o
+ * espaçamento entre o item marcado e o próximo. Sem vida." O número era 16: três
+ * cartões de 100 de largura separados por dezesseis unidades, num palco de 480.
+ * Vizinhos com 16 de vão e 100 de corpo leem como uma tira picotada, e não como
+ * três gravações independentes — que é exatamente o argumento da cena ("não
+ * precisa ser de uma vez").
+ *
+ * O vão foi para 26, e o que o pagou foi a margem da direita, que sobrava (44).
+ * O celular andou quatro para a esquerda para o primeiro cartão não colar nele.
+ */
+const VAO_ENTRE_TRECHOS = 26;
+const PRIMEIRO_TRECHO_X = 100;
+
+/** O x do enésimo cartão — mexer no vão reposiciona os três de uma vez. */
+function trechoX(indice: number): number {
+  return PRIMEIRO_TRECHO_X + indice * (CARTAO.largura + VAO_ENTRE_TRECHOS);
+}
+
 const TRECHOS = [
-  { x: 104, alturas: [16, 30, 22, 12] },
-  { x: 220, alturas: [12, 26, 34, 18] },
-  { x: 336, alturas: [20, 14, 28, 24] },
+  { alturas: [16, 30, 22, 12] },
+  { alturas: [12, 26, 34, 18] },
+  { alturas: [20, 14, 28, 24] },
 ] as const;
+
+/** O meio da fileira dos três — o clarão e o fecho se penduram nele. */
+const FILEIRA_MEIO = (PRIMEIRO_TRECHO_X + trechoX(2) + CARTAO.largura) / 2;
 
 /** A ondinha de dentro do celular: a fala correndo enquanto se grava. */
 const NO_CELULAR = [14, 26, 18, 30, 20] as const;
@@ -106,17 +132,20 @@ function Trecho({ x, alturas, gravado, novo, parado }: TrechoProps) {
       />
       {gravado && (
         <>
+          {/* A onda encolheu de 14 para 13 de passo e recuou uma unidade: o
+              visto ficava a nove da última barra e a onze da borda direita, e
+              "espremido" era dentro do cartão também, não só entre eles. */}
           <OndaDeFala
             alturas={alturas}
-            x={x + 14}
+            x={x + 13}
             eixo={EIXO}
-            passo={14}
+            passo={13}
             cor={TINTA.branco}
             parado={parado}
           />
           <Marca
             tipo="certo"
-            x={x + 80}
+            x={x + 78}
             y={EIXO}
             cor={TINTA.protege}
             escala={0.62}
@@ -136,7 +165,7 @@ export default function Gravador() {
       {/* O clarão só abre quando os três estão lá: é o conjunto que fecha, e é
           ele o quadro que fica na cabeça de quem passou os olhos. */}
       <Brilho
-        x={286}
+        x={FILEIRA_MEIO}
         y={EIXO}
         raio={230}
         tinta="luz"
@@ -147,8 +176,8 @@ export default function Gravador() {
       <Celular parado={parado} />
       {TRECHOS.map((trecho, indice) => (
         <Trecho
-          key={trecho.x}
-          x={trecho.x}
+          key={trecho.alturas[0]}
+          x={trechoX(indice)}
           alturas={trecho.alturas}
           // Um trecho por fase, na ordem: o primeiro cai na fase 1, e assim
           // por diante — é a leitura "aos poucos" que a regra pede.
@@ -157,6 +186,16 @@ export default function Gravador() {
           parado={parado}
         />
       ))}
+
+      {/*
+       * O degradê fecha o CONJUNTO, embaixo do meio da fileira — e não embaixo
+       * de um dos três vistos. Cada trecho já tem o seu carimbo; o que a última
+       * fase acrescenta é o material inteiro estar gravado, e é isso que o arco
+       * sublinha. Dentro de um cartão de 62 de altura ele não caberia.
+       */}
+      {fase >= FECHADO && (
+        <FechoDoArco x={FILEIRA_MEIO} y={CARTAO.y + CARTAO.altura + 6} escala={1} parado={parado} />
+      )}
     </MiniPalco>
   );
 }

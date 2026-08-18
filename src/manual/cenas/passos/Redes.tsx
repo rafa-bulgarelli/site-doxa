@@ -53,6 +53,7 @@
 import { motion } from 'framer-motion';
 import { Marca, Painel, TINTA, TRACO, TRACO_ACESO } from '../pecas';
 import { Brilho, QUEBRA, TracoDeLuz } from '../luz';
+import { FechoDoArco } from '../fecho';
 import { MiniPalco } from '../itens/comuns';
 import { IconeDaRede } from '../redes';
 import type { RedeReal } from '../redes';
@@ -446,6 +447,22 @@ export default function Redes() {
           parado={parado}
         />
       ))}
+
+      {/*
+       * UM degradê para as três linhas, embaixo do visto do MEIO — que é a
+       * linha que quebrou e foi corrigida, e a única da cena que teve de ganhar
+       * o direito de fechar. Um fecho por linha viraria três, e três é a festa
+       * que a doutrina proíbe; embaixo da última não caberia (o palco acaba em
+       * 150) e ainda leria como "só esta fechou".
+       */}
+      {fase >= CONFERIDO && (
+        <FechoDoArco
+          x={MARCA_X}
+          y={LINHAS[LINHA_ERRADA].centro + 12}
+          escala={0.9}
+          parado={parado}
+        />
+      )}
     </MiniPalco>
   );
 }

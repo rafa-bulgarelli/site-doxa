@@ -57,6 +57,7 @@ import SemFiltro from './passos/SemFiltro';
 import Aproximacao from './passos/Aproximacao';
 import { cenaDaSecao, cenaDoItem, cenaDoPasso } from './contrato';
 import { ARCO } from './luz';
+import { ARCO_DO_FECHO } from './fecho';
 
 interface CenaDoTeste {
   /** O slug da seção, ou o código da regra no caso das mini-cenas. */
@@ -219,6 +220,101 @@ describe('as cenas com movimento reduzido', () => {
       }
     });
   }
+});
+
+/**
+ * ─── O FECHO DO ARCO ─────────────────────────────────────────────────────────
+ *
+ * O pedido do dono: "quando as animações atingem o último estágio — deu tudo
+ * certo — TODAS tenham o degradê". "Todas" tem exceção nomeada por ele mesmo: as
+ * duas cenas que já tinham passado com nota dez ficam como estão.
+ *
+ * Desenho não tem asserção óbvia, mas o fecho tem assinatura: o `d` do arco. É
+ * ele que se cobra aqui, em três frentes — presente no quadro que ensina, UM por
+ * cena (três passadas do mesmo caminho, e não seis), e ausente na primeira fase,
+ * que é o que impede alguém de "simplificar" o degradê para sempre visível e
+ * matar os três tempos.
+ */
+describe('o fecho do arco no quadro que ensina', () => {
+  /** Quantas vezes o caminho do fecho aparece no desenho. */
+  function passadasDoFecho(html: string): number {
+    return [...html.matchAll(new RegExp(`d="${ARCO_DO_FECHO}"`, 'g'))].length;
+  }
+
+  /** O desenho da cena no quadro PARADO — o do fim da história. */
+  function quadroFinal(Cena: ComponentType): string {
+    preferencia.reduzido = true;
+    try {
+      return desenhar(Cena);
+    } finally {
+      preferencia.reduzido = false;
+    }
+  }
+
+  /**
+   * As duas que o dono mandou não tocar.
+   *
+   * Elas já fecham com o arco do jeito delas — a onda inteira pintada no arco na
+   * cena da voz, o mostrador do relógio no seu. Aplicar o fecho padrão por cima
+   * seria acrescentar um segundo degradê ao único quadro que já estava aprovado.
+   */
+  const NOTA_DEZ = new Set(['voz', 'GA-3']);
+  const COM_FECHO = TODAS.filter(({ chave }) => !NOTA_DEZ.has(chave));
+
+  it('cobre todas as cenas menos as duas de nota dez', () => {
+    // A conta é a trava: cena nova entra na lista de TODAS e cai aqui sem
+    // fecho, e este número é o que denuncia o esquecimento.
+    expect(COM_FECHO.length).toBe(TODAS.length - 2);
+    expect(COM_FECHO.length).toBe(19);
+  });
+
+  for (const { chave, Cena } of COM_FECHO) {
+    it(`a cena de ${chave} fecha com o degradê, e com UM só`, () => {
+      // Três passadas: o halo, o meio e o traço cheio de `TracoDeLuz`. Seis
+      // seriam dois fechos no mesmo palco — a "festa" que a doutrina proíbe.
+      expect(passadasDoFecho(quadroFinal(Cena)), chave).toBe(3);
+    });
+
+    it(`a cena de ${chave} não mostra o degradê na primeira fase`, () => {
+      // Os três tempos, nas palavras do dono: "aparece · destaca · dá certo".
+      // Degradê desde o primeiro quadro entrega o terceiro tempo antes do
+      // primeiro, e a cena deixa de contar história nenhuma.
+      expect(passadasDoFecho(desenhar(Cena)), chave).toBe(0);
+    });
+  }
+
+  for (const chave of NOTA_DEZ) {
+    const nota10 = TODAS.find((cena) => cena.chave === chave);
+    if (nota10 == null) throw new Error(`a cena de nota dez sumiu da lista: ${chave}`);
+    it(`a cena de ${chave} continua SEM o fecho — ela é nota dez`, () => {
+      expect(passadasDoFecho(quadroFinal(nota10.Cena))).toBe(0);
+      expect(passadasDoFecho(desenhar(nota10.Cena))).toBe(0);
+    });
+  }
+
+  it('o fecho pinta com o arco do PRÓPRIO palco, e não com o de outra cena', () => {
+    // A armadilha de `luz.tsx`: `id` de gradiente é global no documento. Duas
+    // cenas na mesma página com o mesmo `id` fazem a segunda pintar de preto no
+    // preto — some sem erro nenhum. Cada fecho tem de citar o id do seu palco.
+    preferencia.reduzido = true;
+    try {
+      const html = renderToStaticMarkup(
+        <>
+          <Contexto />
+          <UmCanal />
+        </>,
+      );
+      const pintados = [...html.matchAll(/stroke="url\(#(cena[^)"]+)-arco\)"/g)].map(
+        (achado) => achado[1],
+      );
+      expect(new Set(pintados).size).toBe(2);
+      for (const id of pintados) {
+        expect(html).toContain(`id="${id}-arco"`);
+      }
+    } finally {
+      preferencia.reduzido = false;
+    }
+  });
 });
 
 /**
