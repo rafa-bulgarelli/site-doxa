@@ -54,7 +54,7 @@ export const pagina: Pagina = {
     '/glossario/clone-de-voz',
     '/solucoes/clone-de-ia-para-videos',
     '/comparativos/ia-vs-producao-tradicional-de-video',
-    '/guias/como-usar-ia-no-marketing',
+    '/guias/o-que-e-uma-agencia-de-marketing-com-ia',
   ],
   atualizadoEm: '2026-08-18',
   cta: {

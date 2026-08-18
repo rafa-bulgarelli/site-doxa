@@ -53,7 +53,7 @@ export const pagina: Pagina = {
   relacionadas: [
     '/solucoes/producao-de-videos-com-ia',
     '/solucoes/clone-de-ia-para-videos',
-    '/guias/como-usar-ia-no-marketing',
+    '/guias/o-que-e-uma-agencia-de-marketing-com-ia',
     '/comparativos/agencia-vs-equipe-interna',
     '/comparativos/ia-vs-producao-tradicional-de-video',
   ],

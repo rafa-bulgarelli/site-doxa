@@ -65,7 +65,7 @@ export const pagina: Pagina = {
     '/solucoes/producao-de-conteudo-em-escala',
     '/comparativos/ia-vs-producao-tradicional-de-video',
     '/guias/o-que-e-avatar-de-ia',
-    '/guias/como-usar-ia-no-marketing',
+    '/guias/o-que-e-uma-agencia-de-marketing-com-ia',
   ],
   atualizadoEm: '2026-08-18',
   cta: {
