@@ -387,6 +387,17 @@ embutida em página externa não muda papel de agente.
   novas esgotado no padrão de qualidade (o que sobra colide ou é isca de SERP — motivos
   no keyword-map). Loop continua com QA transversal 2 → correção-3.
 
+- **03:45–04:15** — QA transversal 2 (3 collectors, 63 páginas) devolveu ~60 achados:
+  contradições reais entre páginas (carry-over "nada acumula" × "vídeo fraco reduz a
+  amostra"; `o-que-e-ugc` chamando o sentido pago de "primeiro"; `alcance-organico`
+  com destaque falando de views; `marketing-com-ia` afirmando falsamente o conteúdo
+  de outra página), §14 (custo marginal/R$/zero impulsionamento/RT-2 reexplicados em
+  4–8 páginas; FAQ duplicada por resposta com pergunta trocada; resumo×1º parágrafo
+  repetido nos 18 verbetes), imparcialidade na faixa do `ia-vs-tradicional`, absolutos
+  remanescentes. Pack `track-seo-correcao-3` (152 linhas) → executor no ar. Docs
+  finais **PR #64** (régua com a família banida; keyword-map com o estado ao fim da
+  noite: backlog de páginas novas esgotado no padrão de qualidade).
+
 <!-- Preenchido pelo GESTOR -->
 ## Plano
 
