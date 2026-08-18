@@ -240,6 +240,19 @@ embutida em página externa não muda papel de agente.
   da biblioteca no fim). Puladas de propósito: avatar-de-ia-para-empresas,
   conteudo-recorrente, heygen-vs-gravacao, reels-vs-tiktok-vs-shorts.
 
+- **01:20–02:00** — Rodada 2 executada: R2-A guias 10 páginas (pulou
+  `como-usar-ia-no-marketing` — eixo com 3 donos; a rota sai do contrato depois),
+  R2-B comparativos+glossário 9, R2-C dores+soluções 3 (+ QA adversarial transversal
+  da biblioteca: 7 achados → pack `track-seo-correcao-1`). Collectors: R2-B
+  **REPROVADO como está** (verbete `cta` com fato contradito na própria página;
+  `engajamento` com mecânica invertida; `conteudo-organico-vs-influenciador` recicla
+  ~metade de `ugc-vs-conteudo-de-marca`; `clone-digital` copia 3 blocos verbatim) →
+  executor retomado; R2-C APROVADO COM RESSALVAS (passo "Publicar" insinuando que a
+  Doxa publica; "licenciar o modelo por fora" sem fonte → cortado; contradição
+  interna; blocos reciclados; 4 generalizações) → executor retomado; R2-A em collector.
+  Lição da rodada: mesmo com as "LIÇÕES DA FASE 1" no pack, dois executores copiaram
+  blocos de vizinhas — o collector continua obrigatório em conteúdo.
+
 <!-- Preenchido pelo GESTOR -->
 ## Plano
 
