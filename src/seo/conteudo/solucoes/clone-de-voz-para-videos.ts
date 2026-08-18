@@ -198,7 +198,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'Vale dizer com todas as letras, porque é a pergunta que chega por esta busca: não é possível contratar a Doxa só para clonar uma voz. O clone é um componente da entrega, e a entrega é conteúdo em vídeo. A Doxa também não vende curso, ferramenta nem assinatura de software — quem quer apenas gerar uma locução para usar por conta própria procura uma ferramenta de mercado, e isso não é o que esta página oferece.',
+        'Vale dizer com todas as letras, porque é a pergunta que chega por esta busca: não é possível contratar a Doxa só para clonar uma voz. O clone é um componente da entrega, e a entrega é conteúdo em vídeo. Quem quer apenas gerar uma locução para usar por conta própria procura uma ferramenta de mercado, e isso não é o que esta página oferece.',
     },
     {
       tipo: 'destaque',

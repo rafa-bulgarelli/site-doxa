@@ -102,7 +102,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'As três palavras aparecem juntas nas buscas e descrevem produtos diferentes. Um **avatar genérico** é uma pessoa que não existe, escolhida de uma biblioteca: serve para narrar, e qualquer concorrente pode escolher o mesmo rosto. Uma **dublagem** troca só o áudio de um vídeo que já foi gravado. Um **clone** parte de alguém real e específico — a sua imagem, a sua voz — e é o único dos três que faz o vídeo continuar sendo da sua empresa quando a pessoa não está na frente da câmera.',
+        'As três palavras aparecem juntas nas buscas e descrevem produtos diferentes. Um **avatar genérico** é uma pessoa que não existe, escolhida de uma biblioteca: serve para narrar, e qualquer concorrente pode escolher o mesmo rosto. Uma **dublagem** troca só o áudio de um vídeo que já foi gravado. Um **clone** parte de alguém real e específico — a sua imagem, a sua voz — e é o que faz o vídeo continuar sendo da sua empresa quando a pessoa não está na frente da câmera. O detalhe da parte de voz está em [clone de voz para vídeos](/solucoes/clone-de-voz-para-videos).',
     },
     {
       tipo: 'titulo',

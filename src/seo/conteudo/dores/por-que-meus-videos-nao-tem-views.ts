@@ -82,7 +82,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'É a causa que mais aparece. A plataforma mostra o seu vídeo para um grupo pequeno de pessoas; se quase todas saem antes do quinto segundo, ela para de mostrar. Você não perdeu para o algoritmo, perdeu para o polegar.',
+        'É a causa que mais aparece. A plataforma mostra o seu vídeo para um grupo pequeno de pessoas; se quase todas saem logo no começo, ela para de mostrar. Você não perdeu para o algoritmo, perdeu para o polegar.',
     },
     {
       tipo: 'paragrafo',

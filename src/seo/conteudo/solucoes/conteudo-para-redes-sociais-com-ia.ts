@@ -61,7 +61,6 @@ export const pagina: Pagina = {
     'conteúdo para redes sociais com ia',
     'ia para redes sociais',
     'criar conteúdo com inteligência artificial',
-    'automatizar redes sociais com ia',
     'post com ia para empresa',
   ],
   hubs: ['/guias/ia-no-marketing'],

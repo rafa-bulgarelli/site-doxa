@@ -172,7 +172,7 @@ export const pagina: Pagina = {
         {
           pergunta: 'Stories e carrosséis atrapalham o vídeo do dia?',
           resposta:
-            'Não competem pelo mesmo espaço: o vídeo curto é distribuído no feed de recomendação, e story, foto e carrossel vivem em outras superfícies, entregues principalmente a quem já segue o perfil. Dá para publicar os três no mesmo dia sem prejuízo nenhum ao vídeo — e, em perfis que precisam falar todo dia, é justamente aí que o resto do assunto cabe.',
+            'Stories e carrosséis não competem pelo mesmo espaço: o vídeo curto é distribuído no feed de recomendação, e story, foto e carrossel vivem em outras superfícies, entregues principalmente a quem já segue o perfil. Dá para publicar os três no mesmo dia sem prejuízo nenhum ao vídeo — e, em perfis que precisam falar todo dia, é justamente aí que o resto do assunto cabe.',
         },
         {
           pergunta: 'Tenho dois perfis. Posso publicar nos dois no mesmo dia?',

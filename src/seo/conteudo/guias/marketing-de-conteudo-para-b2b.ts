@@ -182,7 +182,7 @@ export const pagina: Pagina = {
         {
           pergunta: 'Devo publicar só no LinkedIn, então?',
           resposta:
-            'Publicar lá é razoável e o arquivo é o mesmo, mas trocar as redes de recomendação por ele costuma custar alcance: nelas, a peça é oferecida a quem ainda não conhece a empresa, o que é exatamente o trabalho que o conteúdo B2B precisa fazer. O caminho barato é publicar nos dois lugares, já que a produção é a mesma.',
+            'Publicar lá é razoável e o arquivo é o mesmo, mas trocar as redes de recomendação por ele costuma custar alcance: nelas, a peça é oferecida a quem ainda não conhece a empresa, o que é exatamente o trabalho que o conteúdo B2B precisa fazer. O caminho barato é publicar nos dois lugares, já que a produção é a mesma — o que muda no LinkedIn está em [vídeo vertical no LinkedIn](/guias/video-vertical-no-linkedin).',
         },
         {
           pergunta: 'E se o meu mercado tiver poucos clientes possíveis?',

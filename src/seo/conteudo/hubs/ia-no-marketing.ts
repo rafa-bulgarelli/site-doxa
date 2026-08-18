@@ -122,7 +122,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'A produção roda sobre ferramentas de mercado — HeyGen, ChatGPT, Claude, Meta e ElevenLabs. São ferramentas usadas, e nada além disso: nenhuma delas é parceira da Doxa nem endossa o que está escrito aqui. Vale dizer também o que a Doxa não é, porque encurta a conversa: não é agência, não vende curso, ferramenta nem assinatura de software.',
+        'A produção roda sobre ferramentas de mercado — HeyGen, ChatGPT, Claude, Meta e ElevenLabs. São ferramentas usadas, e nada além disso: nenhuma delas é parceira da Doxa nem endossa o que está escrito aqui. Vale dizer também o que a Doxa não é, porque encurta a conversa: não é agência nem tráfego pago — a lista inteira está em [marketing com IA](/solucoes/marketing-com-ia).',
     },
     {
       tipo: 'destaque',

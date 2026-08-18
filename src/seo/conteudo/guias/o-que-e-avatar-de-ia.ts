@@ -206,7 +206,7 @@ export const pagina: Pagina = {
         {
           pergunta: 'Preciso aparecer em vídeo se uso um clone?',
           resposta:
-            'O material de origem é uma foto e uma amostra de voz, e não uma agenda de gravações. O que ainda pode ser necessário — imagens de produto, cenas do ambiente, uma participação pontual — depende do formato escolhido para a marca e costuma ser definido no início da operação, não no meio dela.',
+            'O material de origem é uma foto e uma amostra de voz, e não uma agenda de gravações. O que ainda pode ser necessário — imagens, vídeos, áudios ou participações — depende do formato escolhido para a marca e costuma ser definido no início da operação, não no meio dela.',
         },
         {
           pergunta: 'Avatar de IA serve para qualquer nicho?',

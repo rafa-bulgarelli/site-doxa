@@ -36,7 +36,7 @@ export const pagina: Pagina = {
     'O que faz um vídeo curto ser assistido até o fim: hook, retenção, watch time e as decisões de formato que valem no TikTok, no Reels e no Shorts.',
   h1: 'Vídeos curtos',
   resumo:
-    'Um vídeo curto é assistido ou descartado em menos tempo do que leva para ler esta frase, e quase tudo que decide o resultado acontece antes do quinto segundo. Este hub reúne o vocabulário do formato — hook, retenção, watch time — e as decisões de produção que valem igual no TikTok, no Reels e no YouTube Shorts.',
+    'Um vídeo curto é assistido ou descartado em menos tempo do que leva para ler esta frase, e boa parte do que decide o resultado acontece nos primeiros segundos. Este hub reúne o vocabulário do formato — hook, retenção, watch time — e as decisões de produção que valem igual no TikTok, no Reels e no YouTube Shorts.',
   intencao: 'informacional',
   palavrasChave: [
     'vídeos curtos',

@@ -213,7 +213,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'Faça a conta antes da reunião: quantas peças a sua empresa publicou nos últimos noventa dias e quantas pessoas encostaram em cada uma. Esses dois números dizem mais sobre a viabilidade da escala do que qualquer proposta. Depois disso, quem preenche o formulário é chamado pelo time da Doxa em até 24 horas para marcar a auditoria estratégica.',
+        'Faça a conta antes da reunião: quantas peças a sua empresa conseguiu publicar no último trimestre e quantas pessoas encostaram em cada uma. Esses dois números dizem mais sobre a viabilidade da escala do que qualquer proposta. Depois disso, quem preenche o formulário é chamado pelo time da Doxa em até 24 horas para marcar a auditoria estratégica.',
     },
   ],
 };

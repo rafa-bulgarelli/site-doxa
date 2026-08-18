@@ -194,12 +194,12 @@ export const pagina: Pagina = {
         {
           pergunta: 'Preciso escrever uma descrição diferente em cada rede?',
           resposta:
-            'O arquivo é o mesmo; o campo de texto ao lado dele, não precisa ser. Vale escrever uma versão por rede porque cada uma usa esse campo de um jeito: no YouTube ele é lido por quem chega pela busca, e nas outras duas ele funciona mais como legenda de apoio. É o único item da publicação que compensa personalizar, e leva menos de um minuto.',
+            'O arquivo é o mesmo; o campo de texto ao lado dele não precisa ser. Vale escrever uma versão por rede porque cada uma usa esse campo de um jeito: no YouTube ele é lido por quem chega pela busca, e nas outras duas ele funciona mais como legenda de apoio. É o único item da publicação que compensa personalizar, e leva menos de um minuto.',
         },
         {
           pergunta: 'Posso publicar em dias diferentes em cada rede para render mais?',
           resposta:
-            'Pode, mas você perde a comparação: com datas diferentes, deixa de dar para saber se a diferença de resultado veio da rede ou do dia. Manter a mesma data custa nada e transforma cada peça num teste com três leituras.',
+            'Pode, mas você perde a comparação: com datas diferentes, deixa de dar para saber se a diferença de resultado veio da rede ou do dia. Manter a mesma data não custa nada e transforma cada peça num teste com três leituras.',
         },
       ],
     },
