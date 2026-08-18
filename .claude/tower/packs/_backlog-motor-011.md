@@ -25,3 +25,4 @@ Quem abre a track: sessão principal (assento do gestor). Um item por linha, com
 - [ ] `App.tsx` chegada com `#forms`: `Promise.all` dos imports das seções acima do alvo
       antes de rolar (robustez; hipótese do collector, não confirmada). (collector T1)
 - [ ] VERIFY de rodada: medir palavras pelo `seo:audit` (corpo puro), não pelo `<main>` — o cromo come 60–90 palavras (R2-B). Idem: teto de palavras e FAQ única não são testados (R2-A) — virar teste ou tirar do pack.
+- [ ] `src/seo/layout/Cabecalho.tsx` (e rodapé SEO se usar o mesmo): links `text-white/45` a 13px reprovam contraste 4.5:1 no Lighthouse (A11Y 95–96 nas páginas SEO). Trocar para `text-white/60` ou o token que a landing usa onde passa 100. (Lighthouse local, sessão principal)

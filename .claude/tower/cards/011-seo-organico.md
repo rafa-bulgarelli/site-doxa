@@ -262,6 +262,19 @@ embutida em página externa não muda papel de agente.
   idênticas) → executor retomado. Depois de R2-A: `track-seo-correcao-1` (13 itens
   transversais) como única track de conteúdo ativa.
 
+- **02:20–02:35** — R2-A corrigido → **PR #57 (`c4cc777`)**: **rodada 2 fechada — 66
+  rotas (61 páginas + 5 índices), 26/963**. `track-seo-correcao-1` aberta (única track
+  de conteúdo; 14 itens transversais). **Lighthouse local (vite preview da feature
+  branch, Chrome headless):** SEO **100** na home e em 4 páginas novas (solução, guia,
+  comparativo, verbete); desktop PERF 99 (home) / 100 (novas); A11Y 95–96 nas novas =
+  um único achado, contraste dos links do cabeçalho `text-white/45` a 13px (motor,
+  1 classe → backlog do motor); BP 100. **Performance da landing (mobile, simulado):
+  main 90 / LCP 3,2 s × feat 89–90 / LCP 3,3–3,4 s, FCP e SI idênticos** — medido
+  intercalado, 2× cada; delta explicado por +550 B no entry (318 KB) e +300 B gz no
+  CSS cruzando um limite de janela TCP do simulador (Lantern soma 1 RTT = 150 ms);
+  `index.html` maior NÃO é a causa (testado trocando o HTML). Na prática, não regride;
+  registrado como 1 ponto de quantização, não como defeito.
+
 <!-- Preenchido pelo GESTOR -->
 ## Plano
 
