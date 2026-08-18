@@ -40,7 +40,7 @@ export const pagina: Pagina = {
     'Perfil estagnado tem três explicações possíveis, e elas pedem correções opostas: descoberta, conversão em seguidor ou uma base que não assiste mais.',
   h1: 'Por que o seu Instagram parou de crescer',
   resumo:
-    'Um perfil para de crescer por uma de três razões, e cada uma pede o contrário da outra: ou ele deixou de alcançar quem ainda não segue, ou alcança gente nova e não converte ninguém em seguidor, ou ganhou uma base que não assiste o que ele publica. As três aparecem no mesmo painel do Instagram, com um teste próprio. Abaixo, como descobrir qual é a sua antes de mudar qualquer coisa.',
+    'Um perfil para de crescer por uma de três razões, e cada uma pede o contrário da outra: ou ele deixou de alcançar quem ainda não segue, ou alcança gente nova e não converte ninguém em seguidor, ou ganhou uma base que não assiste ao que ele publica. As três aparecem no mesmo painel do Instagram, com um teste próprio. Abaixo, como descobrir qual é a sua antes de mudar qualquer coisa.',
   intencao: 'informacional',
   palavrasChave: [
     'meu instagram parou de crescer',
@@ -71,7 +71,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'Crescimento de perfil não é um número só: é o produto de três, e eles quase nunca são olhados juntos. Quantas contas que ainda não seguem o perfil foram alcançadas; quantas dessas viraram seguidor; e quantas das que já seguiam continuam assistindo ao que você publica. Quando o total estaciona, um desses três estacionou — e a correção de um costuma piorar o outro se o diagnóstico estiver trocado.',
+        'Crescimento de perfil não é um número só: é o produto de três, e eles costumam ser olhados separados. Quantas contas que ainda não seguem o perfil foram alcançadas; quantas dessas viraram seguidor; e quantas das que já seguiam continuam assistindo ao que você publica. Quando o total estaciona, um desses três estacionou — e a correção de um costuma piorar o outro se o diagnóstico estiver trocado.',
     },
     {
       tipo: 'lista',
@@ -95,7 +95,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'É a causa mais comum e a mais fácil de confundir com desinteresse do público. O perfil continua indo bem entre os seguidores — os comentários são dos mesmos nomes de sempre, o engajamento parece razoável — e simplesmente não aparece mais para gente nova. Sem contas novas entrando, não há de onde sair seguidor: o crescimento trava mesmo com o conteúdo funcionando para quem já está lá.',
+        'É a mais fácil de confundir com desinteresse do público. O perfil continua indo bem entre os seguidores — os comentários são dos mesmos nomes de sempre, o engajamento parece razoável — e simplesmente não aparece mais para gente nova. Sem contas novas entrando, não há de onde sair seguidor: o crescimento trava mesmo com o conteúdo funcionando para quem já está lá.',
     },
     {
       tipo: 'paragrafo',
@@ -130,7 +130,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        '**O teste:** ponha lado a lado a curva de seguidores e a curva de alcance médio por publicação dos últimos seis meses. Se elas andam em direções opostas, é esta. **O que fazer:** parar de perseguir número e voltar ao assunto que a empresa consegue defender toda semana. Limpar a base à mão não devolve o alcance perdido, e o efeito some sozinho conforme a audiência certa vai chegando.',
+        '**O teste:** ponha lado a lado a curva de seguidores e a curva de alcance médio por publicação dos últimos seis meses. Se elas andam em direções opostas, é esta. **O que fazer:** parar de perseguir número e voltar ao assunto que a empresa consegue defender toda semana. Limpar a base à mão não devolve o alcance perdido, e o efeito tende a sumir conforme a audiência certa vai chegando.',
     },
     {
       tipo: 'titulo',
@@ -200,7 +200,7 @@ export const pagina: Pagina = {
         {
           pergunta: 'Vale a pena começar um perfil novo do zero?',
           resposta:
-            'Raramente, e por dois motivos. O histórico é o único dado que mostra qual formato funcionou, e ele não vai junto para o perfil novo. A causa da estagnação também viaja com quem publica: se era conversão ou assunto, ela reaparece no segundo perfil, agora sem base nenhuma. Trocar de perfil resolve outra coisa — mudança de nome, de marca ou de negócio —, não crescimento parado.',
+            'Raramente, e por dois motivos. Tudo o que o perfil atual acumulou de leitura — quais vídeos entregaram, para quem e em que semana — fica para trás, e o perfil novo começa sem amostra nenhuma. A causa da estagnação também viaja com quem publica: se era conversão ou assunto, ela reaparece no segundo perfil, agora sem base nenhuma. Trocar de perfil resolve outra coisa — mudança de nome, de marca ou de negócio —, não crescimento parado.',
         },
       ],
     },

@@ -37,6 +37,12 @@ import type { Pagina } from '../../tipos';
  * custa, prazo, e de quem são os direitos do vídeo depois de pronto (pergunta
  * 10 de `PENDENTES`, §9.1). Nenhuma lei é citada pelo nome: o texto fala de
  * autorização e de responsabilidade, que é o que a página pode sustentar.
+ *
+ * Também NÃO está aqui, e saiu na revisão do collector: qualquer frase sobre
+ * licenciar ou não licenciar o MODELO da voz por fora. Posse do modelo é
+ * vizinha da pergunta 10 de `PENDENTES` e não tem fonte — a página para na
+ * negativa que o `llms.txt` sustenta ("não é possível contratar a Doxa só
+ * para clonar uma voz").
  */
 export const pagina: Pagina = {
   tipo: 'solucao',
@@ -86,7 +92,7 @@ export const pagina: Pagina = {
         {
           titulo: 'A amostra',
           texto:
-            'Uma gravação da pessoa falando normalmente. Fala corrida rende mais do que frases soltas, e ruído de fundo, música e uma segunda pessoa no áudio costumam ser o que mais atrapalha o resultado.',
+            'Uma gravação da pessoa falando normalmente. Fala corrida costuma render mais do que frases soltas, e ruído de fundo, música e uma segunda pessoa no áudio costumam ser o que mais atrapalha o resultado.',
         },
         {
           titulo: 'O modelo da voz',
@@ -96,7 +102,7 @@ export const pagina: Pagina = {
         {
           titulo: 'O roteiro',
           texto:
-            'A partir daqui, produzir um vídeo é escrever. É também onde continua o trabalho de verdade: a locução sai perfeita mesmo quando o argumento é fraco, e um argumento fraco em voz impecável continua sendo um vídeo fraco.',
+            'A partir daqui, produzir um vídeo é escrever — e é aqui que a troca cobra o preço dela. Com a gravação fora do caminho, o limite da operação passa a ser ter o que dizer toda semana: a fila de roteiros vira o novo gargalo.',
         },
         {
           titulo: 'A locução e a montagem',
@@ -168,7 +174,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'E vale o óbvio, porque o óbvio some quando a produção acelera: a facilidade técnica de reproduzir uma voz não cria nenhum direito de usá-la, e a responsabilidade pelo que é dito com aquela voz continua sendo de quem publica o vídeo.',
+        'E vale o óbvio, porque o óbvio some quando a produção acelera: a responsabilidade pelo que é dito com aquela voz continua sendo de quem publica o vídeo. Por que a facilidade técnica não cria direito nenhum de uso está no verbete [clone de voz](/glossario/clone-de-voz).',
     },
     {
       tipo: 'titulo',
@@ -179,10 +185,9 @@ export const pagina: Pagina = {
       tipo: 'lista',
       itens: [
         'Não escreve o roteiro. Ele lê o que existe, e é o texto que decide se alguém assiste até o fim.',
-        'Não improvisa nem vai ao vivo. Onde a resposta na hora é o produto, a pessoa continua indo.',
-        'Não substitui a imagem. Locução perfeita sobre um vídeo sem ninguém aparecendo é rádio com legenda.',
+        'Não substitui a imagem. Locução perfeita sobre um vídeo sem ninguém aparecendo é rádio com legenda — e a lista do que o clone inteiro não resolve, do improviso à transmissão ao vivo, está em [clone de IA para vídeos](/solucoes/clone-de-ia-para-videos).',
         'Não resolve volume sozinho. Sem alguém decidindo os temas toda semana, o gargalo apenas muda de lugar.',
-        'Não conserta uma voz que a audiência nunca ouviu. Se ninguém associa aquela voz à marca, clonar não cria o reconhecimento — apenas o preserva quando ele já existe.',
+        'Não cria reconhecimento sozinho: mantém a mesma voz em todas as peças; quem constrói o reconhecimento é a repetição.',
       ],
     },
     {
@@ -193,7 +198,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'Vale dizer com todas as letras, porque é a pergunta que chega por esta busca: não é possível contratar a Doxa só para clonar uma voz, nem licenciar o modelo dela por fora. O clone é um componente da entrega, e a entrega é conteúdo em vídeo. A Doxa também não vende curso, ferramenta nem assinatura de software — quem quer apenas gerar uma locução para usar por conta própria procura uma ferramenta de mercado, e isso não é o que esta página oferece.',
+        'Vale dizer com todas as letras, porque é a pergunta que chega por esta busca: não é possível contratar a Doxa só para clonar uma voz. O clone é um componente da entrega, e a entrega é conteúdo em vídeo. A Doxa também não vende curso, ferramenta nem assinatura de software — quem quer apenas gerar uma locução para usar por conta própria procura uma ferramenta de mercado, e isso não é o que esta página oferece.',
     },
     {
       tipo: 'destaque',
@@ -220,9 +225,9 @@ export const pagina: Pagina = {
             'Só com a autorização da própria pessoa, e para o uso que ela autorizou. Vale deixar combinado por escrito o que acontece com os vídeos já publicados se ela sair da empresa: é a parte que costuma ficar para depois e é a única que não tem conserto barato.',
         },
         {
-          pergunta: 'Clone de voz serve para dublar um vídeo que eu já gravei?',
+          pergunta: 'Nome de produto e sigla saem com a pronúncia certa?',
           resposta:
-            'Dublar é outra tarefa: parte de um vídeo que já existe e troca só o áudio. O caminho descrito aqui é o inverso — o vídeo inteiro é produzido a partir do roteiro, com a locução gerada antes da montagem. As duas coisas usam tecnologia parecida e resolvem problemas diferentes.',
+            'Nome próprio, sigla e termo técnico são onde a locução sintética costuma tropeçar, porque a leitura depende de como a palavra está escrita. A correção mora no roteiro — escrever a palavra do jeito que ela é falada —, e custa uma linha de texto, não uma regravação.',
         },
         {
           pergunta: 'A locução clonada soa robótica?',

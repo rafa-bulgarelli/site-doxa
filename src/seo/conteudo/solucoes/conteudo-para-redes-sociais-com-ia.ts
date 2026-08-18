@@ -93,9 +93,9 @@ export const pagina: Pagina = {
       tipo: 'passos',
       itens: [
         {
-          titulo: 'Publicar',
+          titulo: 'Produzir',
           texto:
-            'Produzir a peça: roteiro, gravação, edição, legenda, capa. É trabalho em série, com forma repetível — e é aqui que a IA muda a conta de verdade.',
+            'A peça em si: roteiro, gravação, edição, legenda, capa. É trabalho em série, com forma repetível — e é aqui que a IA muda a conta de verdade.',
         },
         {
           titulo: 'Manter o ritmo',
@@ -189,7 +189,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'Os dois publicam todo dia e são fáceis de distinguir para quem assiste. O perfil **com** IA usa software para produzir mais rápido o que a empresa já tinha a dizer. O perfil **de** IA usa software também para decidir o que dizer — e o resultado é o texto médio da internet sobre aquele setor, com a logomarca de alguém no canto.',
+        'Os dois publicam todo dia e são fáceis de distinguir para quem assiste. O perfil **com** IA usa software para produzir mais rápido o que a empresa já tinha a dizer. O perfil **de** IA usa software também para decidir o que dizer — e o resultado é o que qualquer concorrente receberia pedindo a mesma coisa, com a logomarca trocada no canto.',
     },
     {
       tipo: 'lista',
@@ -221,7 +221,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'A Doxa fica com a primeira função inteira, na parte de vídeo: o cliente manda uma foto e uma amostra da própria voz, a plataforma monta um clone que grava os vídeos no lugar dele, e o que chega é o arquivo pronto para postar — vertical, legendado, no formato do feed. Cada vídeo é único: roteiro, voz clonada, edição e capa. Identidade, público, linguagem e restrições da empresa são mapeados no início e passam a orientar o que o clone diz. Como o clone é construído está em [clone de IA para vídeos](/solucoes/clone-de-ia-para-videos); o processo em três passos, em [produção de vídeos com IA](/solucoes/producao-de-videos-com-ia).',
+        'A Doxa fica com a produção da primeira função, na parte de vídeo: o cliente manda uma foto e uma amostra da própria voz, a plataforma monta um clone que grava os vídeos no lugar dele, e o que chega é o arquivo pronto para postar — vertical, legendado, no formato do feed. Cada vídeo é único: roteiro, voz clonada, edição e capa. Identidade, público, linguagem e restrições da empresa são mapeados no início e passam a orientar o que o clone diz. Como o clone é construído está em [clone de IA para vídeos](/solucoes/clone-de-ia-para-videos); o processo em três passos, em [produção de vídeos com IA](/solucoes/producao-de-videos-com-ia).',
     },
     {
       tipo: 'paragrafo',
@@ -255,7 +255,7 @@ export const pagina: Pagina = {
         {
           pergunta: 'Dá para começar usando IA só numa parte?',
           resposta:
-            'É o caminho mais comum, e costuma começar pelo texto: variações de roteiro e de legenda, com a gravação continuando como está. A troca que muda a conta de verdade é outra — parar de depender de uma agenda de gravação para cada peça —, e essa só compensa quando existe volume para produzir em série.',
+            'Um caminho comum é começar pelo texto: variações de roteiro e de legenda, com a gravação continuando como está. A troca que muda a conta de verdade é outra — parar de depender de uma agenda de gravação para cada peça —, e essa só compensa quando existe volume para produzir em série.',
         },
       ],
     },
