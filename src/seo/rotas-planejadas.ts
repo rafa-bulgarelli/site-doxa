@@ -45,7 +45,9 @@ export const ROTAS_PLANEJADAS: readonly string[] = [
   '/guias/como-crescer-no-instagram-organicamente',
   '/guias/como-fazer-videos-curtos-que-prendem',
   '/guias/estrategia-de-conteudo-para-empresas',
-  '/guias/como-usar-ia-no-marketing',
+  // '/guias/como-usar-ia-no-marketing' — RETIRADA em 2026-08-18: o eixo já tem três
+  // donos (hub ia-no-marketing, /solucoes/marketing-com-ia, guia da agência com IA);
+  // uma quarta página seria duplicata ou rasa. As citações foram redirecionadas.
   '/guias/o-que-e-avatar-de-ia',
   '/guias/o-que-e-ugc',
 
