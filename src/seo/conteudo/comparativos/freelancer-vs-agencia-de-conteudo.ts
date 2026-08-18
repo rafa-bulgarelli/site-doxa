@@ -155,7 +155,7 @@ export const pagina: Pagina = {
         '**Acesso direto a quem executa.** O ajuste é dito para quem vai fazer, e não para alguém que vai repassar. Encurta a distância entre "não ficou bom" e a correção.',
         '**Escopo pequeno e bem definido.** Quatro vídeos por mês, um formato só, um assunto só: montar contrato de agência para isso é comprar coordenação que você não vai usar.',
         '**Especialidade rara.** Motion, sound design, um nicho técnico. Quem faz uma coisa muito bem costuma trabalhar por conta própria, e você contrata aquilo.',
-        '**Reversibilidade.** Um teste de três meses com freelancer é fácil de encerrar; contrato de agência tem aviso prévio e escopo mínimo.',
+        '**Reversibilidade.** Um teste de três meses com freelancer é fácil de encerrar; contrato de agência costuma ter aviso prévio e escopo mínimo.',
       ],
     },
     {

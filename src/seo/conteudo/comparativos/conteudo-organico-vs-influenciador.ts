@@ -200,7 +200,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'Do lado do influenciador, o item que some da conta é a **cessão de uso**. O vídeo bom só pode ser republicado, cortado ou usado como anúncio se isso estiver escrito: quais canais, por quanto tempo, com ou sem verba. Sem essa cláusula, a empresa pagou por uma peça que ela vê e não pode usar — e descobre isso justamente quando a peça funciona.',
+        'Do lado do influenciador, o item que some da conta é a **cessão de uso**: sem ela escrita, a empresa pagou por uma peça que vê e não pode republicar — e descobre isso justamente no dia em que a peça funciona.',
     },
     {
       tipo: 'paragrafo',
@@ -210,7 +210,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'O que precisa estar escrito num contrato de criador — cessão de uso, sinalização de publicidade e entrega do arquivo — está no FAQ de [UGC ou conteúdo de marca](/comparativos/ugc-vs-conteudo-de-marca), que é onde esse contrato tem dono.',
+        'A cessão de uso está no FAQ de [UGC ou conteúdo de marca](/comparativos/ugc-vs-conteudo-de-marca); a sinalização de publicidade, em [o que é UGC](/guias/o-que-e-ugc). Peça também o arquivo em alta, não só o link do post.',
     },
     {
       tipo: 'destaque',
@@ -288,6 +288,7 @@ export const pagina: Pagina = {
  * [x] 11. CTA único, no fecho, condicionado à decisão.
  * [x] 12. Sem keyword stuffing.
  * [x] 13. Vocabulário do dono: "pronto para postar", "em escala", "vertical".
- * [x] 14. Teste final (§45): publicaria com o Google desligado — a lista de
- *          cessão de uso resolve um erro caro e concreto.
+ * [x] 14. Teste final (§45): publicaria com o Google desligado — "prazo de
+ *          posse" é o desempate que ninguém escreve, e a cessão de uso, que
+ *          é o erro caro e concreto, aponta para quem é dono dela.
  * ────────────────────────────────────────────────────────────────────────── */

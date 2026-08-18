@@ -78,7 +78,7 @@ export const pagina: Pagina = {
         'Curtida é barata: um toque, sem intenção clara.',
         'Salvamento diz "quero isto de volta": é interesse com prazo.',
         'Compartilhamento diz "isto serve para outra pessoa", e leva o vídeo a quem você não alcança.',
-        'Comentário abre conversa, e conversa mantém o vídeo em circulação.',
+        'Comentário abre conversa, e conversa costuma manter o vídeo em circulação.',
         'Seguir é a ação mais rara, e a única que muda a relação daí em diante.',
       ],
     },
