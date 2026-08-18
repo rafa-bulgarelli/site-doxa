@@ -97,7 +97,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'TikTok, Instagram Reels e YouTube Shorts pedem o mesmo formato e costumam responder a sinais parecidos, o que torna o reaproveitamento honesto — não é preguiça, é distribuição. Como publicar a mesma peça nas três sem estragar o arquivo está em [como usar o mesmo vídeo nas três redes](/guias/como-usar-o-mesmo-video-nas-tres-redes).',
+        'TikTok, Instagram Reels e YouTube Shorts pedem o mesmo formato e costumam responder a sinais parecidos, o que torna o reaproveitamento honesto — não é preguiça, é distribuição. O que fazer com o arquivo na hora de subir em cada uma está em [como usar o mesmo vídeo nas três redes](/guias/como-usar-o-mesmo-video-nas-tres-redes).',
     },
     {
       tipo: 'paragrafo',

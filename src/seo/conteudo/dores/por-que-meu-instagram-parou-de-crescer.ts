@@ -177,7 +177,7 @@ export const pagina: Pagina = {
       tipo: 'destaque',
       variante: 'doxa',
       texto:
-        'O que a Doxa assume é a produção: os vídeos chegam prontos para postar — verticais, legendados, no formato do feed — e quem publica é a empresa, no perfil dela. O que a Doxa não faz, e diz em público, é prometer que um vídeo específico vai viralizar.',
+        'O que a Doxa assume é a produção: os vídeos chegam prontos para postar — verticais, legendados, no formato do feed — e quem publica é a empresa, no perfil dela. O que a operação não promete, e diz isso em público, é a viralização de uma peça específica.',
     },
     {
       tipo: 'titulo',
