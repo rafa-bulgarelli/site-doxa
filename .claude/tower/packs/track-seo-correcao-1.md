@@ -90,7 +90,14 @@ frase e diga no report.
 11. Herdados dos collectors da FASE 1 sem dono (NIT, se sobrar tempo): `dores/por-que-
     meus-videos-nao-tem-views.ts:~105` "menos de uns doze, é provavelmente esta" — ok
     como está (já hedgeado); confira só.
-12. **`/glossario/cta`** (rodada 2, se já mergeada quando você rodar): hub fica
+12. **`palavrasChave` colidindo com a keyword-alvo de páginas mais novas** (collector R2-C):
+    `solucoes/producao-de-videos-com-ia.ts:~57` `'clone de voz para vídeos'` e
+    `solucoes/clone-de-ia-para-videos.ts:~50` `'clone de voz para vídeo'` → tirar (a
+    dona é `/solucoes/clone-de-voz-para-videos`); `solucoes/marketing-com-ia.ts:~48`
+    `'ia para redes sociais'` → tirar (dona: `/solucoes/conteudo-para-redes-sociais-
+    com-ia`). Não é renderizado, mas o keyword-map diz que a específica fica com a
+    keyword.
+13. **`/glossario/cta`** (rodada 2, se já mergeada quando você rodar): hub fica
     `videos-curtos` (decisão da sessão principal) — nada a fazer; só não "corrigir".
 
 ## SCOPE
