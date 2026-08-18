@@ -11,7 +11,13 @@ REPO_ROOT="$(git rev-parse --show-toplevel)"
 PACK_DIR="$REPO_ROOT/.claude/tower/packs"
 
 # Base de comparação: origin/main quando existe remote, senão main local.
-if git rev-parse --verify --quiet origin/main >/dev/null; then
+# Base = de onde as tracks partem. Sozinho, origin/main (ou main local). Quando as
+# tracks de uma noite mergeiam numa feature branch, passe-a por env:
+#   BASE=origin/feat/xyz .claude/tower/bin/tower-watch.sh <tracks>
+# — senão tudo que já está na feature branch aparece como "fora do pack".
+if [ -n "${BASE:-}" ]; then
+  :
+elif git rev-parse --verify --quiet origin/main >/dev/null; then
   BASE="origin/main"
 else
   BASE="main"
