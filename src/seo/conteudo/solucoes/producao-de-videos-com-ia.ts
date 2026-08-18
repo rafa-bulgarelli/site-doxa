@@ -65,7 +65,7 @@ export const pagina: Pagina = {
     '/guias/o-que-e-avatar-de-ia',
     '/guias/como-usar-ia-no-marketing',
   ],
-  atualizadoEm: '2026-08-17',
+  atualizadoEm: '2026-08-18',
   cta: {
     texto:
       'Conte quantos vídeos a sua empresa precisa publicar por mês. O time da Doxa responde em até 24 horas para marcar a auditoria estratégica.',

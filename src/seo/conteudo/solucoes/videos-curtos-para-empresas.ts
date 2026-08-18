@@ -22,7 +22,9 @@ import type { Pagina } from '../../tipos';
  *  · as três redes da garantia → `supabase/manual-seed-v1.sql`; a redação mais
  *    ampla ("TikTok, Instagram, YouTube e outras redes relevantes") →
  *    `src/components/faq/config.ts`, chave `redes`;
- *  · as respostas do FAQ → chaves `redes`, `gravar`, `tom-de-voz` e `reuso`.
+ *  · as respostas do FAQ → chaves `redes`, `gravar`, `tom-de-voz` e `reuso`; a
+ *    validação antes de publicar, na resposta sobre editar o arquivo → chave
+ *    `aprovacao`.
  *
  * O que NÃO está aqui: duração ideal, número de segundos do hook, taxa de
  * retenção ou qualquer estatística de plataforma. Não há fonte para nada disso
@@ -82,7 +84,7 @@ export const pagina: Pagina = {
     {
       tipo: 'titulo',
       nivel: 2,
-      texto: 'O erro mais comum: reaproveitar o vídeo institucional',
+      texto: 'Um erro caro: reaproveitar o vídeo institucional',
     },
     {
       tipo: 'paragrafo',

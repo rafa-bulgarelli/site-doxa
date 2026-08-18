@@ -20,6 +20,10 @@ import type { Pagina } from '../../tipos';
  *  · "operações de alta frequência, podendo publicar múltiplos conteúdos por
  *    dia" → `src/components/faq/config.ts`, chave `volume`;
  *  · tecnologia, IA, processos próprios e operação especializada → chave `escala`;
+ *  · "operação proprietária de conteúdo baseada em volume, testes constantes,
+ *    análise de dados e otimização" → chave `como-gera`;
+ *  · validação antes da publicação, quando o fluxo do cliente exige → chave
+ *    `aprovacao`;
  *  · onboarding → estratégia → produção → aprovações → publicação → análise →
  *    chave `processo`; a necessidade de gravação do cliente → chave `gravar`;
  *  · os primeiros vídeos que geram dado e o descarte rápido → chave
@@ -104,14 +108,14 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'O caminho tradicional até um vídeo publicado tem nove etapas, e cada uma delas é uma fila de espera. A landing da Doxa mede **18 dias** até o primeiro vídeo por esse caminho — não porque alguém trabalhe devagar, mas porque as etapas são sequenciais.',
+        'O caminho tradicional até um vídeo publicado tem nove etapas, e cada uma delas é uma fila de espera. A landing da Doxa aponta **18 dias** até o primeiro vídeo por esse caminho — não porque alguém trabalhe devagar, mas porque as etapas são sequenciais.',
     },
     {
       tipo: 'tabela',
       cabecalho: ['Etapa', 'O que ela consome'],
       linhas: [
         ['Briefing', 'Reuniões de alinhamento antes de existir qualquer ideia escrita.'],
-        ['Roteiro', 'Escrita, revisão e a volta que quase sempre vem depois da leitura.'],
+        ['Roteiro', 'Escrita, revisão e a volta que costuma vir depois da leitura.'],
         ['Aprovação', 'A fila mais silenciosa: o material fica parado esperando alguém responder.'],
         ['Agenda', 'Encontrar um dia em que a pessoa que aparece, a equipe e o espaço coincidam.'],
         ['Estúdio', 'Reserva, montagem, luz e o custo fixo do espaço.'],
@@ -124,7 +128,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'O inventário que a Doxa publica na comparação da landing soma **25 contratações** entre gente, equipamento, espaço, pós-produção e distribuição, numa faixa de **R$ 8.000 a R$ 10.500 por mês**. É uma ilustração do que uma operação interna acumula para publicar com constância, não um levantamento de mercado — e ainda assim é a ordem de grandeza que aparece toda vez que uma empresa tenta montar isso por dentro.',
+        'O inventário que a Doxa publica na comparação da landing soma **25 contratações** entre gente, equipamento, espaço, pós-produção e distribuição, numa faixa de **R$ 8.000 a R$ 10.500 por mês**. É uma ilustração do que uma operação interna acumula para publicar com constância, e não um levantamento de mercado.',
     },
     {
       tipo: 'titulo',
@@ -174,7 +178,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'Se a empresa ainda não sabe o que vende, para quem, e por que alguém escolheria ela, volume só acelera a chegada de uma mensagem confusa a mais gente. Escala multiplica o que já existe — inclusive o que está errado. O mesmo vale para quem precisa de resultado numa semana: operação de conteúdo é construção de canal, e canal leva meses.',
+        'Se a empresa ainda não sabe o que vende, para quem, e por que alguém a escolheria, volume só acelera a chegada de uma mensagem confusa a mais gente. Escala multiplica o que já existe — inclusive o que está errado. O mesmo vale para quem precisa de resultado numa semana: operação de conteúdo é construção de canal, e canal leva meses.',
     },
     {
       tipo: 'titulo',
@@ -190,9 +194,9 @@ export const pagina: Pagina = {
             'O volume depende do plano contratado. A Doxa trabalha com operações de alta frequência, podendo produzir e publicar múltiplos conteúdos por dia. O volume exato é definido de acordo com a estratégia e a meta de performance de cada cliente.',
         },
         {
-          pergunta: 'Como vocês conseguem produzir tanto conteúdo para uma empresa?',
+          pergunta: 'Como a Doxa gera tantas visualizações?',
           resposta:
-            'Usamos tecnologia, inteligência artificial, processos próprios e uma operação especializada em produção de conteúdo em escala. Isso permite criar, testar e otimizar diferentes formatos muito mais rápido do que uma operação tradicional de conteúdo.',
+            'Construímos uma operação proprietária de conteúdo baseada em volume, testes constantes, análise de dados e otimização. Em vez de depender de um único vídeo viral, criamos um sistema contínuo para aumentar as chances de distribuição e crescimento.',
         },
         {
           pergunta: 'Eu preciso gravar os vídeos ou vocês fazem tudo?',
@@ -200,9 +204,9 @@ export const pagina: Pagina = {
             'A Doxa consegue assumir grande parte da operação de conteúdo. No onboarding entendemos quais materiais — imagens, vídeos, áudios ou participações — serão necessários. A necessidade de gravação do cliente varia conforme o formato escolhido para a marca.',
         },
         {
-          pergunta: 'Os vídeos precisam ser aprovados por mim antes de serem publicados?',
+          pergunta: 'Como funciona o processo depois que eu contrato?',
           resposta:
-            'Quando o fluxo do cliente exige aprovação, os conteúdos passam por etapas de validação antes da publicação. A empresa pode acompanhar temas, roteiros, versões e materiais para garantir que tudo esteja alinhado às diretrizes da marca.',
+            'O processo começa com um onboarding, para entendermos a empresa, os objetivos, o público, o posicionamento e as referências. Em seguida estruturamos a estratégia, iniciamos a produção, passamos pelas aprovações necessárias e começamos a publicar. A partir daí, os resultados são analisados continuamente para orientar os próximos conteúdos.',
         },
         {
           pergunta: 'E se os primeiros vídeos não performarem bem?',

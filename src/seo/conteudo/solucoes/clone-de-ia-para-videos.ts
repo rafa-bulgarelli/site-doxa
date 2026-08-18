@@ -12,9 +12,11 @@ import type { Pagina } from '../../tipos';
  *    (`STEPS_PT`) e `public/llms.txt`, palavra por palavra;
  *  · cada vídeo é único, com roteiro, voz clonada, edição e capa →
  *    `supabase/manual-seed-v2.sql`;
- *  · as travas que os leads declaram no formulário ("Não tenho tempo", "Não sei
- *    o que falar", "Não gosto de aparecer", "Já paguei agência e não deu
- *    certo", "Não tenho equipe") → `src/components/comparacao/config.ts`;
+ *  · as cinco travas LISTADAS como opção no formulário ("Não tenho tempo",
+ *    "Não sei o que falar", "Não gosto de aparecer", "Já paguei agência e não
+ *    deu certo", "Não tenho equipe") → `src/components/comparacao/config.ts`.
+ *    São opções de múltipla escolha, e a página diz exatamente isso: nenhuma
+ *    delas é uma medição de quantos leads marcaram o quê;
  *  · as ferramentas (HeyGen, ChatGPT, Claude, Meta, ElevenLabs) →
  *    `src/components/tools.ts`, citadas SEM atribuir função a cada uma: o
  *    arquivo lista a pipeline, não o papel de cada marca, e inferir isso aqui
@@ -59,7 +61,7 @@ export const pagina: Pagina = {
   atualizadoEm: '2026-08-18',
   cta: {
     texto:
-      'Quer ver como o seu clone ficaria e o que ele conseguiria publicar por mês? O time da Doxa responde em até 24 horas para marcar a auditoria estratégica.',
+      'Quer saber o que o seu clone conseguiria publicar por mês? O time da Doxa responde em até 24 horas para marcar a auditoria estratégica.',
     rotulo: 'Falar com a Doxa',
   },
   corpo: [
@@ -111,7 +113,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'No formulário da Doxa, as travas que as empresas declaram são sempre as mesmas cinco: não tenho tempo, não sei o que falar, não gosto de aparecer, já paguei agência e não deu certo, não tenho equipe. O clone ataca diretamente a primeira e a última, e muda a natureza da segunda.',
+        'No formulário da Doxa, as travas listadas são cinco: não tenho tempo, não sei o que falar, não gosto de aparecer, já paguei agência e não deu certo, não tenho equipe. O clone ataca diretamente a primeira e a última, e muda a natureza da segunda.',
     },
     {
       tipo: 'lista',
@@ -177,9 +179,9 @@ export const pagina: Pagina = {
             'A Doxa consegue assumir grande parte da operação de conteúdo. No onboarding entendemos quais materiais — imagens, vídeos, áudios ou participações — serão necessários. A necessidade de gravação do cliente varia conforme o formato escolhido para a marca.',
         },
         {
-          pergunta: 'A Doxa consegue seguir a identidade e o tom de voz da minha marca?',
+          pergunta: 'A voz dos vídeos é a minha?',
           resposta:
-            'No início da operação, nosso time entende a identidade, o posicionamento, o público, a linguagem e as restrições da empresa. Essas informações passam a orientar a produção, para que o conteúdo mantenha consistência com a marca.',
+            'A locução sai do clone montado a partir da amostra de voz que o cliente envia no início da operação, junto com a foto. Cada vídeo entregue é único, com roteiro próprio, voz clonada, edição e capa.',
         },
         {
           pergunta: 'Os vídeos precisam ser aprovados por mim antes de serem publicados?',
@@ -191,11 +193,6 @@ export const pagina: Pagina = {
           resposta:
             'A pipeline roda sobre HeyGen, ChatGPT, Claude, Meta e ElevenLabs. Elas aparecem como ferramentas usadas na produção, e nada além disso: nenhuma é parceira da Doxa nem endossa o serviço.',
         },
-        {
-          pergunta: 'Quanto custa para contratar a Doxa?',
-          resposta:
-            'O investimento varia de acordo com o volume de conteúdo, a meta de visualizações e o tamanho da operação. A Doxa desenvolve uma estratégia personalizada para cada empresa e, depois de entendermos seus objetivos, nosso time apresenta o plano mais adequado.',
-        },
       ],
     },
     {
@@ -206,7 +203,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'Se a dúvida é se o clone se parece com você o suficiente, a resposta útil não vem de texto nenhum: vem de ver o seu. É o que a conversa inicial resolve — quem preenche o formulário é chamado pelo time da Doxa em até 24 horas para marcar a auditoria estratégica.',
+        'Se a dúvida é se o clone se parece com você o suficiente, a resposta não está em texto nenhum — nem neste. É o tipo de pergunta que a conversa inicial encaminha: quem preenche o formulário é chamado pelo time da Doxa em até 24 horas para marcar a auditoria estratégica.',
     },
   ],
 };

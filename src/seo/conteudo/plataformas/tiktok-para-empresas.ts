@@ -19,7 +19,11 @@ import type { Pagina } from '../../tipos';
  *    proibição de impulsionar nos perfis da estratégia → `RT-1`, `RT-2` e a
  *    seção de impulsionamento do manual (`supabase/manual-seed-v1.sql`),
  *    apresentados como o que se combina com quem JÁ é cliente (§8);
- *  · público e empresas pequenas → chaves `para-quem` e `pequenas`.
+ *  · público e empresas pequenas → chaves `para-quem` e `pequenas`; o volume
+ *    definido pela estratégia e pela meta de cada cliente → chave `volume`;
+ *  · engajamento artificial (comprar seguidor, curtida ou visualização)
+ *    contamina resultados, viola a metodologia e pode gerar penalização das
+ *    redes → `supabase/manual-seed-v1.sql` e o card 004, source of truth §8.
  *
  * Sobre a PLATAFORMA: o texto descreve mecânica de distribuição sem número,
  * sem citar política interna do TikTok e sem prometer posição. Não há fonte no
@@ -71,7 +75,7 @@ export const pagina: Pagina = {
       tipo: 'lista',
       itens: [
         'A boa: um perfil novo não está condenado. Não é preciso acumular audiência antes de alcançar alguém.',
-        'A dura: nada é acumulado de graça. Um vídeo que foi bem não garante o próximo — cada peça recomeça a disputa, e é por isso que a rede pune quem posta em rajada e some.',
+        'A dura: nada é acumulado de graça. Um vídeo que foi bem não garante o próximo — cada peça recomeça a disputa, e por isso postar em rajada e sumir não acumula nada.',
       ],
     },
     {
@@ -90,12 +94,12 @@ export const pagina: Pagina = {
         {
           titulo: 'Republicar peça de campanha',
           texto:
-            'Vídeo feito para TV, site ou reunião chega aqui com a linguagem errada: começa se apresentando, fala de si e demora. É o único formato que a rede identifica em dois segundos, e o polegar também.',
+            'Vídeo feito para TV, site ou reunião chega aqui com a linguagem errada: começa se apresentando, fala de si e demora. É o tipo de vídeo que se reconhece em dois segundos — e o polegar reconhece antes.',
         },
         {
           titulo: 'Desistir no segundo mês',
           texto:
-            'A conta que quase todo perfil de empresa faz: publica em rajada por três semanas, não vê retorno e para. Como a distribuição é por vídeo, parar significa recomeçar — e quem recomeça três vezes gastou três vezes sem completar nenhum ciclo de aprendizado.',
+            'A conta que costuma levar ao abandono: publica em rajada por três semanas, não vê retorno e para. Como a distribuição é por vídeo, parar significa recomeçar — e quem recomeça três vezes gastou três vezes sem completar nenhum ciclo de aprendizado.',
         },
       ],
     },
@@ -168,7 +172,7 @@ export const pagina: Pagina = {
             'Não garantimos que um vídeo específico vai viralizar. O que fazemos é construir uma operação com volume, dados e testes suficientes para aumentar significativamente as chances de alcançar grandes audiências. Nossa garantia está relacionada à performance total contratada, e não ao desempenho de um único conteúdo.',
         },
         {
-          pergunta: 'Minha empresa é pequena. Vale a pena estar no TikTok?',
+          pergunta: 'Minha empresa é pequena. Faz sentido trabalhar com a Doxa?',
           resposta:
             'Empresas pequenas também podem trabalhar com a Doxa, desde que exista potencial para transformar conteúdo em um canal relevante de crescimento. O mais importante não é o tamanho da empresa, e sim os objetivos, o mercado, o produto e a capacidade de aproveitar a audiência gerada pela operação.',
         },

@@ -73,7 +73,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'A confusão entre as duas é a causa mais comum de frustração com a rede. Publicar Reels pensando em quem já segue produz vídeo com recado interno — "estamos com novidade", "passa lá no link" —, que não interessa a desconhecido nenhum. E, como o alcance de quem não segue é o que faz o perfil crescer, o resultado fica parado enquanto o esforço aumenta.',
+        'A confusão entre as duas costuma estar por trás da frustração com a rede. Publicar Reels pensando em quem já segue produz vídeo com recado interno — "estamos com novidade", "passa lá no link" —, que não interessa a desconhecido nenhum. E, como o alcance de quem não segue é o que faz o perfil crescer, o resultado fica parado enquanto o esforço aumenta.',
     },
     {
       tipo: 'titulo',
@@ -96,7 +96,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'Nenhuma plataforma torna tão fácil comprar alcance quanto o Instagram: o botão está embaixo do post, e a tentação aparece justamente quando um vídeo vai bem. Nos perfis em que a operação da Doxa está ativa isso é proibido — impulsionar, turbinar ou promover publicação, inclusive posts que não são da Doxa —, e campanhas antigas nesses perfis são pausadas antes da primeira publicação. Google Ads e campanhas em outros perfis continuam permitidos.',
+        'O Instagram deixa o botão de impulsionar embaixo do post, e a tentação aparece justamente quando um vídeo vai bem. Nos perfis em que a operação da Doxa está ativa isso é proibido — impulsionar, turbinar ou promover publicação, inclusive posts que não são da Doxa —, e campanhas antigas nesses perfis são pausadas antes da primeira publicação. Google Ads e campanhas em outros perfis continuam permitidos.',
     },
     {
       tipo: 'paragrafo',

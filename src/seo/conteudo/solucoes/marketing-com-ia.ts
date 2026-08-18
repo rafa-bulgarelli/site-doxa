@@ -20,8 +20,6 @@ import type { Pagina } from '../../tipos';
  *    especializada" → chave `escala` do mesmo arquivo;
  *  · as respostas do FAQ desta página → chaves `tom-de-voz`, `pequenas`, `b2b`
  *    e `escala`, palavra por palavra;
- *  · sessenta conteúdos em noventa dias, nas três redes → `supabase/manual-seed-v1.sql`
- *    (`RT-1`) e a linha de apoio do hero, com a ressalva do contrato (§3c);
  *  · as ferramentas → `src/components/tools.ts`, citadas como ferramentas
  *    USADAS: o arquivo proíbe implicar parceria ou endosso.
  *
@@ -74,7 +72,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'O dinheiro que se perde com IA em marketing sai quase sempre do mesmo erro: tratar "IA" como um bloco só. Existem tarefas em que um modelo rende mais do que qualquer contratação, e tarefas em que ele é o pior conselheiro disponível. A régua é simples — **quanto mais a tarefa depende de repetir uma forma conhecida, mais a IA entrega; quanto mais ela depende de decidir o que a marca vai defender, menos**.',
+        'O dinheiro que se perde com IA em marketing costuma sair do mesmo erro: tratar "IA" como um bloco só. Existem tarefas em que um modelo rende mais do que qualquer contratação, e tarefas em que ele é o pior conselheiro disponível. A régua é simples — **quanto mais a tarefa depende de repetir uma forma conhecida, mais a IA entrega; quanto mais ela depende de decidir o que a marca vai defender, menos**.',
     },
     {
       tipo: 'lista',
@@ -105,7 +103,7 @@ export const pagina: Pagina = {
         {
           titulo: 'Distribuição',
           texto:
-            'Publicar com constância, sem atropelar o vídeo do dia anterior. A IA ajuda a versionar, mas cadência é disciplina operacional — e é onde a maioria trava no segundo mês.',
+            'Publicar com constância, sem atropelar o vídeo do dia anterior. A IA ajuda a versionar, mas cadência é disciplina operacional — e é onde costuma travar no segundo mês.',
         },
         {
           titulo: 'Decisão',
@@ -117,7 +115,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'Quase todo investimento em "marketing com IA" cai inteiro na camada de produção e não toca a primeira nem a última. O resultado é previsível: muito conteúdo, nenhuma opinião, e um perfil que publica todo dia sem que ninguém lembre de nada.',
+        'É comum ver o investimento em "marketing com IA" cair inteiro na camada de produção, sem tocar a primeira nem a última. O resultado é previsível: muito conteúdo, nenhuma opinião, e um perfil que publica todo dia sem que ninguém lembre de nada.',
     },
     {
       tipo: 'titulo',
@@ -171,7 +169,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'Quem digita "agência de marketing com IA" quase sempre quer uma coisa concreta: alguém que assuma o conteúdo. Vale dizer com todas as letras o que a Doxa é e o que ela não é, porque as duas respostas mudam a conversa.',
+        'Quem digita "agência de marketing com IA" costuma querer uma coisa concreta: alguém que assuma o conteúdo. Vale dizer com todas as letras o que a Doxa é e o que ela não é, porque as duas respostas mudam a conversa.',
     },
     {
       tipo: 'lista',

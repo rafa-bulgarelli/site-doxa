@@ -30,10 +30,10 @@ export const pagina: Pagina = {
   slug: 'youtube-shorts-para-empresas',
   titulo: 'YouTube Shorts para empresas: a terceira rede que sobra',
   descricao:
-    'Por que tanta empresa publica no TikTok e no Instagram e deixa o YouTube Shorts vazio, o que muda no canal e como a Doxa conta as views somadas nas três redes.',
+    'Por que o canal no YouTube costuma ficar parado enquanto TikTok e Instagram recebem tudo, o que muda no canal e como a Doxa soma as views das três redes.',
   h1: 'YouTube Shorts para empresas',
   resumo:
-    'O vídeo vertical que a sua empresa já produziu serve ao YouTube Shorts sem retrabalho — é o mesmo arquivo. Ainda assim, é a rede que a maioria deixa vazia, e por isso é onde o custo de aparecer costuma ser o mais baixo de uma operação de conteúdo.',
+    'O vídeo vertical que a sua empresa já produziu serve ao YouTube Shorts sem retrabalho — é o mesmo arquivo. Ainda assim, é a rede que costuma ficar para depois, e por isso é onde o custo de aparecer tende a ser o mais baixo de uma operação de conteúdo.',
   intencao: 'comercial',
   palavrasChave: [
     'youtube shorts para empresas',
@@ -60,12 +60,12 @@ export const pagina: Pagina = {
     {
       tipo: 'titulo',
       nivel: 2,
-      texto: 'A rede que quase todo mundo deixa pela metade',
+      texto: 'O canal que costuma ficar pela metade',
     },
     {
       tipo: 'paragrafo',
       texto:
-        'A cena se repete: a empresa organiza a produção, publica com disciplina no Instagram e no TikTok, e o canal do YouTube fica com quatro vídeos de 2021 e um institucional. Não é falta de vontade — é ordem de prioridade. O Shorts foi o último a chegar, o canal parece exigir outro tipo de conteúdo, e ninguém tem tempo de descobrir se vale.',
+        'A sequência aparece com frequência: a empresa organiza a produção, publica com disciplina no Instagram e no TikTok, e o canal do YouTube fica com quatro vídeos de 2021 e um institucional. Não é falta de vontade — é ordem de prioridade. O Shorts foi o último a chegar, o canal parece exigir outro tipo de conteúdo, e ninguém tem tempo de descobrir se vale.',
     },
     {
       tipo: 'paragrafo',
@@ -88,7 +88,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'Nada disso torna o YouTube melhor do que as outras duas redes — o TikTok entrega desconhecidos com mais facilidade, e o Instagram é onde o perfil da empresa já tem histórico. A comparação entre as duas maiores está em [TikTok ou Instagram](/comparativos/tiktok-vs-instagram). O ponto aqui é outro: **não é uma escolha**. O Shorts é o incremento que já está pago.',
+        'Nada disso torna o YouTube melhor do que as outras duas redes — o TikTok costuma entregar desconhecidos com mais facilidade, e o Instagram é onde o perfil da empresa já tem histórico. A comparação entre as duas maiores está em [TikTok ou Instagram](/comparativos/tiktok-vs-instagram). O ponto aqui é outro: **não é uma escolha**. O Shorts é o incremento que já está pago.',
     },
     {
       tipo: 'titulo',
@@ -127,7 +127,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'Vale um aviso de expectativa: canal com regularidade nova não vira audiência em duas semanas, e o número de inscritos costuma ser o último indicador a se mexer. O sinal que importa antes disso é outro — quantos vídeos passaram do começo, e quais deles trouxeram gente que não conhecia a empresa.',
+        'Vale um aviso de expectativa: canal com regularidade nova dificilmente vira audiência em duas semanas, e o número de inscritos costuma ser o último indicador a se mexer. O sinal que importa antes disso é outro — quantos vídeos passaram do começo, e quais deles trouxeram gente que não conhecia a empresa.',
     },
     {
       tipo: 'titulo',
