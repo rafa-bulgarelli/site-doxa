@@ -56,7 +56,6 @@ export const pagina: Pagina = {
     'vídeos com inteligência artificial para empresas',
     'produzir vídeo com ia',
     'avatar de ia para vídeos',
-    'clone de voz para vídeos',
     'conteúdo em vídeo com ia',
   ],
   hubs: ['/guias/ia-no-marketing'],

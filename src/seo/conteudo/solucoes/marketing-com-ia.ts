@@ -45,7 +45,6 @@ export const pagina: Pagina = {
     'marketing com ia',
     'inteligência artificial no marketing',
     'marketing digital com ia',
-    'ia para redes sociais',
     'agência de marketing com ia',
     'ia para conteúdo de empresa',
   ],

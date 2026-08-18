@@ -44,7 +44,6 @@ export const pagina: Pagina = {
     'prender atenção no vídeo',
     'retenção de vídeo',
     'primeiros segundos do vídeo',
-    'roteiro de vídeo curto',
   ],
   hubs: ['/guias/videos-curtos'],
   relacionadas: [

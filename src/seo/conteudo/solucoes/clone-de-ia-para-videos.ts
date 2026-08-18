@@ -47,7 +47,6 @@ export const pagina: Pagina = {
     'clone de ia',
     'clone digital para vídeos',
     'avatar de ia para empresa',
-    'clone de voz para vídeo',
     'clone de ia para gravar vídeos',
   ],
   hubs: ['/guias/ia-no-marketing'],
