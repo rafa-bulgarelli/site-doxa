@@ -131,7 +131,7 @@ export const pagina: Pagina = {
     {
       tipo: 'titulo',
       nivel: 2,
-      texto: 'Onde o avatar falha, e nenhuma ferramenta resolve',
+      texto: 'Onde o avatar falha, e trocar de ferramenta não resolve',
     },
     {
       tipo: 'lista',

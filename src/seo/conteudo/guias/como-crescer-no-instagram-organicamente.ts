@@ -73,7 +73,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'Seguidor é a métrica mais fácil de olhar e a mais fácil de fabricar, e por isso ela é a pior para guiar decisão. O que sustenta crescimento de um perfil de empresa são três números que quase ninguém acompanha: quantas **contas que ainda não seguem** foram alcançadas na semana, quantas pessoas **salvaram ou enviaram** um conteúdo a alguém, e quantas **conversas** começaram por causa de uma publicação.',
+        'Seguidor é a métrica mais fácil de olhar e a mais fácil de fabricar, e por isso ela é a pior para guiar decisão. O que sustenta crescimento de um perfil de empresa são três números que pouca gente acompanha: quantas **contas que ainda não seguem** foram alcançadas na semana, quantas pessoas **salvaram ou enviaram** um conteúdo a alguém, e quantas **conversas** começaram por causa de uma publicação.',
     },
     {
       tipo: 'paragrafo',

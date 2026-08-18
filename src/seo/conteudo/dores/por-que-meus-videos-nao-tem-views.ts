@@ -35,7 +35,7 @@ export const pagina: Pagina = {
     'As causas mais comuns de um vídeo sem visualizações, na ordem em que vale investigar, com o teste que identifica cada uma e o que fazer depois.',
   h1: 'Por que os seus vídeos não têm views',
   resumo:
-    'Na maior parte dos casos são três coisas, nesta ordem: o vídeo não prende nos primeiros segundos, o volume é baixo demais para gerar dado, ou os vídeos competem entre si por serem publicados perto demais. Nenhuma delas é sorte. Abaixo, como identificar qual é a sua e o que fazer em cada caso.',
+    'Costumam ser três coisas, nesta ordem: o vídeo não prende nos primeiros segundos, o volume é baixo demais para gerar dado, ou os vídeos competem entre si por serem publicados perto demais. Nenhuma delas é sorte. Abaixo, como identificar qual é a sua e o que fazer em cada caso.',
   intencao: 'informacional',
   palavrasChave: [
     'meu vídeo não tem views',
@@ -66,13 +66,13 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'A ordem importa. As causas abaixo estão organizadas da mais frequente para a menos frequente, e as três primeiras explicam a maior parte dos casos. Comece pela primeira, faça o teste indicado, e só siga adiante se ela estiver descartada — mexer em cinco coisas ao mesmo tempo garante que você não vai saber qual delas era.',
+        'A ordem importa. As causas abaixo estão organizadas da mais frequente para a menos frequente, e as três primeiras costumam dar conta do que se vê na prática. Comece pela primeira, faça o teste indicado, e só siga adiante se ela estiver descartada — mexer em cinco coisas ao mesmo tempo garante que você não vai saber qual delas era.',
     },
     {
       tipo: 'destaque',
       variante: 'atencao',
       texto:
-        'Antes de tudo: um perfil novo ou um perfil que ficou meses parado começa devagar mesmo. Se você publicou três vídeos esta semana depois de um ano em silêncio, a causa provável é a número 2, e nenhuma das outras.',
+        'Antes de tudo: um perfil novo ou um perfil que ficou meses parado começa devagar mesmo. Se você publicou três vídeos esta semana depois de um ano em silêncio, a causa provável é a número 2.',
     },
     {
       tipo: 'titulo',
@@ -82,7 +82,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'É a causa número um, e de longe. A plataforma mostra o seu vídeo para um grupo pequeno de pessoas; se quase todas saem antes do quinto segundo, ela para de mostrar. Você não perdeu para o algoritmo, perdeu para o polegar.',
+        'É a causa que mais aparece. A plataforma mostra o seu vídeo para um grupo pequeno de pessoas; se quase todas saem antes do quinto segundo, ela para de mostrar. Você não perdeu para o algoritmo, perdeu para o polegar.',
     },
     {
       tipo: 'paragrafo',
@@ -215,7 +215,7 @@ export const pagina: Pagina = {
         {
           pergunta: 'Meu alcance caiu de repente. Fui punido?',
           resposta:
-            'A explicação mais comum é bem menos dramática: mudança na frequência de publicação, dois vídeos publicados perto demais, ou uma série de vídeos com retenção baixa, que costuma reduzir a amostra inicial dos seguintes. Vale conferir essas três coisas antes de procurar punição.',
+            'A explicação costuma ser bem menos dramática: mudança na frequência de publicação, dois vídeos publicados perto demais, ou uma série de vídeos com retenção baixa, que costuma reduzir a amostra inicial dos seguintes. Vale conferir essas três coisas antes de procurar punição.',
         },
         {
           pergunta: 'Vale a pena impulsionar um vídeo que não teve views?',

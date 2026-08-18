@@ -77,7 +77,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'Daí sai a única regra que vale para os dois: pago resolve o mês, orgânico resolve o ano. Quem precisa de resultado em quinze dias e não tem histórico de conteúdo não vai conseguir isso organicamente; quem quer parar de pagar por cada visualização não vai conseguir isso comprando mídia.',
+        'Daí sai a regra que vale para os dois: pago resolve o mês, orgânico resolve o ano. Quem precisa de resultado em quinze dias e não tem histórico de conteúdo não vai conseguir isso organicamente; quem quer parar de pagar por cada visualização não vai conseguir isso comprando mídia.',
     },
     {
       tipo: 'titulo',

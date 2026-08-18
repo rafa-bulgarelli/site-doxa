@@ -71,7 +71,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'O dinheiro que se perde com IA em marketing costuma sair do mesmo erro: tratar "IA" como um bloco só. Existem tarefas em que um modelo rende mais do que qualquer contratação, e tarefas em que ele é o pior conselheiro disponível. A régua é simples — **quanto mais a tarefa depende de repetir uma forma conhecida, mais a IA entrega; quanto mais ela depende de decidir o que a marca vai defender, menos**.',
+        'O dinheiro que se perde com IA em marketing costuma sair do mesmo erro: tratar "IA" como um bloco só. Existem tarefas em que um modelo costuma render mais do que uma contratação, e tarefas em que ele é o pior conselheiro disponível. A régua é simples — **quanto mais a tarefa depende de repetir uma forma conhecida, mais a IA entrega; quanto mais ela depende de decidir o que a marca vai defender, menos**.',
     },
     {
       tipo: 'lista',

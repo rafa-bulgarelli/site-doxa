@@ -40,7 +40,7 @@ export const pagina: Pagina = {
     'De onde sai o material quando não há equipe: as fontes que já existem no negócio, o que cortar da produção e quando terceirizar compensa mesmo.',
   h1: 'Como produzir conteúdo sem equipe',
   resumo:
-    'O material já existe no seu negócio: são as perguntas que você responde por mensagem, os erros que você vê o cliente cometer e as decisões que você toma toda semana. O que falta quase nunca é assunto — é um processo que transforme isso em vídeo sem depender de estúdio, roteirista e agenda. Abaixo, como montar esse processo com uma pessoa só.',
+    'O material já existe no seu negócio: são as perguntas que você responde por mensagem, os erros que você vê o cliente cometer e as decisões que você toma toda semana. O que costuma faltar não é assunto — é um processo que transforme isso em vídeo sem depender de estúdio, roteirista e agenda. Abaixo, como montar esse processo com uma pessoa só.',
   intencao: 'informacional',
   palavrasChave: [
     'produzir conteúdo sem equipe',
@@ -76,7 +76,7 @@ export const pagina: Pagina = {
     {
       tipo: 'lista',
       itens: [
-        '**As perguntas repetidas.** Toda pergunta que você respondeu duas vezes esta semana é um vídeo. Se duas pessoas perguntaram, duzentas têm a dúvida e não perguntaram.',
+        '**As perguntas repetidas.** Pergunta que você respondeu duas vezes esta semana é um vídeo: se duas pessoas perguntaram, é provável que outras tenham a mesma dúvida e não tenham perguntado.',
         '**Os erros que você vê acontecer.** O que o cliente faz errado antes de chegar até você costuma render bem, porque a pessoa se reconhece no erro antes de saber que é sobre ela.',
         '**As decisões do dia.** Por que você recusou aquele pedido, por que cobra de um jeito e não de outro, o que mudou na sua forma de trabalhar. É o que ninguém mais pode publicar.',
         '**Os bastidores concretos.** Não o escritório bonito: o processo real, o antes e depois, a coisa sendo feita. Funciona porque é específico e verificável.',

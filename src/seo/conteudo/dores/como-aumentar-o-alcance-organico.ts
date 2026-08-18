@@ -90,7 +90,7 @@ export const pagina: Pagina = {
         {
           titulo: 'A abertura do vídeo',
           texto:
-            'É a alavanca de maior efeito e a mais barata de mexer. Se metade das pessoas sai nos primeiros segundos, nenhuma outra mudança compensa isso. Reescrever a abertura e republicar o mesmo conteúdo é o teste mais rápido que existe.',
+            'É a alavanca que costuma render mais e a mais barata de mexer. Se metade das pessoas sai nos primeiros segundos, mexer no resto compensa pouco. Reescrever a abertura e republicar o mesmo conteúdo é dos testes mais rápidos que existem.',
         },
         {
           titulo: 'A frequência, até um piso razoável',

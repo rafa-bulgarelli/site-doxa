@@ -90,7 +90,7 @@ export const pagina: Pagina = {
       itens: [
         '**Escreva o título como pergunta ou afirmação**, do jeito que uma pessoa digitaria. "Por que o joelho dói ao correr" encontra gente; "Dica #14" não encontra ninguém.',
         '**Repita no título a promessa do vídeo**, e não o nome da série. Numeração é organização interna, não informação.',
-        '**Use o campo de descrição** para uma frase que situe o assunto. É o único dos três lugares em que ela é lida por quem chegou de propósito.',
+        '**Use o campo de descrição** para uma frase que situe o assunto. É o lugar em que ela é lida por quem chegou de propósito.',
         '**Não copie a legenda do TikTok.** Aquele texto foi escrito para ser visto sob o vídeo, não para responder a uma busca.',
       ],
     },

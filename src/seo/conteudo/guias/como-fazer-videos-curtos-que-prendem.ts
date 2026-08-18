@@ -83,7 +83,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'O começo do vídeo é a única parte que ninguém pula. Ele não serve para se apresentar, situar o assunto ou agradecer: serve para dar ao espectador um motivo específico de ficar. Um hook funciona quando entrega uma das quatro coisas abaixo antes que o dedo decida.',
+        'O começo do vídeo é a parte que quase não se pula. Ele não serve para se apresentar, situar o assunto ou agradecer: serve para dar ao espectador um motivo específico de ficar. Um hook funciona quando entrega uma das quatro coisas abaixo antes que o dedo decida.',
     },
     {
       tipo: 'lista',
@@ -118,7 +118,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'Na prática isso muda a forma de escrever. Em vez de "cinco dicas de conteúdo", cinco vídeos, cada um defendendo uma dica com um exemplo concreto. A versão em lista parece mais eficiente e rende menos: ninguém assiste até a dica cinco, e nenhuma das cinco fica clara o suficiente para ser lembrada.',
+        'Na prática isso muda a forma de escrever. Em vez de "cinco dicas de conteúdo", cinco vídeos, cada um defendendo uma dica com um exemplo concreto. A versão em lista parece mais eficiente e costuma render menos: pouca gente chega à dica cinco, e nenhuma das cinco fica clara o suficiente para ser lembrada.',
     },
     {
       tipo: 'titulo',

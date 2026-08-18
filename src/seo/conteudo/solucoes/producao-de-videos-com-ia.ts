@@ -163,7 +163,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'A garantia é sobre a **performance total contratada**, não sobre um vídeo específico. Nenhuma operação séria promete que a peça número 14 vai viralizar; o que se pode construir é volume, dados e testes suficientes para aumentar as chances de alcançar grandes audiências.',
+        'A garantia é sobre a **performance total contratada**, não sobre um vídeo específico. Não dá para prometer que a peça número 14 vai viralizar; o que se pode construir é volume, dados e testes suficientes para aumentar as chances de alcançar grandes audiências.',
     },
     {
       tipo: 'titulo',

@@ -74,7 +74,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'Não existe categoria registrada, certificação nem exigência para usar o nome: qualquer empresa de serviço de marketing pode imprimir "com IA" na apresentação no dia em que passar a usar um modelo para escrever legenda. O que resta de estável na expressão é pouco, e é isto: uma empresa que planeja e/ou produz marketing para terceiros, com modelos generativos em algum ponto da cadeia.',
+        'Não há certificação reconhecida que restrinja o uso do nome: qualquer empresa de serviço de marketing pode imprimir "com IA" na apresentação no dia em que passar a usar um modelo para escrever legenda. O que resta de estável na expressão é pouco, e é isto: uma empresa que planeja e/ou produz marketing para terceiros, com modelos generativos em algum ponto da cadeia.',
     },
     {
       tipo: 'paragrafo',

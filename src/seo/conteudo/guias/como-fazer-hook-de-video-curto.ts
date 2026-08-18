@@ -223,7 +223,7 @@ export const pagina: Pagina = {
         {
           pergunta: 'Dá para reaproveitar o mesmo hook em vários vídeos?',
           resposta:
-            'O formato, sim: uma estrutura que funciona pode virar padrão da série. A frase literal, não — repetida, ela vira vinheta, e vinheta é a primeira coisa que o espectador aprende a pular. Mantenha a estrutura, troque o específico.',
+            'O formato, sim: uma estrutura que funciona pode virar padrão da série. A frase literal, não — repetida, ela vira vinheta, e vinheta é das primeiras coisas que o espectador aprende a pular. Mantenha a estrutura, troque o específico.',
         },
         {
           pergunta: 'Texto na tela conta como hook mesmo sem fala?',

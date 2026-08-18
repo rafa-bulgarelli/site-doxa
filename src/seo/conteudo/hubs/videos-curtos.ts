@@ -67,7 +67,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'Num feed de vídeo curto, a pessoa não escolhe o que assistir: ela recebe. A decisão dela não é "vou ver este", é "vou continuar vendo este". Essa inversão explica quase tudo que parece estranho no formato — por que a abertura importa mais do que o fim, por que contexto no começo mata o vídeo, e por que um assunto excelente mal apresentado tem menos alcance do que um assunto banal bem aberto.',
+        'Num feed de vídeo curto, a pessoa não escolhe o que assistir: ela recebe. A decisão dela não é "vou ver este", é "vou continuar vendo este". Essa inversão explica boa parte do que parece estranho no formato — por que a abertura importa mais do que o fim, por que contexto no começo mata o vídeo, e por que um assunto excelente mal apresentado tem menos alcance do que um assunto banal bem aberto.',
     },
     {
       tipo: 'paragrafo',
@@ -83,7 +83,7 @@ export const pagina: Pagina = {
       tipo: 'lista',
       itens: [
         'Vertical de ponta a ponta, sem barras e sem recorte de material horizontal — vídeo reaproveitado de outro formato aparece como vídeo reaproveitado.',
-        '**Legenda embutida no arquivo**: é acessibilidade para quem não ouve, resolve o consumo sem som e ajuda a segurar a atenção — e, diferente da legenda automática, ela não some quando o vídeo é baixado e republicado.',
+        '**Legenda embutida no arquivo**: é acessibilidade para quem não ouve, resolve as situações em que ligar o som não é opção e ajuda a segurar a atenção — e, diferente da legenda automática, ela não some quando o vídeo é baixado e republicado.',
         'Assunto declarado nos primeiros segundos, antes de qualquer apresentação da marca.',
         'Um assunto por vídeo. Dois assuntos criam uma transição, e é na transição que a curva cai.',
         'Duração ditada pelo conteúdo, não por uma regra: o vídeo termina quando a ideia termina, e nem um segundo depois.',

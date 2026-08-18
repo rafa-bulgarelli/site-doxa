@@ -149,7 +149,7 @@ export const pagina: Pagina = {
         [
           'A fatia de não seguidores encolheu',
           'Descoberta (causa 1)',
-          'Mexer na bio: ela não muda o que a rede entrega.',
+          'Mexer na bio: ela pesa na decisão de seguir, não no que a rede entrega.',
         ],
         [
           'Alcance alto, poucos seguidores novos',

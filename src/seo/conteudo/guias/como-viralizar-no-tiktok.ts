@@ -91,7 +91,7 @@ export const pagina: Pagina = {
       tipo: 'destaque',
       variante: 'atencao',
       texto:
-        'Nenhuma operação séria promete que um vídeo específico vai viralizar. O que se constrói é volume, dado e teste suficientes para aumentar as chances de alcançar grandes audiências.',
+        'Não dá para prometer que um vídeo específico vai viralizar. O que se constrói é volume, dado e teste suficientes para aumentar as chances de alcançar grandes audiências.',
     },
     {
       tipo: 'titulo',
@@ -101,7 +101,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'Vale começar pela lista curta do que não adianta tentar administrar, porque é nela que a maior parte do tempo de quem posta se perde:',
+        'Vale começar pela lista curta do que não adianta tentar administrar, porque é nela que boa parte do tempo de quem posta se perde:',
     },
     {
       tipo: 'lista',
@@ -134,7 +134,7 @@ export const pagina: Pagina = {
         {
           titulo: 'A cadência: o intervalo entre uma publicação e a próxima',
           texto:
-            'Publicar dois vídeos com poucas horas de diferença faz um disputar espaço com o outro na mesma audiência. É a alavanca mais barata de corrigir e a que quase ninguém usa — está detalhada na seção seguinte.',
+            'Publicar dois vídeos com poucas horas de diferença faz um disputar espaço com o outro na mesma audiência. É a alavanca mais barata de corrigir e a que costuma ficar de fora — está detalhada na seção seguinte.',
         },
         {
           titulo: 'O volume: quantos testes por mês',
@@ -146,7 +146,7 @@ export const pagina: Pagina = {
     {
       tipo: 'titulo',
       nivel: 2,
-      texto: 'A cadência é a alavanca que quase ninguém usa',
+      texto: 'A cadência é a alavanca que costuma ficar de fora',
     },
     {
       tipo: 'paragrafo',
@@ -179,7 +179,7 @@ export const pagina: Pagina = {
       itens: [
         '**Comprar seguidores, curtidas, views ou comentários.** Além de contaminar a leitura do que funciona, engajamento artificial pode gerar penalização das redes — o vídeo passa a ser medido por uma audiência que nunca ia assisti-lo até o fim.',
         '**Impulsionar as publicações do perfil onde o trabalho orgânico está rodando.** É regra de operação orgânica: no perfil em que a estratégia está ativa, nada é impulsionado, turbinado ou promovido. Sem isso não há como saber se o alcance veio do conteúdo ou da verba.',
-        '**Limitar ou desativar comentários.** Comentário é sinal de distribuição e é a única leitura gratuita do que a audiência entendeu. Apagar o ofensivo é diferente de fechar a porta.',
+        '**Limitar ou desativar comentários.** Comentário é sinal de distribuição e é a leitura mais barata do que a audiência entendeu. Apagar o ofensivo é diferente de fechar a porta.',
         '**Reeditar o vídeo depois de pronto.** Trocar corte, duração, música, legenda ou capa a cada publicação transforma cada peça num experimento diferente, e nenhum aprendizado se acumula. A regra prática cabe em três palavras: baixou, publicou.',
       ],
     },

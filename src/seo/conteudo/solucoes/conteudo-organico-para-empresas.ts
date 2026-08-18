@@ -77,7 +77,7 @@ export const pagina: Pagina = {
       itens: [
         'O que o pago compra: velocidade e controle. Você escolhe quem vê, quando, e desliga na hora.',
         'O que o orgânico constrói: um ativo. Cada vídeo que funcionou continua entregando e ensina qual é o próximo.',
-        'O que o orgânico não faz: aparecer amanhã. Ele cobra meses antes de virar canal previsível, e é por isso que empresa nenhuma deveria trocar um pelo outro do dia para a noite.',
+        'O que o orgânico não faz: aparecer amanhã. Ele cobra meses antes de virar canal previsível, e é por isso que trocar um pelo outro do dia para a noite costuma sair caro.',
       ],
     },
     {
@@ -113,7 +113,7 @@ export const pagina: Pagina = {
     {
       tipo: 'titulo',
       nivel: 2,
-      texto: 'A janela de 24 horas, que é a regra que quase ninguém segue',
+      texto: 'A janela de 24 horas, a regra que mais se ignora',
     },
     {
       tipo: 'paragrafo',

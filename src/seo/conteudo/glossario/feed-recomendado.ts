@@ -62,7 +62,7 @@ export const pagina: Pagina = {
         'O tamanho da conta não é passaporte: a tela mistura perfis grandes e perfis que ninguém conhece, e o critério de quem entra é do sistema de recomendação, não seu.',
         'O contexto tem de estar dentro da peça: quem vê não sabe quem você é, não viu o vídeo anterior e não vai ler a bio antes.',
         'Seguidor deixa de ser a métrica que resume tudo — o que resume é quanta gente nova o conteúdo alcança, assunto de [alcance orgânico](/glossario/alcance-organico).',
-        'A ordem não é cronológica: publicar mais tarde não coloca ninguém no topo da tela de ninguém.',
+        'A ordem não é cronológica: publicar mais tarde não garante o topo da tela de ninguém.',
       ],
     },
     {

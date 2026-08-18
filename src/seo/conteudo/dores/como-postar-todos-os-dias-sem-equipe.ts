@@ -58,12 +58,12 @@ export const pagina: Pagina = {
     {
       tipo: 'titulo',
       nivel: 2,
-      texto: 'O erro de desenho que derruba a maior parte das tentativas',
+      texto: 'O erro de desenho que costuma derrubar a rotina',
     },
     {
       tipo: 'paragrafo',
       texto:
-        'A rotina que falha é sempre a mesma: acordar, pensar no que postar, produzir e publicar no mesmo dia. Ela funciona por uma semana, talvez duas, e cai no primeiro dia de agenda cheia — porque depende de três coisas darem certo ao mesmo tempo, todos os dias, para sempre.',
+        'A rotina que falha costuma ser a mesma: acordar, pensar no que postar, produzir e publicar no mesmo dia. Ela funciona por uma semana, talvez duas, e cai no primeiro dia de agenda cheia — porque depende de três coisas darem certo ao mesmo tempo, todos os dias, para sempre.',
     },
     {
       tipo: 'paragrafo',
