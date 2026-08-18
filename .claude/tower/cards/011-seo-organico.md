@@ -275,6 +275,18 @@ embutida em página externa não muda papel de agente.
   `index.html` maior NÃO é a causa (testado trocando o HTML). Na prática, não regride;
   registrado como 1 ponto de quantização, não como defeito.
 
+- **02:35–03:10** — `track-seo-correcao-1` READY (32 arquivos, +58/−105; FAQ repetida
+  7→0; `seo:audit` 0 avisos) → collector do diff APROVADO COM RESSALVAS (nenhum fato
+  novo; ressalva de política: chave `direitos` publicada em DUVIDAS_PT e ainda em
+  PENDENTES/§9.1 — **listas defasadas, reconciliar de manhã**) → **PR #58**. Contrato-3
+  **#59** (rota `como-usar-ia-no-marketing` retirada; keyword-map real) e contrato-4
+  **#60** (2 rotas da rodada 3). Motor-2: 5/6 itens; contraste tinha **26 nós em 5
+  arquivos** (não 1) — SCOPE ampliado a 4 layouts, executor fechando; `key` por índice
+  estendido a passos/FAQ/lista; teste dos 40 chars por texto achatado; teste de FAQ
+  única; audit com faixas de palavras (só `como-viralizar-no-tiktok` 1427 fora) e FAQ
+  repetida. Em paralelo: `track-seo-correcao-2` (60/90 sem ressalva em 6 páginas +
+  NITs) e `track-seo-rodada-3` (2 adjacências §47: LinkedIn e social media).
+
 <!-- Preenchido pelo GESTOR -->
 ## Plano
 
