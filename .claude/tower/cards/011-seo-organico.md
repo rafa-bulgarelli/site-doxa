@@ -153,52 +153,70 @@ embutida em página externa não muda papel de agente.
 
 ---
 <!-- Relatório da noite — atualizado pela sessão principal; versão final às ~07:00 -->
-## RELATÓRIO DA NOITE (2026-08-17 23:30 → 2026-08-18) — para o dono ler de manhã
+## RELATÓRIO DA NOITE (2026-08-17 23:30 → 2026-08-18 03:50) — para o dono ler de manhã
 
-> Estado às 03:20 (rascunho; a versão final entra antes das 07:30). Tudo abaixo está em
-> **`feat/seo-organico`** — `main` e produção NÃO foram tocadas. O deploy é o passo
-> "VALIDAR-LIVE" e é teu, acordado.
+> Versão final. Tudo abaixo está em **`feat/seo-organico` @ `27051ba`** — **`main` e
+> produção NÃO foram tocadas**. O deploy é o "VALIDAR-LIVE" e é teu, acordado.
+> Sequência da noite: **18 PRs squash na feature branch (#48–#65)**, cada um com gate
+> (collector adversarial + merge de teste local com a suíte inteira), 0 conflitos.
 
 ### CREATED (o que existe agora e não existia)
 - **Arquitetura**: prerender estático pós-build (`scripts/prerender.mjs`: `vite build
-  --ssr` + `renderToStaticMarkup` → `dist/<rota>/index.html`), zero dependência nova,
-  landing intocada (34 chunks JS idênticos após normalizar hash; CSS superset). Motor em
-  `src/seo/` (contrato `tipos.ts`, `rotas-planejadas.ts`, índice por `import.meta.glob`,
-  head/schema/sitemap/auditoria, layouts por tipo, `seo.test.ts` com ~400 casos gerados).
-  `vercel.json`: `buildCommand: pnpm build`, `trailingSlash: false`. Build Output da
-  Vercel confirma `308` barra→sem barra e `handle: filesystem` antes do rewrite da SPA.
-- **61 páginas** prerenderizadas + 5 índices de seção = 66 rotas; `sitemap.xml` gerado no
-  build com 67 URLs (home + 66), regra de `lastmod` preservada.
-  Soluções 8 · Plataformas 3 · Hubs 5 · Guias 15 · Dores 5 · Comparativos 7 · Glossário 18.
-- **Fundação**: `public/og.png` 1200×630 (51 KB, frases literais do `index.html`);
-  `index.html` com og:url/og:image/twitter:image/canonical/JSON-LD Organization+WebSite;
-  JSON-LD por página (Article|WebPage + BreadcrumbList + FAQPage só com bloco visível);
-  robots (5 Disallow) e llms (`## Biblioteca`); `src/fragmento.ts` + 21 linhas em
-  `App.tsx`: `/#forms` vindo de página SEO rola até o formulário; `/#faq` e `/` iguais.
+  --ssr` + `renderToStaticMarkup` → `dist/<rota>/index.html`), **zero dependência nova**,
+  landing intocada (34 chunks JS idênticos a `main` após normalizar hash, exceto o entry
+  pelo bloco intencional do `#forms`; CSS superset). Motor em `src/seo/`: contrato
+  (`tipos.ts`, `rotas-planejadas.ts`), índice por `import.meta.glob`, head/schema/
+  sitemap/auditoria, layouts por tipo, `seo.test.ts` (~410 casos gerados: title/H1/
+  description únicos e nos limites, canonical, links (existente|planejada), slugs,
+  sitemap completo, JSON-LD por rota, breadcrumb=canonical, piso de palavras, aberturas
+  §19, primeiro parágrafo renderizado, **FAQ única no corpus**), `pnpm seo:audit` (grafo
+  de links, órfãs, hubs, faixas de palavras por tipo, FAQ repetida). `vercel.json`:
+  `buildCommand: pnpm build`, `trailingSlash: false`. Build Output da Vercel confirma
+  `308` barra→sem barra e `handle: filesystem` antes do rewrite da SPA.
+- **63 páginas + 5 índices = 68 rotas**; `sitemap.xml` gerado no build (69 URLs = home +
+  68), regra de `lastmod` preservada. Soluções 8 · Plataformas 3 · Hubs 5 · Guias 17 ·
+  Dores 5 · Comparativos 7 · Glossário 18. Cada página: title ≤65, description 120–160
+  única, H1 único ≠ title, ≥1 hub, breadcrumb, links de ida e volta ao cluster,
+  rastro de fatos no topo (`fonte:` por fato), checklist da régua no fim, 1 destaque
+  Doxa + CTA, FAQ só com resposta rastreável (0 duplicada por pergunta ou resposta).
+- **Fundação**: `public/og.png` 1200×630 (51 KB, frases literais do `index.html`,
+  gerada por `pnpm og:imagem`); `index.html` com og:url/og:image(+alt/w/h)/twitter:
+  image/canonical/JSON-LD Organization+WebSite (`schema.test.ts` compara o bloco
+  estático com `schema.ts`); JSON-LD por página (Article|WebPage + BreadcrumbList +
+  FAQPage só com bloco visível; sem `datePublished` — o contrato só tem `atualizadoEm`);
+  robots (5 Disallow + `/manual-doxa` sem barra), llms (`## Biblioteca`);
+  `src/fragmento.ts` + 21 linhas em `App.tsx`: `/#forms` vindo de página SEO rola até o
+  formulário (medido: scrollY 7035); `/#faq` e `/` iguais a `main`.
 - **Docs**: `docs/seo/source-of-truth.md` (103 fatos com `fonte:`, §9 não publicável,
   §11 frágeis), `docs/seo/keyword-map.md` (status real, rodadas, "não fazer" com
-  motivo), `docs/seo/regua-de-copy.md` (14 itens).
-- **Torre**: `tower-watch.sh` (dir/**, BASE por env), `tower-close.sh` (squash, arquivos
-  tocados), `mobile-shot.mjs` (viewport emulado via DevTools — `--window-size` do Chrome
-  mente abaixo de ~500px), packs de rodada/correção/motor, backlog do motor.
+  motivo, estado ao fim da noite), `docs/seo/regua-de-copy.md` (14 itens + adendo da
+  família de generalização sem fonte).
+- **Torre**: `tower-watch.sh` (`dir/**`, `BASE` por env), `tower-close.sh` (squash,
+  arquivos tocados), `mobile-shot.mjs` (viewport emulado via DevTools — `--window-size`
+  do Chrome mente abaixo de ~500px), packs de rodada/correção/motor, `_backlog-motor-011`.
 
-### UPDATED (o que mudou no que já existia)
-- `package.json` (`build` com prerender; scripts `seo:audit`, `og:imagem`), `vercel.json`
-  (+2 chaves, documentado em `vercel.README.md`), `public/sitemap.xml` (removido — gerado),
+### UPDATED
+- `package.json` (`build` com prerender; `seo:audit`, `og:imagem`), `vercel.json`
+  (+2 chaves; `vercel.README.md`), `public/sitemap.xml` (removido — gerado),
   `public/robots.txt`, `public/llms.txt`, `index.html` (só adições), `src/main.tsx` +
-  `src/App.tsx` (bloco do fragmento; diff colado nos PRs #50), `.claude/tower/*`.
+  `src/App.tsx` (bloco do fragmento; diff colado no PR #50), `.claude/tower/*`.
 
 ### VALIDATED (evidência, não afirmação)
-- Cada merge: collector adversarial + merge de teste local com a suíte inteira antes do
-  PR; 14 PRs squash em `feat/seo-organico` (#48–#61), 0 conflitos, histórico linear.
-- `pnpm typecheck` 0 · `pnpm test` **26 arquivos / 975 testes** verdes (main: 19/504) ·
-  `pnpm build` 66 rotas · `pnpm seo:audit` sem erro.
-- **Lighthouse local** (vite preview, Chrome headless): SEO **100** na home e nas páginas
-  novas; A11Y **100** (após motor-2); BP 100; desktop PERF 99 (home) / 100 (novas);
-  mobile home **main 90 / feat 89–90** (LCP 3,2 s × 3,3–3,4 s simulado; FCP/SI iguais;
-  causa: +550 B no entry cruzando janela TCP do simulador — não é o HTML, testado).
-- `curl` sem JS nas páginas: title/description/H1/texto próprios; 0 `type="module"`.
+- 18 PRs (#48–#65), cada um: collector adversarial + merge de teste local + suíte inteira.
+- Base final: `pnpm typecheck` 0 · `pnpm test` **26 arquivos / 987 testes** (main:
+  19/504) · `pnpm build` 68 rotas · `pnpm seo:audit` **0 avisos**.
+- **Lighthouse local (vite preview, Chrome headless, desktop): SEO 100 · A11Y 100 · BP
+  100 · PERF 99 (home) / 100 (páginas)** em home + solução + guia + verbete + hub.
+  Mobile home simulado: main 90 / feat 89–90 (LCP 3,2 × 3,3–3,4 s; FCP/SI iguais) —
+  delta de +550 B no entry cruzando janela TCP do simulador; não é o HTML (testado).
+- `curl` sem JS: title/description/H1/texto próprios, 0 `type="module"`, canonical
+  absoluto sem barra, JSON-LD por tipo.
 - Mobile 320/390 emulado sem overflow de página em amostras de todos os tipos.
+- 3 rodadas de correção transversal (QA §63 por collectors sobre o corpus inteiro):
+  nenhum fato inventado sobre a Doxa, nenhum §47, nenhuma doorway; contradições entre
+  páginas alinhadas para o mesmo lado; um dono por bloco (custo marginal, R$ 8.000–
+  10.500, zero impulsionamento, RT-2, exemplo 22h, "baixou publicou", lista de formato,
+  "mesmo arquivo nas três redes"); família de generalização sem fonte varrida.
 - Preview da Vercel de cada branch construiu (Ready) — atrás de SSO; conferir de manhã.
 
 ### ISSUES / DECISÕES PARA O DONO
@@ -210,30 +228,40 @@ embutida em página externa não muda papel de agente.
    seguro de montagem). Dar o mesmo seguro ao `#faq` é ~10 linhas na landing.
 3. **Fatos frágeis** (`docs/seo/source-of-truth.md` §11): "1.500 clientes / G4 /
    Natália Beauty / EUA" só existe no FAQ da landing e NÃO foi replicado; R$ 8.000–
-   10.500 e "18 dias" são PENDENTE-DONO na fonte — publicados sempre como "ilustração";
-   regras do manual sempre como "condição de quem já é cliente".
-4. **Inferência a confirmar**: "não é possível contratar a Doxa só para clonar uma voz"
-   (`/solucoes/clone-de-voz-para-videos`) deriva de `llms.txt` (não vende ferramenta/
-   assinatura) — negativa, mas é inferência.
+   10.500 e "18 dias" são PENDENTE-DONO na fonte — publicados como "ilustração";
+   regras do manual sempre como "condição de quem já é cliente… conforme o contrato".
+4. **Inferências a confirmar**: "não é possível contratar a Doxa só para clonar uma voz"
+   (`/solucoes/clone-de-voz-para-videos`, deriva de `llms.txt`); "o LinkedIn está fora
+   das três redes da garantia" (`/guias/video-vertical-no-linkedin`, consequência do
+   manual — redes fixas nomeadas — mas é texto novo sobre o contrato).
 5. **PENDENTES/§9.1 defasados** em relação a DUVIDAS_PT: `preco`, `volume`, `direitos`
-   estão publicados no FAQ da landing e ainda constam como pendentes. Reconciliar.
+   estão publicados no FAQ da landing e ainda constam como pendentes. Reconciliar. E:
+   todas as 23 respostas de DUVIDAS_PT já estão publicadas em alguma página SEO —
+   FAQ nova em qualquer página exige insumo teu.
 6. **`vercel build` imprime 59× TS2835** em `api/**` (moduleResolution node16 do builder)
    — pré-existente em `main`, não falha o build; fora do card.
 7. **Não há analytics/GSC** (`BLOCKED_EXTERNAL_CREDENTIAL`): keyword-map sem número de
-   volume; baseline quando houver acesso (§49).
-8. Rotas puladas com motivo no keyword-map ("Não fazer" + rodadas): por cidade/indústria,
-   agência como solução, tráfego pago, curso, cases, en-US, e as que colidiriam.
+   volume; baseline quando houver acesso (§49). Ranking não foi prometido em lugar nenhum.
+8. **Backlog de páginas novas esgotado no padrão de qualidade**: o que sobra no
+   keyword-map colide com página existente ou é isca de SERP (motivos registrados).
+   Próximas páginas só com insumo novo (PENDENTES respondidas; casos com material;
+   en-US com motivo comercial) ou com dado do GSC.
+9. Backlog do motor (`.claude/tower/packs/_backlog-motor-011.md`): TOC sticky visto ok;
+   ano do rodapé calculado no build; `datePublished` quando o contrato ganhar
+   `publicadoEm`; `Promise.all` na chegada com `#forms` (hipótese).
 
 ### NEXT (o rito da manhã — VALIDAR-LIVE)
-1. Ler este card + `docs/seo/keyword-map.md`; decidir os itens 1–2 acima.
+1. Ler este card + `docs/seo/keyword-map.md`; decidir os itens 1–2 e 4 acima.
 2. Abrir o preview da Vercel de `feat/seo-organico` (SSO): `/solucoes/producao-de-videos-
    com-ia` **sem barra** = 200 com o title da página; **com barra** = 308; `/sitemap.xml`
-   = 200 com 67 `<loc>`; `/og.png` = 200; amostra visual desktop/mobile de 5 páginas.
+   = 200 com 69 `<loc>`; `/og.png` = 200; amostra visual desktop/mobile de 5 páginas.
 3. PR `feat/seo-organico → main` (squash) → deploy → em produção: `curl` sem JS na home
-   + 1 de cada tipo; cartão no WhatsApp; Rich Results Test (Organization/WebSite/
-   Article/Breadcrumb/FAQPage); Lighthouse; `/#forms` de uma página SEO rola até o
-   formulário; reload com `#forms` fica no topo; rodapé em 320px.
-4. Depois: rodada 4 do loop com o backlog restante e o item 5 (reconciliar PENDENTES).
+   + 1 de cada tipo (conferir pelo `<title>`, domínio com L); cartão no WhatsApp; Rich
+   Results Test (Organization/WebSite/Article/Breadcrumb/FAQPage); Lighthouse;
+   `/#forms` de uma página SEO rola até o formulário; reload com `#forms` fica no topo;
+   rodapé em 320px; `robots.txt` servido (Cloudflare prepende bloco — `diff` com o local).
+4. Depois: item 5 (reconciliar PENDENTES), item 1 (porta na landing), e a rodada 4
+   quando houver insumo/GSC.
 
 <!-- Diário da noite (assento do GESTOR, sessão principal) -->
 ## Diário da execução — 2026-08-17/18
@@ -336,7 +364,7 @@ embutida em página externa não muda papel de agente.
   Lição da rodada: mesmo com as "LIÇÕES DA FASE 1" no pack, dois executores copiaram
   blocos de vizinhas — o collector continua obrigatório em conteúdo.
 
-- **02:00–02:20** — Rodada 2: R2-C corrigido → **PR #55 (`8a9a451`, 47 rotas)**; R2-B
+- **01:38–01:59** — Rodada 2: R2-C corrigido → **PR #55 (`8a9a451`, 47 rotas)**; R2-B
   reescrito → re-gate APROVADO COM RESSALVAS → 4 ajustes → **PR #56 (`bb8d3e4`, 56
   rotas, 26/903)**; R2-A collector APROVADO COM RESSALVAS (9 itens D1–D9: aritmética
   no resumo, "quatro campos"×tabela de cinco, quantificador inventado no destaque, FAQ
@@ -345,7 +373,7 @@ embutida em página externa não muda papel de agente.
   idênticas) → executor retomado. Depois de R2-A: `track-seo-correcao-1` (13 itens
   transversais) como única track de conteúdo ativa.
 
-- **02:20–02:35** — R2-A corrigido → **PR #57 (`c4cc777`)**: **rodada 2 fechada — 66
+- **01:59–02:07** — R2-A corrigido → **PR #57 (`c4cc777`)**: **rodada 2 fechada — 66
   rotas (61 páginas + 5 índices), 26/963**. `track-seo-correcao-1` aberta (única track
   de conteúdo; 14 itens transversais). **Lighthouse local (vite preview da feature
   branch, Chrome headless):** SEO **100** na home e em 4 páginas novas (solução, guia,
@@ -358,7 +386,7 @@ embutida em página externa não muda papel de agente.
   `index.html` maior NÃO é a causa (testado trocando o HTML). Na prática, não regride;
   registrado como 1 ponto de quantização, não como defeito.
 
-- **02:35–03:10** — `track-seo-correcao-1` READY (32 arquivos, +58/−105; FAQ repetida
+- **02:07–02:23** — `track-seo-correcao-1` READY (32 arquivos, +58/−105; FAQ repetida
   7→0; `seo:audit` 0 avisos) → collector do diff APROVADO COM RESSALVAS (nenhum fato
   novo; ressalva de política: chave `direitos` publicada em DUVIDAS_PT e ainda em
   PENDENTES/§9.1 — **listas defasadas, reconciliar de manhã**) → **PR #58**. Contrato-3
@@ -370,7 +398,7 @@ embutida em página externa não muda papel de agente.
   repetida. Em paralelo: `track-seo-correcao-2` (60/90 sem ressalva em 6 páginas +
   NITs) e `track-seo-rodada-3` (2 adjacências §47: LinkedIn e social media).
 
-- **03:10–03:40** — Motor-2 fechado (SCOPE ampliado; contraste 26→0 nós, **A11Y 100**;
+- **02:23–02:48** — Motor-2 fechado (SCOPE ampliado; contraste 26→0 nós, **A11Y 100**;
   FAQ única verde; +12 testes) → **PR #61 (`e4a2165`, 26/975)**. Correção-2 READY (60/90
   com ressalva em 6 páginas; NITs; Reels 826→917 com fato do §8 só do Instagram; lista
   de 10 absolutos e o padrão "relacionadas × membros" nos 5 hubs) → diff lido pela
@@ -382,12 +410,12 @@ embutida em página externa não muda papel de agente.
   comparativos+glossário) → correção-3. Gate visual das rodadas 2/3: ok (nota: nos
   verbetes, resumo e 1º parágrafo repetem a definição — vai para a correção-3).
 
-- **03:45** — Rodada-3 corrigida → **PR #63 (`6db5e8e`)**: **63 páginas + 5 índices = 68
+- **02:52** — Rodada-3 corrigida → **PR #63 (`6db5e8e`)**: **63 páginas + 5 índices = 68
   rotas, 26/987 verdes, audit 1 aviso (guia TikTok 1427/1400)**. Backlog de páginas
   novas esgotado no padrão de qualidade (o que sobra colide ou é isca de SERP — motivos
   no keyword-map). Loop continua com QA transversal 2 → correção-3.
 
-- **03:45–04:15** — QA transversal 2 (3 collectors, 63 páginas) devolveu ~60 achados:
+- **02:53–03:01** — QA transversal 2 (3 collectors, 63 páginas) devolveu ~60 achados:
   contradições reais entre páginas (carry-over "nada acumula" × "vídeo fraco reduz a
   amostra"; `o-que-e-ugc` chamando o sentido pago de "primeiro"; `alcance-organico`
   com destaque falando de views; `marketing-com-ia` afirmando falsamente o conteúdo
@@ -397,6 +425,21 @@ embutida em página externa não muda papel de agente.
   remanescentes. Pack `track-seo-correcao-3` (152 linhas) → executor no ar. Docs
   finais **PR #64** (régua com a família banida; keyword-map com o estado ao fim da
   noite: backlog de páginas novas esgotado no padrão de qualidade).
+
+- **03:01–03:50** — `track-seo-correcao-3` (62 arquivos, +266/−347: contradições
+  alinhadas para o mesmo lado; um dono por bloco — RT-2 de 11→4 ocorrências; 18
+  verbetes com definição no 1º parágrafo e resumo com o "por quê"; FAQ única por
+  pergunta E resposta; `relacionadas` sem o próprio hub em 36 páginas nem membros em 4
+  hubs; ~50 hedges) → collector do diff APROVADO COM RESSALVAS → 4 linhas → **PR #65
+  (`27051ba`)**. O executor pegou e consertou o próprio erro (um `git stash -u` que
+  engoliu um commit; refez e provou o invariante lendo os 63 arquivos). **Verificação
+  final da base consolidada**: typecheck 0 · 26/987 · 68 rotas · `seo:audit` 0 avisos ·
+  sitemap 69 URLs · JSON-LD por tipo · Lighthouse desktop **SEO 100 / A11Y 100 / BP 100
+  / PERF 99 (home) – 100 (páginas)** · 320px sem overflow · JS da landing difere de
+  `main` só no entry (o bloco `#forms`, intencional). Nenhuma worktree ativa. **Loop
+  encerrado por esgotamento do backlog útil no padrão de qualidade** (§ordem do dono):
+  o que sobra colide com página existente ou é isca de SERP; próximas páginas dependem
+  de insumo novo (PENDENTES respondidas, casos com material, GSC).
 
 <!-- Preenchido pelo GESTOR -->
 ## Plano
