@@ -38,7 +38,7 @@ export const pagina: Pagina = {
         '**Queda violenta nos primeiros segundos:** o problema é a abertura. O assunto não ficou claro, ou não pareceu ser sobre quem estava assistindo. Trabalho de [hook](/glossario/hook).',
         '**Queda no meio, num ponto específico:** normalmente é uma transição, um trecho arrastado ou uma promessa que o vídeo não cumpriu. Vale assistir exatamente àquele segundo.',
         '**Descida suave e constante:** o vídeo é longo demais para o que tem a dizer. Cortar costuma resolver mais do que acrescentar.',
-        '**Subida no fim ou acima de 100% em algum ponto:** parte das pessoas reassistiu. É o sinal mais forte que existe de que o conteúdo funcionou.',
+        '**Subida no fim ou acima de 100% em algum ponto:** parte das pessoas reassistiu. É um dos sinais mais fortes de que o conteúdo funcionou.',
       ],
     },
     {

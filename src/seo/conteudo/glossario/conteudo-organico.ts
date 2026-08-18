@@ -61,7 +61,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'Há um efeito colateral que quase ninguém antecipa: impulsionar um post orgânico apaga a resposta que você estava buscando. Depois do impulsionamento, não dá mais para saber se aquele conteúdo se sustentava sozinho.',
+        'Há um efeito colateral que pouca gente antecipa: impulsionar um post orgânico apaga a resposta que você estava buscando. Depois do impulsionamento, não dá mais para saber se aquele conteúdo se sustentava sozinho.',
     },
     {
       tipo: 'destaque',

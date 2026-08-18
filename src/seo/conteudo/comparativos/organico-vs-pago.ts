@@ -180,7 +180,7 @@ export const pagina: Pagina = {
         {
           titulo: 'Dê ao orgânico volume, não paciência',
           texto:
-            'Quatro vídeos por mês não produzem dado suficiente para nenhuma conclusão. Se o orgânico vai entrar, ele entra com volume de publicação — ou não entra.',
+            'Quatro vídeos por mês dificilmente produzem dado suficiente para alguma conclusão. Se o orgânico vai entrar, ele entra com volume de publicação — ou não entra.',
         },
       ],
     },
@@ -228,7 +228,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'Pago é aluguel de atenção, orgânico é construção de patrimônio — e quase toda empresa saudável faz os dois, em proporções que mudam conforme ela deixa de precisar do primeiro.',
+        'Pago é atenção alugada; orgânico é acervo que fica — e boa parte das empresas saudáveis faz os dois, em proporções que mudam conforme ela deixa de precisar do primeiro.',
     },
   ],
 };

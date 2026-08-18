@@ -97,7 +97,7 @@ export const pagina: Pagina = {
     {
       tipo: 'lista',
       itens: [
-        '**Produto novo, marca desconhecida.** Quem nunca ouviu falar da empresa acredita mais em alguém parecido com ele do que na própria empresa.',
+        '**Produto novo, marca desconhecida.** Quem nunca ouviu falar da empresa tende a acreditar mais em alguém parecido com ele do que na própria empresa.',
         '**Objeção de uso.** "Funciona mesmo?", "é difícil de montar?", "cabe em mim?". Mostrar uma pessoa comum usando responde o que nenhum texto responde.',
         '**Anúncio com fadiga de criativo.** Campanha que roda muito tempo cansa. Cinco criadores rendem cinco peças diferentes sem refazer produção.',
         '**Categorias de consumo cotidiano.** Beleza, alimentação, casa, vestuário — em que a experiência do outro é a informação que falta.',
@@ -138,7 +138,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'No conteúdo de marca, o custo escondido é o de **processo**: sem uma fila de pautas, um padrão de roteiro e alguém responsável por publicar, o perfil oscila entre semanas com cinco vídeos e meses com nenhum. É o formato que rende mais no longo prazo e o que mais depende de constância para render alguma coisa.',
+        'No conteúdo de marca, o custo escondido é o de **processo**: sem uma fila de pautas, um padrão de roteiro e alguém responsável por publicar, o perfil oscila entre semanas com cinco vídeos e meses com nenhum. É o formato que tende a render mais no longo prazo e o que mais depende de constância para render alguma coisa.',
     },
     {
       tipo: 'destaque',
@@ -162,7 +162,7 @@ export const pagina: Pagina = {
         {
           pergunta: 'Conteúdo de marca precisa ter aparência profissional?',
           resposta:
-            'Precisa ter aparência coerente, que é diferente. Vídeo gravado no celular, com luz de escritório e corte simples, funciona bem em vídeo curto — o que não pode variar é o jeito de falar, a promessa e a qualidade da informação. Produção cara com roteiro fraco rende menos que o contrário.',
+            'Precisa ter aparência coerente, que é diferente. Vídeo gravado no celular, com luz de escritório e corte simples, funciona bem em vídeo curto — o que não pode variar é o jeito de falar, a promessa e a qualidade da informação. Produção cara com roteiro fraco costuma render menos que o contrário.',
         },
         {
           pergunta: 'O que precisa estar no contrato com um criador de UGC?',

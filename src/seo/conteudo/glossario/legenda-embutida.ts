@@ -66,7 +66,7 @@ export const pagina: Pagina = {
     {
       tipo: 'lista',
       itens: [
-        'Há muitas situações em que ligar o som não é opção: transporte, fila, sala de espera, escritório. Sem texto na tela, o vídeo não comunica nada ali.',
+        'Há muitas situações em que ligar o som não é opção: transporte, fila, sala de espera, escritório. Sem texto na tela, o vídeo comunica pouco ali.',
         'Ela sobrevive ao reaproveitamento: o mesmo arquivo publicado em outra rede continua legendado.',
         'O texto sincronizado dá ao olho o que acompanhar, e isso costuma ajudar a segurar quem assiste — assunto de [retenção](/glossario/retencao).',
         'O controle é de quem produz: fonte, posição, quebra de linha e destaque são decisões suas, não da transcrição automática.',

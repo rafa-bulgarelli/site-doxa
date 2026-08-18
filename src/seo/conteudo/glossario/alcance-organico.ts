@@ -43,7 +43,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'Impressões contam quantas vezes o conteúdo apareceu na tela; alcance conta quantas pessoas o viram. Se a mesma pessoa assiste ao seu vídeo três vezes, são três impressões e um alcance. Por isso impressões é sempre um número maior, e por isso comparar o alcance de um mês com as impressões de outro produz conclusões erradas.',
+        'Impressões contam quantas vezes o conteúdo apareceu na tela; alcance conta quantas pessoas o viram. Se a mesma pessoa assiste ao seu vídeo três vezes, são três impressões e um alcance. Por isso o número de impressões nunca é menor que o de alcance, e por isso comparar o alcance de um mês com as impressões de outro produz conclusões erradas.',
     },
     {
       tipo: 'titulo',
@@ -53,7 +53,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'Num perfil que quer crescer, o alcance total diz pouco sozinho. O recorte útil é a fatia que veio de gente que ainda não segue o perfil, porque é ela que mede se você está encontrando público novo ou apenas conversando com quem já chegou. As três redes de vídeo curto mostram esse recorte nas métricas de cada publicação.',
+        'Num perfil que quer crescer, o alcance total diz pouco sozinho. O recorte útil é a fatia que veio de gente que ainda não segue o perfil, porque é ela que mede se você está encontrando público novo ou apenas conversando com quem já chegou. As redes de vídeo curto costumam mostrar esse recorte nas métricas de cada publicação.',
     },
     {
       tipo: 'destaque',

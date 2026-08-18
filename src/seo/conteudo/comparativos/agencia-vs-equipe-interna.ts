@@ -41,7 +41,7 @@ export const pagina: Pagina = {
     'Contratar uma agência ou montar time próprio: o que muda em custo, prazo, contexto do negócio e onde fica o aprendizado. E o terceiro arranjo que existe.',
   h1: 'Agência ou equipe interna',
   resumo:
-    'Agência entra pronta e traz repertório; equipe interna conhece o negócio e responde no mesmo dia. A escolha costuma ser decidida pelo item errado — o preço na proposta — quando os dois itens que realmente pesam são onde fica o aprendizado e quanto a empresa precisa publicar por mês. Abaixo, os dois caminhos por critério, e um terceiro arranjo que não é nenhum dos dois.',
+    'Agência entra pronta e traz repertório; equipe interna conhece o negócio e responde no mesmo dia. A escolha costuma ser feita pelo item errado — o preço na proposta — quando os dois itens que realmente pesam são onde fica o aprendizado e quanto a empresa precisa publicar por mês. Abaixo, os dois caminhos por critério, e um terceiro arranjo que não é nenhum dos dois.',
   intencao: 'comercial',
   palavrasChave: [
     'agência ou equipe interna',
@@ -162,7 +162,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'Na prática, a divisão mais estável que se vê não é "tudo dentro" nem "tudo fora". É esta: a **estratégia e a relação com a audiência ficam dentro** — quem responde comentário e mensagem é a empresa —, e a **produção repetitiva fica fora**, com quem a faz em volume. Assim o aprendizado fica em casa, e a fila de conteúdo não depende de uma agenda de gravação.',
+        'Na prática, uma divisão que costuma ser estável não é "tudo dentro" nem "tudo fora". É esta: a **estratégia e a relação com a audiência ficam dentro** — quem responde comentário e mensagem é a empresa —, e a **produção repetitiva fica fora**, com quem a faz em volume. Assim o aprendizado fica em casa, e a fila de conteúdo não depende de uma agenda de gravação.',
     },
     {
       tipo: 'paragrafo',
@@ -186,7 +186,7 @@ export const pagina: Pagina = {
         {
           pergunta: 'Qual sai mais barato: agência ou equipe interna?',
           resposta:
-            'Depende do volume e do prazo em que a conta é fechada. Time interno tem custo fixo que não cai em mês fraco, e leva meses até a primeira entrega madura; agência tem custo contratado e começa antes, mas o aprendizado sai junto com o contrato. Comparar só a proposta mensal contra o salário de uma pessoa é o erro mais comum — falta equipamento, ferramenta, encargo e o tempo até a operação andar.',
+            'Depende do volume e do prazo em que a conta é fechada. Time interno tem custo fixo que não cai em mês fraco, e leva meses até a primeira entrega madura; agência tem custo contratado e começa antes, mas o aprendizado sai junto com o contrato. Comparar só a proposta mensal contra o salário de uma pessoa é um erro comum — falta equipamento, ferramenta, encargo e o tempo até a operação andar.',
         },
         {
           pergunta: 'Dá para começar com agência e internalizar depois?',

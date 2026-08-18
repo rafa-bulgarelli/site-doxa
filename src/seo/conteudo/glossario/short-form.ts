@@ -33,7 +33,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'Short-form é o vídeo curto, vertical e distribuído por recomendação — aquele que aparece para quem não escolheu vê-lo. É o formato do TikTok, dos Reels do Instagram e do YouTube Shorts, e o nome em inglês pegou porque as três plataformas o adotaram quase ao mesmo tempo.',
+        'Short-form é o vídeo curto, vertical e distribuído por recomendação — aquele que aparece para quem não escolheu vê-lo. É o formato do TikTok, dos Reels do Instagram e do YouTube Shorts, e o nome em inglês pegou junto com a adoção do formato pelas três plataformas.',
     },
     {
       tipo: 'titulo',
@@ -44,7 +44,7 @@ export const pagina: Pagina = {
       tipo: 'lista',
       itens: [
         '**Vertical**, ocupando a tela inteira do celular. Vídeo horizontal com barras é outro formato.',
-        '**Distribuído por recomendação**, não por assinatura: a plataforma escolhe quem vê, e o histórico de quem assiste pesa mais do que a lista de seguidores.',
+        '**Distribuído por recomendação**, não por assinatura: a plataforma escolhe quem vê, e o histórico de quem assiste costuma pesar mais do que a lista de seguidores.',
         '**Curto**, o que hoje significa algo entre alguns segundos e poucos minutos — e a duração exata varia por plataforma e muda com o tempo.',
         '**Consumido em sequência**, um vídeo depois do outro, o que torna a saída para o próximo a alternativa mais fácil que existe.',
       ],

@@ -91,7 +91,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'A métrica que costuma explicar melhor a distribuição de um vídeo curto não é o engajamento, e sim a [retenção](/glossario/retencao): assistir já produz esse sinal, e só uma parte de quem assiste toca num botão.',
+        'A métrica que costuma explicar melhor a distribuição de um vídeo curto não é o engajamento, e sim a [retenção](/glossario/retencao) — o verbete explica por quê.',
     },
   ],
 };

@@ -71,7 +71,7 @@ export const pagina: Pagina = {
     {
       tipo: 'titulo',
       nivel: 2,
-      texto: 'Como isso aparece na Doxa',
+      texto: 'O que a Doxa faz com isso',
     },
     {
       tipo: 'paragrafo',

@@ -222,7 +222,7 @@ export const pagina: Pagina = {
         {
           pergunta: 'Posso usar a voz de um sócio ou de um funcionário nos vídeos?',
           resposta:
-            'Só com a autorização da própria pessoa, e para o uso que ela autorizou. Vale deixar combinado por escrito o que acontece com os vídeos já publicados se ela sair da empresa: é a parte que costuma ficar para depois e é a única que não tem conserto barato.',
+            'Só com a autorização da própria pessoa, e para o uso que ela autorizou. O que acontece com os vídeos já publicados se ela sair da empresa é assunto de contrato, e está registrado em [clone digital](/glossario/clone-digital).',
         },
         {
           pergunta: 'Nome de produto e sigla saem com a pronúncia certa?',

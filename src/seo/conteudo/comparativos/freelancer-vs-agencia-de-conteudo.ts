@@ -85,7 +85,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'Vale desfazer uma confusão que aparece já no briefing: **"freelancer de conteúdo" raramente é um cargo só**. Publicar um vídeo curto exige pauta, roteiro, gravação, edição, legenda, capa, descrição e publicação. Um editor excelente não escreve roteiro; um roteirista excelente não edita; um social media organiza a publicação e não grava. Contratar "um freelancer" para a operação inteira costuma significar contratar a pessoa mais forte numa etapa e mais fraca em todas as outras.',
+        'Vale desfazer uma confusão que aparece já no briefing: **"freelancer de conteúdo" raramente é um cargo só**. Publicar um vídeo curto exige pauta, roteiro, gravação, edição, legenda, capa, descrição e publicação. Um editor excelente raramente escreve roteiro; um roteirista excelente raramente edita; um social media organiza a publicação e costuma não gravar. Contratar "um freelancer" para a operação inteira costuma significar contratar a pessoa mais forte numa etapa e mais fraca em todas as outras.',
     },
     {
       tipo: 'paragrafo',
@@ -170,14 +170,14 @@ export const pagina: Pagina = {
         '**Cadeia completa num contrato só.** Roteiro, gravação, edição, legenda e capa não precisam ser costurados por você a cada peça.',
         '**Processo escrito.** Padrão de abertura, de corte, de legenda e de capa documentados — o que faz a peça número quarenta parecer irmã da número três.',
         '**Alguém revisa antes de você.** Numa estrutura a peça passa por outra pessoa antes de chegar ao cliente, e parte dos erros morre ali. Com fornecedor único, o primeiro revisor é você.',
-        '**Responsabilidade contratual.** Prazo, entregável e refação estão escritos, e há a quem cobrar quando não acontecem. Com uma pessoa só, a cobrança é sempre pessoal.',
+        '**Responsabilidade contratual.** Prazo, entregável e refação estão escritos, e há a quem cobrar quando não acontecem. Com uma pessoa só, a cobrança vira pessoal.',
       ],
     },
     {
       tipo: 'destaque',
       variante: 'nota',
       texto:
-        'O critério de desempate é o volume combinado com a tolerância a falha. Poucas peças por mês e prazo folgado: um freelancer entrega isso melhor e mais barato. Publicação em rotina, com data que não pode escorregar, exige alguém que cubra o dia em que a pessoa não pode — e isso é estrutura, não pessoa. Entre os dois extremos há o arranjo mais comum: um freelancer fixo para o que é criativo e variável, e um fornecedor de volume para o que é repetitivo.',
+        'O critério de desempate é o volume combinado com a tolerância a falha. Poucas peças por mês e prazo folgado: um freelancer costuma entregar isso melhor e mais barato. Publicação em rotina, com data que não pode escorregar, exige alguém que cubra o dia em que a pessoa não pode — e isso é estrutura, não pessoa. Entre os dois extremos há o arranjo mais comum: um freelancer fixo para o que é criativo e variável, e um fornecedor de volume para o que é repetitivo.',
     },
     {
       tipo: 'titulo',

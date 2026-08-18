@@ -74,16 +74,16 @@ export const pagina: Pagina = {
     {
       tipo: 'titulo',
       nivel: 2,
-      texto: 'Os sinais que mais pesam',
+      texto: 'Os sinais que costumam pesar',
     },
     {
       tipo: 'lista',
       itens: [
-        'Tempo assistido em relação à duração — a [retenção](/glossario/retencao) é o sinal mais denso, porque qualquer espectador o produz.',
+        'Tempo assistido em relação à duração, medido pela [retenção](/glossario/retencao).',
         'Reassistir o mesmo vídeo, que é uma versão ainda mais forte do sinal anterior.',
         'Compartilhamento, que carrega intenção clara de recomendar a alguém.',
         'Comentário, principalmente quando gera resposta e conversa.',
-        'Seguir o perfil depois de assistir, que é o sinal mais raro e o mais valioso.',
+        'Seguir o perfil depois de assistir, que é o sinal mais raro dos cinco.',
       ],
     },
     {

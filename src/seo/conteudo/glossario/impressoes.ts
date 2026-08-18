@@ -59,7 +59,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'Dividir impressões por [alcance](/glossario/alcance-organico) dá a frequência: quantas vezes, em média, cada pessoa viu aquilo. Uma frequência próxima de 1 significa que o conteúdo se espalhou para gente nova. Uma frequência alta significa que ele circulou repetidamente entre as mesmas pessoas — o que pode ser bom, quando a intenção é fixar uma mensagem, e ruim quando a intenção era crescer.',
+        'Dividir impressões por [alcance](/glossario/alcance-organico) dá a frequência: quantas vezes, em média, cada pessoa viu aquilo. Uma frequência próxima de 1 significa que quase ninguém viu o conteúdo duas vezes. Uma frequência alta significa que ele circulou repetidamente entre as mesmas pessoas — o que pode ser bom, quando a intenção é fixar uma mensagem, e ruim quando a intenção era crescer.',
     },
     {
       tipo: 'titulo',

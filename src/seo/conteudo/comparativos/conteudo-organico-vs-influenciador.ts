@@ -190,7 +190,7 @@ export const pagina: Pagina = {
       tipo: 'destaque',
       variante: 'nota',
       texto:
-        'O desempate é por prazo de posse, não por preço da peça. O que se contrata de um criador tem data de início e data de fim; o que se publica no perfil próprio não tem data de fim — e é por isso que as duas contas nunca fecham no mesmo período. Se a empresa precisa ser vista em setembro, um criador entrega setembro. Se precisa ser vista todos os meses do ano que vem, nenhuma campanha entrega isso: só a rotina entrega, e ela começa a valer depois de já estar rodando há um tempo.',
+        'O desempate é por prazo de posse, não por preço da peça. O que se contrata de um criador tem data de início e data de fim; o que se publica no perfil próprio não tem data de fim — e é por isso que as duas contas não fecham no mesmo período. Se a empresa precisa ser vista em setembro, um criador entrega setembro. Se precisa ser vista todos os meses do ano que vem, campanha nenhuma entrega isso: só a rotina entrega, e ela começa a valer depois de já estar rodando há um tempo.',
     },
     {
       tipo: 'titulo',

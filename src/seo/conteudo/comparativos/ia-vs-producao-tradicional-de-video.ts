@@ -70,7 +70,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'Quase toda comparação entre gravar e gerar erra o alvo porque compara o custo do primeiro vídeo. O número que decide a operação de uma empresa é outro: quanto custa o **décimo vídeo do mês**. Na produção tradicional ele custa quase o mesmo que o primeiro, porque cada peça exige agenda, equipe e captação. Na produção com IA o caro é montar uma vez — depois disso, publicar mais vira uma questão de roteiro.',
+        'Boa parte das comparações entre gravar e gerar erra o alvo porque compara o custo do primeiro vídeo. O número que decide a operação de uma empresa é outro: quanto custa o **décimo vídeo do mês**. Na produção tradicional ele custa quase o mesmo que o primeiro, porque cada peça exige agenda, equipe e captação. Na produção com IA o caro é montar uma vez — depois disso, publicar mais vira uma questão de roteiro.',
     },
     {
       tipo: 'paragrafo',
@@ -152,7 +152,7 @@ export const pagina: Pagina = {
         '**Volume com constância.** Publicar todo dia útil deixa de depender de marcar dia, hora e estúdio com cinco pessoas.',
         '**Teste de mensagem.** A mesma ideia em cinco aberturas diferentes custa quase o mesmo que uma, e é assim que se descobre qual prende antes de investir em produção pesada.',
         '**Atualização.** Mudou o preço, a regra ou o nome do plano? O roteiro é corrigido e a peça é refeita, sem remarcar nada.',
-        '**Independência da agenda de quem aparece.** O gargalo mais comum de uma operação de conteúdo é uma pessoa só — normalmente a que decide.',
+        '**Independência da agenda de quem aparece.** O gargalo de uma operação de conteúdo costuma ser uma pessoa só — normalmente a que decide.',
         '**Idiomas e versões.** O mesmo conteúdo em outra língua não vira outra produção.',
       ],
     },
@@ -160,7 +160,7 @@ export const pagina: Pagina = {
       tipo: 'destaque',
       variante: 'nota',
       texto:
-        'A resposta depende de quantas peças e de que tipo. Poucas peças por trimestre, com demonstração física ou presença real: grave. Muitas peças por mês, explicativas, com o mesmo rosto e a mesma marca: gerar sai mais barato e mais previsível. Boa parte das empresas precisa das duas coisas, em proporções diferentes.',
+        'A resposta depende de quantas peças e de que tipo. Poucas peças por trimestre, com demonstração física ou presença real: grave. Muitas peças por mês, explicativas, com o mesmo rosto e a mesma marca: gerar costuma sair mais barato e mais previsível. Boa parte das empresas precisa das duas coisas, em proporções diferentes.',
     },
     {
       tipo: 'titulo',
@@ -170,7 +170,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'Operação madura não escolhe um lado: usa a geração para sustentar o volume — o conteúdo explicativo, recorrente, que precisa sair toda semana — e guarda a câmera para o que só ela faz. Um dia de captação por trimestre rende material de apoio para dezenas de peças, e a produção diária deixa de brigar por espaço na agenda com a gravação especial.',
+        'Operação madura raramente escolhe um lado: usa a geração para sustentar o volume — o conteúdo explicativo, recorrente, que precisa sair toda semana — e guarda a câmera para o que só ela faz. Um dia de captação por trimestre rende material de apoio para dezenas de peças, e a produção diária deixa de brigar por espaço na agenda com a gravação especial.',
     },
     {
       tipo: 'paragrafo',

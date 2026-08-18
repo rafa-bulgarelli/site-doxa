@@ -78,7 +78,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'Sem roteiro, o vídeo é gravado várias vezes até sair aceitável, e a decisão do que dizer acaba sendo tomada na edição, quando as opções já acabaram. Com roteiro, a discussão acontece no texto — que é barato de mudar — e a gravação vira execução. É também o que torna possível manter padrão entre uma peça e a seguinte, e o que permite aprovar conteúdo antes de produzi-lo.',
+        'Sem roteiro, o vídeo costuma ser gravado várias vezes até sair aceitável, e a decisão do que dizer acaba sendo tomada na edição, quando as opções já acabaram. Com roteiro, a discussão acontece no texto — que é barato de mudar — e a gravação vira execução. É também o que torna possível manter padrão entre uma peça e a seguinte, e o que permite aprovar conteúdo antes de produzi-lo.',
     },
     {
       tipo: 'destaque',

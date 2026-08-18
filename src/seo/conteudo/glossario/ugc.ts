@@ -35,7 +35,7 @@ export const pagina: Pagina = {
     {
       tipo: 'titulo',
       nivel: 2,
-      texto: 'O segundo sentido, que é o mais usado hoje',
+      texto: 'O segundo sentido, que é o mais comum em briefing',
     },
     {
       tipo: 'paragrafo',
