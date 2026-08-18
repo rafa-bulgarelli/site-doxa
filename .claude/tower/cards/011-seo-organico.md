@@ -211,6 +211,17 @@ embutida em página externa não muda papel de agente.
   virar índice de SEO"). Até lá a biblioteca é descoberta por sitemap + llms.txt +
   links internos; a landing continua sem apontar para ela.
 
+- **~01:50** — Collectors da FASE 1: T1 APROVADO COM RESSALVAS (ressalva real:
+  `deveManterFragmento` mantinha qualquer hash → `/#faq` não-determinístico; corrigido
+  para só `#forms`, `dbce68a`) → **PR #50 squash (`eebdc07`)**; feature branch 26/591
+  verde. T2/T3/T4 APROVADOS COM RESSALVAS — só correções de texto (fato mal
+  atribuído, generalizações "a maioria/quase todo", sobreposição entre pares, exemplos
+  didáticos inventados que precisam de "suponha que…", "cluster completo" em hub sem
+  membro) → executores retomados nas próprias branches. Nenhum fato inventado sobre a
+  Doxa, nenhum §47, nenhuma doorway nas 38 páginas. Achado transversal dos collectors:
+  o gate de VERIFY precisa da saída colada — está nos reports dos executores (24/569,
+  24/574, 24/594) e a sessão principal roda a suíte de novo no merge.
+
 <!-- Preenchido pelo GESTOR -->
 ## Plano
 
