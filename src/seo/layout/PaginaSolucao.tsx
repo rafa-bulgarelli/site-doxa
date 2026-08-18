@@ -44,7 +44,8 @@ export function PaginaSolucao({ pagina }: { pagina: Pagina }): ReactElement {
       </div>
 
       <p className="border-t border-doxa-line py-6 text-[13px] text-white/30">
-        Conteúdo atualizado em {porExtenso(pagina.atualizadoEm)}.
+        Conteúdo atualizado em{' '}
+        <time dateTime={pagina.atualizadoEm}>{porExtenso(pagina.atualizadoEm)}</time>.
       </p>
     </article>
   );

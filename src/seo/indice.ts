@@ -1,6 +1,6 @@
 import { linksDe } from './inline';
 import { ROTAS_PLANEJADAS } from './rotas-planejadas';
-import { DIRETORIO, HUBS, PREFIXO, SECOES } from './site';
+import { DIRETORIO, HUBS, PREFIXO, ROTAS_DA_LANDING, SECOES } from './site';
 import type { Bloco, Pagina, Secao } from './tipos';
 
 /**
@@ -116,8 +116,10 @@ export function porUrl(url: string): Pagina | undefined {
  * nada listado é a página placeholder que o brief proíbe (§46).
  */
 export function secoes(): readonly Secao[] {
+  // Sem `.sort()`: a ordem de inserção de `SECOES` é a ordem EDITORIAL — Soluções
+  // primeiro, Glossário por último. Em ordem alfabética o cabeçalho abriria por
+  // "Comparativos", que não é por onde se entra no site.
   return Object.keys(SECOES)
-    .sort()
     .map((url) => {
       const dados = SECOES[url];
       if (dados == null) throw new Error(`Seção sem dados: ${url}`);
@@ -146,7 +148,21 @@ export type EstadoDoLink = 'existe' | 'planejada' | 'desconhecida';
  * digitação e o teste reprova.
  */
 export function resolverLink(url: string): EstadoDoLink {
+  if (ehDaLanding(url)) return 'existe';
   if (existe(url)) return 'existe';
   if (ROTAS_PLANEJADAS.includes(url)) return 'planejada';
   return 'desconhecida';
+}
+
+/**
+ * A URL é a landing (ou uma âncora dela)?
+ *
+ * Separada de `existe()` porque as duas respondem perguntas diferentes: `existe`
+ * quer dizer "este build escreveu um arquivo para esta rota", e a landing não
+ * passa pelo prerender — ela é a SPA do `index.html`. Quem lista cards de
+ * conteúdo (`Relacionadas`) usa esta função para NÃO transformar a home num
+ * card de artigo, que é o que ela não é.
+ */
+export function ehDaLanding(url: string): boolean {
+  return ROTAS_DA_LANDING.includes(url);
 }

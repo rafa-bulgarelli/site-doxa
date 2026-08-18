@@ -1,3 +1,4 @@
+import { HREF_FAQ, HREF_FORMS } from '../ancoras';
 import type { Hub, Tipo } from './tipos';
 
 /**
@@ -137,17 +138,55 @@ export const SECOES: Record<string, DadosSecao> = {
 };
 
 /**
- * A imagem de prévia social. `null` até o arquivo existir.
+ * A imagem de prévia social — `public/og.png`, gerada por `scripts/og-imagem.mjs`.
  *
- * PENDENTE: a landing documenta o mesmo pendente em `index.html` — precisa ser
- * PNG ou JPG de 1200×630, porque boa parte dos leitores de link não decodifica
- * AVIF nem WebP. Enquanto for `null`, `head.ts` NÃO emite `og:image`: uma tag
- * apontando para um arquivo inexistente é pior do que a ausência dela.
+ * PNG de 1200×630, e não AVIF nem WebP: boa parte dos leitores de link (o do
+ * WhatsApp inclusive) não decodifica os dois formatos modernos e mostraria o
+ * cartão sem imagem, que é o problema que esta constante existe para resolver.
+ *
+ * Guardado como CAMINHO e não como URL absoluta de propósito. O domínio mora em
+ * `DOMINIO`, uma vez só; escrito de novo aqui, ele viraria a segunda cópia que
+ * diverge no dia da troca. Quem emite a tag (`head.ts`, `index.html`) absolutiza
+ * com `urlAbsoluta` — e `og:image` relativa não é lida por leitor de link
+ * nenhum, então a forma final É absoluta.
+ *
+ * O tipo continua `string | null`: `head.ts` só emite `og:image` quando há
+ * arquivo, e uma tag apontando para o vazio é pior do que a ausência dela.
  */
-export const OG_IMAGEM: string | null = null;
+export const OG_IMAGEM: string | null = '/og.png';
 
-/** O destino de todo CTA: o formulário da landing. Não há outro funil. */
-export const HREF_CTA = '/#forms';
+/** As medidas reais do arquivo. O leitor de link reserva a caixa antes de baixar. */
+export const OG_IMAGEM_LARGURA = 1200;
+export const OG_IMAGEM_ALTURA = 630;
+
+/**
+ * O `alt` da prévia. Descreve o que ESTÁ na imagem — a wordmark e a promessa —,
+ * e não uma frase de marketing nova: a imagem é feita do que a landing já diz.
+ */
+export const OG_IMAGEM_ALT = 'Doxa — um milhão de views. Ou seu dinheiro de volta.';
+
+/**
+ * O destino de todo CTA: o formulário da landing. Não há outro funil.
+ *
+ * O fragmento vem de `src/ancoras.ts`, que é o dono dos ids da landing. Escrito
+ * à mão aqui, `#forms` seria a terceira cópia de um contrato entre arquivos que
+ * não se conhecem — e quando ele quebra, quebra em silêncio: o clique rola zero
+ * pixel e nada aparece no console.
+ */
+export const HREF_CTA = `/${HREF_FORMS}`;
+
+/** As perguntas da landing, pelo mesmo motivo de `HREF_CTA`. */
+export const HREF_PERGUNTAS = `/${HREF_FAQ}`;
+
+/**
+ * As URLs da LANDING que uma página SEO pode citar.
+ *
+ * Elas existem — são a home e duas âncoras dela —, mas não passam por
+ * `urlsPublicadas()`, que só conhece o que o prerender escreve. Sem esta lista,
+ * `resolverLink('/#forms')` devolvia `desconhecida` e `Blocos.tsx` lançava no
+ * render: o CTA do motor derrubava o build do motor.
+ */
+export const ROTAS_DA_LANDING: readonly string[] = ['/', HREF_CTA, HREF_PERGUNTAS];
 
 /** O fecho padrão, quando a página não escreve o próprio. */
 export const CTA_PADRAO = {

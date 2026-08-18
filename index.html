@@ -36,22 +36,66 @@
     />
     <meta name="twitter:card" content="summary_large_image" />
 
-    <!-- PENDENTE-DONO — A IMAGEM DA PRÉVIA, e é a única coisa desta lista que
-         eu não consigo escrever.
+    <!-- A IMAGEM DA PRÉVIA, e o endereço dela. Estas linhas estiveram
+         comentadas por dois pendentes, e os dois caíram.
 
-         Sem ela, WhatsApp e LinkedIn mostram só título e frase: já é muito
-         melhor do que a URL crua, e é por isso que as tags acima entram mesmo
-         sem a imagem. Com ela, o link passa a ocupar um cartão inteiro na
-         conversa.
+         O arquivo existe: `public/og.png`, 1200 por 630, PNG. Ele NÃO foi
+         desenhado à mão — sai de `scripts/og-imagem.mjs` (`pnpm og:imagem`),
+         que monta a imagem com a wordmark e as duas frases abaixo, palavra por
+         palavra. Mexeu no `og:title` ou na `og:description` daqui, rode o
+         script no mesmo commit: a imagem carrega uma CÓPIA das duas, e cópia é
+         a única coisa neste `<head>` que não avisa quando envelhece.
 
-         O que ela precisa ser: PNG ou JPG (AVIF e WebP não são lidos por boa
-         parte dos leitores de link), 1200 por 630, em `public/og.png`. Quando
-         existir, descomente as duas linhas:
+         PNG e não AVIF/WebP: boa parte dos leitores de link não decodifica os
+         dois, e o cartão sairia com a moldura vazia.
 
-         <meta property="og:image" content="/og.png" />
-         <meta property="og:image:alt" content="Doxa — um milhão de views ou seu dinheiro de volta" />
+         As URLs são ABSOLUTAS, e não é preciosismo: `og:image` relativa não é
+         resolvida por leitor de link nenhum. O domínio é `doxaviral.com` —
+         *viral*, com L. Existe um `doxavira.com` sem L que nunca apontou para
+         cá e responde 200 para quem confere errado (ver o CLAUDE.md).
 
-         E o `og:url` com o domínio final, que também ainda não existe. -->
+         `og:image:width` / `height` deixam o leitor reservar a caixa antes de a
+         imagem chegar, e é o que evita o cartão pulando de tamanho na conversa. -->
+    <meta property="og:url" content="https://www.doxaviral.com/" />
+    <meta property="og:image" content="https://www.doxaviral.com/og.png" />
+    <meta
+      property="og:image:alt"
+      content="Doxa — um milhão de views. Ou seu dinheiro de volta."
+    />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:image" content="https://www.doxaviral.com/og.png" />
+
+    <!-- A forma canônica da home: com `www`, https, barra final única. Ela diz
+         ao buscador qual endereço vale quando o mesmo conteúdo chega por
+         `?utm_source=…`, por `doxaviral.com` sem www ou por http — sem ela, são
+         quatro URLs disputando a mesma posição. As páginas de `/solucoes`,
+         `/guias` e companhia emitem a delas em `src/seo/head.ts`. -->
+    <link rel="canonical" href="https://www.doxaviral.com/" />
+
+    <!-- ─── QUEM É A DOXA, PARA QUEM LÊ MÁQUINA ─────────────────────────────
+         A Organização e o site, declarados UMA VEZ e só aqui: a landing é a
+         raiz do domínio, e a entidade se afirma na raiz. As páginas de conteúdo
+         não repetem estes dois nós — elas apontam para eles por dentro
+         (`WebPage.isPartOf`, `Article.publisher`, em `src/seo/schema.ts`). A
+         mesma entidade afirmada em trinta páginas não fica trinta vezes mais
+         forte; fica trinta vezes mais fácil de divergir.
+
+         ATENÇÃO — ESTE BLOCO É CÓPIA. O original são as funções `organization()`
+         e `webSite()` de `src/seo/schema.ts`, e `schema.test.ts` COMPARA os dois:
+         mexeu aqui sem mexer lá (ou o contrário), o teste reprova. É de
+         propósito — este arquivo é HTML estático e não consegue importar TS.
+
+         Sem `sameAs`: ele lista os perfis oficiais da entidade, e não há um
+         único link de rede social no repositório. Sem `SearchAction`: ele
+         promete uma busca interna que este site não tem. Schema só afirma o que
+         a página sustenta (§46). -->
+    <script type="application/ld+json">
+      {"@context":"https://schema.org","@graph":[
+        {"@type":"Organization","name":"Doxa","url":"https://www.doxaviral.com/","logo":{"@type":"ImageObject","url":"https://www.doxaviral.com/og.png","width":1200,"height":630}},
+        {"@type":"WebSite","name":"Doxa","url":"https://www.doxaviral.com/","inLanguage":"pt-BR","publisher":{"@type":"Organization","name":"Doxa","url":"https://www.doxaviral.com/"}}
+      ]}
+    </script>
     <!-- As duas fontes que a primeira dobra desenha: a serifada do título e a
          sans do corpo. Declaradas aqui porque um `@font-face` dentro do CSS só
          é descoberto depois de o CSS baixar e o navegador achar o texto que

@@ -1,17 +1,17 @@
 import type { ReactElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
-import { cabeca } from '../head';
+import { cabeca, tipoOg } from '../head';
 import { porUrl, resolverLink, secoes, urlDe, urlsPublicadas } from '../indice';
 import { Casca } from '../layout/Casca';
 import { PaginaArtigo } from '../layout/PaginaArtigo';
 import { PaginaHub } from '../layout/PaginaHub';
 import { PaginaSecao } from '../layout/PaginaSecao';
 import { PaginaSolucao } from '../layout/PaginaSolucao';
-import { breadcrumbList, webPage } from '../schema';
+import { article, breadcrumbList, faqPage, webPage } from '../schema';
 import type { Migalha, NoJsonLd } from '../schema';
 import { sitemapXml } from '../sitemap';
 import { HUBS, PREFIXO, SECOES } from '../site';
-import type { Pagina, Secao } from '../tipos';
+import type { Faq, Pagina, Secao } from '../tipos';
 
 /**
  * A ENTRADA do prerender: tudo que `scripts/prerender.mjs` importa.
@@ -72,18 +72,57 @@ function corpoDe(pagina: Pagina): ReactElement {
   }
 }
 
+/** Todas as perguntas VISÍVEIS da página — as dos blocos `faq`, e só elas. */
+function perguntasDe(pagina: Pagina): readonly Faq[] {
+  return pagina.corpo.flatMap((bloco) => (bloco.tipo === 'faq' ? [...bloco.itens] : []));
+}
+
+/**
+ * O grafo de JSON-LD de uma página de conteúdo.
+ *
+ * TRÊS nós no máximo, e cada um responde a uma coisa que está na tela:
+ *
+ *  - `Article` ou `WebPage`, pelo MESMO critério do `og:type` (`tipoOg`): o que
+ *    é texto assinado no tempo é `Article`, o que é prateleira comercial é
+ *    `WebPage`. Dois critérios separados divergiriam na primeira página nova, e
+ *    a página anunciaria uma coisa no cartão social e outra no schema.
+ *  - `BreadcrumbList` com as MESMAS migalhas que o `<nav>` desenha — o mesmo
+ *    array, não uma segunda lista montada aqui.
+ *  - `FAQPage` só quando existe bloco `faq`, com as mesmas perguntas que o
+ *    `<details>` mostra. Sem bloco, o nó não existe: FAQ marcado sem FAQ na
+ *    página é a marcação enganosa do §46, e ela custa manual action.
+ *
+ * `Organization` e `WebSite` NÃO entram aqui. Eles descrevem o site inteiro e
+ * são declarados uma vez, no `index.html` da landing; repetidos em cada página
+ * seriam a mesma entidade afirmada trinta vezes. O vínculo vem por dentro —
+ * `WebPage.isPartOf` e `Article.publisher` apontam para ela.
+ */
+function jsonLdDePagina(pagina: Pagina, migalhas: readonly Migalha[]): readonly NoJsonLd[] {
+  const url = urlDe(pagina);
+  const principal =
+    tipoOg(pagina.tipo) === 'article'
+      ? article({
+          url,
+          titulo: pagina.titulo,
+          descricao: pagina.descricao,
+          atualizadoEm: pagina.atualizadoEm,
+        })
+      : webPage({
+          url,
+          titulo: pagina.titulo,
+          descricao: pagina.descricao,
+          atualizadoEm: pagina.atualizadoEm,
+        });
+  const grafo: NoJsonLd[] = [principal, breadcrumbList(migalhas)];
+  const perguntas = perguntasDe(pagina);
+  if (perguntas.length > 0) grafo.push(faqPage(perguntas));
+  return grafo;
+}
+
 function documentoDePagina(pagina: Pagina, cssHref: string): ReactElement {
   const url = urlDe(pagina);
   const migalhas = migalhasDe(pagina);
-  const jsonLd: readonly NoJsonLd[] = [
-    webPage({
-      url,
-      titulo: pagina.titulo,
-      descricao: pagina.descricao,
-      atualizadoEm: pagina.atualizadoEm,
-    }),
-    breadcrumbList(migalhas),
-  ];
+  const jsonLd = jsonLdDePagina(pagina, migalhas);
   return (
     <Casca
       cabeca={cabeca({ url, titulo: pagina.titulo, descricao: pagina.descricao, tipo: pagina.tipo })}

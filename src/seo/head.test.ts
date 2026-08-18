@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { cabeca, tipoOg, urlAbsoluta } from './head';
-import { DOMINIO, OG_IMAGEM } from './site';
+import { DOMINIO, OG_IMAGEM, OG_IMAGEM_ALT } from './site';
 
 describe('urlAbsoluta', () => {
   it('prefixa o domínio', () => {
@@ -71,5 +71,25 @@ describe('cabeca', () => {
   it('só emite og:image quando existe imagem', () => {
     const temImagem = feita.metas.some((meta) => meta.chave === 'og:image');
     expect(temImagem).toBe(OG_IMAGEM != null);
+  });
+
+  const valor = (chave: string): string | undefined =>
+    feita.metas.find((meta) => meta.chave === chave)?.conteudo;
+
+  it('a imagem sai com URL absoluta, medidas e alt', () => {
+    if (OG_IMAGEM == null) return;
+    // Relativa, `og:image` não é resolvida por leitor de link nenhum, e o
+    // cartão sai com a moldura vazia.
+    expect(valor('og:image')).toBe(`${DOMINIO}${OG_IMAGEM}`);
+    expect(valor('twitter:image')).toBe(valor('og:image'));
+    expect(valor('og:image:width')).toBe('1200');
+    expect(valor('og:image:height')).toBe('630');
+    expect(valor('og:image:alt')).toBe(OG_IMAGEM_ALT);
+  });
+
+  // `summary_large_image` promete um cartão com imagem grande; sem imagem ele
+  // vira uma moldura vazia, que é pior do que o cartão pequeno.
+  it('o twitter:card acompanha a existência da imagem', () => {
+    expect(valor('twitter:card')).toBe(OG_IMAGEM != null ? 'summary_large_image' : 'summary');
   });
 });

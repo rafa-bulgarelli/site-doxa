@@ -1,5 +1,5 @@
 import type { ReactElement } from 'react';
-import { porUrl, resolverLink } from '../indice';
+import { ehDaLanding, porUrl, resolverLink } from '../indice';
 import { SECOES } from '../site';
 
 /**
@@ -11,7 +11,10 @@ import { SECOES } from '../site';
  * menor. Se nada da lista existir ainda, o bloco não aparece.
  */
 export function Relacionadas({ urls }: { urls: readonly string[] }): ReactElement | null {
-  const existentes = urls.filter((url) => resolverLink(url) === 'existe');
+  // A landing é `existe` para `resolverLink` (o CTA aponta para ela), mas não é
+  // um card de conteúdo: ela não tem `h1` nem `resumo` neste índice, e um card
+  // "continue por aqui → página inicial" não continua leitura nenhuma.
+  const existentes = urls.filter((url) => !ehDaLanding(url) && resolverLink(url) === 'existe');
   if (existentes.length === 0) return null;
   return (
     <section className="mx-auto w-full max-w-screen-2xl px-5 pt-16 md:px-10">
