@@ -118,7 +118,7 @@ export const pagina: Pagina = {
         ['Variações da mesma ideia', 'Caras: cada versão é um novo take', 'Baratas: cinco aberturas do mesmo texto'],
         ['Demonstração física do produto', 'Resolve: a câmera mostra o objeto', 'Não resolve — fala sobre, não segura'],
         ['Ambiente e pessoas reais', 'Loja, fábrica, equipe, cliente em cena', 'Fora do alcance sem captação'],
-        ['Custo mensal para manter', 'R$ 8.000 a R$ 10.500 por dentro', 'Depende do volume, não da diária'],
+        ['Custo mensal para manter', 'R$ 8.000 a R$ 10.500 por dentro, no inventário ilustrativo acima', 'Depende do volume, não da diária'],
       ],
     },
     {

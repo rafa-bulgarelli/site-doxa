@@ -127,7 +127,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'O volume não é um vídeo por semana: a referência da operação é **sessenta conteúdos em noventa dias**, publicados no TikTok, no Instagram e no YouTube Shorts. É esse volume que sustenta a lógica da coisa — testar hook, formato e narrativa em quantidade suficiente para descobrir o que a audiência da sua marca assiste até o fim, em vez de apostar num vídeo por mês.',
+        'O volume não é um vídeo por semana: a referência da operação é **sessenta conteúdos em noventa dias**, conforme as condições e o prazo do contrato, publicados no TikTok, no Instagram e no YouTube Shorts. É esse volume que sustenta a lógica da coisa — testar hook, formato e narrativa em quantidade suficiente para descobrir o que a audiência da sua marca assiste até o fim, em vez de apostar num vídeo por mês.',
     },
     {
       tipo: 'titulo',
@@ -137,7 +137,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'Montar essa operação por dentro custa entre **R$ 8.000 e R$ 10.500 por mês**. Não é o salário de uma pessoa: é a soma do que uma empresa precisa reunir para publicar vídeo com constância.',
+        'Montar essa operação por dentro custa entre **R$ 8.000 e R$ 10.500 por mês**, na conta que a Doxa publica na própria landing — o inventário de UMA operação, com produção, agência e tráfego somados. É ilustração do que uma empresa acumula para publicar com constância, não um levantamento de mercado, e não é o salário de uma pessoa.',
     },
     {
       tipo: 'lista',
