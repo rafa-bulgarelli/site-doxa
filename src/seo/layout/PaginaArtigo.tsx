@@ -52,7 +52,10 @@ function Sumario({
           : 'mb-8 max-w-3xl rounded-xl border border-doxa-line bg-doxa-surface p-5 md:p-6'
       }
     >
-      <p className="text-[11px] uppercase tracking-[0.2em] text-white/40">Neste conteúdo</p>
+      {/* /55: 11px é texto pequeno, e 40% sobre `bg-doxa-surface` dá 3,4:1.
+          É a mesma opacidade do rótulo de destaque em `Blocos.tsx`, que é o
+          mesmo elemento visual. */}
+      <p className="text-[11px] uppercase tracking-[0.2em] text-white/55">Neste conteúdo</p>
       <ol className="mt-3 space-y-2 text-[15px]">
         {itens.map((item) => (
           <li key={item.id}>
@@ -102,7 +105,9 @@ export function PaginaArtigo({ pagina }: { pagina: Pagina }): ReactElement {
       {/* `<time>` com `dateTime`: por extenso para quem lê, em AAAA-MM-DD para
           quem indexa. É a mesma data que vira `dateModified` no JSON-LD, e é
           por isso que o schema não contradiz a página (§46). */}
-      <p className="max-w-3xl border-t border-doxa-line py-6 text-[13px] text-white/30">
+      {/* /50 e não /30: 30% a 13px sobre `bg-doxa-bg` dá 2,47:1. A assinatura
+          segue a mais apagada da página, e agora legível. */}
+      <p className="max-w-3xl border-t border-doxa-line py-6 text-[13px] text-white/50">
         Conteúdo atualizado em{' '}
         <time dateTime={pagina.atualizadoEm}>{porExtenso(pagina.atualizadoEm)}</time>.
       </p>
