@@ -94,7 +94,7 @@ Por que reprova: pergunta retórica, clickbait ("segredos"), promessa de viraliz
 que a Doxa nega com todas as letras (`src/components/faq/config.ts:324-325`), e
 "neste artigo você vai descobrir" adia a resposta.
 
-**Boa** — "Na maioria dos casos são três coisas, nesta ordem: o vídeo não prende
+**Boa** — "Costumam ser três coisas, nesta ordem: o vídeo não prende
 nos primeiros segundos, o volume é baixo demais para gerar dado, ou os vídeos
 competem entre si por serem publicados perto demais. Nenhuma delas é sorte.
 Abaixo, como identificar qual é a sua — e o que fazer em cada caso."
@@ -110,3 +110,15 @@ contradiz a página · fato sem fonte · número somado ou arredondado a partir 
 cases · depoimento fabricado · lista de cidades ou de nichos com o mesmo texto ·
 comparativo que só elogia a Doxa · CTA de compra no meio de um verbete de
 glossário.
+
+## Adendo (2026-08-18, depois das correções 1–3) — a família de generalização sem fonte
+
+Os collectors da noite reprovaram, página após página, a mesma classe de frase: **"a
+maioria", "quase todo", "quase sempre", "quase ninguém", "todo mundo", "sempre",
+"nunca", "único/única", "nenhuma plataforma", "a rede pune/premia", "a prova disso",
+"estudos mostram", "mais comum"** — quantificador ou absoluto sobre mercado, audiência
+ou plataforma que a Doxa não mediu. Regra: ou é raciocínio (e se escreve como
+raciocínio), ou é hedge de uma palavra ("costuma", "tende a", "boa parte", "com
+frequência"), ou sai. O `pnpm seo:audit` e o VERIFY das rodadas grepam essa família;
+a abertura-modelo acima foi ajustada pela mesma razão. Exemplo com número: sempre
+"Suponha que…" + "números inventados para ilustrar", e nunca ao lado de uma nota da Doxa.

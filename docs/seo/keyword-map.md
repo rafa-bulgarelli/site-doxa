@@ -166,13 +166,27 @@ para-empresas` (colide com orgânico/escala), `/comparativos/heygen-vs-gravacao-
 | `track-seo-rodada-2-comparativos-glossario` | freelancer-vs-agencia-de-conteudo · conteudo-organico-vs-influenciador · engajamento · impressoes · clone-digital · roteiro-de-video-curto · legenda-embutida · feed-recomendado · cta |
 | `track-seo-rodada-2-dores-solucoes` | por-que-meu-instagram-parou-de-crescer · conteudo-para-redes-sociais-com-ia · clone-de-voz-para-videos |
 
-## Rodada 3 — em execução (2026-08-18, ~03:00)
+## Rodada 3 — CONCLUÍDA (2026-08-18, 03:45; PR #63)
 
 | Track | URLs | Por quê |
 |---|---|---|
 | `track-seo-rodada-3` | video-vertical-no-linkedin · o-que-faz-um-social-media | as duas adjacências §47 do backlog sem risco de canibalização. Puladas: `como-viralizar-no-instagram` (colide com `como-crescer-no-instagram-organicamente`), `calendario-de-conteudo` (4ª página de planejamento — estratégia/rotina/arco já existem), `melhor-horario-para-postar` (isca de SERP; a biblioteca já diz que horário pesa pouco), `reels-vs-tiktok-vs-shorts` (colide com `tiktok-vs-instagram` + `mesmo-video-nas-tres-redes`), `heygen-vs-gravacao` (ferramenta no title × tools.ts), `avatar-de-ia-para-empresas` e `conteudo-recorrente` (colidem). |
 
-## Não fazer
+## Estado ao fim da noite (2026-08-18, ~04:00)
+
+**63 páginas + 5 índices = 68 rotas** em `feat/seo-organico` (PRs #48–#63): soluções 8 ·
+plataformas 3 · hubs 5 · guias 17 · dores 5 · comparativos 7 · glossário 18. Três
+rodadas de correção transversal (1–3) com um dono por bloco, FAQ única no corpus, e a
+família de generalização sem fonte varrida. **Backlog de páginas novas esgotado no
+padrão de qualidade** — o que resta na tabela do backlog colide com página existente
+ou é isca de SERP (motivos na seção da rodada 3 e no "Não fazer"). Próximas páginas só
+com insumo novo do dono (respostas às PENDENTES do FAQ; casos com material; en-US
+com motivo comercial) ou com dado do Search Console para reordenar a prioridade.
+
+Sem GSC/GA (`BLOCKED_EXTERNAL_CREDENTIAL`), a coluna Search Opportunity continua
+qualitativa. Primeira tarefa quando houver acesso: baseline (indexação, queries,
+impressões, cliques, CTR, posição) e recalibrar esta tabela.
+
 
 | Cogitado | Motivo |
 |---|---|
