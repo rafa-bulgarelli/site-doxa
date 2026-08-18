@@ -43,7 +43,6 @@ export const pagina: Pagina = {
   ],
   hubs: ['/guias/marketing-organico'],
   relacionadas: [
-    '/guias/marketing-organico',
     '/guias/como-produzir-conteudo-sem-equipe',
     '/guias/estrategia-de-conteudo-para-empresas',
     '/guias/como-aumentar-o-alcance-organico',

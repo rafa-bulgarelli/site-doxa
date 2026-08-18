@@ -47,7 +47,6 @@ export const pagina: Pagina = {
   ],
   hubs: ['/guias/videos-curtos'],
   relacionadas: [
-    '/guias/videos-curtos',
     '/plataformas/youtube-shorts-para-empresas',
     '/guias/como-usar-o-mesmo-video-nas-tres-redes',
     '/guias/como-medir-resultado-de-conteudo-organico',

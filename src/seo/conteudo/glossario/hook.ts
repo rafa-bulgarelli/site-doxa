@@ -20,7 +20,6 @@ export const pagina: Pagina = {
   palavrasChave: ['hook', 'o que é hook em vídeo', 'gancho de vídeo'],
   hubs: ['/guias/videos-curtos'],
   relacionadas: [
-    '/guias/videos-curtos',
     '/guias/como-fazer-hook-de-video-curto',
     '/glossario/retencao',
   ],

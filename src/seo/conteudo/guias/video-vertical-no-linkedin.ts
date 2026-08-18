@@ -70,7 +70,6 @@ export const pagina: Pagina = {
   ],
   hubs: ['/guias/videos-curtos'],
   relacionadas: [
-    '/guias/videos-curtos',
     '/guias/como-usar-o-mesmo-video-nas-tres-redes',
     '/guias/marketing-de-conteudo-para-b2b',
     '/glossario/legenda-embutida',

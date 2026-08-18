@@ -40,9 +40,7 @@ export const pagina: Pagina = {
   ],
   hubs: [],
   relacionadas: [
-    '/plataformas/instagram-reels-para-empresas',
-    '/guias/como-crescer-no-instagram-organicamente',
-    '/comparativos/tiktok-vs-instagram',
+    '/guias/videos-curtos',
     '/guias/como-aumentar-o-alcance-organico',
     '/glossario/alcance-organico',
   ],

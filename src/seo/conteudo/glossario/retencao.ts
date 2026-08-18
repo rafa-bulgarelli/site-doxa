@@ -19,7 +19,10 @@ export const pagina: Pagina = {
   intencao: 'informacional',
   palavrasChave: ['retenção de vídeo', 'taxa de retenção', 'curva de retenção'],
   hubs: ['/guias/videos-curtos'],
-  relacionadas: ['/guias/videos-curtos', '/glossario/watch-time', '/glossario/hook'],
+  relacionadas: [
+    '/glossario/watch-time',
+    '/glossario/hook',
+  ],
   atualizadoEm: '2026-08-18',
   corpo: [
     {

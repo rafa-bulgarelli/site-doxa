@@ -51,7 +51,6 @@ export const pagina: Pagina = {
   ],
   hubs: ['/guias/marketing-no-tiktok'],
   relacionadas: [
-    '/guias/marketing-no-tiktok',
     '/guias/como-viralizar-no-tiktok',
     '/guias/como-postar-todos-os-dias-sem-equipe',
     '/glossario/algoritmo-do-tiktok',

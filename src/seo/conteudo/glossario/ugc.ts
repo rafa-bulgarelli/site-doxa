@@ -21,7 +21,6 @@ export const pagina: Pagina = {
   palavrasChave: ['ugc', 'user generated content', 'ugc creator significado'],
   hubs: ['/guias/videos-curtos'],
   relacionadas: [
-    '/guias/videos-curtos',
     '/guias/o-que-e-ugc',
     '/comparativos/ugc-vs-conteudo-de-marca',
   ],

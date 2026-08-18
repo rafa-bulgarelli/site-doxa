@@ -45,7 +45,6 @@ export const pagina: Pagina = {
   ],
   hubs: ['/guias/marketing-organico'],
   relacionadas: [
-    '/guias/marketing-organico',
     '/glossario/alcance-organico',
     '/guias/por-que-meus-videos-nao-tem-views',
     '/comparativos/organico-vs-pago',

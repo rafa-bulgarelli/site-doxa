@@ -50,7 +50,6 @@ export const pagina: Pagina = {
   ],
   hubs: ['/guias/reels-no-instagram'],
   relacionadas: [
-    '/guias/reels-no-instagram',
     '/guias/como-crescer-no-instagram-organicamente',
     '/guias/como-aumentar-o-alcance-organico',
     '/guias/por-que-meus-videos-nao-tem-views',

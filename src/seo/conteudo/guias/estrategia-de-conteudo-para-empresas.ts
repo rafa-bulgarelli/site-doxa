@@ -56,7 +56,6 @@ export const pagina: Pagina = {
   ],
   hubs: ['/guias/marketing-organico'],
   relacionadas: [
-    '/guias/marketing-organico',
     '/solucoes/conteudo-organico-para-empresas',
     '/guias/como-produzir-60-videos-em-90-dias',
     '/guias/como-medir-resultado-de-conteudo-organico',

@@ -27,7 +27,6 @@ export const pagina: Pagina = {
   palavrasChave: ['clone de voz', 'voz sintética', 'clonagem de voz ia'],
   hubs: ['/guias/ia-no-marketing'],
   relacionadas: [
-    '/guias/ia-no-marketing',
     '/glossario/avatar-de-ia',
     '/solucoes/clone-de-ia-para-videos',
     '/solucoes/clone-de-voz-para-videos',

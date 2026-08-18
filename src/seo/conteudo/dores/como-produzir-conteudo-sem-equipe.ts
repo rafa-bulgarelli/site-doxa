@@ -50,7 +50,6 @@ export const pagina: Pagina = {
   ],
   hubs: ['/guias/videos-curtos'],
   relacionadas: [
-    '/guias/videos-curtos',
     '/guias/como-postar-todos-os-dias-sem-equipe',
     '/solucoes/producao-de-conteudo-em-escala',
     '/comparativos/agencia-vs-equipe-interna',

@@ -17,7 +17,6 @@ export const pagina: Pagina = {
   palavrasChave: ['conteúdo evergreen', 'conteúdo perene', 'evergreen significado'],
   hubs: ['/guias/marketing-organico'],
   relacionadas: [
-    '/guias/marketing-organico',
     '/guias/estrategia-de-conteudo-para-empresas',
     '/glossario/conteudo-organico',
   ],

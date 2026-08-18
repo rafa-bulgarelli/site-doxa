@@ -65,7 +65,6 @@ export const pagina: Pagina = {
   ],
   hubs: ['/guias/ia-no-marketing'],
   relacionadas: [
-    '/guias/ia-no-marketing',
     '/solucoes/marketing-com-ia',
     '/solucoes/producao-de-videos-com-ia',
     '/solucoes/videos-curtos-para-empresas',

@@ -29,7 +29,6 @@ export const pagina: Pagina = {
   ],
   hubs: ['/guias/marketing-no-tiktok'],
   relacionadas: [
-    '/guias/marketing-no-tiktok',
     '/glossario/algoritmo-do-tiktok',
     '/glossario/alcance-organico',
     '/glossario/short-form',

@@ -18,7 +18,10 @@ export const pagina: Pagina = {
   intencao: 'informacional',
   palavrasChave: ['watch time', 'tempo de exibição', 'tempo médio de visualização'],
   hubs: ['/guias/videos-curtos'],
-  relacionadas: ['/guias/videos-curtos', '/glossario/retencao', '/glossario/short-form'],
+  relacionadas: [
+    '/glossario/retencao',
+    '/glossario/short-form',
+  ],
   atualizadoEm: '2026-08-18',
   corpo: [
     {

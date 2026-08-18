@@ -44,11 +44,9 @@ export const pagina: Pagina = {
   ],
   hubs: [],
   relacionadas: [
-    '/plataformas/tiktok-para-empresas',
-    '/guias/como-viralizar-no-tiktok',
-    '/glossario/algoritmo-do-tiktok',
-    '/comparativos/tiktok-vs-instagram',
     '/guias/videos-curtos',
+    '/guias/marketing-organico',
+    '/solucoes/videos-curtos-para-empresas',
   ],
   atualizadoEm: '2026-08-18',
   cta: {

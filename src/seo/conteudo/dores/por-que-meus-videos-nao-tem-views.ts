@@ -45,7 +45,6 @@ export const pagina: Pagina = {
   ],
   hubs: ['/guias/videos-curtos'],
   relacionadas: [
-    '/guias/videos-curtos',
     '/guias/como-fazer-videos-curtos-que-prendem',
     '/glossario/retencao',
     '/glossario/hook',

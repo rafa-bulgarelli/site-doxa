@@ -34,7 +34,6 @@ export const pagina: Pagina = {
   ],
   hubs: ['/guias/videos-curtos'],
   relacionadas: [
-    '/guias/videos-curtos',
     '/guias/como-escrever-roteiro-de-video-curto',
     '/glossario/hook',
     '/glossario/cta',

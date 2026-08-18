@@ -30,7 +30,6 @@ export const pagina: Pagina = {
   ],
   hubs: ['/guias/marketing-no-tiktok'],
   relacionadas: [
-    '/guias/marketing-no-tiktok',
     '/guias/como-viralizar-no-tiktok',
     '/glossario/retencao',
   ],

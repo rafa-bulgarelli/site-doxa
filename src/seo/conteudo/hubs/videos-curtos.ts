@@ -46,11 +46,9 @@ export const pagina: Pagina = {
   ],
   hubs: [],
   relacionadas: [
-    '/solucoes/videos-curtos-para-empresas',
-    '/guias/como-fazer-videos-curtos-que-prendem',
-    '/glossario/hook',
-    '/glossario/retencao',
-    '/guias/por-que-meus-videos-nao-tem-views',
+    '/guias/marketing-organico',
+    '/guias/reels-no-instagram',
+    '/guias/marketing-no-tiktok',
   ],
   atualizadoEm: '2026-08-18',
   cta: {

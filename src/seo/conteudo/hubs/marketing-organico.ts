@@ -41,11 +41,9 @@ export const pagina: Pagina = {
   ],
   hubs: [],
   relacionadas: [
-    '/solucoes/conteudo-organico-para-empresas',
-    '/comparativos/organico-vs-pago',
-    '/guias/como-aumentar-o-alcance-organico',
-    '/guias/estrategia-de-conteudo-para-empresas',
-    '/glossario/alcance-organico',
+    '/guias/videos-curtos',
+    '/guias/marketing-no-tiktok',
+    '/guias/ia-no-marketing',
   ],
   atualizadoEm: '2026-08-18',
   cta: {

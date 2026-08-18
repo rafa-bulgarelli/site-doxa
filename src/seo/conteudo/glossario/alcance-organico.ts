@@ -24,7 +24,6 @@ export const pagina: Pagina = {
   palavrasChave: ['alcance orgânico', 'o que é alcance orgânico', 'alcance x impressões'],
   hubs: ['/guias/marketing-organico'],
   relacionadas: [
-    '/guias/marketing-organico',
     '/guias/como-aumentar-o-alcance-organico',
     '/glossario/conteudo-organico',
   ],

@@ -28,7 +28,6 @@ export const pagina: Pagina = {
   palavrasChave: ['avatar de ia', 'ai avatar', 'apresentador virtual'],
   hubs: ['/guias/ia-no-marketing'],
   relacionadas: [
-    '/guias/ia-no-marketing',
     '/guias/o-que-e-avatar-de-ia',
     '/glossario/clone-de-voz',
     '/solucoes/producao-de-videos-com-ia',

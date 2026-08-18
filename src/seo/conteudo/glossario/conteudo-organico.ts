@@ -22,7 +22,6 @@ export const pagina: Pagina = {
   palavrasChave: ['conteúdo orgânico', 'o que é conteúdo orgânico', 'post orgânico'],
   hubs: ['/guias/marketing-organico'],
   relacionadas: [
-    '/guias/marketing-organico',
     '/solucoes/conteudo-organico-para-empresas',
     '/glossario/alcance-organico',
     '/comparativos/organico-vs-pago',

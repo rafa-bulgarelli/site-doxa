@@ -67,7 +67,6 @@ export const pagina: Pagina = {
     '/solucoes/clone-de-ia-para-videos',
     '/solucoes/producao-de-videos-com-ia',
     '/glossario/avatar-de-ia',
-    '/guias/ia-no-marketing',
   ],
   atualizadoEm: '2026-08-18',
   cta: {

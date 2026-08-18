@@ -29,7 +29,6 @@ export const pagina: Pagina = {
   ],
   hubs: ['/guias/marketing-organico'],
   relacionadas: [
-    '/guias/marketing-organico',
     '/glossario/alcance-organico',
     '/glossario/engajamento',
     '/glossario/watch-time',

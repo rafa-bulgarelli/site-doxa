@@ -24,7 +24,6 @@ export const pagina: Pagina = {
   palavrasChave: ['short form', 'vídeo short form', 'formato curto vertical'],
   hubs: ['/guias/videos-curtos'],
   relacionadas: [
-    '/guias/videos-curtos',
     '/solucoes/videos-curtos-para-empresas',
     '/glossario/watch-time',
   ],

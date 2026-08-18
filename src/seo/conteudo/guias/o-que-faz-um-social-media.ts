@@ -72,7 +72,6 @@ export const pagina: Pagina = {
   ],
   hubs: ['/guias/marketing-organico'],
   relacionadas: [
-    '/guias/marketing-organico',
     '/comparativos/agencia-vs-equipe-interna',
     '/comparativos/freelancer-vs-agencia-de-conteudo',
     '/guias/como-produzir-conteudo-sem-equipe',

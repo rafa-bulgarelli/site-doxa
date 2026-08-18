@@ -53,7 +53,6 @@ export const pagina: Pagina = {
   ],
   hubs: ['/guias/ia-no-marketing'],
   relacionadas: [
-    '/guias/ia-no-marketing',
     '/comparativos/agencia-vs-equipe-interna',
     '/solucoes/marketing-com-ia',
     '/comparativos/ia-vs-producao-tradicional-de-video',

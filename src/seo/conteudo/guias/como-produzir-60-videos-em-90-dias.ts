@@ -50,7 +50,6 @@ export const pagina: Pagina = {
   ],
   hubs: ['/guias/videos-curtos'],
   relacionadas: [
-    '/guias/videos-curtos',
     '/guias/como-postar-todos-os-dias-sem-equipe',
     '/guias/como-escrever-roteiro-de-video-curto',
     '/guias/como-usar-o-mesmo-video-nas-tres-redes',

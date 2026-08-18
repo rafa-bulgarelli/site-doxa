@@ -49,7 +49,6 @@ export const pagina: Pagina = {
   ],
   hubs: ['/guias/videos-curtos'],
   relacionadas: [
-    '/guias/videos-curtos',
     '/comparativos/tiktok-vs-instagram',
     '/plataformas/youtube-shorts-para-empresas',
     '/guias/como-medir-resultado-de-conteudo-organico',

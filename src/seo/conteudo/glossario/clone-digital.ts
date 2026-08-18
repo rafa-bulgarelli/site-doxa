@@ -45,7 +45,6 @@ export const pagina: Pagina = {
   ],
   hubs: ['/guias/ia-no-marketing'],
   relacionadas: [
-    '/guias/ia-no-marketing',
     '/glossario/avatar-de-ia',
     '/glossario/clone-de-voz',
     '/solucoes/clone-de-ia-para-videos',
