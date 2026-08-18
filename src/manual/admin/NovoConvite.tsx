@@ -16,7 +16,7 @@ import { useState } from 'react';
 import { Link2, Send, X } from 'lucide-react';
 import { criarConvite, registrarEvento } from './dados';
 import { CONVITE_EM_BRANCO, pedidoDeCriacao, validarConvite } from './filtrar';
-import { BOTAO_BORDA, BOTAO_PRIMARIO, BotaoCopiar, CampoTexto, Erro } from './pecas';
+import { BOTAO_BORDA, BOTAO_PRIMARIO, BotaoCopiar, CampoTexto, Erro, ROTULO } from './pecas';
 import { mensagemDe } from './usarAdmin';
 import type { RascunhoDeConvite } from './filtrar';
 import type { VersaoLinha } from '../tipos';
@@ -35,7 +35,7 @@ export function LinkRevelado({
     <section className="rounded-2xl border border-white/[0.16] bg-white/[0.05] p-5 sm:p-6">
       <div className="flex items-start justify-between gap-3">
         <div>
-          <span className="inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.14em] text-white/45">
+          <span className={`inline-flex items-center gap-2 ${ROTULO}`}>
             <Link2 className="h-3 w-3" strokeWidth={2} />
             Link do convite
           </span>
@@ -165,6 +165,22 @@ export function NovoConvite({
             aoMudar={mudar('expiraEm')}
             problema={problemas.expiraEm}
           />
+          {/* O campo ocupa a linha inteira porque um link de convite não cabe em
+              meia coluna — e ver o endereço por extenso é o que permite notar
+              que se colou o do cliente errado antes de mandar. */}
+          <div className="sm:col-span-2">
+            <CampoTexto
+              rotulo="Invite plataforma DOXA (opcional)"
+              valor={rascunho.invitePlataforma}
+              aoMudar={mudar('invitePlataforma')}
+              dica="Cole o link inteiro, começando em https://"
+              problema={problemas.invitePlataforma}
+            />
+            <p className="mt-1.5 text-[12px] leading-relaxed text-white/35">
+              O link de cadastro na plataforma. Com ele, a tela final do aceite oferece o botão do
+              cadastro oficial; sem ele, botão nenhum aparece.
+            </p>
+          </div>
         </div>
 
         <Erro mensagem={erro} />

@@ -613,7 +613,12 @@ export interface Sessao {
 export type Situacao =
   | { tipo: 'falha'; falha: FalhaDaApi }
   | { tipo: 'bloqueado'; estado: Exclude<EstadoDoConvite, 'valido' | 'concluido'> }
-  | { tipo: 'concluido'; aceite?: AceiteResumo }
+  /**
+   * `invitePlataforma` viaja junto porque a tela do convite JÁ concluído
+   * também oferece o cadastro na plataforma — e o `abrir` é a única resposta
+   * que traz esse link para quem voltou dias depois pelo link do convite.
+   */
+  | { tipo: 'concluido'; aceite?: AceiteResumo; invitePlataforma?: string | null }
   | { tipo: 'fluxo'; sessao: Sessao };
 
 const CONTRATO_QUEBRADO =
@@ -646,7 +651,11 @@ export function situacaoDe(resultado: Resultado<RespostaAbrir>): Situacao {
     case 'valido':
       return sessaoDe(resultado.dados);
     case 'concluido':
-      return { tipo: 'concluido', aceite: resultado.dados.aceite };
+      return {
+        tipo: 'concluido',
+        aceite: resultado.dados.aceite,
+        invitePlataforma: resultado.dados.invite_plataforma,
+      };
     case 'invalido':
     case 'expirado':
     case 'revogado':

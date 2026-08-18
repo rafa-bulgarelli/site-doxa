@@ -36,6 +36,7 @@ import {
   Erro,
   Esqueleto,
   Etiqueta,
+  TITULO_DE_BLOCO,
 } from './pecas';
 import { mensagemDe } from './usarAdmin';
 import type { EstadoDoPainel } from './usarAdmin';
@@ -270,9 +271,7 @@ export function VersaoEditor({
             />
           ) : (
             <section className="rounded-2xl border border-white/[0.08] bg-white/[0.015] p-5 sm:p-6">
-              <h2 className="text-[11px] uppercase tracking-[0.14em] text-white/40">
-                Declaração final
-              </h2>
+              <h2 className={TITULO_DE_BLOCO}>Declaração final</h2>
               <p className="mt-3 whitespace-pre-line text-[15px] leading-relaxed text-white/70">
                 {versao.declaracao}
               </p>

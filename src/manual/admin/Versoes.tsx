@@ -12,7 +12,7 @@ import { useState } from 'react';
 import { BookOpen, Copy, Pencil } from 'lucide-react';
 import { dataCompleta } from '../../leads/central/pecas';
 import { criarRascunho } from './dados';
-import { Aviso, BOTAO_BORDA, BOTAO_PRIMARIO, Erro, Esqueleto, Etiqueta } from './pecas';
+import { Aviso, BOTAO_BORDA, BOTAO_PRIMARIO, Erro, Esqueleto, Etiqueta, ROTULO } from './pecas';
 import { mensagemDe } from './usarAdmin';
 import type { EstadoDoPainel } from './usarAdmin';
 import type { StatusDaVersao, VersaoLinha } from '../tipos';
@@ -80,9 +80,7 @@ export function Versoes({
               <div className="min-w-0">
                 <div className="flex flex-wrap items-center gap-2">
                   <Etiqueta>v{versao.numero}</Etiqueta>
-                  <span className="text-[11px] uppercase tracking-[0.14em] text-white/40">
-                    {ROTULO_DO_STATUS[versao.status]}
-                  </span>
+                  <span className={ROTULO}>{ROTULO_DO_STATUS[versao.status]}</span>
                 </div>
                 <p className="mt-2 font-serif text-[1.5rem] leading-tight text-white">
                   {versao.titulo}

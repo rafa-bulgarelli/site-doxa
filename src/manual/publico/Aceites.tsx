@@ -114,7 +114,9 @@ function Posicao({
 }) {
   return (
     <div className="flex flex-wrap items-center justify-between gap-4">
-      <p className="text-[14px] uppercase tracking-[0.16em]" style={{ color: cor }}>
+      {/* Serifa em caixa de frase, como todo letreiro do fluxo. A cor continua
+          vindo da fita da marca — é ela que amarra o texto à trilha ao lado. */}
+      <p className="font-serif text-[15px]" style={{ color: cor }}>
         Item {numero} de {total}
       </p>
       <TrilhaDeItens total={total} atual={numero} confirmados={confirmados} />

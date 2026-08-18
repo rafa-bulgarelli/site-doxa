@@ -62,6 +62,7 @@ function convite(troca: Partial<ConviteLinha> = {}): ConviteLinha {
     email: 'cliente@empresa.com.br',
     empresa: 'Empresa do Cliente',
     nome_cliente: 'Fulano de Tal',
+  invite_plataforma: null,
     versao_id: VERSAO_ID,
     status: 'pendente',
     expira_em: null,

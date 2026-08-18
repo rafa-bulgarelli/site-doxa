@@ -126,12 +126,16 @@ export interface RespostaAbrir {
   versao?: Versao;
   progresso?: Progresso;
   aceite?: AceiteResumo;
+  /** Presente quando o convite traz o link da plataforma — a tela final o usa. */
+  invite_plataforma?: string | null;
 }
 
 export interface RespostaConcluir {
   aceite_id: string;
   aceito_em: string;
   conteudo_sha256: string;
+  /** O botão "Faça seu cadastro oficial na DOXA" da tela final; `null` = sem botão. */
+  invite_plataforma: string | null;
   /**
    * URL assinada, de minutos. `null` quando a geração do PDF falhou DEPOIS do
    * aceite gravado — o aceite vale, e o botão de baixar regenera na hora.
@@ -155,6 +159,8 @@ export interface PedidoConviteCriar {
   empresa: string;
   nome_cliente?: string;
   expira_em?: string;
+  /** O link de convite da plataforma Doxa — vira o botão de cadastro na tela final. */
+  invite_plataforma?: string;
 }
 
 export interface PedidoConviteRevogar {
@@ -165,6 +171,15 @@ export interface PedidoConviteRevogar {
 /** Revoga o antigo e cria outro para o mesmo cliente, apontando a origem. */
 export interface PedidoConviteRegenerar {
   acao: 'convite_regenerar';
+  convite_id: string;
+}
+
+/**
+ * Apaga um convite que NÃO chegou ao aceite. Concluído não se exclui: ele
+ * carrega a prova, e o trigger do banco recusa venha de quem vier.
+ */
+export interface PedidoConviteExcluir {
+  acao: 'convite_excluir';
   convite_id: string;
 }
 
@@ -188,6 +203,7 @@ export type PedidoAdmin =
   | PedidoConviteCriar
   | PedidoConviteRevogar
   | PedidoConviteRegenerar
+  | PedidoConviteExcluir
   | PedidoPdfBaixar
   | PedidoVersaoRascunho
   | PedidoVersaoPublicar;
@@ -220,6 +236,8 @@ export interface ConviteLinha {
   email: string;
   empresa: string;
   nome_cliente: string | null;
+  /** O link de cadastro na plataforma Doxa, quando o CX o anexou ao convite. */
+  invite_plataforma: string | null;
   versao_id: string;
   status: StatusDoConvite;
   expira_em: string | null;

@@ -16,12 +16,26 @@ import {
   buscarAceiteDoConvite,
   buscarConvite,
   buscarProgresso,
+  excluirConvite,
   listarEventos,
   listarItensDoAceite,
   registrarEvento,
 } from './dados';
-import { situacaoDo } from './filtrar';
-import { APAGADO, Aviso, BOTAO_BORDA, BOTAO_PRIMARIO, Campo, Erro, Esqueleto, Etiqueta, Selo } from './pecas';
+import { podeExcluir, situacaoDo } from './filtrar';
+import {
+  APAGADO,
+  Aviso,
+  BOTAO_BORDA,
+  BOTAO_PRIMARIO,
+  Campo,
+  Erro,
+  Esqueleto,
+  Etiqueta,
+  ExcluirEmDoisTempos,
+  ROTULO,
+  Selo,
+  TITULO_DE_BLOCO,
+} from './pecas';
 import { mensagemDe } from './usarAdmin';
 import type { EstadoDoPainel } from './usarAdmin';
 import type {
@@ -59,7 +73,7 @@ const ROTULO_DO_EVENTO: Record<string, string> = {
 function Bloco({ titulo, children }: { titulo: string; children: React.ReactNode }) {
   return (
     <section className="rounded-2xl border border-white/[0.08] bg-white/[0.015] p-5 sm:p-6">
-      <h2 className="text-[11px] uppercase tracking-[0.14em] text-white/40">{titulo}</h2>
+      <h2 className={TITULO_DE_BLOCO}>{titulo}</h2>
       <div className="mt-4">{children}</div>
     </section>
   );
@@ -78,6 +92,8 @@ export function ConviteDetalhe({
   const [carregando, setCarregando] = useState(true);
   const [erro, setErro] = useState<string | null>(null);
   const [pedindoPdf, setPedindoPdf] = useState(false);
+  const [confirmandoExclusao, setConfirmandoExclusao] = useState(false);
+  const [excluindo, setExcluindo] = useState(false);
 
   const carregar = useCallback(async () => {
     setCarregando(true);
@@ -130,6 +146,28 @@ export function ConviteDetalhe({
     }
   };
 
+  /**
+   * Apaga o convite e SAI da tela.
+   *
+   * Ficar aqui depois de excluir mostraria a ficha de uma linha que não existe
+   * mais, com botões que só teriam 404 a oferecer. A lista recarrega antes da
+   * navegação para não voltar com o convite apagado ainda desenhado.
+   */
+  const excluir = async () => {
+    if (excluindo) return;
+    setExcluindo(true);
+    setErro(null);
+    try {
+      await excluirConvite(id);
+      await painel.recarregar();
+      ir('/convites');
+    } catch (problema) {
+      setErro(mensagemDe(problema));
+      setExcluindo(false);
+      setConfirmandoExclusao(false);
+    }
+  };
+
   const versao = painel.versoes.find((v) => v.id === ficha.convite?.versao_id) ?? null;
 
   if (carregando) return <Esqueleto linhas={6} />;
@@ -153,17 +191,30 @@ export function ConviteDetalhe({
           <ArrowLeft className="h-3.5 w-3.5" strokeWidth={2} />
           Todos os convites
         </button>
-        {aceite != null && (
-          <button
-            type="button"
-            onClick={() => void pedirPdf()}
-            disabled={pedindoPdf}
-            className={BOTAO_PRIMARIO}
-          >
-            <Download className="h-3.5 w-3.5" strokeWidth={2.5} />
-            {pedindoPdf ? 'Assinando o endereço…' : 'Baixar o PDF do aceite'}
-          </button>
-        )}
+        <div className="flex flex-wrap items-center gap-2">
+          {aceite != null && (
+            <button
+              type="button"
+              onClick={() => void pedirPdf()}
+              disabled={pedindoPdf}
+              className={BOTAO_PRIMARIO}
+            >
+              <Download className="h-3.5 w-3.5" strokeWidth={2.5} />
+              {pedindoPdf ? 'Assinando o endereço…' : 'Baixar o PDF do aceite'}
+            </button>
+          )}
+          {/* Concluído não aparece aqui: a prova não se apaga. */}
+          {podeExcluir(convite) && (
+            <ExcluirEmDoisTempos
+              confirmando={confirmandoExclusao}
+              ocupado={excluindo}
+              rotulo="Excluir convite"
+              aoPedir={() => setConfirmandoExclusao(true)}
+              aoConfirmar={() => void excluir()}
+              aoDesistir={() => setConfirmandoExclusao(false)}
+            />
+          )}
+        </div>
       </div>
 
       <div className="flex flex-wrap items-center gap-3">
@@ -196,6 +247,11 @@ export function ConviteDetalhe({
           {convite.revogado_em != null && (
             <Campo rotulo="Revogado em" valor={dataCompleta(convite.revogado_em)} />
           )}
+          <Campo
+            rotulo="Invite da plataforma"
+            valor={convite.invite_plataforma ?? undefined}
+            largo
+          />
           {convite.regenerado_de != null && (
             <Campo rotulo="Regenerado de" valor={convite.regenerado_de} largo />
           )}
@@ -243,8 +299,8 @@ export function ConviteDetalhe({
                   <span className="font-mono text-[12px] text-white/45">{item.codigo}</span>
                   <span className="text-[15px] text-white">{item.titulo}</span>
                   {item.severidade === 'critica' && (
-                    <span className="text-[11px] uppercase tracking-[0.12em]" style={{ color: APAGADO }}>
-                      crítica
+                    <span className={ROTULO} style={{ color: APAGADO }}>
+                      Crítica
                     </span>
                   )}
                 </div>

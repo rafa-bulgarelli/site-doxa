@@ -59,7 +59,10 @@ export function Casca({ children }: { children: ReactNode }) {
       <header className="border-b border-doxa-line/80 px-5 py-4">
         <div className="mx-auto flex w-full max-w-2xl items-center justify-between">
           <img src={wordmarkUrl} alt="Doxa" className="h-5 w-auto" width={364} height={96} />
-          <span className="text-[14px] uppercase tracking-[0.18em] text-white/35">Manual</span>
+          {/* Serifa e caixa de frase, como todo letreiro do fluxo: caixa alta
+              com tracking largo era a roupa antiga, e o dono pediu a troca em
+              cada lugar que tinha título em maiúsculas. */}
+          <span className="font-serif text-[15px] text-white/35">Manual</span>
         </div>
       </header>
       <div className="mx-auto w-full max-w-2xl px-5 pb-28 pt-10">{children}</div>
@@ -94,11 +97,21 @@ export function Subtitulo({ children }: { children: ReactNode }) {
   );
 }
 
-/** Metadado, e SÓ metadado: "Capítulo 2 de 4", "Registro", "E-mail". */
+/**
+ * Metadado, e SÓ metadado: "Capítulo 2 de 4", "Registro", "E-mail".
+ *
+ * Era caixa alta com `tracking` largo. O dono foi literal: "em todo lugar que
+ * tiver um título com letras maiúsculas, troca para fonte com serifa e só a
+ * primeira letra maiúscula". Então a caixa alta saiu daqui — e sai de toda a
+ * tela junto, porque este `Rotulo` é quem veste quase todos os letreiros do
+ * fluxo. O texto não mudou uma letra: quem estava em maiúsculas estava assim
+ * por causa da CLASSE, e é a classe que foi embora.
+ *
+ * 15px porque a serifa em 14px, com a mesma cor apagada, fica fina demais no
+ * celular — a troca de fonte pede um ponto a mais para respirar.
+ */
 export function Rotulo({ children }: { children: ReactNode }) {
-  return (
-    <p className="text-[14px] uppercase tracking-[0.16em] text-doxa-muted">{children}</p>
-  );
+  return <p className="font-serif text-[15px] text-doxa-muted">{children}</p>;
 }
 
 /** Corpo de leitura. Nunca `doxa-muted`: isto é conteúdo, não etiqueta. */
@@ -394,6 +407,44 @@ export function BaixarPdf({
         </p>
       )}
     </div>
+  );
+}
+
+/**
+ * ─── O PASSO SEGUINTE AO COMPROVANTE ─────────────────────────────────────────
+ *
+ * O cadastro na plataforma da DOXA, na tela final do aceite.
+ *
+ * Duas decisões que não são gosto:
+ *
+ *  · **Sem link, não existe botão.** Nem placeholder, nem espaço morto, nem
+ *    botão desabilitado: o convite da plataforma é opcional no cadastro do
+ *    cliente, e um botão que não leva a lugar nenhum é a pior primeira
+ *    impressão possível do produto que a pessoa acabou de aceitar. Uma URL em
+ *    branco (`''`) conta como ausente — o admin pode ter salvo um campo vazio.
+ *  · **Contorno, e não branco cheio.** O PDF é a ação DESTE momento — é o
+ *    comprovante que a pessoa veio buscar, e ela ainda pode não ter baixado.
+ *    O cadastro é o passo seguinte, então vem logo abaixo, com presença
+ *    (borda mais clara, fundo levemente aceso, texto em branco pleno) mas sem
+ *    disputar: dois botões brancos empilhados fazem o olho decidir no cara ou
+ *    coroa. Sem anel da Siri de propósito — a tela de conclusão já gasta a
+ *    ÚNICA fita acesa do fluxo na frase "Está registrado.", e uma segunda luz
+ *    aqui transformaria o momento em papel de parede.
+ *
+ * `target="_blank"`: sair da aba do comprovante levaria embora o botão de
+ * baixar o PDF, cuja URL assinada morre em minutos.
+ */
+export function CadastroOficial({ url }: { url?: string | null }) {
+  if (url == null || url.trim().length === 0) return null;
+  return (
+    <a
+      href={url}
+      target="_blank"
+      rel="noreferrer"
+      className={`${BASE_DO_BOTAO} border border-white/25 bg-white/[0.06] text-white hover:bg-white/[0.12]`}
+    >
+      Faça seu cadastro oficial na DOXA
+    </a>
   );
 }
 

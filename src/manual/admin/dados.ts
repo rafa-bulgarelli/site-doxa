@@ -360,6 +360,18 @@ export async function revogarConvite(conviteId: string): Promise<void> {
   await chamarAdmin({ acao: 'convite_revogar', convite_id: conviteId }, tokenDoTime());
 }
 
+/**
+ * Apaga um convite que não chegou ao aceite.
+ *
+ * Vai pela API, e não por um DELETE no PostgREST, porque quem julga é o TRIGGER
+ * do banco: convite concluído carrega a prova e a exclusão volta 409. A tela já
+ * esconde o botão nesse caso (`podeExcluir`), mas a recusa do servidor é a que
+ * vale — a lista pode estar velha na aba aberta desde ontem.
+ */
+export async function excluirConvite(conviteId: string): Promise<void> {
+  await chamarAdmin({ acao: 'convite_excluir', convite_id: conviteId }, tokenDoTime());
+}
+
 export async function regenerarConvite(conviteId: string): Promise<RespostaConviteCriado> {
   const criado = await chamarAdmin<RespostaConviteCriado>(
     { acao: 'convite_regenerar', convite_id: conviteId },

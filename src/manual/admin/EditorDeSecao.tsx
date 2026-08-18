@@ -11,7 +11,15 @@ import { ArrowDown, ArrowUp, Plus, Trash2 } from 'lucide-react';
 import { apagarSecao, criarRegra, salvarRegra, salvarSecao } from './dados';
 import { proximaOrdem, proximoCodigo, trocarOrdem } from './conteudo';
 import { EditorDeRegra } from './EditorDeRegra';
-import { APAGADO, BOTAO_BORDA, BOTAO_PRIMARIO, CampoLongo, CampoTexto, Etiqueta } from './pecas';
+import {
+  APAGADO,
+  BOTAO_BORDA,
+  BOTAO_PRIMARIO,
+  CampoLongo,
+  CampoTexto,
+  Etiqueta,
+  ROTULO,
+} from './pecas';
 import { mensagemDe } from './usarAdmin';
 import type { FerramentasDoEditor } from './conteudo';
 import type { RegraLinha, SecaoLinha } from '../tipos';
@@ -194,15 +202,11 @@ export function SecaoLida({ secao, regras }: { secao: SecaoLinha; regras: RegraL
               <span className="font-mono text-[12px] text-white/45">{regra.codigo}</span>
               <span className="text-[15px] text-white">{regra.titulo}</span>
               {regra.severidade === 'critica' && (
-                <span className="text-[11px] uppercase tracking-[0.12em]" style={{ color: APAGADO }}>
-                  crítica
+                <span className={ROTULO} style={{ color: APAGADO }}>
+                  Crítica
                 </span>
               )}
-              {!regra.obrigatoria && (
-                <span className="text-[11px] uppercase tracking-[0.12em] text-white/30">
-                  informativa
-                </span>
-              )}
+              {!regra.obrigatoria && <span className={ROTULO}>Informativa</span>}
             </div>
             <p className="mt-2 whitespace-pre-line text-[14px] leading-relaxed text-white/70">
               {regra.instrucao}

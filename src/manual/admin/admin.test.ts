@@ -15,6 +15,7 @@ import {
   contarSituacoes,
   derivarConvites,
   pedidoDeCriacao,
+  podeExcluir,
   situacaoDo,
   validarConvite,
 } from './filtrar';
@@ -40,6 +41,7 @@ function convite(extra: Partial<ConviteLinha> = {}): ConviteLinha {
     email: 'contato@empresa.com',
     empresa: 'Empresa',
     nome_cliente: null,
+    invite_plataforma: null,
     versao_id: 'v1',
     status: 'pendente',
     expira_em: null,
@@ -177,6 +179,7 @@ describe('o formulário do convite', () => {
     empresa: 'Empresa do Cliente',
     nomeCliente: 'Maria',
     expiraEm: '2026-08-20',
+    invitePlataforma: 'https://app.doxaviral.com/convite/abc',
   };
 
   it('aceita o preenchimento completo', () => {
@@ -210,15 +213,67 @@ describe('o formulário do convite', () => {
   });
 
   it('omite os opcionais em branco em vez de mandar string vazia', () => {
-    const pedido = pedidoDeCriacao({ ...cheio, nomeCliente: '  ', expiraEm: '' });
+    const pedido = pedidoDeCriacao({
+      ...cheio,
+      nomeCliente: '  ',
+      expiraEm: '',
+      invitePlataforma: '   ',
+    });
     expect(pedido.nome_cliente).toBeUndefined();
     expect(pedido.expira_em).toBeUndefined();
+    // String vazia aqui derrubaria o `check` do banco, que só aceita null ou
+    // um endereço http(s) — e o erro só apareceria na cara do CX.
+    expect(pedido.invite_plataforma).toBeUndefined();
   });
 
   it('tira o espaço sobrando do que a pessoa colou', () => {
     const pedido = pedidoDeCriacao({ ...cheio, email: '  cliente@empresa.com ', empresa: ' Loja ' });
     expect(pedido.email).toBe('cliente@empresa.com');
     expect(pedido.empresa).toBe('Loja');
+  });
+
+  it('leva o invite da plataforma no pedido, sem o espaço colado junto', () => {
+    const pedido = pedidoDeCriacao({
+      ...cheio,
+      invitePlataforma: '  https://app.doxaviral.com/convite/abc  ',
+    });
+    expect(pedido.invite_plataforma).toBe('https://app.doxaviral.com/convite/abc');
+  });
+
+  it('recusa invite sem esquema — o navegador o leria como caminho do site', () => {
+    const problemas = validarConvite({ ...cheio, invitePlataforma: 'app.doxaviral.com/x' }, AGORA);
+    expect(problemas.invitePlataforma).toBeTruthy();
+  });
+
+  it('recusa invite acima de 500 caracteres, como o `check` do banco', () => {
+    const comprido = `https://app.doxaviral.com/${'a'.repeat(500)}`;
+    expect(validarConvite({ ...cheio, invitePlataforma: comprido }, AGORA).invitePlataforma)
+      .toBeTruthy();
+    expect(validarConvite({ ...cheio, invitePlataforma: '' }, AGORA)).toEqual({});
+  });
+
+  it('aceita http além de https — invite de homologação também é link', () => {
+    expect(
+      validarConvite({ ...cheio, invitePlataforma: 'http://localhost:3000/convite/x' }, AGORA),
+    ).toEqual({});
+  });
+});
+
+describe('a exclusão de um convite', () => {
+  it('não oferece excluir o concluído — ele carrega a prova', () => {
+    expect(podeExcluir(convite({ status: 'concluido' }))).toBe(false);
+  });
+
+  it('deixa excluir o que não chegou ao aceite', () => {
+    expect(podeExcluir(convite({ status: 'pendente' }))).toBe(true);
+    expect(podeExcluir(convite({ status: 'aberto' }))).toBe(true);
+    expect(podeExcluir(convite({ status: 'revogado' }))).toBe(true);
+  });
+
+  it('o expirado continua excluível — expirado não é status do banco', () => {
+    const vencido = convite({ status: 'pendente', expira_em: ONTEM });
+    expect(situacaoDo(vencido, AGORA)).toBe('expirado');
+    expect(podeExcluir(vencido)).toBe(true);
   });
 });
 

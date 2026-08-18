@@ -2,21 +2,45 @@
  * ─── OS CONVITES ─────────────────────────────────────────────────────────────
  *
  * A lista de trabalho do CX: busca, filtro por situação e por versão, ordem,
- * página, e as três ações que existem sobre um convite — revogar, regenerar e
- * abrir o detalhe.
+ * página, e as ações que existem sobre um convite — revogar, regenerar, excluir
+ * e abrir o detalhe.
  *
  * A linha inteira abre o convite, como na Central: mirar num botão pequeno no
  * fim de uma linha larga é o gesto mais caro de uma tabela. O botão continua lá
  * porque é ele que o teclado alcança e o leitor de tela anuncia.
+ *
+ * REVOGAR e EXCLUIR não são a mesma coisa, e a tela não pode deixar confundir:
+ * revogar mata o link e MANTÉM o rastro; excluir apaga a linha e o que pende
+ * dela. Por isso cada um pede a própria confirmação, e nunca as duas ao mesmo
+ * tempo — duas perguntas vermelhas abertas na mesma linha é o cenário em que se
+ * responde a errada.
  */
 import { useEffect, useState } from 'react';
 import { Ban, Download, Plus, RotateCcw, Search } from 'lucide-react';
 import { quandoFoi } from '../../leads/central/pecas';
 import { baixarCsvDeConvites } from './csv';
-import { regenerarConvite, registrarEvento, revogarConvite } from './dados';
-import { ROTULO_DA_SITUACAO, SITUACOES, derivarConvites, situacaoDo } from './filtrar';
+import { excluirConvite, regenerarConvite, registrarEvento, revogarConvite } from './dados';
+import {
+  ROTULO_DA_SITUACAO,
+  SITUACOES,
+  derivarConvites,
+  podeExcluir,
+  situacaoDo,
+} from './filtrar';
 import { LinkRevelado, NovoConvite } from './NovoConvite';
-import { Aviso, BOTAO_BORDA, BOTAO_PRIMARIO, Erro, Esqueleto, Etiqueta, Selo } from './pecas';
+import {
+  Aviso,
+  BOTAO_BORDA,
+  BOTAO_DESISTIR,
+  BOTAO_PERIGO_BORDA,
+  BOTAO_PRIMARIO,
+  Erro,
+  Esqueleto,
+  Etiqueta,
+  ExcluirEmDoisTempos,
+  ROTULO,
+  Selo,
+} from './pecas';
 import { POR_PAGINA, mensagemDe } from './usarAdmin';
 import type { EstadoDoPainel } from './usarAdmin';
 import type { OrdemDeConvite, Situacao } from './filtrar';
@@ -25,23 +49,65 @@ import type { ConviteLinha, VersaoLinha } from '../tipos';
 const CAIXA_DE_FILTRO =
   'rounded-xl border border-white/[0.1] bg-white/[0.03] px-3 py-2.5 text-[14px] text-white outline-none focus:border-white/30';
 
+/** Qual pergunta está aberta numa linha. Uma de cada vez, e só numa linha. */
+type PedidoDeCerteza = 'revogar' | 'excluir';
+
 interface AcoesProps {
   convite: ConviteLinha;
   ocupado: boolean;
-  confirmando: boolean;
-  aoConfirmarRevogacao: () => void;
+  certeza: PedidoDeCerteza | null;
+  aoPedirCerteza: (pedido: PedidoDeCerteza) => void;
+  aoDesistir: () => void;
   aoRevogar: () => void;
   aoRegenerar: () => void;
+  aoExcluir: () => void;
 }
 
-/** Revogar e regenerar, com o "tem certeza?" em dois tempos no mesmo lugar. */
+/** Revogar, com o "tem certeza?" em dois tempos no mesmo lugar. */
+function Revogar({
+  ocupado,
+  confirmando,
+  aoPedir,
+  aoDesistir,
+  aoRevogar,
+}: {
+  ocupado: boolean;
+  confirmando: boolean;
+  aoPedir: () => void;
+  aoDesistir: () => void;
+  aoRevogar: () => void;
+}) {
+  if (!confirmando) {
+    return (
+      <button type="button" onClick={aoPedir} className={BOTAO_BORDA} disabled={ocupado}>
+        <Ban className="h-3.5 w-3.5" strokeWidth={2} />
+        Revogar
+      </button>
+    );
+  }
+  return (
+    <>
+      <button type="button" onClick={aoRevogar} disabled={ocupado} className={BOTAO_PERIGO_BORDA}>
+        <Ban className="h-3.5 w-3.5" strokeWidth={2.5} />
+        {ocupado ? 'Revogando…' : 'Revogar mesmo'}
+      </button>
+      <button type="button" onClick={aoDesistir} disabled={ocupado} className={BOTAO_DESISTIR}>
+        Cancelar
+      </button>
+    </>
+  );
+}
+
+/** As ações de um convite. Enquanto uma pergunta está aberta, o resto some. */
 function Acoes({
   convite,
   ocupado,
-  confirmando,
-  aoConfirmarRevogacao,
+  certeza,
+  aoPedirCerteza,
+  aoDesistir,
   aoRevogar,
   aoRegenerar,
+  aoExcluir,
 }: AcoesProps) {
   const vivo = convite.status === 'pendente' || convite.status === 'aberto';
   return (
@@ -51,28 +117,30 @@ function Acoes({
          detalhe por baixo do diálogo de confirmação. */
       onClick={(evento) => evento.stopPropagation()}
     >
-      {vivo && !confirmando && (
-        <button type="button" onClick={aoConfirmarRevogacao} className={BOTAO_BORDA} disabled={ocupado}>
-          <Ban className="h-3.5 w-3.5" strokeWidth={2} />
-          Revogar
-        </button>
+      {vivo && certeza !== 'excluir' && (
+        <Revogar
+          ocupado={ocupado}
+          confirmando={certeza === 'revogar'}
+          aoPedir={() => aoPedirCerteza('revogar')}
+          aoDesistir={aoDesistir}
+          aoRevogar={aoRevogar}
+        />
       )}
-      {vivo && confirmando && (
-        <button
-          type="button"
-          onClick={aoRevogar}
-          disabled={ocupado}
-          className="inline-flex items-center gap-2 rounded-full border border-[#E0453F]/50 px-4 py-2 text-[13px] font-semibold text-[#E0453F] transition-colors hover:bg-[#E0453F]/10 disabled:opacity-40"
-        >
-          <Ban className="h-3.5 w-3.5" strokeWidth={2.5} />
-          {ocupado ? 'Revogando…' : 'Revogar mesmo'}
-        </button>
-      )}
-      {convite.status !== 'concluido' && (
+      {convite.status !== 'concluido' && certeza == null && (
         <button type="button" onClick={aoRegenerar} className={BOTAO_BORDA} disabled={ocupado}>
           <RotateCcw className="h-3.5 w-3.5" strokeWidth={2} />
           Regenerar
         </button>
+      )}
+      {/* Concluído não tem este botão: ele carrega a prova, e a API recusa. */}
+      {podeExcluir(convite) && certeza !== 'revogar' && (
+        <ExcluirEmDoisTempos
+          confirmando={certeza === 'excluir'}
+          ocupado={ocupado}
+          aoPedir={() => aoPedirCerteza('excluir')}
+          aoConfirmar={aoExcluir}
+          aoDesistir={aoDesistir}
+        />
       )}
     </div>
   );
@@ -100,7 +168,9 @@ export function Convites({
   const [formAberto, setFormAberto] = useState(false);
   const [revelado, setRevelado] = useState<{ link: string; conviteId: string } | null>(null);
   const [ocupado, setOcupado] = useState<string | null>(null);
-  const [confirmando, setConfirmando] = useState<string | null>(null);
+  /* A pergunta aberta guarda o convite E qual gesto — sem o gesto, "sim" numa
+     linha responderia a pergunta que a outra linha estava fazendo. */
+  const [certeza, setCerteza] = useState<{ id: string; pedido: PedidoDeCerteza } | null>(null);
   const [erro, setErro] = useState<string | null>(null);
 
   // Qualquer mexida no filtro volta para a primeira página: manter a página
@@ -127,17 +197,34 @@ export function Convites({
       setErro(mensagemDe(problema));
     } finally {
       setOcupado(null);
-      setConfirmando(null);
+      setCerteza(null);
     }
   };
 
   const revogar = (id: string) => void agir(id, () => revogarConvite(id));
+
+  /* Excluído o convite, a lista recarrega pelo `agir`: deixar a linha apagada
+     na tela convidaria o segundo clique num id que não existe mais. */
+  const excluir = (id: string) => void agir(id, () => excluirConvite(id));
 
   const regenerar = (id: string) =>
     void agir(id, async () => {
       const criado = await regenerarConvite(id);
       setRevelado({ link: criado.link, conviteId: criado.convite_id });
     });
+
+  /* As mesmas ações aparecem na tabela e no cartão do telefone. Montar as duas
+     à mão era o convite a esquecer um `aoDesistir` num dos lados. */
+  const acoesDe = (convite: ConviteLinha): AcoesProps => ({
+    convite,
+    ocupado: ocupado === convite.id,
+    certeza: certeza != null && certeza.id === convite.id ? certeza.pedido : null,
+    aoPedirCerteza: (pedido) => setCerteza({ id: convite.id, pedido }),
+    aoDesistir: () => setCerteza(null),
+    aoRevogar: () => revogar(convite.id),
+    aoRegenerar: () => regenerar(convite.id),
+    aoExcluir: () => excluir(convite.id),
+  });
 
   const exportar = () => {
     if (visao.filtrados.length === 0) return;
@@ -288,7 +375,7 @@ export function Convites({
             <div className="hidden overflow-x-auto lg:block">
               <table className="w-full min-w-[980px] text-left">
                 <thead>
-                  <tr className="text-[12px] uppercase tracking-[0.1em] text-white/35">
+                  <tr className={ROTULO}>
                     <th className="px-4 py-3 font-normal">Empresa</th>
                     <th className="px-4 py-3 font-normal">Quem assina</th>
                     <th className="px-4 py-3 font-normal">Situação</th>
@@ -323,14 +410,7 @@ export function Convites({
                         {quandoFoi(convite.criado_em)}
                       </td>
                       <td className="px-4 py-4">
-                        <Acoes
-                          convite={convite}
-                          ocupado={ocupado === convite.id}
-                          confirmando={confirmando === convite.id}
-                          aoConfirmarRevogacao={() => setConfirmando(convite.id)}
-                          aoRevogar={() => revogar(convite.id)}
-                          aoRegenerar={() => regenerar(convite.id)}
-                        />
+                        <Acoes {...acoesDe(convite)} />
                       </td>
                     </tr>
                   ))}
@@ -364,14 +444,7 @@ export function Convites({
                     <span className="text-[12px] text-white/40">{quandoFoi(convite.criado_em)}</span>
                   </div>
                   <div className="mt-3">
-                    <Acoes
-                      convite={convite}
-                      ocupado={ocupado === convite.id}
-                      confirmando={confirmando === convite.id}
-                      aoConfirmarRevogacao={() => setConfirmando(convite.id)}
-                      aoRevogar={() => revogar(convite.id)}
-                      aoRegenerar={() => regenerar(convite.id)}
-                    />
+                    <Acoes {...acoesDe(convite)} />
                   </div>
                 </div>
               ))}

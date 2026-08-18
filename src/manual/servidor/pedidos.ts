@@ -61,6 +61,25 @@ export function lerPedidoPublico(corpo: unknown): PedidoPublico {
   }
 }
 
+/**
+ * O link de cadastro na plataforma, na régua EXATA do `check` da coluna: http
+ * ou https, até 500 caracteres. Sem o `i` no padrão de propósito — o `~` do
+ * Postgres é sensível a maiúsculas, e um 'HTTPS://' que passasse por aqui
+ * viraria um 500 do banco em vez deste 400 que o CX consegue ler.
+ */
+function inviteOpcional(valor: unknown): string | undefined {
+  if (valor == null) return undefined;
+  if (typeof valor !== 'string') {
+    throw new ErroHttp(400, 'campo_invalido', 'invite_plataforma nao e texto');
+  }
+  const limpo = valor.trim();
+  if (limpo.length === 0) return undefined;
+  if (limpo.length > 500 || !/^https?:\/\//.test(limpo)) {
+    throw new ErroHttp(400, 'campo_invalido', 'invite_plataforma nao e link ate 500');
+  }
+  return limpo;
+}
+
 export function lerPedidoAdmin(corpo: unknown): PedidoAdmin {
   const bruto = objetoDe(corpo);
   switch (bruto.acao) {
@@ -71,11 +90,14 @@ export function lerPedidoAdmin(corpo: unknown): PedidoAdmin {
         empresa: exigirTexto(bruto.empresa, 'empresa', 2, 160),
         nome_cliente: textoOpcional(bruto.nome_cliente, 'nome_cliente', 160),
         expira_em: dataOpcional(bruto.expira_em, 'expira_em'),
+        invite_plataforma: inviteOpcional(bruto.invite_plataforma),
       };
     case 'convite_revogar':
       return { acao: 'convite_revogar', convite_id: exigirUuid(bruto.convite_id, 'convite_id') };
     case 'convite_regenerar':
       return { acao: 'convite_regenerar', convite_id: exigirUuid(bruto.convite_id, 'convite_id') };
+    case 'convite_excluir':
+      return { acao: 'convite_excluir', convite_id: exigirUuid(bruto.convite_id, 'convite_id') };
     case 'pdf_baixar':
       return { acao: 'pdf_baixar', aceite_id: exigirUuid(bruto.aceite_id, 'aceite_id') };
     case 'versao_rascunho':

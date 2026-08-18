@@ -121,7 +121,12 @@ async function abrir(convite: ConviteLinha | null): Promise<RespostaAbrir> {
   if (convite == null) return { estado: 'invalido' };
   const estado = estadoDoConvite(convite, new Date());
   if (estado === 'concluido') {
-    return { estado, convite: conviteAbertoDe(convite), aceite: await resumoDoAceite(convite.id) };
+    return {
+      estado,
+      convite: conviteAbertoDe(convite),
+      aceite: await resumoDoAceite(convite.id),
+      invite_plataforma: convite.invite_plataforma,
+    };
   }
   if (estado !== 'valido') return { estado };
 
@@ -220,6 +225,7 @@ async function concluir(
     aceite_id: resultado.aceite_id,
     aceito_em: resultado.aceito_em,
     conteudo_sha256: resultado.conteudo_sha256,
+    invite_plataforma: convite.invite_plataforma,
     pdf_url: url,
     pdf_sha256: sha,
   };
