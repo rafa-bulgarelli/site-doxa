@@ -81,6 +81,27 @@ function textosDe(bloco: Bloco): readonly string[] {
 }
 
 /**
+ * A pergunta reduzida ao que ela PERGUNTA: sem acento, sem caixa, sem
+ * pontuação, sem espaço sobrando.
+ *
+ * "Quanto custa?" e "Quanto custa" são a MESMA pergunta para quem lê e para o
+ * Google, e duas páginas que marcam `FAQPage` com ela disputam o mesmo rich
+ * result — o buscador escolhe uma e desconfia das duas. Comparar por `===` não
+ * enxergaria isso. Vive aqui, e não no teste, porque o gate (`seo.test.ts`) e o
+ * aviso (`pnpm seo:audit`) TÊM de concordar sobre o que é a mesma pergunta:
+ * duas normalizações divergentes fariam o audit dizer "limpo" sobre o que o
+ * teste reprova.
+ */
+export function normalizarPergunta(pergunta: string): string {
+  return pergunta
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, ' ')
+    .trim();
+}
+
+/**
  * Quantas palavras a pessoa lê no corpo.
  *
  * Contadas DEPOIS de `tokens()`: `**escala**` é uma palavra e não três pedaços,

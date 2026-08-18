@@ -1,7 +1,7 @@
 import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
-import { palavrasDe } from './auditoria';
+import { normalizarPergunta, palavrasDe } from './auditoria';
 import { urlAbsoluta } from './head';
 import { linksInternosDe, paginas, resolverLink, secoes, urlDe, urlsPublicadas } from './indice';
 import { tokens } from './inline';
@@ -311,6 +311,44 @@ describe('o HTML gerado', () => {
       const temBlocoFaq = pagina.corpo.some((bloco) => bloco.tipo === 'faq');
       expect(html.includes('<details')).toBe(temBlocoFaq);
     }
+  });
+});
+
+describe('o FAQ do corpus', () => {
+  /**
+   * A MESMA pergunta em duas páginas é `FAQPage` duplicado.
+   *
+   * Cada bloco `faq` vira um nó `FAQPage` no JSON-LD daquela URL. Quando duas
+   * URLs marcam a mesma pergunta, o Google tem dois candidatos para o mesmo
+   * rich result e a saída dele é escolher um e rebaixar o outro — ou nenhum. É
+   * o item 39 do brief (conteúdo duplicado) na camada de schema, e não dá para
+   * ver lendo uma página só: só aparece varrendo o corpus inteiro, que é o que
+   * este teste faz.
+   *
+   * A mesma pergunta REPETIDA dentro de uma página também cai aqui: a URL
+   * aparece duas vezes na lista. Um `FAQPage` com a pergunta em dobro é o mesmo
+   * defeito, com o mesmo diagnóstico.
+   */
+  it('não repete a mesma pergunta em duas páginas', () => {
+    const onde = new Map<string, { pergunta: string; urls: string[] }>();
+    for (const pagina of TODAS) {
+      for (const bloco of pagina.corpo) {
+        if (bloco.tipo !== 'faq') continue;
+        for (const item of bloco.itens) {
+          const chave = normalizarPergunta(item.pergunta);
+          const registro = onde.get(chave) ?? { pergunta: item.pergunta, urls: [] };
+          registro.urls.push(urlDe(pagina));
+          onde.set(chave, registro);
+        }
+      }
+    }
+
+    const repetidas = [...onde.values()]
+      .filter((registro) => registro.urls.length > 1)
+      .map((registro) => `"${registro.pergunta}" → ${registro.urls.join(', ')}`)
+      .sort();
+
+    expect(repetidas, 'a mesma pergunta marcada como FAQPage em mais de uma página').toEqual([]);
   });
 });
 
