@@ -1,4 +1,12 @@
-import { DOMINIO, LOCALE_OG, NOME, OG_IMAGEM } from './site';
+import {
+  DOMINIO,
+  LOCALE_OG,
+  NOME,
+  OG_IMAGEM,
+  OG_IMAGEM_ALT,
+  OG_IMAGEM_ALTURA,
+  OG_IMAGEM_LARGURA,
+} from './site';
 import type { Tipo } from './tipos';
 
 /**
@@ -74,14 +82,33 @@ export function cabeca(entrada: EntradaCabeca): Cabeca {
     { atributo: 'property', chave: 'og:url', conteudo: canonical },
     { atributo: 'property', chave: 'og:site_name', conteudo: NOME },
     { atributo: 'property', chave: 'og:locale', conteudo: LOCALE_OG },
-    { atributo: 'name', chave: 'twitter:card', conteudo: 'summary_large_image' },
+    // `summary_large_image` promete um cartão com imagem grande. Sem `og:image`
+    // ele não vira cartão nenhum — vira a moldura vazia. O card acompanha a
+    // imagem, e não o contrário.
+    {
+      atributo: 'name',
+      chave: 'twitter:card',
+      conteudo: OG_IMAGEM != null ? 'summary_large_image' : 'summary',
+    },
     { atributo: 'name', chave: 'twitter:title', conteudo: entrada.titulo },
     { atributo: 'name', chave: 'twitter:description', conteudo: entrada.descricao },
   ];
   // `og:image` só quando o arquivo existe. Uma tag apontando para o vazio faz o
   // WhatsApp mostrar um cartão com moldura quebrada — pior do que sem imagem.
+  //
+  // A URL vai ABSOLUTA: `og:image` relativa não é resolvida por leitor de link
+  // nenhum, e o cartão sai sem a imagem que a tag prometeu. `width`/`height`
+  // deixam o leitor reservar a caixa antes de o arquivo chegar, e é o que evita
+  // o cartão pulando de tamanho na conversa.
   if (OG_IMAGEM != null) {
-    metas.push({ atributo: 'property', chave: 'og:image', conteudo: urlAbsoluta(OG_IMAGEM) });
+    const imagem = urlAbsoluta(OG_IMAGEM);
+    metas.push(
+      { atributo: 'property', chave: 'og:image', conteudo: imagem },
+      { atributo: 'property', chave: 'og:image:alt', conteudo: OG_IMAGEM_ALT },
+      { atributo: 'property', chave: 'og:image:width', conteudo: String(OG_IMAGEM_LARGURA) },
+      { atributo: 'property', chave: 'og:image:height', conteudo: String(OG_IMAGEM_ALTURA) },
+      { atributo: 'name', chave: 'twitter:image', conteudo: imagem },
+    );
   }
   return { titulo: entrada.titulo, canonical, metas };
 }

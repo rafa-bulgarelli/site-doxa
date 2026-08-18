@@ -74,7 +74,8 @@ export function PaginaHub({ pagina }: { pagina: Pagina }): ReactElement {
       ))}
 
       <p className="mt-12 border-t border-doxa-line py-6 text-[13px] text-white/30">
-        Conteúdo atualizado em {porExtenso(pagina.atualizadoEm)}.
+        Conteúdo atualizado em{' '}
+        <time dateTime={pagina.atualizadoEm}>{porExtenso(pagina.atualizadoEm)}</time>.
       </p>
     </article>
   );

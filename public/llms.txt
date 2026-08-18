@@ -35,6 +35,26 @@ Três passos, nesta ordem:
 - [Perguntas frequentes](https://www.doxaviral.com/#faq): prazo, garantia,
   formatos, o que a Doxa precisa do cliente e o que ela entrega.
 
+## Biblioteca
+
+Cinco índices de conteúdo. Estão listados os ÍNDICES e não as páginas: a lista
+de páginas dentro de cada um muda toda semana, e a URL do índice não muda.
+
+- [Soluções](https://www.doxaviral.com/solucoes): as frentes de trabalho da
+  Doxa — o que cada uma resolve, para quem serve e o que o cliente recebe.
+- [Plataformas](https://www.doxaviral.com/plataformas): o que muda na produção e
+  na distribuição de vídeo vertical no TikTok, no Instagram e no YouTube Shorts.
+- [Guias](https://www.doxaviral.com/guias): material de referência sobre
+  produção de conteúdo, alcance orgânico, vídeo curto e IA no marketing.
+- [Comparativos](https://www.doxaviral.com/comparativos): duas alternativas por
+  página, com o que cada uma resolve e onde ela é a escolha errada.
+- [Glossário](https://www.doxaviral.com/glossario): um verbete por página — o
+  que o termo significa e onde ele aparece na prática.
+
+Um índice só existe depois que a primeira página dele é publicada; até lá a URL
+responde 404. O que está no ar em qualquer momento é o que o
+[sitemap](https://www.doxaviral.com/sitemap.xml) lista.
+
 ## O que a Doxa não é
 
 - Não é uma agência: não há equipe de gravação, estúdio nem calendário editorial

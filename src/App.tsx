@@ -302,6 +302,14 @@ export default function App() {
    * que o código chegou, não que o React já pintou o painel. Sessenta quadros
    * são cerca de um segundo — depois disso, desiste em silêncio, que é o mesmo
    * que teria acontecido sem este seguro.
+   *
+   * O MESMO seguro vale na MONTAGEM, e não só no clique. O `main.tsx` agora
+   * preserva `#forms` quando ele veio de uma navegação nova (`fragmento.ts`
+   * explica), e o botão "Falar com a Doxa" das páginas de `/solucoes` e
+   * `/guias` chega aqui exatamente assim. O navegador não salta sozinho: o
+   * alvo mora na comparação, que é `lazy` e ainda não montou. Sem estas
+   * linhas, o link profundo abriria no topo da home — o defeito que ele
+   * existe para corrigir.
    */
   useEffect(() => {
     const rolarQuandoChegar = (quadrosRestantes: number) => {
@@ -314,6 +322,11 @@ export default function App() {
         window.requestAnimationFrame(() => rolarQuandoChegar(quadrosRestantes - 1));
       }
     };
+
+    // O link profundo vindo de fora, na chegada.
+    if (window.location.hash === HREF_FORMS) {
+      void import('./components/Comparacao').then(() => rolarQuandoChegar(60));
+    }
 
     const aoClicar = (evento: MouseEvent) => {
       // Cliques com modificador são "abrir noutra aba/janela", e são do

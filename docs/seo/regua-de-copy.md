@@ -33,7 +33,8 @@ não de "resolve depois".
  * [ ] 10. Comparativo é IMPARCIAL: admite onde a outra opção ganha. Não
  *          concluir artificialmente que a Doxa é sempre a resposta.
  * [ ] 11. CTA por intenção — topo de funil: próximo conteúdo; meio:
- *          metodologia/prova; fundo: o formulário (#forms). Um só, no fim.
+ *          metodologia/prova; fundo: o formulário (#forms). No hero e no
+ *          fecho, nunca no meio do corpo.
  * [ ] 12. Sem keyword stuffing: a keyword-alvo aparece onde caberia se o
  *          Google não existisse. Sem sinônimo empilhado, sem lista de cidades.
  * [ ] 13. Frases do dono usadas palavra por palavra quando existem ("pronto

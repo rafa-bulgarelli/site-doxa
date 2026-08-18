@@ -54,6 +54,11 @@ function morrer(mensagem) {
 
 async function compilarEntrada() {
   await build({
+    // `publicDir: false` porque este build é SSR: o bundle sai para `.vite/` e
+    // nada nele serve arquivo estático. Sem a linha, o Vite copia os 27 MB de
+    // `public/` (fontes, vídeos, mídia dos cases) para dentro de `.vite/` a cada
+    // `pnpm build` — segundos de I/O por build, para um diretório que ninguém lê.
+    publicDir: false,
     build: {
       ssr: 'src/seo/prerender/entrada.tsx',
       outDir: '.vite/prerender',

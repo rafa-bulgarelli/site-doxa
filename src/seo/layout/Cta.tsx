@@ -1,6 +1,7 @@
 import type { ReactElement } from 'react';
 import { CTA_PADRAO, HREF_CTA } from '../site';
 import type { Cta as DadosCta } from '../tipos';
+import { Inline } from './Blocos';
 
 /**
  * O fecho de toda página SEO.
@@ -18,7 +19,12 @@ export function Cta({ dados }: { dados?: DadosCta }): ReactElement {
   return (
     <section className="mx-auto w-full max-w-screen-2xl px-5 pt-16 md:px-10">
       <div className="rounded-2xl border border-white/20 bg-doxa-raised p-6 md:p-10">
-        <p className="max-w-2xl font-serif text-2xl leading-snug text-white md:text-3xl">{texto}</p>
+        {/* Por `Inline`, como todo campo `texto` do contrato: `tipos.ts` promete
+          `**negrito**` e `[rótulo](/rota)` em TODOS eles, e um que renderiza
+          cru mostra os asteriscos na tela do fecho de toda página. */}
+      <p className="max-w-2xl font-serif text-2xl leading-snug text-white md:text-3xl">
+        <Inline texto={texto} />
+      </p>
         <a
           href={HREF_CTA}
           className="mt-6 inline-flex items-center rounded-full bg-white px-7 py-3 text-[15px] font-bold text-black transition-colors hover:bg-white/85"

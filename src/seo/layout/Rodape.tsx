@@ -1,5 +1,6 @@
 import type { ReactElement } from 'react';
 import { secoes } from '../indice';
+import { HREF_PERGUNTAS } from '../site';
 
 /**
  * O rodapé das páginas SEO.
@@ -14,9 +15,10 @@ import { secoes } from '../indice';
  * todas as páginas do site — link interno quebrado, item 39 do brief. Cada
  * seção entra no rodapé sozinha, no build em que ganhar a primeira página.
  *
- * `Perguntas` aponta para `/#faq` porque o FAQ real é o da landing, com as
- * respostas do dono. Uma segunda página de perguntas seria a mesma informação
- * disputando a mesma busca.
+ * `Perguntas` aponta para o FAQ da landing, com as respostas do dono. Uma
+ * segunda página de perguntas seria a mesma informação disputando a mesma
+ * busca. O href vem de `HREF_PERGUNTAS` (que vem de `src/ancoras.ts`) e não da
+ * string à mão: âncora escrita nas duas pontas quebra sem avisar.
  */
 
 const ANO = new Date().getFullYear();
@@ -38,7 +40,7 @@ export function Rodape(): ReactElement {
           <a href="/" className="text-[13px] text-white/45 transition-colors hover:text-white">
             Página inicial
           </a>
-          <a href="/#faq" className="text-[13px] text-white/45 transition-colors hover:text-white">
+          <a href={HREF_PERGUNTAS} className="text-[13px] text-white/45 transition-colors hover:text-white">
             Perguntas
           </a>
         </nav>

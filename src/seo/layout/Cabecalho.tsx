@@ -18,11 +18,25 @@ import { HREF_CTA, WORDMARK } from '../site';
  *
  * `<img>` com `width`/`height` porque sem eles a wordmark reserva zero altura
  * e empurra o conteúdo quando decodifica — CLS de graça no topo da página.
+ *
+ * ─── POR QUE ELE EMPILHA EM 320px ────────────────────────────────────────────
+ *
+ * Uma linha só com `flex-nowrap` + `whitespace-nowrap` não é um layout que
+ * aperta: é um layout que ESTOURA. Com as cinco seções publicadas, a barra pede
+ * cerca de 470px, e num telefone de 320px o excesso não some — ele vira rolagem
+ * horizontal na página inteira, com o fim do menu fora da tela e sem nada
+ * indicando que ele existe. O número de seções cresce sozinho (cada índice
+ * novo entra aqui pelo `secoes()`), então a correção tem de ser estrutural e
+ * não "cabe hoje".
+ *
+ * Então: coluna no telefone (wordmark em cima, menu embaixo) e a barra de uma
+ * linha só a partir de `sm`. O `flex-wrap` do `<nav>` é o cinto de segurança —
+ * com dez seções ele quebra em duas linhas em vez de estourar de novo.
  */
 export function Cabecalho(): ReactElement {
   return (
     <header className="border-b border-doxa-line px-5 py-5 md:px-10 md:py-6">
-      <div className="mx-auto flex w-full max-w-screen-2xl items-center justify-between gap-4">
+      <div className="mx-auto flex w-full max-w-screen-2xl flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
         <a href="/" className="shrink-0" aria-label="Doxa, página inicial">
           <img
             src={WORDMARK.src}
@@ -33,7 +47,10 @@ export function Cabecalho(): ReactElement {
           />
         </a>
 
-        <nav aria-label="Seções" className="flex flex-nowrap items-center gap-x-4 sm:gap-x-7">
+        <nav
+          aria-label="Seções"
+          className="flex flex-wrap items-center gap-x-4 gap-y-2 sm:gap-x-7"
+        >
           {secoes().map((secao) => (
             <a
               key={secao.url}
@@ -43,9 +60,9 @@ export function Cabecalho(): ReactElement {
               {secao.h1}
             </a>
           ))}
-          {/* `hidden sm:inline-flex`: em 320px os links e o botão não cabem na
-              mesma linha, e o botão some porque a página inteira termina num
-              CTA — quem chega ao fim continua encontrando o funil. */}
+          {/* `hidden sm:inline-flex`: no telefone o botão sairia embaixo dos
+              links, repetindo em cima o CTA que já fecha a página. Quem chega
+              ao fim continua encontrando o funil, e o topo fica com o menu. */}
           <a
             href={HREF_CTA}
             className="hidden whitespace-nowrap rounded-full bg-white px-4 py-2 text-[13px] font-bold text-black transition-colors hover:bg-white/85 sm:inline-flex"
