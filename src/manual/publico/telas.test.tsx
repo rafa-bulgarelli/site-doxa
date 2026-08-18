@@ -28,6 +28,7 @@ import { DocumentoDeTermos } from './Termos';
 import { JaConcluido, LinkExpirado, LinkInvalido, LinkRevogado } from './Estados';
 import { capitulosEmOrdem, termosDaVersao } from './maquina';
 import type { EstadoDoAceite } from './maquina';
+import type { Comprovante } from './memoria';
 
 const LEITURA: Secao = {
   id: 's-voz',
@@ -229,6 +230,11 @@ function desenhar(no: Parameters<typeof renderToStaticMarkup>[0]): string {
 
 const nada = () => undefined;
 
+/** Quantas vezes um pedaço de texto aparece no HTML — para provar "uma só". */
+function vezes(html: string, pedaco: string): number {
+  return html.split(pedaco).length - 1;
+}
+
 /**
  * O ATRIBUTO, não a classe.
  *
@@ -253,6 +259,23 @@ function capitulo(indice: number, etapa = 0, marcadas: string[] = []) {
       aoVoltar={nada}
     />,
   );
+}
+
+/** O comprovante que a tela de conclusão recebe, com o que o teste quiser trocar. */
+function comprovante(trocas: Partial<Comprovante> = {}): Comprovante {
+  return {
+    token: 'tok',
+    aceite_id: 'a-123',
+    aceito_em: '2026-08-14T12:00:00Z',
+    invite_plataforma: null,
+    conteudo_sha256: 'abc',
+    pdf_url: 'https://exemplo/assinada.pdf',
+    pdf_sha256: 'def',
+    versao_numero: 3,
+    nome: 'Ana Lima',
+    empresa: 'Empresa LTDA',
+    ...trocas,
+  };
 }
 
 describe('as telas do caminho', () => {
@@ -473,22 +496,7 @@ describe('as telas do caminho', () => {
 
   it('a conclusão entrega registro, data, versão e o link do PDF', () => {
     const html = desenhar(
-      <Conclusao
-        comprovante={{
-          token: 'tok',
-          aceite_id: 'a-123',
-          aceito_em: '2026-08-14T12:00:00Z',
-          invite_plataforma: null,
-          conteudo_sha256: 'abc',
-          pdf_url: 'https://exemplo/assinada.pdf',
-          pdf_sha256: 'def',
-          versao_numero: 3,
-          nome: 'Ana Lima',
-          empresa: 'Empresa LTDA',
-        }}
-        pedindoPdf={false}
-        aoPedirPdf={nada}
-      />,
+      <Conclusao comprovante={comprovante()} pedindoPdf={false} aoPedirPdf={nada} />,
     );
     expect(html).toContain('a-123');
     expect(html).toContain('Versão 3');
@@ -499,24 +507,47 @@ describe('as telas do caminho', () => {
   it('sem PDF pronto, a conclusão pede um em vez de oferecer link morto', () => {
     const html = desenhar(
       <Conclusao
-        comprovante={{
-          token: 'tok',
-          aceite_id: 'a-123',
-          aceito_em: '2026-08-14T12:00:00Z',
-          invite_plataforma: null,
-        conteudo_sha256: 'abc',
-          pdf_url: null,
-          pdf_sha256: null,
-          versao_numero: 3,
-          nome: 'Ana Lima',
-          empresa: 'Empresa LTDA',
-        }}
+        comprovante={comprovante({ pdf_url: null, pdf_sha256: null })}
         pedindoPdf={false}
         aoPedirPdf={nada}
       />,
     );
     expect(html).not.toContain('<a href');
     expect(html).toContain('Baixar meu comprovante em PDF');
+  });
+
+  /* ─── O CADASTRO NA PLATAFORMA ─────────────────────────────────────────── */
+
+  it('com o link do convite, a conclusão oferece o cadastro oficial', () => {
+    const html = desenhar(
+      <Conclusao
+        comprovante={comprovante({ invite_plataforma: 'https://app.doxa/convite/xyz' })}
+        pedindoPdf={false}
+        aoPedirPdf={nada}
+      />,
+    );
+    // UMA vez na tela: dois convites para o mesmo cadastro viram dúvida sobre
+    // qual dos dois é o certo.
+    expect(vezes(html, 'Faça seu cadastro oficial na DOXA')).toBe(1);
+    expect(html).toContain('href="https://app.doxa/convite/xyz"');
+    // Abre em aba nova: sair daqui levaria embora o botão do PDF, cuja URL
+    // assinada morre em minutos.
+    expect(html).toContain('rel="noreferrer"');
+  });
+
+  it('sem link, o botão de cadastro NÃO existe — nem vazio, nem em branco', () => {
+    // `null` é o convite sem link; `'   '` é o campo que o CX salvou em branco.
+    // Os dois somem: botão que não leva a lugar nenhum é pior que botão nenhum.
+    for (const semLink of [null, '   ']) {
+      const html = desenhar(
+        <Conclusao
+          comprovante={comprovante({ invite_plataforma: semLink })}
+          pedindoPdf={false}
+          aoPedirPdf={nada}
+        />,
+      );
+      expect(html).not.toContain('cadastro oficial');
+    }
   });
 });
 
@@ -761,6 +792,14 @@ function estadoDaRevisao(): EstadoDoAceite {
   };
 }
 
+/** O aceite que já estava lá quando o cliente reabriu o link do convite. */
+const ACEITE_ANTIGO = {
+  aceite_id: 'a-999',
+  aceito_em: '2026-08-14T12:00:00Z',
+  conteudo_sha256: 'abc',
+  versao_numero: 2,
+};
+
 describe('as telas de link morto', () => {
   it('cada estado diz o que houve e o que fazer, sem culpar o cliente', () => {
     expect(desenhar(<LinkInvalido />)).toContain('não é válido');
@@ -769,20 +808,34 @@ describe('as telas de link morto', () => {
   });
 
   it('o convite já concluído mostra o registro e o botão de baixar', () => {
-    const html = desenhar(
-      <JaConcluido
-        aceite={{
-          aceite_id: 'a-999',
-          aceito_em: '2026-08-14T12:00:00Z',
-          conteudo_sha256: 'abc',
-          versao_numero: 2,
-        }}
-        aoBaixar={nada}
-        baixando={false}
-      />,
-    );
+    const html = desenhar(<JaConcluido aceite={ACEITE_ANTIGO} aoBaixar={nada} baixando={false} />);
     expect(html).toContain('a-999');
     expect(html).toContain('Baixar meu comprovante em PDF');
+  });
+
+  it('quem volta pelo link também recebe o cadastro oficial, quando ele existe', () => {
+    const html = desenhar(
+      <JaConcluido
+        aceite={ACEITE_ANTIGO}
+        aoBaixar={nada}
+        baixando={false}
+        invitePlataforma="https://app.doxa/convite/xyz"
+      />,
+    );
+    expect(vezes(html, 'Faça seu cadastro oficial na DOXA')).toBe(1);
+    expect(html).toContain('href="https://app.doxa/convite/xyz"');
+  });
+
+  it('sem link da plataforma, o convite concluído não mostra botão de cadastro', () => {
+    const html = desenhar(
+      <JaConcluido
+        aceite={ACEITE_ANTIGO}
+        aoBaixar={nada}
+        baixando={false}
+        invitePlataforma={null}
+      />,
+    );
+    expect(html).not.toContain('cadastro oficial');
   });
 });
 
