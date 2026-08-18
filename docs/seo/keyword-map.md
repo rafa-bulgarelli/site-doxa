@@ -166,6 +166,12 @@ para-empresas` (colide com orgânico/escala), `/comparativos/heygen-vs-gravacao-
 | `track-seo-rodada-2-comparativos-glossario` | freelancer-vs-agencia-de-conteudo · conteudo-organico-vs-influenciador · engajamento · impressoes · clone-digital · roteiro-de-video-curto · legenda-embutida · feed-recomendado · cta |
 | `track-seo-rodada-2-dores-solucoes` | por-que-meu-instagram-parou-de-crescer · conteudo-para-redes-sociais-com-ia · clone-de-voz-para-videos |
 
+## Rodada 3 — em execução (2026-08-18, ~03:00)
+
+| Track | URLs | Por quê |
+|---|---|---|
+| `track-seo-rodada-3` | video-vertical-no-linkedin · o-que-faz-um-social-media | as duas adjacências §47 do backlog sem risco de canibalização. Puladas: `como-viralizar-no-instagram` (colide com `como-crescer-no-instagram-organicamente`), `calendario-de-conteudo` (4ª página de planejamento — estratégia/rotina/arco já existem), `melhor-horario-para-postar` (isca de SERP; a biblioteca já diz que horário pesa pouco), `reels-vs-tiktok-vs-shorts` (colide com `tiktok-vs-instagram` + `mesmo-video-nas-tres-redes`), `heygen-vs-gravacao` (ferramenta no title × tools.ts), `avatar-de-ia-para-empresas` e `conteudo-recorrente` (colidem). |
+
 ## Não fazer
 
 | Cogitado | Motivo |
