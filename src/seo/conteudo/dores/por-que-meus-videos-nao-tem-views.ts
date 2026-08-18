@@ -180,7 +180,7 @@ export const pagina: Pagina = {
       itens: [
         '**O algoritmo não está te punindo.** Não existe castigo pessoal; existe um vídeo que não segurou a amostra que recebeu.',
         '**Não é o horário da postagem.** Ele muda pouco quando a retenção é baixa, e não salva um vídeo que ninguém assiste até o fim.',
-        '**Não é falta de seguidores.** Nas três redes de vídeo curto, a maior parte do alcance vem de quem não segue o perfil.',
+        '**Não é falta de seguidores.** No vídeo curto, uma parte relevante do alcance costuma vir de quem ainda não segue o perfil.',
         '**Comprar views, curtidas ou seguidores piora.** Além de contaminar o dado que você usaria para decidir, pode gerar penalização das próprias redes.',
       ],
     },
