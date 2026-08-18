@@ -80,7 +80,7 @@ export const pagina: Pagina = {
     {
       tipo: 'lista',
       itens: [
-        '**Formato.** Vertical, com o assunto declarado nos primeiros segundos e legenda embutida, porque boa parte do feed é assistida sem som. O que abre o vídeo é o [hook](/glossario/hook), e é ele que decide se existe segundo 10.',
+        '**Formato.** Vertical, com o assunto declarado nos primeiros segundos e legenda embutida — ela torna o vídeo acessível a quem não ouve, funciona para quem está com o som desligado e ajuda a segurar a atenção de quem já começou a assistir. O que abre o vídeo é o [hook](/glossario/hook), e é ele que decide se existe segundo 10.',
         '**Cadência.** Publicar com regularidade dá à plataforma amostras suficientes para aprender quem é o público do perfil. Publicar em rajada não acelera nada: dois vídeos no mesmo dia disputam a mesma audiência.',
         '**Medida.** Seguidor é vaidade tardia. O que diz se o conteúdo está funcionando é [retenção](/glossario/retencao), [watch time](/glossario/watch-time) e a proporção de quem chegou sem seguir o perfil.',
       ],
@@ -129,7 +129,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'Se você quer entender o mecanismo de distribuição, comece pelo verbete do [algoritmo do TikTok](/glossario/algoritmo-do-tiktok). Se o que falta é método, o guia de [como viralizar no TikTok](/guias/como-viralizar-no-tiktok) trata do que dá e do que não dá para controlar. Se a dúvida é onde investir o esforço primeiro, o comparativo [TikTok ou Instagram](/comparativos/tiktok-vs-instagram) separa as duas redes por critério. E as páginas abaixo são o cluster inteiro deste assunto.',
+        'Se você quer entender o mecanismo de distribuição, comece pelo verbete do [algoritmo do TikTok](/glossario/algoritmo-do-tiktok). Se o que falta é método, o guia de [como viralizar no TikTok](/guias/como-viralizar-no-tiktok) trata do que dá e do que não dá para controlar. Se a dúvida é onde investir o esforço primeiro, o comparativo [TikTok ou Instagram](/comparativos/tiktok-vs-instagram) separa as duas redes por critério.',
     },
   ],
 };

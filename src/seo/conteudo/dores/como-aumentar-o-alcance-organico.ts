@@ -66,7 +66,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'Boa parte das quedas de alcance que as pessoas relatam não é queda: é mudança de mistura. Quem publicava três vídeos e dez fotos por mês e passou a publicar dez fotos e um vídeo vê o alcance despencar sem que nada tenha mudado na plataforma, porque o formato que entrega para quem não segue o perfil é o vídeo curto. Compare períodos com o mesmo tipo de conteúdo antes de concluir qualquer coisa.',
+        'Boa parte das quedas de alcance que as pessoas relatam não é queda: é mudança de mistura. Quem publicava três vídeos e dez fotos por mês e passou a publicar dez fotos e um vídeo vê o alcance despencar sem que nada tenha mudado na plataforma, porque o vídeo curto é o formato que mais entrega para quem não segue o perfil. Compare períodos com o mesmo tipo de conteúdo antes de concluir qualquer coisa.',
     },
     {
       tipo: 'paragrafo',
@@ -181,7 +181,7 @@ export const pagina: Pagina = {
         {
           pergunta: 'Devo apagar os vídeos antigos que foram mal?',
           resposta:
-            'Não há motivo prático para apagar. Vídeos com desempenho baixo não punem os próximos, e o histórico é justamente o dado que mostra qual formato funcionou. Vale mais republicar o conteúdo com uma abertura nova do que apagar o original.',
+            'Apagar não ajuda: o que reduz a amostra dos próximos é a sequência de retenção baixa, não a existência do vídeo antigo — e apagar não desfaz isso. O histórico é justamente o dado que mostra qual formato funcionou, então vale mais republicar o conteúdo com uma abertura nova do que apagar o original.',
         },
         {
           pergunta: 'Seguidores ainda importam para o alcance?',

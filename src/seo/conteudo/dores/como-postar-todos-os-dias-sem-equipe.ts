@@ -125,7 +125,7 @@ export const pagina: Pagina = {
       tipo: 'lista',
       itens: [
         '**Acabou a fila.** Publique um vídeo antigo que foi bem, com abertura nova. Não é reciclagem preguiçosa: é um teste com variável trocada.',
-        '**O dia de captura caiu.** Grave três vídeos curtos de celular, sem produção, sobre perguntas que você respondeu por mensagem nesta semana. Costumam performar melhor do que os planejados.',
+        '**O dia de captura caiu.** Grave três vídeos curtos de celular, sem produção, sobre perguntas que você respondeu por mensagem nesta semana. Não raro eles seguram mais atenção que os planejados, porque a dúvida é real e a resposta é direta.',
         '**Você não tem o que dizer.** Esse é outro problema, e ele tem página própria: [como produzir conteúdo sem equipe](/guias/como-produzir-conteudo-sem-equipe) trata de onde o material sai.',
         '**A semana inteira caiu.** Volte publicando um por dia, sem tentar recuperar o atraso. Consistência daqui para a frente vale mais do que o histórico limpo.',
       ],

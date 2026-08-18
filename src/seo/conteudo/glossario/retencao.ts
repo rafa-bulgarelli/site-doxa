@@ -44,12 +44,12 @@ export const pagina: Pagina = {
     {
       tipo: 'titulo',
       nivel: 2,
-      texto: 'Um exemplo prático',
+      texto: 'Um exemplo hipotético',
     },
     {
       tipo: 'paragrafo',
       texto:
-        'Um vídeo de 40 segundos mantém 90% até o segundo 6 e cai para 45% no segundo 9. Não é problema de abertura: quem estava lá ficou até o sexto segundo. É problema do que acontece no nono — quase sempre uma frase de transição do tipo "mas antes de eu explicar, deixa eu me apresentar". Cortar a transição costuma recuperar a maior parte dessa queda.',
+        'Suponha um vídeo de 40 segundos que mantém 90% até o segundo 6 e cai para 45% no segundo 9 — números inventados para ilustrar a leitura, não a medição de ninguém. Não é problema de abertura: quem estava lá ficou até o sexto segundo. É problema do que acontece no nono — quase sempre uma frase de transição do tipo "mas antes de eu explicar, deixa eu me apresentar". Cortar a transição costuma recuperar a maior parte dessa queda.',
     },
     {
       tipo: 'titulo',

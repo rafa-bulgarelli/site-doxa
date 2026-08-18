@@ -77,7 +77,7 @@ export const pagina: Pagina = {
       tipo: 'lista',
       itens: [
         '**As perguntas repetidas.** Toda pergunta que você respondeu duas vezes esta semana é um vídeo. Se duas pessoas perguntaram, duzentas têm a dúvida e não perguntaram.',
-        '**Os erros que você vê acontecer.** O que o cliente faz errado antes de chegar até você é o conteúdo mais assistido que existe, porque a pessoa se reconhece nele.',
+        '**Os erros que você vê acontecer.** O que o cliente faz errado antes de chegar até você costuma render bem, porque a pessoa se reconhece no erro antes de saber que é sobre ela.',
         '**As decisões do dia.** Por que você recusou aquele pedido, por que cobra de um jeito e não de outro, o que mudou na sua forma de trabalhar. É o que ninguém mais pode publicar.',
         '**Os bastidores concretos.** Não o escritório bonito: o processo real, o antes e depois, a coisa sendo feita. Funciona porque é específico e verificável.',
       ],
@@ -106,17 +106,12 @@ export const pagina: Pagina = {
           texto:
             'Abertura (a pergunta ou o erro), o miolo (a resposta, com um exemplo concreto) e o fecho (o que a pessoa faz com isso). Roteiro longo demais vira leitura, e leitura no vídeo se ouve.',
         },
-        {
-          titulo: 'Gravação em bloco, cenário único',
-          texto:
-            'Celular, luz de janela, microfone de lapela barato, e todos os vídeos do lote gravados de uma vez. O que custa tempo é montar e desmontar o contexto, não apertar o botão.',
-        },
-        {
-          titulo: 'Edição por padrão, não por peça',
-          texto:
-            'Um mesmo modelo de legenda, um mesmo tipo de corte, uma mesma capa. Editar dez vídeos com um padrão definido leva menos tempo do que editar três inventando cada um.',
-        },
       ],
+    },
+    {
+      tipo: 'paragrafo',
+      texto:
+        'Gravação e edição vêm depois disso, e o jeito de fazer as duas caberem numa pessoa é de rotina, não de assunto: trabalhar em lote, com um padrão definido, e manter uma fila de vídeos prontos à frente. Esse desenho é o tema de [como postar todos os dias sem equipe](/guias/como-postar-todos-os-dias-sem-equipe), e esta página não o repete.',
     },
     {
       tipo: 'titulo',
@@ -129,7 +124,7 @@ export const pagina: Pagina = {
         'Cenário elaborado, iluminação de estúdio e equipamento caro: o feed não premia produção, premia o que prende. Um vídeo de celular bem aberto ganha de um vídeo caro mal aberto.',
         'Aprovação por comitê. Cada rodada de aprovação custa dias, e dias custam a cadência inteira.',
         'Trilha e efeito visual em cima de um conteúdo que não se sustenta sem eles.',
-        'Um calendário editorial temático fechado com três meses de antecedência, que impede reagir ao que os primeiros vídeos mostrarem.',
+        'Pesquisa de tema que não passa pelas quatro fontes acima: o material que só você tem é o que ninguém encontra pesquisando.',
       ],
     },
     {
@@ -181,9 +176,9 @@ export const pagina: Pagina = {
       tipo: 'faq',
       itens: [
         {
-          pergunta: 'Dá para manter um perfil de empresa com uma pessoa só?',
+          pergunta: 'E se o meu negócio for chato demais para render conteúdo?',
           resposta:
-            'Dá, desde que essa pessoa trabalhe em lote e com padrão: um dia de gravação por semana, um bloco de edição e uma fila de vídeos prontos à frente. O que não se sustenta com uma pessoa é produzir e publicar no mesmo dia, todos os dias.',
+            'Quase sempre o que falta é inventário, não assunto. Antes de concluir que não há o que dizer, passe pelas quatro fontes desta página: as perguntas que você respondeu duas vezes na semana, os erros que você vê o cliente cometer, as decisões que você tomou e o processo real sendo executado. Se nenhuma das quatro render uma linha, aí sim o problema é outro.',
         },
         {
           pergunta: 'Preciso de câmera e microfone profissionais?',
@@ -191,14 +186,9 @@ export const pagina: Pagina = {
             'Não para começar. Um celular recente, luz natural e um microfone de lapela de baixo custo cobrem o essencial. O que separa um vídeo assistido de um vídeo ignorado é a abertura e o assunto, não a resolução.',
         },
         {
-          pergunta: 'Vale contratar um freelancer só para editar?',
-          resposta:
-            'Vale quando a edição é o seu gargalo real. Se o gargalo é a gravação, terceirizar a edição apenas move a fila de lugar: você continua sendo a pessoa que precisa aparecer, e a produção segue presa à sua agenda.',
-        },
-        {
           pergunta: 'Conteúdo gravado por celular funciona para uma marca?',
           resposta:
-            'Funciona, e em vídeo curto costuma funcionar melhor do que material de aparência publicitária. O formato premia o que parece uma pessoa falando com você, e é por isso que material gravado por criadores rende tanto nas três redes.',
+            'Funciona, e em vídeo curto costuma funcionar melhor do que material de aparência publicitária. O formato premia o que parece uma pessoa falando com você, e é isso que explica a presença de material gravado por criadores nas três redes.',
         },
       ],
     },
@@ -213,8 +203,11 @@ export const pagina: Pagina = {
  *          aparece.
  * [x]  4. Termos proibidos ausentes.
  * [x]  5. A garantia não é citada.
- * [x]  6. Intenção própria: CAPACIDADE. O bloco de rotina é da página vizinha
- *          `/guias/como-postar-todos-os-dias-sem-equipe`, e não é repetido.
+ * [x]  6. Intenção própria: CAPACIDADE — de onde sai o material. Todo o bloco
+ *          de ROTINA (gravar em lote, editar por padrão, manter fila, calendário
+ *          fechado, terceirizar só a edição) é da página vizinha
+ *          `/guias/como-postar-todos-os-dias-sem-equipe`: aqui ele vira UMA
+ *          frase com link, e nem os passos nem o FAQ o repetem.
  * [x]  7. Incremental: as quatro fontes de conteúdo, o exercício de vinte
  *          minutos e o caminho para quem não quer aparecer.
  * [x]  8. Title, description e H1 exclusivos.

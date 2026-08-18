@@ -39,7 +39,7 @@ export const pagina: Pagina = {
     {
       tipo: 'titulo',
       nivel: 2,
-      texto: 'Um exemplo com números',
+      texto: 'Um exemplo hipotético',
     },
     {
       tipo: 'tabela',

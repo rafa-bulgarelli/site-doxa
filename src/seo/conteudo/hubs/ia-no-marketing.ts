@@ -136,7 +136,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'Para o funcionamento em detalhe, [produção de vídeos com IA para empresas](/solucoes/producao-de-videos-com-ia) é a página mais completa do cluster. Para entender o componente que confunde mais gente, o guia [o que é um avatar de IA](/guias/o-que-e-avatar-de-ia). Para comparar com o caminho tradicional, [vídeo com IA ou produção tradicional](/comparativos/ia-vs-producao-tradicional-de-video). O cluster inteiro está abaixo.',
+        'Para o funcionamento em detalhe, [produção de vídeos com IA para empresas](/solucoes/producao-de-videos-com-ia) é a página mais completa do cluster. Para entender o componente que confunde mais gente, o guia [o que é um avatar de IA](/guias/o-que-e-avatar-de-ia). Para comparar com o caminho tradicional, [vídeo com IA ou produção tradicional](/comparativos/ia-vs-producao-tradicional-de-video).',
     },
   ],
 };

@@ -104,7 +104,7 @@ export const pagina: Pagina = {
       tipo: 'destaque',
       variante: 'nota',
       texto:
-        'Nenhuma plataforma publica o funcionamento interno do próprio sistema de recomendação, e ele muda com frequência. O que está descrito aqui é comportamento observável, não engenharia reversa — e é assim que deve ser lido.',
+        'As plataformas publicam no máximo uma visão geral do próprio sistema de recomendação; o detalhe interno não é público e muda. O que está descrito aqui é comportamento observável, não engenharia reversa — e é assim que deve ser lido.',
     },
     {
       tipo: 'paragrafo',

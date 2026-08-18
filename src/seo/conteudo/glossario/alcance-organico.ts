@@ -56,20 +56,20 @@ export const pagina: Pagina = {
         'Num perfil que quer crescer, o alcance total diz pouco sozinho. O recorte útil é a fatia que veio de gente que ainda não segue o perfil, porque é ela que mede se você está encontrando público novo ou apenas conversando com quem já chegou. As três redes de vídeo curto mostram esse recorte nas métricas de cada publicação.',
     },
     {
+      tipo: 'destaque',
+      variante: 'nota',
+      texto:
+        'Alcance orgânico, nesse sentido, é o que a Doxa contabiliza nas metas dos clientes: visualizações orgânicas, vindas da distribuição dos conteúdos produzidos na operação, sem depender da compra de mídia.',
+    },
+    {
       tipo: 'titulo',
       nivel: 2,
-      texto: 'Um exemplo concreto',
+      texto: 'Um exemplo hipotético',
     },
     {
       tipo: 'paragrafo',
       texto:
-        'Um perfil com 2.000 seguidores publica um vídeo que alcança 18.000 pessoas, das quais 16.500 não seguem o perfil. Isso não é sorte nem compra: é a plataforma tendo mostrado o vídeo a estranhos e eles tendo ficado. Um segundo vídeo, na mesma semana, alcança 2.100 pessoas — quase todas seguidores. O segundo não foi distribuído; ele apenas apareceu para quem já estava lá.',
-    },
-    {
-      tipo: 'destaque',
-      variante: 'nota',
-      texto:
-        'É esse tipo de alcance que a Doxa contabiliza nas metas dos clientes: visualizações orgânicas, vindas da distribuição dos conteúdos produzidos na operação, sem depender da compra de mídia.',
+        'Suponha um perfil com 2.000 seguidores que publica um vídeo e alcança 18.000 pessoas, das quais 16.500 não seguem o perfil. Números inventados para ilustrar a leitura, e não o resultado de ninguém: o que eles mostram é a plataforma tendo levado o vídeo a estranhos. Suponha agora um segundo vídeo, na mesma semana, com alcance de 2.100 pessoas, quase todas seguidores. O segundo não foi distribuído; ele apenas apareceu para quem já estava lá.',
     },
     {
       tipo: 'paragrafo',
@@ -86,8 +86,9 @@ export const pagina: Pagina = {
  * [x]  5. A garantia não é citada.
  * [x]  6. Intenção própria: definição e medida. As táticas são do guia.
  * [x]  7. Incremental: a distinção alcance × impressões e o exemplo numérico
- *          ilustrativo (números de exemplo, declarados como exemplo, não como
- *          resultado de cliente).
+ *          hipotético — o H2 diz "hipotético", o texto diz "números inventados
+ *          para ilustrar", e a nota sobre a Doxa vem ANTES dele, presa à
+ *          definição, para que ninguém leia o exemplo como caso de cliente.
  * [x]  8. Title, description e H1 exclusivos.
  * [x]  9. Pertence a `/guias/marketing-organico` e conecta a 3 relacionados.
  * [x] 10. Não se aplica.

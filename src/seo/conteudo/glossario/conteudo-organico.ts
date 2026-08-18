@@ -67,7 +67,7 @@ export const pagina: Pagina = {
       tipo: 'destaque',
       variante: 'nota',
       texto:
-        'É por isso que a Doxa não vende tráfego pago: a garantia da empresa é de views orgânicas somadas, e não de anúncios.',
+        'A Doxa, aliás, não vende tráfego pago: a garantia da empresa é de views orgânicas somadas, e não de anúncios.',
     },
     {
       tipo: 'paragrafo',

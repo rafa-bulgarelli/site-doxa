@@ -61,12 +61,12 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'O Instagram tem dois modos de entregar conteúdo. Um mostra o que você publicou para quem já segue o perfil, e é o modo do feed clássico: previsível, limitado ao tamanho da sua lista. O outro recomenda vídeo vertical para gente que nunca ouviu falar de você, e é o modo do Reels. Para uma marca que precisa crescer, só o segundo importa — o primeiro no máximo conserva o que já existe.',
+        'O Instagram tem dois modos de entregar conteúdo. Um mostra o que você publicou para quem já segue o perfil, e é o modo do feed clássico: previsível, limitado ao tamanho da sua lista. O outro recomenda vídeo vertical para gente que nunca ouviu falar de você, e é o modo do Reels. Para uma marca que precisa crescer, o segundo é o que mais entrega — o primeiro tende a conservar o que já existe.',
     },
     {
       tipo: 'paragrafo',
       texto:
-        'Isso explica o desenho estranho de muitos perfis de empresa: carrossel bonito, engajamento razoável entre os seguidores e nenhuma pessoa nova chegando. O alcance que traz gente de fora está no formato que a maioria das marcas produz menos, porque é o que dá mais trabalho.',
+        'Isso explica o desenho estranho de muitos perfis de empresa: carrossel bonito, engajamento razoável entre os seguidores e nenhuma pessoa nova chegando. O alcance que traz gente de fora se concentra no formato que a maioria das marcas produz menos, porque é o que dá mais trabalho.',
     },
     {
       tipo: 'titulo',
@@ -77,7 +77,7 @@ export const pagina: Pagina = {
       tipo: 'lista',
       itens: [
         'Assunto declarado nos primeiros segundos, sem vinheta e sem apresentação da empresa antes do conteúdo.',
-        'Vertical de ponta a ponta, com **legenda embutida no vídeo** — parte grande do consumo é sem som, e legenda automática desaparece em recorte e reencaminhamento.',
+        'Vertical de ponta a ponta, com **legenda embutida no vídeo** — ela é acessibilidade para quem não ouve, salva quem está sem som e ajuda na retenção; a legenda automática, além disso, desaparece em recorte e reencaminhamento.',
         'Um assunto por vídeo. Reels que tenta cobrir três tópicos perde nos três, porque a curva de [retenção](/glossario/retencao) cai na primeira transição fraca.',
         'Um fecho que faça sentido sozinho: a maior parte de quem assiste não vai abrir o perfil para entender o contexto.',
       ],
@@ -121,7 +121,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'Para o lado comercial do assunto — o que uma empresa precisa organizar internamente —, veja [Reels para empresas](/plataformas/instagram-reels-para-empresas). Para crescimento sem impulsionar nada, [como crescer no Instagram organicamente](/guias/como-crescer-no-instagram-organicamente). Para escolher entre as duas redes maiores, [TikTok ou Instagram](/comparativos/tiktok-vs-instagram). As páginas abaixo são o cluster completo.',
+        'Para o lado comercial do assunto — o que uma empresa precisa organizar internamente —, veja [Reels para empresas](/plataformas/instagram-reels-para-empresas). Para crescimento sem impulsionar nada, [como crescer no Instagram organicamente](/guias/como-crescer-no-instagram-organicamente). Para escolher entre as duas redes maiores, [TikTok ou Instagram](/comparativos/tiktok-vs-instagram).',
     },
   ],
 };

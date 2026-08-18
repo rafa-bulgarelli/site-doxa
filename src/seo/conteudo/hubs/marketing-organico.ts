@@ -85,7 +85,7 @@ export const pagina: Pagina = {
         {
           titulo: 'Formato que a plataforma distribui',
           texto:
-            'Hoje isso significa vídeo vertical curto. Carrossel e foto servem a quem já segue o perfil; quem traz gente nova é o vídeo recomendado.',
+            'Hoje isso significa, em primeiro lugar, vídeo vertical curto: é o formato que mais entrega para quem ainda não segue o perfil. Carrossel e foto também aparecem em recomendação, mas costumam render mais entre quem já está lá.',
         },
         {
           titulo: 'Um critério para descartar',
@@ -147,7 +147,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'Se o alcance do seu perfil parou de crescer, comece por [como aumentar o alcance orgânico](/guias/como-aumentar-o-alcance-organico). Se o problema é manter o ritmo, [como postar todos os dias sem equipe](/guias/como-postar-todos-os-dias-sem-equipe). Se você ainda está decidindo entre investir em conteúdo ou em anúncio, [orgânico ou pago](/comparativos/organico-vs-pago). O cluster completo está abaixo.',
+        'Se o alcance do seu perfil parou de crescer, comece por [como aumentar o alcance orgânico](/guias/como-aumentar-o-alcance-organico). Se o problema é manter o ritmo, [como postar todos os dias sem equipe](/guias/como-postar-todos-os-dias-sem-equipe). Se você ainda está decidindo entre investir em conteúdo ou em anúncio, [orgânico ou pago](/comparativos/organico-vs-pago).',
     },
   ],
 };

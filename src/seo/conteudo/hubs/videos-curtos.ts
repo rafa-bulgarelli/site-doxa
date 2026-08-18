@@ -17,7 +17,11 @@ import type { Pagina } from '../../tipos';
  *    `supabase/manual-seed-v1.sql:84`; `src/components/Hero.tsx:21`;
  *  · "baixou, publicou" — publicar exatamente o arquivo entregue, sem alterar
  *    corte, duração, velocidade, proporção, legenda ou capa → §8, fonte:
- *    `supabase/manual-seed-v1.sql:263`. Condição de cliente, dita como tal;
+ *    `supabase/manual-seed-v1.sql:263`, regra `AL-1` (`:267-269`). A RAZÃO da
+ *    regra é a do próprio manual, quase palavra por palavra: "cada elemento do
+ *    vídeo é decidido com foco em desempenho. Alterar um detalhe muda a peça
+ *    inteira, e a DOXA não consegue responder pelo resultado de um conteúdo que
+ *    não é mais o que produziu". Condição de cliente, dita como tal;
  *  · a Doxa não promete que um vídeo específico viralize → §1, fonte:
  *    `src/components/faq/config.ts:324-325`.
  *
@@ -79,7 +83,7 @@ export const pagina: Pagina = {
       tipo: 'lista',
       itens: [
         'Vertical de ponta a ponta, sem barras e sem recorte de material horizontal — vídeo reaproveitado de outro formato aparece como vídeo reaproveitado.',
-        '**Legenda embutida no arquivo**, porque boa parte do consumo é sem som e a legenda automática some quando o vídeo é baixado e republicado.',
+        '**Legenda embutida no arquivo**: é acessibilidade para quem não ouve, resolve o consumo sem som e ajuda a segurar a atenção — e, diferente da legenda automática, ela não some quando o vídeo é baixado e republicado.',
         'Assunto declarado nos primeiros segundos, antes de qualquer apresentação da marca.',
         'Um assunto por vídeo. Dois assuntos criam uma transição, e é na transição que a curva cai.',
         'Duração ditada pelo conteúdo, não por uma regra: o vídeo termina quando a ideia termina, e nem um segundo depois.',
@@ -114,7 +118,7 @@ export const pagina: Pagina = {
       tipo: 'destaque',
       variante: 'doxa',
       texto:
-        'A regra que o manual do cliente resume em duas palavras: baixou, publicou. O arquivo entregue vai ao ar exatamente como saiu — sem mudar corte, duração, velocidade, proporção, legenda ou capa —, porque cada alteração desfaz o teste que aquele vídeo estava rodando.',
+        'A regra que o manual do cliente resume em duas palavras: baixou, publicou. O arquivo entregue vai ao ar exatamente como saiu — sem mudar corte, duração, velocidade, proporção, legenda ou capa. A razão está escrita lá: cada elemento é decidido com foco em desempenho, alterar um detalhe muda a peça inteira, e a Doxa não consegue responder pelo resultado de um conteúdo que não é mais o que produziu.',
     },
     {
       tipo: 'paragrafo',
@@ -129,7 +133,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'Se os seus vídeos não estão sendo vistos, [por que os seus vídeos não têm views](/guias/por-que-meus-videos-nao-tem-views) começa pelo diagnóstico. Se o problema é a abertura, [como fazer vídeos curtos que prendem](/guias/como-fazer-videos-curtos-que-prendem). Se você precisa do vocabulário antes, os verbetes de [hook](/glossario/hook), [retenção](/glossario/retencao) e [watch time](/glossario/watch-time) são curtos de propósito. O cluster inteiro está abaixo.',
+        'Se os seus vídeos não estão sendo vistos, [por que os seus vídeos não têm views](/guias/por-que-meus-videos-nao-tem-views) começa pelo diagnóstico. Se o problema é a abertura, [como fazer vídeos curtos que prendem](/guias/como-fazer-videos-curtos-que-prendem). Se você precisa do vocabulário antes, os verbetes de [hook](/glossario/hook), [retenção](/glossario/retencao) e [watch time](/glossario/watch-time) são curtos de propósito.',
     },
   ],
 };
