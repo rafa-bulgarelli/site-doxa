@@ -109,6 +109,11 @@ create table if not exists public.manual_convites (
   -- Preenchido pelo CX quando já se sabe quem assina; senão o cliente informa
   -- no fluxo e o nome vai direto para o aceite, nunca de volta para cá.
   nome_cliente text check (nome_cliente is null or length(trim(nome_cliente)) between 2 and 160),
+  -- O link de convite da PLATAFORMA Doxa (o cadastro oficial), preenchido pelo
+  -- CX quando existir: a tela final do aceite o oferece num botão; sem ele,
+  -- botão nenhum aparece.
+  invite_plataforma text check (invite_plataforma is null
+    or (invite_plataforma ~ '^https?://' and length(invite_plataforma) <= 500)),
   versao_id uuid not null references public.manual_versoes (id) on delete restrict,
   status text not null default 'pendente' check (status in ('pendente', 'aberto', 'concluido', 'revogado')),
   -- Expirado é DERIVADO (expira_em < now() com status pendente/aberto), nunca
@@ -341,7 +346,12 @@ set search_path = ''
 as $$
 begin
   if tg_op = 'DELETE' then
-    raise exception 'convite nao se apaga — revogue e o historico fica';
+    -- Concluído carrega o aceite (a prova) — esse não se apaga; o FK do aceite
+    -- seguraria de qualquer jeito. Os demais o time pode excluir pela API.
+    if old.status = 'concluido' then
+      raise exception 'convite concluido e prova — nao se apaga';
+    end if;
+    return old;
   end if;
   if new.token_hash <> old.token_hash or new.email <> old.email
     or new.empresa <> old.empresa or new.versao_id <> old.versao_id
