@@ -1,11 +1,16 @@
+import { createElement } from 'react';
+import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
 import { palavrasDe } from './auditoria';
 import { urlAbsoluta } from './head';
 import { linksInternosDe, paginas, resolverLink, secoes, urlDe, urlsPublicadas } from './indice';
+import { tokens } from './inline';
+import { BlocoDoCorpo } from './layout/Blocos';
 import { renderizar, rotas } from './prerender/entrada';
 import { ROTAS_PLANEJADAS } from './rotas-planejadas';
 import { entradas } from './sitemap';
 import { HUBS, OG_IMAGEM, SECOES } from './site';
+import type { Bloco } from './tipos';
 
 /**
  * As invariantes de TODA página SEO, presentes e futuras.
@@ -44,6 +49,49 @@ function escaparHtml(texto: string): string {
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#x27;');
+}
+
+/** O inverso de `escaparHtml` — para ler o HTML como TEXTO de novo. */
+function desescaparHtml(texto: string): string {
+  return texto
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"')
+    .replace(/&#x27;/g, "'")
+    .replace(/&amp;/g, '&');
+}
+
+/**
+ * O que a pessoa LÊ num pedaço de HTML: sem tag, sem entidade, sem sobra de
+ * espaço.
+ *
+ * Existe porque o layout quebra uma frase em vários elementos — `**escala**`
+ * vira `<strong>`, `[guia](/guias)` vira `<a>` —, então a frase do arquivo de
+ * conteúdo nunca aparece contígua no markup. Comparar texto com texto é o
+ * único jeito de o teste cobrar "o parágrafo está na página" sem cobrar junto
+ * "o parágrafo não usa negrito", que não é regra nenhuma.
+ */
+function textoVisivel(html: string): string {
+  return desescaparHtml(html.replace(/<!--[\s\S]*?-->/g, '').replace(/<[^>]+>/g, ''))
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+/** Só o `<main>`: o cabeçalho e o rodapé repetem texto em toda página. */
+function main(html: string): string {
+  const inicio = html.indexOf('<main');
+  const fim = html.indexOf('</main>');
+  if (inicio < 0 || fim < 0) throw new Error('HTML sem <main>.');
+  return html.slice(inicio, fim);
+}
+
+/** O texto de conteúdo achatado pelo MESMO parser que o layout usa. */
+function achatar(texto: string): string {
+  return tokens(texto)
+    .map((token) => token.texto)
+    .join('')
+    .replace(/\s+/g, ' ')
+    .trim();
 }
 
 /** Os nós de JSON-LD de um documento, já parseados. */
@@ -224,13 +272,36 @@ describe('o HTML gerado', () => {
   it('o corpo da página aparece no HTML sem executar nada', () => {
     for (const pagina of TODAS) {
       const html = HTML.get(urlDe(pagina));
+      if (html == null) throw new Error(`Sem HTML para ${urlDe(pagina)}`);
       expect(html).toContain(pagina.h1);
       const primeiroParagrafo = pagina.corpo.find((bloco) => bloco.tipo === 'paragrafo');
-      if (primeiroParagrafo != null && primeiroParagrafo.tipo === 'paragrafo') {
-        const trecho = primeiroParagrafo.texto.slice(0, 40).replace(/\*\*/g, '');
-        expect(html).toContain(escaparHtml(trecho.split('[')[0]));
-      }
+      if (primeiroParagrafo == null || primeiroParagrafo.tipo !== 'paragrafo') continue;
+      const trecho = achatar(primeiroParagrafo.texto).slice(0, 40);
+      expect(
+        textoVisivel(main(html)),
+        `${urlDe(pagina)}: o primeiro parágrafo não aparece no <main>`,
+      ).toContain(trecho);
     }
+  });
+
+  /**
+   * O caso que derrubava o teste acima antes de ele comparar texto achatado:
+   * um parágrafo que ABRE em negrito. No HTML ele sai partido em
+   * `<strong>…</strong><span>…</span>`, então a fatia crua do arquivo de
+   * conteúdo — mesmo sem os `**` — não existe contígua em lugar nenhum, e a
+   * página era reprovada por uma ênfase legítima.
+   */
+  it('acha o primeiro parágrafo mesmo quando ele abre em negrito', () => {
+    const bloco: Bloco = {
+      tipo: 'paragrafo',
+      texto: '**Vídeo curto** é o formato que a plataforma distribui sem mídia paga.',
+    };
+    const html = renderToStaticMarkup(createElement(BlocoDoCorpo, { bloco }));
+
+    expect(textoVisivel(html)).toContain(achatar(bloco.texto).slice(0, 40));
+    // A comparação ANTIGA (fatia crua, só sem os `**`) não achava — é isto que
+    // fazia o gate reprovar conteúdo correto.
+    expect(html).not.toContain(bloco.texto.slice(0, 40).replace(/\*\*/g, ''));
   });
 
   it('marca FAQPage só onde as perguntas estão visíveis', () => {
