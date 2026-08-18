@@ -9,9 +9,9 @@
  * lista já filtrada por ele.
  */
 import { BookOpen, FileCheck } from 'lucide-react';
-import { Contador, quandoFoi } from '../../leads/central/pecas';
+import { quandoFoi } from '../../leads/central/pecas';
 import { SITUACOES, ROTULO_DA_SITUACAO, contarSituacoes, situacaoDo } from './filtrar';
-import { BOTAO_BORDA, Etiqueta, Selo } from './pecas';
+import { BOTAO_BORDA, Contador, Etiqueta, ROTULO, Selo } from './pecas';
 import type { EstadoDoPainel } from './usarAdmin';
 import type { Situacao } from './filtrar';
 import type { ConviteLinha } from '../tipos';
@@ -60,7 +60,7 @@ export function VisaoGeral({
       <div className="grid gap-4 lg:grid-cols-2">
         {/* ── A VERSÃO VIGENTE */}
         <section className="rounded-2xl border border-white/[0.08] bg-white/[0.015] p-5 sm:p-6">
-          <span className="inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.14em] text-white/40">
+          <span className={`inline-flex items-center gap-2 ${ROTULO}`}>
             <BookOpen className="h-3 w-3" strokeWidth={2} />
             Manual vigente
           </span>
@@ -101,7 +101,7 @@ export function VisaoGeral({
 
         {/* ── AS ÚLTIMAS CONCLUSÕES */}
         <section className="rounded-2xl border border-white/[0.08] bg-white/[0.015] p-5 sm:p-6">
-          <span className="inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.14em] text-white/40">
+          <span className={`inline-flex items-center gap-2 ${ROTULO}`}>
             <FileCheck className="h-3 w-3" strokeWidth={2} />
             Últimas conclusões
           </span>
