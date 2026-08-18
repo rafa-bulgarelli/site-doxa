@@ -128,7 +128,7 @@ export const pagina: Pagina = {
       itens: [
         '**O custo da próxima visualização.** No pago, o milésimo resultado custa como o primeiro. No orgânico, o custo está na produção — e a peça publicada em março pode continuar sendo entregue em agosto.',
         '**O que sobra.** Campanha desligada deixa relatório. Conteúdo publicado deixa biblioteca, audiência e material que o time comercial usa em conversa de venda.',
-        '**Confiança.** Um perfil com histórico responde à pergunta que todo anúncio deixa em aberto: "essa empresa existe mesmo?". É a pesquisa que quase todo comprador faz antes de decidir.',
+        '**Confiança.** Um perfil com histórico responde à pergunta que todo anúncio deixa em aberto: "essa empresa existe mesmo?". É a pesquisa que o comprador costuma fazer antes de decidir.',
         '**Independência do caixa.** Mês apertado corta verba de mídia antes de qualquer outra coisa. O canal que depende só de verba desaparece exatamente no mês em que era mais necessário.',
         '**Dado sobre mensagem, não sobre público.** O orgânico diz o que as pessoas querem ouvir de você; o pago diz para quem vale a pena falar. São aprendizados diferentes, e o primeiro melhora o segundo.',
       ],

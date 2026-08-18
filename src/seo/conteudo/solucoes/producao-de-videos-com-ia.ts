@@ -16,8 +16,10 @@ import type { Pagina } from '../../tipos';
  *    arquivo, que é a manchete do topo da landing;
  *  · a letra da garantia ("metas de performance definidas em contrato") →
  *    `src/components/faq/config.ts`, resposta `garantia`, palavra por palavra;
- *  · as seis respostas do FAQ → o mesmo arquivo, chaves `gravar`, `volume`,
- *    `organico`, `primeiros-videos`, `tom-de-voz` e `preco`, palavra por palavra;
+ *  · as quatro respostas do FAQ → o mesmo arquivo, chaves `gravar`, `organico`,
+ *    `primeiros-videos` e `preco`, palavra por palavra. `volume` e `tom-de-voz`
+ *    saíram daqui porque as donas dessas perguntas são
+ *    `/solucoes/producao-de-conteudo-em-escala` e `/solucoes/marketing-com-ia`;
  *  · o parágrafo sobre complementar a estratégia com anúncios → chave
  *    `midia-extra` do mesmo arquivo, que virou prosa em vez de pergunta porque
  *    a dúvida "preciso de tráfego pago?" já está respondida no corpo;
@@ -54,7 +56,6 @@ export const pagina: Pagina = {
     'vídeos com inteligência artificial para empresas',
     'produzir vídeo com ia',
     'avatar de ia para vídeos',
-    'clone de voz para vídeos',
     'conteúdo em vídeo com ia',
   ],
   hubs: ['/guias/ia-no-marketing'],
@@ -63,7 +64,7 @@ export const pagina: Pagina = {
     '/solucoes/producao-de-conteudo-em-escala',
     '/comparativos/ia-vs-producao-tradicional-de-video',
     '/guias/o-que-e-avatar-de-ia',
-    '/guias/como-usar-ia-no-marketing',
+    '/guias/o-que-e-uma-agencia-de-marketing-com-ia',
   ],
   atualizadoEm: '2026-08-18',
   cta: {
@@ -127,7 +128,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'O volume não é um vídeo por semana: a referência da operação é **sessenta conteúdos em noventa dias**, publicados no TikTok, no Instagram e no YouTube Shorts. É esse volume que sustenta a lógica da coisa — testar hook, formato e narrativa em quantidade suficiente para descobrir o que a audiência da sua marca assiste até o fim, em vez de apostar num vídeo por mês.',
+        'O volume não é um vídeo por semana: a referência da operação é **sessenta conteúdos em noventa dias**, conforme as condições e o prazo do contrato, publicados no TikTok, no Instagram e no YouTube Shorts. É esse volume que sustenta a lógica da coisa — testar hook, formato e narrativa em quantidade suficiente para descobrir o que a audiência da sua marca assiste até o fim, em vez de apostar num vídeo por mês.',
     },
     {
       tipo: 'titulo',
@@ -137,7 +138,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'Montar essa operação por dentro custa entre **R$ 8.000 e R$ 10.500 por mês**. Não é o salário de uma pessoa: é a soma do que uma empresa precisa reunir para publicar vídeo com constância.',
+        'Montar essa operação por dentro custa entre **R$ 8.000 e R$ 10.500 por mês**, na conta que a Doxa publica na própria landing — o inventário de UMA operação, com produção, agência e tráfego somados. É ilustração do que uma empresa acumula para publicar com constância, não um levantamento de mercado, e não é o salário de uma pessoa.',
     },
     {
       tipo: 'lista',
@@ -211,7 +212,7 @@ export const pagina: Pagina = {
       tipo: 'destaque',
       variante: 'nota',
       texto:
-        'Ferramenta não é estratégia. Qualquer empresa pode assinar as mesmas cinco contas; o que decide o resultado é o volume de testes e o critério para descartar rápido o que não funciona.',
+        'O que decide o resultado não é a conta assinada, e sim o processo em volta dela. O mapa de onde a IA entra numa operação de marketing — e de onde ela não entra — está em [IA no marketing](/guias/ia-no-marketing).',
     },
     {
       tipo: 'titulo',
@@ -246,11 +247,6 @@ export const pagina: Pagina = {
             'A Doxa consegue assumir grande parte da operação de conteúdo. No onboarding entendemos quais materiais — imagens, vídeos, áudios ou participações — serão necessários. A necessidade de gravação do cliente varia conforme o formato escolhido para a marca.',
         },
         {
-          pergunta: 'Quantos vídeos vocês produzem por mês?',
-          resposta:
-            'O volume depende do plano contratado. A Doxa trabalha com operações de alta frequência, podendo produzir e publicar múltiplos conteúdos por dia. O volume exato é definido de acordo com a estratégia e a meta de performance de cada cliente.',
-        },
-        {
           pergunta: 'As visualizações são orgânicas?',
           resposta:
             'As visualizações contabilizadas nas metas da Doxa são 100% orgânicas, provenientes da distribuição dos conteúdos produzidos dentro da nossa operação. Sem depender da compra de mídia para atingir as metas contratadas.',
@@ -259,11 +255,6 @@ export const pagina: Pagina = {
           pergunta: 'E se os primeiros vídeos não performarem bem?',
           resposta:
             'Os primeiros conteúdos que performam abaixo do esperado fazem parte do processo: eles geram dados sobre audiência, temas, formatos, hooks e narrativas. A estratégia da Doxa não depende de acertar todos os vídeos. Quando identificamos padrões de maior performance, aumentamos a produção em torno do que funciona e descartamos rápido o que não funciona.',
-        },
-        {
-          pergunta: 'A Doxa consegue seguir a identidade e o tom de voz da minha marca?',
-          resposta:
-            'No início da operação, nosso time entende a identidade, o posicionamento, o público, a linguagem e as restrições da empresa. Essas informações passam a orientar a produção, para que o conteúdo mantenha consistência com a marca.',
         },
         {
           pergunta: 'Quanto custa para contratar a Doxa?',

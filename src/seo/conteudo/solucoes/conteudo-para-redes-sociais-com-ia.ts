@@ -70,7 +70,7 @@ export const pagina: Pagina = {
     '/solucoes/marketing-com-ia',
     '/solucoes/producao-de-videos-com-ia',
     '/solucoes/videos-curtos-para-empresas',
-    '/guias/como-usar-ia-no-marketing',
+    '/guias/o-que-e-uma-agencia-de-marketing-com-ia',
   ],
   atualizadoEm: '2026-08-18',
   cta: {

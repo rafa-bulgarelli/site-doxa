@@ -56,7 +56,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'Porque o feed de vídeo curto premia o que parece uma pessoa falando com você, e castiga o que parece um anúncio. Uma peça de aparência caseira atravessa a defesa automática que todo mundo desenvolveu contra publicidade — e é por isso que marcas grandes passaram a encomendar vídeos que parecem não ter sido encomendados.',
+        'Porque, no feed de vídeo curto, o que parece uma pessoa falando com você tende a segurar mais atenção do que o que parece um anúncio — e o que não segura atenção costuma perder distribuição. Uma peça de aparência caseira tem mais chance de atravessar a defesa automática que a audiência desenvolveu contra publicidade — e é por isso que marcas grandes passaram a encomendar vídeos que parecem não ter sido encomendados.',
     },
     {
       tipo: 'titulo',

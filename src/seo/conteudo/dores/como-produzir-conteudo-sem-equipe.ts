@@ -121,7 +121,7 @@ export const pagina: Pagina = {
     {
       tipo: 'lista',
       itens: [
-        'Cenário elaborado, iluminação de estúdio e equipamento caro: o feed não premia produção, premia o que prende. Um vídeo de celular bem aberto ganha de um vídeo caro mal aberto.',
+        'Cenário elaborado, iluminação de estúdio e equipamento caro: no feed, o que decide não é a produção: é o que prende. Um vídeo de celular bem aberto ganha de um vídeo caro mal aberto.',
         'Aprovação por comitê. Cada rodada de aprovação custa dias, e dias custam a cadência inteira.',
         'Trilha e efeito visual em cima de um conteúdo que não se sustenta sem eles.',
         'Pesquisa de tema que não passa pelas quatro fontes acima: o material que só você tem é o que ninguém encontra pesquisando.',
@@ -178,7 +178,7 @@ export const pagina: Pagina = {
         {
           pergunta: 'E se o meu negócio for chato demais para render conteúdo?',
           resposta:
-            'Quase sempre o que falta é inventário, não assunto. Antes de concluir que não há o que dizer, passe pelas quatro fontes desta página: as perguntas que você respondeu duas vezes na semana, os erros que você vê o cliente cometer, as decisões que você tomou e o processo real sendo executado. Se nenhuma das quatro render uma linha, aí sim o problema é outro.',
+            'Na maior parte das vezes o que falta é inventário, não assunto. Antes de concluir que não há o que dizer, passe pelas quatro fontes desta página: as perguntas que você respondeu duas vezes na semana, os erros que você vê o cliente cometer, as decisões que você tomou e o processo real sendo executado. Se nenhuma das quatro render uma linha, aí sim o problema é outro.',
         },
         {
           pergunta: 'Preciso de câmera e microfone profissionais?',
@@ -188,7 +188,7 @@ export const pagina: Pagina = {
         {
           pergunta: 'Conteúdo gravado por celular funciona para uma marca?',
           resposta:
-            'Funciona, e em vídeo curto costuma funcionar melhor do que material de aparência publicitária. O formato premia o que parece uma pessoa falando com você, e é isso que explica a presença de material gravado por criadores nas três redes.',
+            'Funciona, e em vídeo curto costuma funcionar melhor do que material de aparência publicitária. O formato tende a favorecer o que parece uma pessoa falando com você, e é isso que explica a presença de material gravado por criadores nas três redes.',
         },
       ],
     },

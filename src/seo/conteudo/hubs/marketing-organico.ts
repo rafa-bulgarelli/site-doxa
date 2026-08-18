@@ -85,7 +85,7 @@ export const pagina: Pagina = {
         {
           titulo: 'Formato que a plataforma distribui',
           texto:
-            'Hoje isso significa, em primeiro lugar, vídeo vertical curto: é o formato que mais entrega para quem ainda não segue o perfil. Carrossel e foto também aparecem em recomendação, mas costumam render mais entre quem já está lá.',
+            'Hoje isso significa, em primeiro lugar, vídeo vertical curto: é o formato em que uma parte relevante do alcance costuma vir de quem ainda não segue o perfil. Carrossel e foto também aparecem em recomendação, mas costumam render mais entre quem já está lá.',
         },
         {
           titulo: 'Um critério para descartar',

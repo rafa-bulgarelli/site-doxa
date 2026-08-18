@@ -45,7 +45,6 @@ export const pagina: Pagina = {
     'marketing com ia',
     'inteligência artificial no marketing',
     'marketing digital com ia',
-    'ia para redes sociais',
     'agência de marketing com ia',
     'ia para conteúdo de empresa',
   ],
@@ -53,7 +52,7 @@ export const pagina: Pagina = {
   relacionadas: [
     '/solucoes/producao-de-videos-com-ia',
     '/solucoes/clone-de-ia-para-videos',
-    '/guias/como-usar-ia-no-marketing',
+    '/guias/o-que-e-uma-agencia-de-marketing-com-ia',
     '/comparativos/agencia-vs-equipe-interna',
     '/comparativos/ia-vs-producao-tradicional-de-video',
   ],
@@ -199,7 +198,7 @@ export const pagina: Pagina = {
       tipo: 'destaque',
       variante: 'nota',
       texto:
-        'Ferramenta é commodity: as mesmas contas estão a um cartão de distância do seu concorrente. O que não é commodity é o volume de testes e a disposição de descartar rápido o que não funciona.',
+        'Ferramenta é commodity: as mesmas contas estão a um cartão de distância do seu concorrente. O que não é commodity — o volume de testes e o critério de descarte — está desenvolvido em [IA no marketing](/guias/ia-no-marketing).',
     },
     {
       tipo: 'titulo',

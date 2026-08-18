@@ -45,7 +45,7 @@ export const pagina: Pagina = {
   relacionadas: [
     '/solucoes/producao-de-videos-com-ia',
     '/solucoes/marketing-com-ia',
-    '/guias/como-usar-ia-no-marketing',
+    '/guias/o-que-e-uma-agencia-de-marketing-com-ia',
     '/guias/o-que-e-avatar-de-ia',
     '/comparativos/ia-vs-producao-tradicional-de-video',
   ],

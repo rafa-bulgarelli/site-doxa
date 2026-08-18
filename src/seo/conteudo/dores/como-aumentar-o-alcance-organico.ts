@@ -95,7 +95,7 @@ export const pagina: Pagina = {
         {
           titulo: 'A frequência, até um piso razoável',
           texto:
-            'Abaixo de dois ou três vídeos por semana, a plataforma tem pouca amostra para entender quem é o seu público. Subir a frequência quase sempre aumenta o alcance total antes de aumentar o alcance por vídeo.',
+            'Abaixo de dois ou três vídeos por semana, a plataforma tem pouca amostra para entender quem é o seu público. Subir a frequência costuma aumentar o alcance total antes de aumentar o alcance por vídeo.',
         },
         {
           titulo: 'O espaçamento entre publicações',
@@ -186,7 +186,7 @@ export const pagina: Pagina = {
         {
           pergunta: 'Seguidores ainda importam para o alcance?',
           resposta:
-            'Importam menos do que a maioria imagina em vídeo curto, porque a maior parte da distribuição vai para quem ainda não segue o perfil. Seguidor é consequência de conteúdo que funcionou, e não a condição para que ele funcione.',
+            'Importam menos do que se imagina em vídeo curto, porque uma parte relevante do alcance costuma vir de quem ainda não segue o perfil. Seguidor é consequência de conteúdo que funcionou, e não a condição para que ele funcione.',
         },
       ],
     },

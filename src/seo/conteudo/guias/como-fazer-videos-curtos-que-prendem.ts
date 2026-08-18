@@ -44,7 +44,6 @@ export const pagina: Pagina = {
     'prender atenção no vídeo',
     'retenção de vídeo',
     'primeiros segundos do vídeo',
-    'roteiro de vídeo curto',
   ],
   hubs: ['/guias/videos-curtos'],
   relacionadas: [
@@ -84,7 +83,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'O começo do vídeo é a única parte que todo mundo vê. Ele não serve para se apresentar, situar o assunto ou agradecer: serve para dar ao espectador um motivo específico de ficar. Um hook funciona quando entrega uma das quatro coisas abaixo antes que o dedo decida.',
+        'O começo do vídeo é a única parte que ninguém pula. Ele não serve para se apresentar, situar o assunto ou agradecer: serve para dar ao espectador um motivo específico de ficar. Um hook funciona quando entrega uma das quatro coisas abaixo antes que o dedo decida.',
     },
     {
       tipo: 'lista',
@@ -134,7 +133,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'O que não funciona é o fecho administrativo — "comenta aí", "salva esse vídeo", "segue o perfil". Ele ocupa o segundo mais valioso da peça com um pedido que só interessa a quem publicou, e quase sempre chega depois de a atenção já ter ido embora.',
+        'O que não funciona é o fecho administrativo — "comenta aí", "salva esse vídeo", "segue o perfil". Ele ocupa o segundo mais valioso da peça com um pedido que só interessa a quem publicou, e costuma chegar depois de a atenção já ter ido embora.',
     },
     {
       tipo: 'titulo',
@@ -228,7 +227,7 @@ export const pagina: Pagina = {
         {
           pergunta: 'Legenda automática serve ou preciso legendar manualmente?',
           resposta:
-            'A automática resolve a acessibilidade e erra em nome próprio, número e termo técnico — que costumam ser justamente as palavras que carregam a informação. O caminho barato é gerar automático e revisar as palavras-chave da peça, cuidando também do posicionamento: legenda coberta pela interface da rede é legenda que ninguém leu.',
+            'A automática resolve a acessibilidade e costuma errar em nome próprio, número e termo técnico — que costumam ser justamente as palavras que carregam a informação. O caminho barato é gerar automático e revisar as palavras-chave da peça, cuidando também do posicionamento: legenda coberta pela interface da rede é legenda que ninguém leu.',
         },
         {
           pergunta: 'O mesmo vídeo pode ir para TikTok, Reels e Shorts?',

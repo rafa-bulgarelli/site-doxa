@@ -25,7 +25,7 @@ import type { Pagina } from '../../tipos';
  *  · validação antes da publicação, quando o fluxo do cliente exige → chave
  *    `aprovacao`;
  *  · onboarding → estratégia → produção → aprovações → publicação → análise →
- *    chave `processo`; a necessidade de gravação do cliente → chave `gravar`;
+ *    chave `processo`;
  *  · os primeiros vídeos que geram dado e o descarte rápido → chave
  *    `primeiros-videos`;
  *  · cada vídeo é único, com roteiro, voz clonada, edição e capa →
@@ -199,19 +199,9 @@ export const pagina: Pagina = {
             'Construímos uma operação proprietária de conteúdo baseada em volume, testes constantes, análise de dados e otimização. Em vez de depender de um único vídeo viral, criamos um sistema contínuo para aumentar as chances de distribuição e crescimento.',
         },
         {
-          pergunta: 'Eu preciso gravar os vídeos ou vocês fazem tudo?',
-          resposta:
-            'A Doxa consegue assumir grande parte da operação de conteúdo. No onboarding entendemos quais materiais — imagens, vídeos, áudios ou participações — serão necessários. A necessidade de gravação do cliente varia conforme o formato escolhido para a marca.',
-        },
-        {
           pergunta: 'Como funciona o processo depois que eu contrato?',
           resposta:
             'O processo começa com um onboarding, para entendermos a empresa, os objetivos, o público, o posicionamento e as referências. Em seguida estruturamos a estratégia, iniciamos a produção, passamos pelas aprovações necessárias e começamos a publicar. A partir daí, os resultados são analisados continuamente para orientar os próximos conteúdos.',
-        },
-        {
-          pergunta: 'E se os primeiros vídeos não performarem bem?',
-          resposta:
-            'Os primeiros conteúdos que performam abaixo do esperado fazem parte do processo: eles geram dados sobre audiência, temas, formatos, hooks e narrativas. A estratégia da Doxa não depende de acertar todos os vídeos. Quando identificamos padrões de maior performance, aumentamos a produção em torno do que funciona e descartamos rápido o que não funciona.',
         },
       ],
     },

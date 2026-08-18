@@ -35,7 +35,7 @@ export const pagina: Pagina = {
     'As causas mais comuns de um vídeo sem visualizações, na ordem em que vale investigar, com o teste que identifica cada uma e o que fazer depois.',
   h1: 'Por que os seus vídeos não têm views',
   resumo:
-    'Na maioria dos casos são três coisas, nesta ordem: o vídeo não prende nos primeiros segundos, o volume é baixo demais para gerar dado, ou os vídeos competem entre si por serem publicados perto demais. Nenhuma delas é sorte. Abaixo, como identificar qual é a sua e o que fazer em cada caso.',
+    'Na maior parte dos casos são três coisas, nesta ordem: o vídeo não prende nos primeiros segundos, o volume é baixo demais para gerar dado, ou os vídeos competem entre si por serem publicados perto demais. Nenhuma delas é sorte. Abaixo, como identificar qual é a sua e o que fazer em cada caso.',
   intencao: 'informacional',
   palavrasChave: [
     'meu vídeo não tem views',
@@ -66,7 +66,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'A ordem importa. As causas abaixo estão organizadas da mais frequente para a menos frequente, e as três primeiras explicam a maioria dos casos. Comece pela primeira, faça o teste indicado, e só siga adiante se ela estiver descartada — mexer em cinco coisas ao mesmo tempo garante que você não vai saber qual delas era.',
+        'A ordem importa. As causas abaixo estão organizadas da mais frequente para a menos frequente, e as três primeiras explicam a maior parte dos casos. Comece pela primeira, faça o teste indicado, e só siga adiante se ela estiver descartada — mexer em cinco coisas ao mesmo tempo garante que você não vai saber qual delas era.',
     },
     {
       tipo: 'destaque',
@@ -133,7 +133,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'Ninguém está rolando o feed procurando saber que a sua empresa completou doze anos. O vídeo que funciona começa por algo que a pessoa reconhece como dela — uma dúvida, um erro comum, um resultado inesperado — e só depois, se couber, chega à marca. A prova disso é fácil de ver nos seus próprios números: os vídeos institucionais quase sempre são os de pior desempenho do perfil.',
+        'Ninguém está rolando o feed procurando saber que a sua empresa completou doze anos. O vídeo que funciona começa por algo que a pessoa reconhece como dela — uma dúvida, um erro comum, um resultado inesperado — e só depois, se couber, chega à marca. Confira nos seus números: os institucionais costumam ficar entre os de pior desempenho do perfil.',
     },
     {
       tipo: 'paragrafo',
@@ -180,7 +180,7 @@ export const pagina: Pagina = {
       itens: [
         '**O algoritmo não está te punindo.** Não existe castigo pessoal; existe um vídeo que não segurou a amostra que recebeu.',
         '**Não é o horário da postagem.** Ele muda pouco quando a retenção é baixa, e não salva um vídeo que ninguém assiste até o fim.',
-        '**Não é falta de seguidores.** Nas três redes de vídeo curto, a maior parte do alcance vem de quem não segue o perfil.',
+        '**Não é falta de seguidores.** No vídeo curto, uma parte relevante do alcance costuma vir de quem ainda não segue o perfil.',
         '**Comprar views, curtidas ou seguidores piora.** Além de contaminar o dado que você usaria para decidir, pode gerar penalização das próprias redes.',
       ],
     },

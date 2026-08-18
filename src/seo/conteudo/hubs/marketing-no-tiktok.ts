@@ -34,7 +34,7 @@ export const pagina: Pagina = {
     'Como o TikTok distribui vídeo, o que muda quando o perfil é de uma empresa e quais decisões de formato, cadência e medição sustentam o perfil.',
   h1: 'Marketing no TikTok',
   resumo:
-    'No TikTok, quantas pessoas veem o seu próximo vídeo depende muito mais do vídeo do que do tamanho do seu perfil: a plataforma mostra cada publicação para um grupo pequeno de gente que não te segue e decide o resto pelo que esse grupo faz. Este hub organiza o que uma marca precisa decidir antes de postar e aponta para a página de cada assunto.',
+    'No TikTok, quantas pessoas veem o seu próximo vídeo depende menos do tamanho do perfil do que se imagina: a plataforma costuma mostrar cada publicação para um grupo pequeno, boa parte dele de quem ainda não te segue, e o que esse grupo faz orienta o resto da distribuição. Este hub organiza o que uma marca precisa decidir antes de postar e aponta para a página de cada assunto.',
   intencao: 'informacional',
   palavrasChave: [
     'marketing no tiktok',
@@ -88,7 +88,7 @@ export const pagina: Pagina = {
     {
       tipo: 'titulo',
       nivel: 2,
-      texto: 'Os erros que aparecem em quase todo perfil de marca',
+      texto: 'Os erros que mais aparecem em perfil de marca',
     },
     {
       tipo: 'lista',

@@ -49,7 +49,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'Suponha um vídeo de 40 segundos que mantém 90% até o segundo 6 e cai para 45% no segundo 9 — números inventados para ilustrar a leitura, não a medição de ninguém. Não é problema de abertura: quem estava lá ficou até o sexto segundo. É problema do que acontece no nono — quase sempre uma frase de transição do tipo "mas antes de eu explicar, deixa eu me apresentar". Cortar a transição costuma recuperar a maior parte dessa queda.',
+        'Suponha um vídeo de 40 segundos que mantém 90% até o segundo 6 e cai para 45% no segundo 9 — números inventados para ilustrar a leitura, não a medição de ninguém. Não é problema de abertura: quem estava lá ficou até o sexto segundo. É problema do que acontece no nono — costuma ser uma frase de transição do tipo "mas antes de eu explicar, deixa eu me apresentar". Cortar a transição costuma recuperar a maior parte dessa queda.',
     },
     {
       tipo: 'titulo',
@@ -59,7 +59,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'Curtida é uma ação opcional que uma minoria executa; ficar assistindo é o que praticamente todo mundo faz ou deixa de fazer. Por isso a retenção é o sinal mais denso disponível — e por isso ela costuma explicar, melhor que qualquer outra métrica, por que um vídeo foi entregue a muita gente e outro não.',
+        'Curtida é uma ação opcional que uma minoria executa; ficar assistindo é o que toda pessoa que abriu o vídeo faz ou deixa de fazer. Por isso a retenção é o sinal mais denso disponível — e por isso ela costuma explicar, melhor que qualquer outra métrica, por que um vídeo foi entregue a muita gente e outro não.',
     },
     {
       tipo: 'paragrafo',
@@ -82,5 +82,5 @@ export const pagina: Pagina = {
  * [x] 12. Sem stuffing.
  * [x] 13. Vocabulário coerente.
  * [x] 14. Publicaria sem Google: sim — quase ninguém sabe ler a curva, e ela
- *          está de graça no painel de todo mundo.
+ *          está de graça no painel de qualquer perfil.
  * ────────────────────────────────────────────────────────────────────────── */

@@ -58,7 +58,7 @@ export const pagina: Pagina = {
     {
       tipo: 'titulo',
       nivel: 2,
-      texto: 'O erro de desenho que derruba quase todo mundo',
+      texto: 'O erro de desenho que derruba a maior parte das tentativas',
     },
     {
       tipo: 'paragrafo',
