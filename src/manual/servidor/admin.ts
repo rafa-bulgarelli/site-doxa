@@ -23,7 +23,6 @@
 import { ROTA_BASE } from '../config';
 import type {
   ConviteLinha,
-  PedidoAdmin,
   PedidoConviteCriar,
   PedidoConviteExcluir,
   PedidoConviteRegenerar,
