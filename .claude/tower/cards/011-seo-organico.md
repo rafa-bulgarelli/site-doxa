@@ -155,6 +155,8 @@ embutida em página externa não muda papel de agente.
 <!-- Diário da noite (assento do GESTOR, sessão principal) -->
 ## Diário da execução — 2026-08-17/18
 
+(Horários pelos timestamps dos commits/merges — os primeiros registros tinham estimativa adiantada, corrigida às 01:05.)
+
 - **23:35** — Plano auditado (SCOPE por linha ✔, disjunção par a par ✔, VERIFY com
   pnpm/vitest ✔, baseline 19/504 + hash `index-pvBkohFb.js` confirmados). Feature
   branch `feat/seo-organico` criada e pushada (`098278e`, com card+brief+packs).
@@ -164,7 +166,7 @@ embutida em página externa não muda papel de agente.
   Pré-condições da noite: `caffeinate -dims` ativo, sessão em bypass de permissões.
   Merge da noite = `feat/seo-organico`; `main`/deploy só com o dono acordado.
 
-- **23:52** — `track-seo-docs` READY → gate leve (diff só `docs/seo/`, zero volume
+- **23:46** — `track-seo-docs` READY → gate leve (diff só `docs/seo/`, zero volume
   numérico, "não fazer" com arquivo:linha) → **PR #48 squash em `feat/seo-organico`
   (`334ac27`)**. Worktree fechada. `BLOCKED_EXTERNAL_CREDENTIAL` registrado no topo
   do keyword-map (sem GSC/GA/volume/SERP). Os 5 fatos frágeis para o dono conferir
@@ -173,7 +175,7 @@ embutida em página externa não muda papel de agente.
   a torre NÃO replica isso em página nova. `tower-close.sh` passou a aceitar squash
   (árvore idêntica à base) e `BASE` por env.
 
-- **00:25** — `prelude-seo-motor` READY (com desvio declarado do hash) → gate pesado:
+- **00:11** — `prelude-seo-motor` READY (com desvio declarado do hash) → gate pesado:
   collector **APROVADO COM RESSALVAS** + verificação independente da sessão principal
   (mesmo ambiente: 34 chunks JS idênticos após normalizar hash; CSS 1217→1253 regras,
   0 sumidas; `curl` sem JS ok; visual desktop/mobile emulado 390/320 sem overflow;
@@ -189,7 +191,7 @@ embutida em página externa não muda papel de agente.
   `.claude/tower/bin/mobile-shot.mjs` (viewport emulado via DevTools; `--window-size`
   do Chrome mente abaixo de ~500px). **FASE 1 aberta**: 4 executores.
 
-- **~00:50** — T1 `track-seo-fundacao` READY (`af9a8b1`: 26/590 verdes; cabeçalho
+- **~00:35** — T1 `track-seo-fundacao` READY (`af9a8b1`: 26/590 verdes; cabeçalho
   mobile 463→320px medido; `/#forms` rola na chegada — 15 linhas em `App.tsx`; og.png
   51 KB; JSON-LD por página; sem `datePublished` — decisão §46, contrato só tem
   `atualizadoEm`) → collector em andamento. T2 `track-seo-conteudo-solucoes` READY
@@ -198,7 +200,7 @@ embutida em página externa não muda papel de agente.
   worktrees (usar `--strictPort`); scratchpad é compartilhado (subdir por track);
   grep de palavras do pack era cego a strings multilinha — medir no `<main>` do dist.
 
-- **~01:15** — FASE 1: os 4 executores READY. T3 `track-seo-conteudo-guias` (10
+- **~00:40** — FASE 1: os 4 executores READY. T3 `track-seo-conteudo-guias` (10
   páginas: 5 guias + 5 comparativos com tabela; 24/574). T4 `track-seo-hubs-nav` (20
   páginas: 5 hubs + 4 dores + 11 verbetes; 24/594; **rodapé da landing INTOCADO** — o
   link "Guias" estoura 19px a 320px, medido, `Rodape.tsx` tem `nowrap` de propósito).
@@ -211,7 +213,7 @@ embutida em página externa não muda papel de agente.
   virar índice de SEO"). Até lá a biblioteca é descoberta por sitemap + llms.txt +
   links internos; a landing continua sem apontar para ela.
 
-- **~01:50** — Collectors da FASE 1: T1 APROVADO COM RESSALVAS (ressalva real:
+- **00:50** — Collectors da FASE 1: T1 APROVADO COM RESSALVAS (ressalva real:
   `deveManterFragmento` mantinha qualquer hash → `/#faq` não-determinístico; corrigido
   para só `#forms`, `dbce68a`) → **PR #50 squash (`eebdc07`)**; feature branch 26/591
   verde. T2/T3/T4 APROVADOS COM RESSALVAS — só correções de texto (fato mal
@@ -222,11 +224,11 @@ embutida em página externa não muda papel de agente.
   o gate de VERIFY precisa da saída colada — está nos reports dos executores (24/569,
   24/574, 24/594) e a sessão principal roda a suíte de novo no merge.
 
-- **~02:05** — T2 corrigido (`1238bfd`) → merge de teste local contra a base com T1:
+- **00:53** — T2 corrigido (`1238bfd`) → merge de teste local contra a base com T1:
   26/642 verdes, 0 conflitos → **PR #51 squash (`0ff3890`)**. Worktree fechada.
   Feature branch: motor + fundação + 9 páginas de soluções/plataformas.
 
-- **~02:45** — **FASE 1 inteira mergeada**: T4 PR #52 (`5f3d2c2`, 26/768, 33 rotas) e
+- **00:57–01:03** — **FASE 1 inteira mergeada**: T4 PR #52 (`5f3d2c2`, 26/768, 33 rotas) e
   T3 PR #53 (`2b547ad`, 26/831, **44 rotas** = 39 páginas + 5 índices). Cada merge com
   merge de teste local + suíte inteira antes do PR. `seo:audit`: 3 avisos (hub Reels
   órfão; 2 planejadas opcionais). Gate visual de amostra na base consolidada
