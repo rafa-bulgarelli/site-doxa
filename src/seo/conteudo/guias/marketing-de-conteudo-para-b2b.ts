@@ -41,7 +41,7 @@ export const pagina: Pagina = {
     'Quem assiste não é uma empresa, é a pessoa que decide dentro dela. O que muda no assunto, em quem aparece, no que se mede — e quando conteúdo não compensa.',
   h1: 'Marketing de conteúdo para B2B',
   resumo:
-    'A objeção de sempre — "meu cliente é empresa, não está rolando o feed" — confunde o comprador com o organograma. Quem decide a contratação é uma pessoa, e ela usa as mesmas redes que qualquer um fora do horário do expediente. O que muda em B2B não é o canal: é o assunto, quem aparece, o que se mede e o tempo até a conversa acontecer.',
+    'A objeção de sempre — "meu cliente é empresa, não está rolando o feed" — confunde o comprador com o organograma. Quem decide a contratação é uma pessoa, e costuma usar as mesmas redes que qualquer outra fora do expediente. O que muda em B2B não é o canal: é o assunto, quem aparece, o que se mede e o tempo até a conversa acontecer.',
   intencao: 'informacional',
   palavrasChave: [
     'marketing de conteúdo para b2b',
@@ -73,12 +73,12 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'Empresa nenhuma abre um aplicativo. Quem abre é o dono, o gerente de operações, o comprador, o sócio técnico — pessoas que, às nove da noite, rolam o mesmo feed que qualquer um. É por isso que a pergunta "meu público está nessa rede?" costuma estar mal formulada: a pergunta útil é se **a pessoa que assina o contrato** está, e ela está.',
+        'Empresa nenhuma abre um aplicativo. Quem abre é o dono, o gerente de operações, o comprador, o sócio técnico — pessoas que, fora do expediente, abrem os mesmos aplicativos que o resto da casa. É por isso que a pergunta "meu público está nessa rede?" costuma estar mal formulada: a pergunta útil é se **a pessoa que assina o contrato** está, e ela costuma estar.',
     },
     {
       tipo: 'paragrafo',
       texto:
-        'A diferença real aparece depois do play. No B2C, o vídeo pode fechar a compra no mesmo dia. No B2B, ele quase nunca fecha nada: ele constrói reconhecimento antes da necessidade existir, para que, no dia em que ela existir, o nome da sua empresa já esteja na cabeça de quem vai procurar. Conteúdo aqui é trabalho de antecipação, não de conversão.',
+        'A diferença real aparece depois do play. No B2C, o vídeo pode fechar a compra no mesmo dia. No B2B, ele raramente fecha sozinho: constrói reconhecimento antes de a necessidade existir, para que, no dia em que ela existir, o nome da sua empresa já esteja na cabeça de quem vai procurar. Conteúdo aqui é trabalho de antecipação, não de conversão.',
     },
     {
       tipo: 'titulo',
@@ -104,22 +104,22 @@ export const pagina: Pagina = {
     {
       tipo: 'titulo',
       nivel: 2,
-      texto: 'Quatro tipos de peça que funcionam em B2B',
+      texto: 'Quatro tipos de peça que o comprador corporativo assiste',
     },
     {
       tipo: 'lista',
       itens: [
         '**A objeção respondida sem rodeio.** Aquilo que o seu time comercial ouve toda semana e responde por telefone. Publicado, ele responde antes da ligação — e desqualifica sozinho quem não deveria entrar na fila.',
         '**O critério de decisão explicado.** O que olhar numa proposta do seu setor, o que costuma vir escondido, que pergunta separa fornecedor sério de folheto. Conteúdo útil mesmo para quem vai contratar o concorrente, e é isso que o torna crível.',
-        '**O erro caro que o setor comete.** Não o erro genérico: o específico, com o número da conta ou a consequência concreta. É o formato que mais gera aquele comentário de "é exatamente isso que acontece aqui".',
-        '**O processo por dentro.** Como o serviço é executado de verdade, com a etapa chata incluída. Em B2B, transparência de processo vale mais do que qualquer adjetivo sobre qualidade.',
+        '**O erro caro que o setor comete.** Não o erro genérico: o que sai caro na operação de quem assiste, com a consequência concreta. É o formato que costuma gerar aquele comentário de "é exatamente isso que acontece aqui" — e o comentário, em B2B, costuma vir de quem indica, não de quem assina.',
+        '**O processo por dentro.** Como o serviço é executado de verdade, com a etapa chata incluída. Em compra corporativa, a peça precisa sobreviver a ser mostrada numa reunião interna — e é a transparência de processo, não o adjetivo, que aguenta esse teste.',
       ],
     },
     {
       tipo: 'destaque',
       variante: 'nota',
       texto:
-        'Repare no que ficou de fora: novidade da empresa, aniversário, prêmio, participação em feira. Conteúdo institucional tem lugar no site e no material comercial, e é sistematicamente o de pior desempenho num feed de recomendação.',
+        'A lista é de FORMATOS, não de onde o material sai — de onde ele sai está em [como produzir conteúdo sem equipe](/guias/como-produzir-conteudo-sem-equipe). E repare no que ficou de fora: novidade da empresa, aniversário, prêmio, participação em feira. Conteúdo institucional tem lugar no site e no material comercial, e costuma ficar entre os de pior desempenho num feed de recomendação.',
     },
     {
       tipo: 'titulo',
@@ -177,7 +177,7 @@ export const pagina: Pagina = {
         {
           pergunta: 'Meu cliente não usa TikTok. Ainda faz sentido?',
           resposta:
-            'A pergunta a fazer não é sobre a empresa, é sobre a pessoa: o comprador, o gerente e o sócio usam redes sociais fora do expediente como qualquer um. Ainda assim, se você tem razão e aquele público específico não está numa das redes, a resposta é publicar nas que ele usa — a peça vertical é a mesma, e a decisão é de distribuição, não de formato.',
+            'A pergunta a fazer não é sobre a empresa, é sobre a pessoa: o comprador, o gerente e o sócio costumam usar as mesmas redes que qualquer outra fora do expediente. Ainda assim, se você tem razão e aquele público específico não está numa das redes, a resposta é publicar nas que ele usa — a peça vertical é a mesma, e a decisão é de distribuição, não de formato.',
         },
         {
           pergunta: 'Devo publicar só no LinkedIn, então?',
