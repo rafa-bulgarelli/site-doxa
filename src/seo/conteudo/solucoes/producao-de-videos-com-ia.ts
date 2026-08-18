@@ -16,8 +16,10 @@ import type { Pagina } from '../../tipos';
  *    arquivo, que é a manchete do topo da landing;
  *  · a letra da garantia ("metas de performance definidas em contrato") →
  *    `src/components/faq/config.ts`, resposta `garantia`, palavra por palavra;
- *  · as seis respostas do FAQ → o mesmo arquivo, chaves `gravar`, `volume`,
- *    `organico`, `primeiros-videos`, `tom-de-voz` e `preco`, palavra por palavra;
+ *  · as quatro respostas do FAQ → o mesmo arquivo, chaves `gravar`, `organico`,
+ *    `primeiros-videos` e `preco`, palavra por palavra. `volume` e `tom-de-voz`
+ *    saíram daqui porque as donas dessas perguntas são
+ *    `/solucoes/producao-de-conteudo-em-escala` e `/solucoes/marketing-com-ia`;
  *  · o parágrafo sobre complementar a estratégia com anúncios → chave
  *    `midia-extra` do mesmo arquivo, que virou prosa em vez de pergunta porque
  *    a dúvida "preciso de tráfego pago?" já está respondida no corpo;
@@ -246,11 +248,6 @@ export const pagina: Pagina = {
             'A Doxa consegue assumir grande parte da operação de conteúdo. No onboarding entendemos quais materiais — imagens, vídeos, áudios ou participações — serão necessários. A necessidade de gravação do cliente varia conforme o formato escolhido para a marca.',
         },
         {
-          pergunta: 'Quantos vídeos vocês produzem por mês?',
-          resposta:
-            'O volume depende do plano contratado. A Doxa trabalha com operações de alta frequência, podendo produzir e publicar múltiplos conteúdos por dia. O volume exato é definido de acordo com a estratégia e a meta de performance de cada cliente.',
-        },
-        {
           pergunta: 'As visualizações são orgânicas?',
           resposta:
             'As visualizações contabilizadas nas metas da Doxa são 100% orgânicas, provenientes da distribuição dos conteúdos produzidos dentro da nossa operação. Sem depender da compra de mídia para atingir as metas contratadas.',
@@ -259,11 +256,6 @@ export const pagina: Pagina = {
           pergunta: 'E se os primeiros vídeos não performarem bem?',
           resposta:
             'Os primeiros conteúdos que performam abaixo do esperado fazem parte do processo: eles geram dados sobre audiência, temas, formatos, hooks e narrativas. A estratégia da Doxa não depende de acertar todos os vídeos. Quando identificamos padrões de maior performance, aumentamos a produção em torno do que funciona e descartamos rápido o que não funciona.',
-        },
-        {
-          pergunta: 'A Doxa consegue seguir a identidade e o tom de voz da minha marca?',
-          resposta:
-            'No início da operação, nosso time entende a identidade, o posicionamento, o público, a linguagem e as restrições da empresa. Essas informações passam a orientar a produção, para que o conteúdo mantenha consistência com a marca.',
         },
         {
           pergunta: 'Quanto custa para contratar a Doxa?',

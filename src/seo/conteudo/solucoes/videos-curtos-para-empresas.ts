@@ -22,7 +22,7 @@ import type { Pagina } from '../../tipos';
  *  · as três redes da garantia → `supabase/manual-seed-v1.sql`; a redação mais
  *    ampla ("TikTok, Instagram, YouTube e outras redes relevantes") →
  *    `src/components/faq/config.ts`, chave `redes`;
- *  · as respostas do FAQ → chaves `redes`, `gravar`, `tom-de-voz` e `reuso`; a
+ *  · as respostas do FAQ → chaves `redes` e `reuso`; a
  *    validação antes de publicar, na resposta sobre editar o arquivo → chave
  *    `aprovacao`.
  *
@@ -167,16 +167,6 @@ export const pagina: Pagina = {
           pergunta: 'Em quais redes sociais vocês publicam os conteúdos?',
           resposta:
             'A estratégia pode envolver TikTok, Instagram, YouTube e outras redes relevantes para o público da empresa. A distribuição é definida de acordo com o comportamento da audiência e os objetivos de cada operação.',
-        },
-        {
-          pergunta: 'Eu preciso gravar os vídeos ou vocês fazem tudo?',
-          resposta:
-            'A Doxa consegue assumir grande parte da operação de conteúdo. No onboarding entendemos quais materiais — imagens, vídeos, áudios ou participações — serão necessários. A necessidade de gravação do cliente varia conforme o formato escolhido para a marca.',
-        },
-        {
-          pergunta: 'A Doxa consegue seguir a identidade e o tom de voz da minha marca?',
-          resposta:
-            'No início da operação, nosso time entende a identidade, o posicionamento, o público, a linguagem e as restrições da empresa. Essas informações passam a orientar a produção, para que o conteúdo mantenha consistência com a marca.',
         },
         {
           pergunta: 'Posso usar os vídeos produzidos por vocês em outras redes ou campanhas?',

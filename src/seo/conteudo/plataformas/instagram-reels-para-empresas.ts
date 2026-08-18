@@ -20,8 +20,8 @@ import type { Pagina } from '../../tipos';
  *    perfis liberados → mesma fonte;
  *  · "não é preciso investir em mídia… anúncios são separados" →
  *    `src/components/faq/config.ts`, chave `midia-extra`;
- *  · performance monitorada durante toda a operação → chave `acompanhar`;
- *  · materiais necessários e gravação do cliente → chave `gravar`;
+ *  · propriedade e direitos de uso definidos no contrato de cada cliente →
+ *    chave `direitos` do mesmo arquivo, palavra por palavra;
  *  · quem publica é o cliente, no perfil dele, com o arquivo pronto para postar
  *    → `src/components/HowItWorks.tsx`.
  *
@@ -156,24 +156,14 @@ export const pagina: Pagina = {
             'De segunda a sexta, os únicos vídeos curtos publicados nos perfis participantes da estratégia são os da operação; fotos, carrosséis e stories seguem liberados. Nos fins de semana, a empresa pode publicar vídeos curtos próprios, mesmo a menos de 24 horas de um vídeo da Doxa.',
         },
         {
-          pergunta: 'Preciso investir em mídia além do valor pago para a Doxa?',
-          resposta:
-            'Para atingir as metas orgânicas contratadas com a Doxa, não é preciso investir em mídia. Nossa operação é desenvolvida para gerar distribuição sem depender de mídia paga. Se a empresa quiser complementar a estratégia com anúncios, isso pode ser feito separadamente.',
-        },
-        {
           pergunta: 'Quem publica os Reels no perfil da empresa?',
           resposta:
             'A publicação é feita pela própria empresa, no perfil dela: o que a Doxa entrega é o arquivo pronto para postar, vertical, legendado, no formato do feed.',
         },
         {
-          pergunta: 'Eu preciso gravar os vídeos ou vocês fazem tudo?',
+          pergunta: 'Quem é dono dos Reels produzidos pela Doxa?',
           resposta:
-            'A Doxa consegue assumir grande parte da operação de conteúdo. No onboarding entendemos quais materiais — imagens, vídeos, áudios ou participações — serão necessários. A necessidade de gravação do cliente varia conforme o formato escolhido para a marca.',
-        },
-        {
-          pergunta: 'Eu consigo acompanhar quantas visualizações os conteúdos estão tendo?',
-          resposta:
-            'A performance é acompanhada durante toda a operação: visualizações e outros indicadores relevantes são monitorados o tempo todo. Assim, tanto a Doxa quanto o cliente acompanham a evolução da estratégia e o progresso em relação às metas contratadas.',
+            'Os conteúdos são desenvolvidos exclusivamente para a operação da marca. Os direitos de utilização, propriedade e demais condições são estabelecidos no contrato de cada cliente, de acordo com o escopo contratado.',
         },
       ],
     },

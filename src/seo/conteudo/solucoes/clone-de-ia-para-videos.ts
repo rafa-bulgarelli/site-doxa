@@ -174,11 +174,6 @@ export const pagina: Pagina = {
       tipo: 'faq',
       itens: [
         {
-          pergunta: 'Eu preciso gravar os vídeos ou vocês fazem tudo?',
-          resposta:
-            'A Doxa consegue assumir grande parte da operação de conteúdo. No onboarding entendemos quais materiais — imagens, vídeos, áudios ou participações — serão necessários. A necessidade de gravação do cliente varia conforme o formato escolhido para a marca.',
-        },
-        {
           pergunta: 'A voz dos vídeos é a minha?',
           resposta:
             'A locução sai do clone montado a partir da amostra de voz que o cliente envia no início da operação, junto com a foto. Cada vídeo entregue é único, com roteiro próprio, voz clonada, edição e capa.',

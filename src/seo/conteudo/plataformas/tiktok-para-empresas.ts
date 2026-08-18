@@ -157,11 +157,6 @@ export const pagina: Pagina = {
       tipo: 'faq',
       itens: [
         {
-          pergunta: 'Em quais redes sociais vocês publicam os conteúdos?',
-          resposta:
-            'A estratégia pode envolver TikTok, Instagram, YouTube e outras redes relevantes para o público da empresa. A distribuição é definida de acordo com o comportamento da audiência e os objetivos de cada operação.',
-        },
-        {
           pergunta: 'As visualizações do TikTok são orgânicas?',
           resposta:
             'As visualizações contabilizadas nas metas da Doxa são 100% orgânicas, provenientes da distribuição dos conteúdos produzidos dentro da nossa operação. Sem depender da compra de mídia para atingir as metas contratadas.',
