@@ -9,7 +9,9 @@ import type { Pagina } from '../../tipos';
  * porque ele tem fonte.
  *
  * FATOS DA DOXA USADOS AQUI:
- *  · a CTA canônica da landing é "Quero viralizar" →
+ *  · a CTA CANÔNICA da landing é "Quero viralizar" — canônica, não única:
+ *    a landing tem outras chamadas, e o motor ainda renderiza o CTA_PADRAO
+ *    logo abaixo deste verbete →
  *    `docs/seo/source-of-truth.md` §2, fonte: `src/components/Hero.tsx:42`;
  *  · toda CTA de conversão do site aponta para o mesmo destino → §2, fonte:
  *    `src/ancoras.ts:15-28`.
@@ -71,7 +73,7 @@ export const pagina: Pagina = {
       tipo: 'destaque',
       variante: 'nota',
       texto:
-        'A chamada de conversão da própria Doxa é uma frase só, "Quero viralizar", e todas as chamadas do site levam ao mesmo destino — o formulário. É um exemplo do princípio: um verbo, um lugar para chegar, sem alternativa competindo ao lado.',
+        'A chamada de conversão da landing da Doxa é "Quero viralizar", e todas as chamadas de conversão do site levam ao mesmo destino — o formulário. É um exemplo do princípio: um verbo, um lugar para chegar, sem alternativa competindo ao lado.',
     },
     {
       tipo: 'paragrafo',
