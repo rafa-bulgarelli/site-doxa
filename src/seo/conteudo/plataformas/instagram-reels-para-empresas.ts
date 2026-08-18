@@ -103,7 +103,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'O Instagram deixa o botão de impulsionar embaixo do post, e a tentação aparece justamente quando um vídeo vai bem. É esse botão que a regra da operação desliga: nos perfis em que ela está ativa, impulsionar publicação é proibido, e o porquê está em [conteúdo orgânico para empresas](/solucoes/conteudo-organico-para-empresas). Se a empresa quiser complementar a estratégia com anúncios, isso é feito separadamente, fora do perfil onde o orgânico é medido.',
+        'O Instagram deixa o botão de impulsionar embaixo do post, e a tentação aparece justamente quando um vídeo vai bem. É esse botão que a regra da operação desliga: nos perfis em que ela está ativa, impulsionar publicação é proibido, e o porquê está em [conteúdo orgânico para empresas](/solucoes/conteudo-organico-para-empresas). Se a empresa quiser complementar a estratégia com anúncios, isso é feito separadamente, fora do perfil onde o orgânico é medido — assim cada um dos dois relatórios continua dizendo o que se propôs a dizer.',
     },
     {
       tipo: 'titulo',
@@ -119,7 +119,7 @@ export const pagina: Pagina = {
       tipo: 'destaque',
       variante: 'nota',
       texto:
-        'A regra é sobre vídeo curto porque é ele que disputa a mesma fila de distribuição. Foto e story não competem com um Reels pelo mesmo espaço.',
+        'A regra é sobre vídeo curto porque é ele que disputa a mesma fila de distribuição. Foto e story não competem com um Reels pelo mesmo espaço, e por isso o resto do perfil pode seguir no ritmo de sempre.',
     },
     {
       tipo: 'titulo',

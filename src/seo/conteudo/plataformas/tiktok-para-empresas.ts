@@ -37,7 +37,7 @@ export const pagina: Pagina = {
     'Por que um perfil novo ainda alcança gente no TikTok, o que trava um perfil de empresa na rede e como a Doxa opera conteúdo vertical por lá, sem impulsionar.',
   h1: 'TikTok para empresas',
   resumo:
-    'No TikTok, quem decide o alcance de um vídeo é o desempenho dele, não o tamanho do perfil que o publicou — e é isso que mantém a porta aberta para uma empresa que está começando. O preço dessa porta é publicar com constância: o resultado de um vídeo não garante o do próximo.',
+    'No TikTok, o que costuma decidir o alcance de um vídeo é o desempenho dele: o tamanho do perfil pesa pouco ali, não é passaporte nem teto — e é isso que mantém a porta aberta para uma empresa que está começando. O preço dessa porta é publicar com constância: o resultado de um vídeo não garante o do próximo.',
   intencao: 'comercial',
   palavrasChave: [
     'tiktok para empresas',
@@ -69,7 +69,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'Numa rede organizada por seguidores, publicar para dez pessoas alcança dez pessoas: o tamanho da audiência é o teto. No TikTok o feed principal é de recomendação — o vídeo é mostrado a um público que não segue o perfil, e o que ele fizer ali decide se será mostrado a mais gente. Isso tem duas consequências opostas, e as duas importam para uma empresa.',
+        'Numa rede organizada por seguidores, publicar para dez pessoas alcança dez pessoas: o tamanho da audiência é o teto. No TikTok o feed principal é de recomendação — o vídeo costuma ser mostrado a um público que não segue o perfil, e o que ele fizer ali orienta se será mostrado a mais gente. Isso tem duas consequências opostas, e as duas importam para uma empresa.',
     },
     {
       tipo: 'lista',
@@ -142,7 +142,7 @@ export const pagina: Pagina = {
     {
       tipo: 'lista',
       itens: [
-        'Empresas que precisam ser conhecidas por quem ainda não as procura: é a rede em que alcançar desconhecidos é o comportamento padrão.',
+        'Empresas que precisam ser conhecidas por quem ainda não as procura: alcançar desconhecidos é o comportamento comum da rede.',
         'Marcas que têm assunto além do catálogo, e alguém disposto a falar dele com regularidade.',
         'Negócios B2B, com linguagem e formatos adaptados — decisor também rola feed, e o argumento é que ele encontre a sua empresa antes de precisar dela.',
         'Não compensa para quem quer testar por um mês. Sem constância, o teste não mede a rede: mede a desistência.',
@@ -156,6 +156,21 @@ export const pagina: Pagina = {
     {
       tipo: 'faq',
       itens: [
+        {
+          pergunta: 'Quantos seguidores minha empresa precisa ter para começar no TikTok?',
+          resposta:
+            'Nenhum número é pré-requisito. O feed principal da rede é de recomendação: a peça costuma ser oferecida a gente que não segue o perfil, e o tamanho do perfil pesa pouco nessa decisão — não é passaporte nem teto. O que muda com o tempo é menos o número de seguidores e mais o acervo de vídeos que já mostrou à plataforma quem assiste o assunto da empresa.',
+        },
+        {
+          pergunta: 'Dá para publicar no TikTok o mesmo vídeo que vai para o Reels?',
+          resposta:
+            'O mesmo arquivo serve às três redes, e é o que uma operação de volume faz: ele vai para TikTok, Reels e Shorts no mesmo dia. O cuidado é exportar do original em vez de baixar de uma rede para subir na outra — o passo a passo está em [como usar o mesmo vídeo nas três redes](/guias/como-usar-o-mesmo-video-nas-tres-redes).',
+        },
+        {
+          pergunta: 'Quanto tempo até dar para julgar se o TikTok funciona para a minha empresa?',
+          resposta:
+            'Um mês não responde. Como a distribuição é decidida vídeo a vídeo, o perfil só produz leitura depois de acumular peças suficientes no mesmo formato para comparar umas com as outras — o critério está em [por que meus vídeos não têm views](/guias/por-que-meus-videos-nao-tem-views). Antes disso o que existe são resultados isolados, que dizem pouco sozinhos.',
+        },
         {
           pergunta: 'Preciso postar todo dia?',
           resposta:

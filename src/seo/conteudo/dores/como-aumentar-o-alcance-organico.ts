@@ -105,7 +105,7 @@ export const pagina: Pagina = {
         {
           titulo: 'A mesma peça nas três redes',
           texto:
-            'Publicar o mesmo vídeo no TikTok, no Reels e no YouTube Shorts amplia o alcance sem exigir uma gravação a mais — é a alavanca com melhor relação entre esforço e resultado. Como fazer isso sem estragar o arquivo está em [como usar o mesmo vídeo nas três redes](/guias/como-usar-o-mesmo-video-nas-tres-redes).',
+            'Publicar o mesmo vídeo no TikTok, no Reels e no YouTube Shorts amplia o alcance sem exigir uma gravação a mais — é a alavanca com melhor relação entre esforço e resultado, e a que mais se adia por parecer trabalho dobrado. Como fazer isso sem estragar o arquivo está em [como usar o mesmo vídeo nas três redes](/guias/como-usar-o-mesmo-video-nas-tres-redes).',
         },
         {
           titulo: 'O assunto, medido e não adivinhado',
@@ -126,7 +126,7 @@ export const pagina: Pagina = {
         '**Horário de publicação.** Escolher um horário razoável basta; ajustá-lo em quinze minutos não muda a leitura de nada.',
         '**Pedir engajamento no vídeo.** "Comenta aí" sem motivo produz comentários vazios, que não sustentam distribuição nenhuma.',
         '**Comprar seguidores, curtidas ou visualizações.** Contamina o dado que você usaria para decidir, viola a metodologia e pode gerar penalização das redes.',
-        '**Impulsionar.** Compra alcance agora e apaga a leitura: a entrega passa a misturar o que foi comprado com o que foi conquistado.',
+        '**Impulsionar.** Compra alcance agora e apaga a leitura: a entrega passa a misturar o que foi comprado com o que foi conquistado, e não há como separar os dois depois.',
       ],
     },
     {

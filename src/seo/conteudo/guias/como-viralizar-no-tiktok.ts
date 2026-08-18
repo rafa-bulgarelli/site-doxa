@@ -167,7 +167,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'A contrapartida é que a agenda deixa de depender de inspiração: com o intervalo fixo, o que decide a publicação de amanhã é a fila de vídeos prontos, não a vontade de postar. Fotos, carrosséis e stories não competem nessa janela — a regra é sobre vídeo curto.',
+        'A contrapartida é que a agenda deixa de depender de inspiração: com o intervalo fixo, o que decide a publicação de amanhã é a fila de vídeos prontos, não a vontade de postar.',
     },
     {
       tipo: 'titulo',
