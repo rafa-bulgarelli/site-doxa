@@ -45,7 +45,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'Engajamento é a soma das ações que uma pessoa executa num conteúdo além de assistir a ele: curtida, comentário, compartilhamento, salvamento, clique e seguir o perfil depois de ver. A palavra que faz o trabalho na definição é **ação**: ver não é engajar.',
+        'Engajamento é a soma das ações que uma pessoa executa num conteúdo além de assistir: curtida, comentário, compartilhamento, salvamento, clique e seguir o perfil depois de ver. Ver não conta. O que conta é o que a pessoa faz **depois** de ver.',
     },
     {
       tipo: 'titulo',
@@ -55,7 +55,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'Visualização não é engajamento — é a condição para que ele exista. Alcance também não: conta pessoas atingidas, e está em [alcance orgânico](/glossario/alcance-organico). Impressão, menos ainda, porque a mesma pessoa gera várias. Misturar as quatro num relatório é um jeito comum de concluir que um mês foi bom quando ele só foi movimentado.',
+        'Visualização não é engajamento — é a condição para que ele exista. Alcance também não: conta pessoas atingidas, e está em [alcance orgânico](/glossario/alcance-organico). Impressão, menos ainda: a mesma pessoa gera várias. Misturar as quatro num relatório é um jeito comum de concluir que um mês foi bom quando só foi movimentado.',
     },
     {
       tipo: 'titulo',
@@ -65,7 +65,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'Taxa de engajamento é o total de ações dividido por uma base — e há duas bases em uso. Sobre **seguidores**, a taxa premia perfis pequenos e pune quem alcança muita gente de fora. Sobre **alcance**, ela mede o que aconteceu com quem viu. São números diferentes para o mesmo vídeo: comparar o seu com o de outra pessoa sem conferir a fórmula não diz nada.',
+        'Taxa de engajamento é o total de ações dividido por uma base, e há duas em uso. Sobre **seguidores**, ela premia perfis pequenos e infla quando o vídeo alcança muita gente de fora — o número sobe sem que a base tenha mudado. Sobre **alcance**, mede o que aconteceu com quem viu. São números diferentes para o mesmo vídeo: comparar o seu com o de outra pessoa sem conferir a fórmula não diz nada.',
     },
     {
       tipo: 'titulo',
@@ -75,11 +75,11 @@ export const pagina: Pagina = {
     {
       tipo: 'lista',
       itens: [
-        'Curtida é barata: custa um toque e não carrega intenção clara.',
-        'Salvamento diz "quero isto de volta" — é interesse com prazo.',
-        'Compartilhamento diz "isto serve para outra pessoa", e leva o vídeo a quem você não alcançaria.',
-        'Comentário abre conversa, e conversa costuma manter o vídeo em circulação.',
-        'Seguir é a ação mais rara e a única que muda a relação para os próximos vídeos.',
+        'Curtida é barata: um toque, sem intenção clara.',
+        'Salvamento diz "quero isto de volta": é interesse com prazo.',
+        'Compartilhamento diz "isto serve para outra pessoa", e leva o vídeo a quem você não alcança.',
+        'Comentário abre conversa, e conversa mantém o vídeo em circulação.',
+        'Seguir é a ação mais rara, e a única que muda a relação daí em diante.',
       ],
     },
     {
