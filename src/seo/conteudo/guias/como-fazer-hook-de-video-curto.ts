@@ -8,7 +8,9 @@ import type { Pagina } from '../../tipos';
  * inteira (promessa, única ideia, fecho) e é dono do teste da primeira frase
  * lida em voz alta. Esta página é a oficina do começo: os três canais
  * simultâneos, os pares fraco × forte e o método de reescrita. Nenhum bloco das
- * outras duas é repetido aqui — as duas são citadas com link.
+ * outras duas é reproduzido aqui: onde o assunto encosta no da dona (o custo de
+ * uma promessa não cumprida), esta página fica com o sintoma na curva e manda o
+ * leitor para lá com link.
  *
  * ─── DE ONDE VEM CADA FATO DESTA PÁGINA ──────────────────────────────────────
  *
@@ -42,7 +44,7 @@ export const pagina: Pagina = {
     'hook para vídeo curto',
     'exemplos de hook',
     'abertura de vídeo curto',
-    'primeiros segundos do vídeo',
+    'reescrever hook',
   ],
   hubs: ['/guias/videos-curtos'],
   relacionadas: [
@@ -91,7 +93,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'As frases abaixo são inventadas para ilustrar a reescrita — não são de cliente nenhum e não vêm com resultado. O que muda entre as colunas nunca é o conteúdo do vídeo: é só onde ele começa.',
+        'As frases abaixo são inventadas para ilustrar a reescrita — não são de cliente nenhum e não vêm com resultado. O que muda entre as colunas não é o conteúdo do vídeo: é só onde ele começa.',
     },
     {
       tipo: 'tabela',
@@ -120,7 +122,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'Nem toda peça começa com fala. Demonstração, tela gravada, antes e depois, mão em cena: aí a imagem faz o trabalho inteiro, e a exigência é maior, não menor. O quadro de abertura precisa mostrar o estado mais estranho ou mais quebrado da sequência — nunca o começo cronológico dela.',
+        'Nem toda peça começa com fala. Demonstração, tela gravada, antes e depois, mão em cena: aí a imagem faz o trabalho inteiro, e a exigência é maior. O quadro de abertura precisa mostrar o estado mais estranho ou mais quebrado da sequência — nunca o começo cronológico dela.',
     },
     {
       tipo: 'lista',
@@ -138,9 +140,9 @@ export const pagina: Pagina = {
     {
       tipo: 'lista',
       itens: [
-        '**A promessa maior que o vídeo.** Prende os primeiros segundos e ensina a audiência a desconfiar do perfil; o custo aparece na peça seguinte, não naquela.',
+        '**A promessa maior que o vídeo.** O preço que ele cobra do perfil está em [como fazer vídeos curtos que prendem](/guias/como-fazer-videos-curtos-que-prendem); do lado da abertura, o sintoma é a curva — ela não cai no começo, cai onde a promessa deixa de vir.',
         '**A urgência inventada.** "Últimas horas", "só hoje" em conteúdo que não tem prazo nenhum. Funciona até a pessoa notar que é o mesmo aviso de sempre.',
-        '**O "olha isso" sem assunto.** Chamar atenção sem declarar sobre o quê atrai qualquer um — e qualquer um sai no terceiro segundo, o que devolve à plataforma o pior sinal possível sobre a peça.',
+        '**O "olha isso" sem assunto.** Chamar atenção sem declarar sobre o quê atrai qualquer um — e qualquer um sai no terceiro segundo, devolvendo à plataforma o pior sinal possível sobre a peça.',
       ],
     },
     {
@@ -163,9 +165,9 @@ export const pagina: Pagina = {
             'Uma frase: o que a pessoa vai saber no fim. Muitas vezes é essa frase, invertida ou pela metade, que vira a melhor abertura possível.',
         },
         {
-          titulo: 'Apague tudo até a primeira frase que deixa uma dívida',
+          titulo: 'Comece na primeira frase que se entende sozinha',
           texto:
-            'Percorra o começo do roteiro e ache a primeira linha que não se sustenta sozinha, que exige a seguinte. O vídeo começa ali; o que veio antes era aquecimento.',
+            'Ache a primeira linha que já faz sentido sem a anterior e, ainda assim, deixa uma pergunta aberta. O vídeo começa ali; o que veio antes era aquecimento.',
         },
         {
           titulo: 'Troque a palavra genérica pela específica',
@@ -197,7 +199,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'O jeito barato de testar é republicar o mesmo conteúdo com outra abertura, sem mexer em mais nada. Duas aberturas, mesma peça, uma variável — é o experimento mais limpo que existe em vídeo curto, e o único que responde a pergunta em uma semana.',
+        'O jeito barato de testar é republicar o mesmo conteúdo com outra abertura, sem mexer em mais nada. Duas aberturas, mesma peça, uma variável — responde a pergunta dentro de uma semana.',
     },
     {
       tipo: 'destaque',
