@@ -110,6 +110,8 @@ frase e diga no report.
     `'ia para redes sociais'` → tirar (dona: `/solucoes/conteudo-para-redes-sociais-
     com-ia`). Não é renderizado, mas o keyword-map diz que a específica fica com a
     keyword.
+12b. `guias/como-fazer-videos-curtos-que-prendem.ts` `palavrasChave` tem `'roteiro de vídeo
+    curto'` — a dona é `/guias/como-escrever-roteiro-de-video-curto` (rodada 2). Tirar.
 13. **`/glossario/cta`** (rodada 2, se já mergeada quando você rodar): hub fica
     `videos-curtos` (decisão da sessão principal) — nada a fazer; só não "corrigir".
 
@@ -125,8 +127,7 @@ frase e diga no report.
 Motor, docs, landing: NÃO.)
 
 ## DEPENDS ON
-`feat/seo-organico` com FASE 1 + rodada 2 mergeadas e NENHUMA outra track de conteúdo
-ativa (a sessão principal garante isso antes do spawn).
+`feat/seo-organico` @ `c4cc777` (FASE 1 + rodada 2 mergeadas, PRs #48–#57, 66 rotas, 26/963) e NENHUMA outra track de conteúdo ativa — garantido pela sessão principal.
 
 ## VERIFY (pass/fail executável — cole a saída no report)
 - `pnpm typecheck` = 0 erros · `pnpm test` verde (nº de testes IGUAL ao da base — você
