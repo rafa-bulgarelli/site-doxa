@@ -42,14 +42,10 @@ import { registrarEvento } from './eventos';
 import { ErroHttp, lerJson, responder, responderErro } from './http';
 import { lerPedidoAdmin } from './pedidos';
 import { gerarToken, hashDoToken } from './token';
-import { exigirUuid, objetoDe } from './validar';
 import { versaoPublicada } from './versao';
 
 /** O domínio de produção. O link vai por WhatsApp e precisa ser absoluto. */
 const SITE = 'https://www.doxaviral.com';
-
-/** O teto do `check` de `invite_plataforma` em `manual_convites`. */
-const MAXIMO_DO_INVITE = 500;
 
 /** A linha do aceite que o `pdf_baixar` precisa — nada além do vínculo. */
 interface AceiteDoConvite {
@@ -65,42 +61,6 @@ async function conviteDe(conviteId: string): Promise<ConviteLinha> {
   const convite = await primeira<ConviteLinha>(`manual_convites?id=eq.${conviteId}&select=*`);
   if (convite == null) throw new ErroHttp(404, 'convite_inexistente');
   return convite;
-}
-
-/**
- * O link de cadastro na plataforma, na régua EXATA do `check` da coluna: http
- * ou https, até 500 caracteres. Sem o `i` no padrão de propósito — o `~` do
- * Postgres é sensível a maiúsculas, e um 'HTTPS://' que passasse por aqui
- * viraria um 500 do banco em vez deste 400 que o CX consegue ler.
- */
-function inviteOpcional(valor: unknown): string | undefined {
-  if (valor == null) return undefined;
-  if (typeof valor !== 'string') {
-    throw new ErroHttp(400, 'campo_invalido', 'invite_plataforma nao e texto');
-  }
-  const limpo = valor.trim();
-  if (limpo.length === 0) return undefined;
-  if (limpo.length > MAXIMO_DO_INVITE || !/^https?:\/\//.test(limpo)) {
-    throw new ErroHttp(400, 'campo_invalido', 'invite_plataforma nao e link ate 500');
-  }
-  return limpo;
-}
-
-/**
- * As duas entradas que o lado da equipe valida por conta própria, ao lado da
- * regra que as usa: o `invite_plataforma`, que só faz sentido junto do `check`
- * que ele espelha, e o `convite_excluir`, a única ação destrutiva do manual —
- * nenhuma das duas tem par no fluxo público que `pedidos.ts` atende junto. O
- * resto do corpo continua passando inteiro pela portaria comum.
- */
-function lerPedidoDaEquipe(corpo: unknown): PedidoAdmin {
-  const bruto = objetoDe(corpo);
-  if (bruto.acao === 'convite_excluir') {
-    return { acao: 'convite_excluir', convite_id: exigirUuid(bruto.convite_id, 'convite_id') };
-  }
-  const pedido = lerPedidoAdmin(bruto);
-  if (pedido.acao !== 'convite_criar') return pedido;
-  return { ...pedido, invite_plataforma: inviteOpcional(bruto.invite_plataforma) };
 }
 
 /**
@@ -279,7 +239,7 @@ async function chamarVersao(nome: string, argumentos: Record<string, unknown>): 
 }
 
 async function despachar(pedido: Request, autor: Autor): Promise<Response> {
-  const dados = lerPedidoDaEquipe(await lerJson(pedido));
+  const dados = lerPedidoAdmin(await lerJson(pedido));
   switch (dados.acao) {
     case 'convite_criar':
       exigirPapel(autor, ['admin', 'cx']);
