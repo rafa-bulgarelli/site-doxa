@@ -4,9 +4,12 @@ import type { Pagina } from '../../tipos';
  * O termo que o DONO usa ("uma foto e um áudio viram o seu clone"). Este
  * verbete é o guarda-chuva das duas metades que já têm verbete próprio:
  * `/glossario/avatar-de-ia` é a IMAGEM e `/glossario/clone-de-voz` é a VOZ.
- * Aqui não se repete a construção de nenhuma das duas — o assunto é o que
- * define um clone (ser de uma pessoa determinada), o que o separa de um avatar
- * de catálogo e o consentimento que ele exige.
+ * Aqui não se repete NADA da construção das duas: nem os dois tipos de avatar
+ * (é bloco de `avatar-de-ia`), nem o gargalo de agenda que o clone resolve
+ * (idem), nem a regra de consentimento da voz (é bloco de `clone-de-voz`).
+ * Uma linha e um link para cada metade. O que sobra é o que SÓ o guarda-chuva
+ * tem: imagem e voz são duas autorizações distintas e revogáveis em separado,
+ * e a pergunta contratual de quando a pessoa clonada sai da empresa.
  *
  * FATOS DA DOXA USADOS AQUI:
  *  · o cliente manda uma foto e uma amostra da própria voz, e a plataforma
@@ -16,9 +19,13 @@ import type { Pagina } from '../../tipos';
  *    áudio viram o seu clone" → §2, fonte: `src/components/HowItWorks.tsx:71-92`;
  *  · "clone" é termo do dono → §10, fonte: `src/components/HowItWorks.tsx:84`.
  *
- * NÃO entra aqui: preço, prazo do primeiro vídeo, direitos do vídeo (§9.1,
- * pergunta 10) e nenhuma afirmação sobre o que a lei exige — o verbete fala de
- * autorização como prática, não como parecer jurídico.
+ * NÃO entra aqui: preço, prazo do primeiro vídeo e nenhuma afirmação sobre o
+ * que a lei exige — o verbete fala de autorização como prática, não como
+ * parecer jurídico. E NÃO se responde de quem são os direitos do vídeo: é a
+ * pergunta 10 de PENDENTES (§9.1, `src/components/faq/config.ts:672-717`).
+ * A página faz o que é permitido fazer com uma pergunta sem resposta
+ * autorizada: diz que ela existe, que a hora de fazê-la é antes, e que a
+ * resposta é contratual.
  */
 export const pagina: Pagina = {
   tipo: 'glossario',
@@ -53,28 +60,38 @@ export const pagina: Pagina = {
     {
       tipo: 'titulo',
       nivel: 2,
-      texto: 'O que separa um clone de um avatar de catálogo',
+      texto: 'As duas metades já têm verbete',
     },
     {
       tipo: 'paragrafo',
       texto:
-        'Um avatar genérico é um personagem que não corresponde a ninguém e pode estar apresentando o vídeo de outra marca no mesmo dia — a construção dele está em [avatar de IA](/glossario/avatar-de-ia). Um clone é o contrário: carrega o rosto e a voz de quem já responde pela empresa. Quem assiste reconhece uma pessoa, e o que ela diz continua dito por ela.',
+        'A imagem está em [avatar de IA](/glossario/avatar-de-ia); a voz, em [clone de voz](/glossario/clone-de-voz). O que só aparece quando se olha para as duas juntas é o que vem abaixo.',
     },
     {
       tipo: 'titulo',
       nivel: 2,
-      texto: 'O que o clone resolve, e o que ele não resolve',
+      texto: 'São duas autorizações, não uma',
     },
     {
       tipo: 'paragrafo',
       texto:
-        'Ele resolve um gargalo específico: reunir a pessoa, o cenário e o tempo de gravação toda semana — publicar com constância deixa de depender da agenda de quem fala pela marca. O que ele não resolve é o resto: um clone não descobre o que a audiência quer ouvir nem conserta abertura fraca. A parte que decide o alcance continua escrita por gente.',
+        'Rosto e voz são materiais distintos, e a permissão de usar um não é a de usar o outro. Alguém pode ceder a voz e não o rosto, ou aceitar uma campanha e não todas. Trate cada metade como item separado — quem autorizou, para quê, por quanto tempo — em vez de um "sim" genérico dado numa conversa.',
     },
     {
       tipo: 'destaque',
       variante: 'atencao',
       texto:
-        'Só se clona quem autorizou, e para o uso que foi autorizado. Rosto e voz identificam uma pessoa: a facilidade técnica de reproduzi-los não cria direito de usá-los. Registre por escrito quem autorizou, para qual finalidade e por quanto tempo — antes da primeira peça.',
+        'A permissão também é revogável em separado: retirada a da voz, o clone de imagem não cai junto. Saber qual metade está em qual peça é o que permite atender a um pedido desses sem apagar a biblioteca inteira.',
+    },
+    {
+      tipo: 'titulo',
+      nivel: 2,
+      texto: 'A pergunta a fazer antes da primeira peça',
+    },
+    {
+      tipo: 'paragrafo',
+      texto:
+        'O clone costuma ser o de um sócio ou de um porta-voz — e pessoas saem das empresas. O que acontece com ele nesse dia, e por quanto tempo o material já gravado segue no ar, não é questão técnica: é contratual, e se combina antes do primeiro vídeo. Esta página não responde isso por você; registra que a pergunta existe.',
     },
     {
       tipo: 'titulo',
@@ -84,7 +101,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'É o vocabulário da própria operação: o cliente manda uma foto e uma amostra da voz, e a plataforma monta o clone que grava os vídeos no lugar dele. O passo se chama "criar clones", e a frase que o descreve é "uma foto e um áudio viram o seu clone". A metade da voz está em [clone de voz](/glossario/clone-de-voz).',
+        'É o vocabulário do passo 02 da operação, "criar clones": "uma foto e um áudio viram o seu clone". O material é do próprio cliente, e o clone grava no lugar dele.',
     },
   ],
 };
@@ -98,9 +115,11 @@ export const pagina: Pagina = {
  * [x]  4. Termos proibidos ausentes.
  * [x]  5. A garantia não é citada.
  * [x]  6. Intenção própria: o termo GUARDA-CHUVA. Imagem e voz têm verbete
- *          próprio, e a página comercial é `/solucoes/clone-de-ia-para-videos`.
- * [x]  7. Incremental: a distinção clone × avatar de catálogo pelo lado da
- *          responsabilidade, e o que o clone NÃO resolve.
+ *          próprio e recebem UMA linha + link cada, sem repetir os blocos
+ *          deles; a página comercial é `/solucoes/clone-de-ia-para-videos`.
+ * [x]  7. Incremental, e só do guarda-chuva: duas autorizações em vez de uma,
+ *          revogáveis em separado, e a pergunta de quando a pessoa clonada sai
+ *          da empresa — sem responder direitos do vídeo (PENDENTES §9.1).
  * [x]  8. Title, description e H1 exclusivos.
  * [x]  9. Pertence a `/guias/ia-no-marketing` e conecta a 4 relacionados.
  * [x] 10. Não se aplica.
@@ -108,6 +127,7 @@ export const pagina: Pagina = {
  * [x] 12. Sem stuffing.
  * [x] 13. Vocabulário do dono: "clone", "uma foto e um áudio viram o seu
  *          clone", "operação".
- * [x] 14. Publicaria sem Google: sim — a nota de consentimento é a pergunta
- *          que ninguém faz antes de encomendar o primeiro vídeo.
+ * [x] 14. Publicaria sem Google: sim — "são duas autorizações" e "o que
+ *          acontece quando essa pessoa sai" são as perguntas que ninguém faz
+ *          antes de encomendar o primeiro vídeo.
  * ────────────────────────────────────────────────────────────────────────── */
