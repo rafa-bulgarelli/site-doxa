@@ -83,7 +83,7 @@ export const pagina: Pagina = {
       tipo: 'destaque',
       variante: 'nota',
       texto:
-        'Isso não vale só para o TikTok. As três redes de vídeo curto distribuem por recomendação e se comportam da mesma forma; a régua de um por dia por perfil vale igual no Reels e no YouTube Shorts.',
+        'Isso não vale só para o TikTok: as três redes de vídeo curto distribuem por recomendação, e a régua de um por dia por perfil vale igual no Reels e no YouTube Shorts.',
     },
     {
       tipo: 'titulo',
@@ -122,7 +122,7 @@ export const pagina: Pagina = {
       itens: [
         '**Não apague o segundo.** Apagar não devolve o alcance que o primeiro perdeu e ainda tira do ar uma peça que já recebeu audiência.',
         '**Não publique um terceiro para "compensar".** O erro é de acúmulo; acrescentar mais uma peça só divide a mesma audiência em três.',
-        '**Conte 24 horas a partir do segundo**, e retome a régua a partir daí. Um dia sem publicar não estraga nada; dois vídeos num dia estragam os dois.',
+        '**Conte 24 horas a partir do segundo**, e retome a régua a partir daí. Um dia sem publicar não custa nada; dois vídeos no mesmo dia disputam o mesmo espaço, e um atropela o alcance do outro.',
         '**Anote o horário.** O caso mais comum de publicação dupla nasce de não saber que horas o vídeo anterior saiu — e é o item mais barato de consertar da lista inteira.',
       ],
     },
@@ -182,7 +182,7 @@ export const pagina: Pagina = {
         {
           pergunta: 'Publicar de madrugada ou no fim de semana muda alguma coisa?',
           resposta:
-            'O horário pesa muito menos do que a abertura do vídeo e do que a regularidade da publicação, e não salva uma peça que ninguém assiste até o fim. O fim de semana tem um detalhe prático: como a régua costuma ser contada em dias úteis, sábado e domingo funcionam como espaço livre para conteúdo próprio, sem interferir na sequência da semana.',
+            'O horário move pouco perto da abertura e da regularidade — o assunto está em [como postar todos os dias sem equipe](/guias/como-postar-todos-os-dias-sem-equipe). O que muda de fato é o fim de semana: como a régua é contada em dias úteis, sábado e domingo funcionam como espaço livre para conteúdo próprio, sem interferir na sequência da semana.',
         },
       ],
     },
