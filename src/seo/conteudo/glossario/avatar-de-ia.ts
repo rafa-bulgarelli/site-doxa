@@ -3,9 +3,10 @@ import type { Pagina } from '../../tipos';
 /**
  * Verbete de ADJACÊNCIA (§47 do brief): define o termo de forma editorial e
  * neutra, inclusive sobre usos que a Doxa não vende. A ponte legítima é o
- * clone da Doxa como ele está descrito em `HowItWorks.tsx` — nunca a frase
- * "a Doxa vende avatar". A divisão com `/glossario/clone-de-voz` é por
- * IMAGEM (aqui) e VOZ (lá), conforme o `docs/seo/keyword-map.md`.
+ * clone da Doxa como ele está descrito em `HowItWorks.tsx` — nunca uma frase
+ * que sugira venda de avatar como produto. A divisão com
+ * `/glossario/clone-de-voz` é por IMAGEM (aqui) e VOZ (lá), conforme o
+ * `docs/seo/keyword-map.md`.
  *
  * FATOS DA DOXA USADOS AQUI:
  *  · uma foto e uma amostra de voz viram um clone que grava no lugar do
