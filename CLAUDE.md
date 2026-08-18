@@ -136,6 +136,50 @@ raciocínio). Detalhes e trade-off em `.claude/TOWER-ROLES.md`.
     Central responde "credenciais inválidas" — o que manda todo mundo caçar a senha
     errada, e não a letra. Mudou um, muda o outro **na mesma janela**, e o `schema.sql`
     junto (ele documenta o e-mail no passo 1 do painel).
+  - **A biblioteca SEO é PRERENDERIZADA no build, e `public/sitemap.xml` NÃO existe
+    mais.** `pnpm build` = `tsc -b && vite build && node scripts/prerender.mjs`: o
+    script faz `vite build --ssr` de `src/seo/prerender/entrada.tsx` e escreve
+    `dist/<rota>/index.html` por página + `dist/sitemap.xml`. Quem editar
+    `public/sitemap.xml` está editando um arquivo que ninguém lê — o sitemap sai de
+    `src/seo/sitemap.ts` a partir do índice de conteúdo. Conteúdo = um arquivo por
+    página em `src/seo/conteudo/<dir>/<slug>.ts` (`export const pagina: Pagina`);
+    slug = nome do arquivo; URL = `PREFIXO[tipo] + '/' + slug`. **Link inline para
+    rota que não existe nem está em `src/seo/rotas-planejadas.ts` derruba o build**
+    (o render lança) — não é texto silencioso. Rota planejada e ainda sem página vira
+    TEXTO até a página nascer. Hub é union fechada de 5 (`tipos.ts`); hub novo é
+    mudança de motor. Regras editoriais e o gate: `src/seo/README.md`,
+    `docs/seo/{source-of-truth,keyword-map,regua-de-copy}.md`; `pnpm seo:audit`
+    imprime o grafo de links, órfãs, faixas de palavras e FAQ repetida.
+  - **O hash de `dist/assets/index-*.js` da landing muda mesmo sem tocar na landing.**
+    O plugin `vite:css-post` dobra o CSS importado no hash do chunk de entrada
+    (`augmentChunkHash`); como o Tailwind varre `src/**`, qualquer classe nova em
+    `src/seo/**` muda o CSS → muda o hash do entry → muda o nome de todo chunk que o
+    importa. "Hash igual" NÃO é critério de não-regressão da landing. O critério que
+    vale: normalizar `-[hash].js|css` nos dois builds (`sed -E
+    's/-[A-Za-z0-9_-]{8}\.(js|css)/-HASH.\1/g'`) e comparar o conteúdo — no MESMO
+    ambiente (worktrees diferentes/paths diferentes mudam a renomeação do
+    minificador em 3 chunks e enganam a comparação). Custou uma rodada de gate.
+  - **`vite preview --port N` numa porta ocupada NÃO dá erro: sobe em outra porta e o
+    teste lê o `dist` de outra worktree.** Com várias worktrees no ar, use
+    `--strictPort` e confira o hash do bundle servido contra `dist/index.html` antes
+    de acreditar em qualquer medição. Um executor quase reportou regressão de
+    `/#forms` por causa disso.
+  - **`chrome --headless --window-size=390,…` NÃO renderiza a 390px.** O Chrome
+    impõe largura mínima de janela (~500px) e o print sai recortado, parecendo
+    overflow que não existe. Para mobile de verdade:
+    `node .claude/tower/bin/mobile-shot.mjs <url> 320 [print.png]` — emula o
+    viewport via DevTools (WebSocket nativo do Node ≥ 22), imprime `scrollWidth`
+    vs `clientWidth` (iguais = sem rolagem horizontal) e os elementos que passam
+    da borda (a `<table min-w-[32rem]>` dentro de `overflow-x-auto` é a única
+    aceitável).
+  - **`vercel build` local imprime 59× `error TS2835` em `api/**`** ("Relative import
+    paths need explicit file extensions… node16") — é o type-check do builder da
+    Vercel, pré-existente, e NÃO falha o build (as 4 funções são geradas). Não é
+    regressão de quem mexeu em `vercel.json`. Preview de branch fica atrás do SSO
+    da Vercel: `curl` devolve 302 para `vercel.com/sso-api`; a prova de roteamento
+    sem tocar em produção é `vercel pull --environment preview && vercel build` e
+    ler `.vercel/output/config.json` (`handle: filesystem` vem antes do rewrite da
+    SPA; `trailingSlash: false` gera o `308`).
 
 ## Baseline de sessão
 
