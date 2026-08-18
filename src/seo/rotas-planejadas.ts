@@ -103,4 +103,8 @@ export const ROTAS_PLANEJADAS: readonly string[] = [
   '/guias/por-que-meu-instagram-parou-de-crescer',
   '/solucoes/conteudo-para-redes-sociais-com-ia',
   '/solucoes/clone-de-voz-para-videos',
+
+  // ─── Rodada 3 (2026-08-18) — as duas adjacências editoriais §47 que sobraram ───
+  '/guias/video-vertical-no-linkedin',
+  '/guias/o-que-faz-um-social-media',
 ];
