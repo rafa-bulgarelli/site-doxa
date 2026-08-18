@@ -25,12 +25,33 @@
  *
  * A cena é decorativa (`aria-hidden`, como todas): quem lê por leitor de tela
  * recebe o texto da regra, que diz isso em palavras.
+ *
+ * ─── O QUE MUDOU NA RODADA DO POLIMENTO ──────────────────────────────────────
+ *
+ * 1. **A rede virou o ícone de verdade** (`redes.tsx`), sem o círculo que o
+ *    dono chamou de "afogado" duas vezes. Sem a jaula, o glifo ficou 4 unidades
+ *    mais à esquerda e a cópia recebida ganhou 19 de folga em vez de 11 — o
+ *    ícone e a cópia agora conversam em vez de se empurrarem.
+ *
+ * 2. **A rede ACENDE por cross-fade**: o glifo apagado e o aceso são o mesmo
+ *    desenho, um sobre o outro, e o que anima é a opacidade de cima. Trocar a
+ *    cor no atributo pularia de um quadro para o outro.
+ *
+ * 3. **A cópia CHEGA**: ela entra deslizando da rede para o lado, em vez de
+ *    aparecer no lugar. É o gesto que diz "foi publicado ali", e é o que faz as
+ *    três leituras acontecerem uma depois da outra, e não todas de uma vez.
+ *
+ * ⚠️ O teste da GA-2 cobra três coisas deste arquivo: um único `<text>` no
+ * quadro que ensina, e que ele seja o `60`; nenhum `20` em fase nenhuma; e pelo
+ * menos QUATRO glifos de vídeo pintados em `ARCO[0]` (o original, as três
+ * cópias e a pilha). Mexer nisso é reprovar de propósito.
  */
-import { Legenda, Marca, TINTA } from '../pecas';
+import { Legenda, Marca, TINTA, TRACO, TRACO_ACESO } from '../pecas';
 import { ARCO, Brilho, Faiscas, TracoDeLuz, useTintas } from '../luz';
-import { Cartao, MiniPalco, Sinal, TRES_REDES } from './comuns';
+import { Cartao, MiniPalco } from './comuns';
+import { IconeDaRede, REDES_REAIS } from '../redes';
 import { motion } from 'framer-motion';
-import { tempo, useRoteiro } from '../tempo';
+import { EASE, tempo, useRoteiro } from '../tempo';
 
 const FASES = [1200, 1400, 1600, 2400] as const;
 const ESPALHA = 1;
@@ -39,9 +60,11 @@ const CHEGA = 2;
 const VISTO = 3;
 
 const REDE_Y = [30, 75, 120] as const;
-const REDE_X = 268;
-/** Onde a cópia recebida encosta: logo depois do anel da rede. */
-const COPIA_X = 296;
+const REDE_X = 264;
+/** O lado da caixa do glifo — o mesmo das outras cenas que falam de rede. */
+const REDE_TAMANHO = 34;
+/** Onde a cópia recebida encosta: 19 de folga depois do glifo da rede. */
+const COPIA_X = 300;
 
 /**
  * O vídeo de origem — e o molde de toda cópia, para que as quatro sejam uma.
@@ -74,7 +97,7 @@ function Fios({ visivel, parado }: { visivel: boolean; parado: boolean }) {
       {REDE_Y.map((cy, indice) => (
         <TracoDeLuz
           key={cy}
-          d={`M ${SAIDA.x} ${SAIDA.y} C 196 ${SAIDA.y}, 200 ${cy}, ${REDE_X - 22} ${cy}`}
+          d={`M ${SAIDA.x} ${SAIDA.y} C 196 ${SAIDA.y}, 200 ${cy}, ${REDE_X - 26} ${cy}`}
           cor={tintas('arco')}
           largura={1.8}
           halo={2.6}
@@ -121,9 +144,17 @@ function Copias({ visivel, parado }: { visivel: boolean; parado: boolean }) {
           key={cy}
           // Parada, a cena nasce JÁ no quadro da vez: `initial` tem de olhar
           // `visivel` também, senão a cópia aparece antes de ter chegado.
-          initial={{ opacity: parado && visivel ? 1 : 0 }}
-          animate={{ opacity: visivel ? 1 : 0 }}
-          transition={{ duration: tempo(parado, 0.4), delay: tempo(parado, indice * 0.12) }}
+          //
+          // O `x` é o que transforma "apareceu" em "chegou": a cópia sai de
+          // cima da rede e desliza para o lado dela. `x` no framer é sempre
+          // deslocamento, então o zero é o lugar certo e o -20 é a partida.
+          initial={{ opacity: parado && visivel ? 1 : 0, x: parado && visivel ? 0 : -20 }}
+          animate={{ opacity: visivel ? 1 : 0, x: visivel ? 0 : -20 }}
+          transition={{
+            duration: tempo(parado, 0.5),
+            ease: EASE,
+            delay: tempo(parado, indice * 0.14),
+          }}
         >
           <Cartao
             x={COPIA_X}
@@ -135,6 +166,49 @@ function Copias({ visivel, parado }: { visivel: boolean; parado: boolean }) {
             vidro
           />
         </motion.g>
+      ))}
+    </g>
+  );
+}
+
+/**
+ * As três redes que recebem a cópia — o glifo apagado e o aceso, sobrepostos.
+ *
+ * Duas passadas do MESMO ícone: a de baixo fica sempre no cinza de traço, a de
+ * cima acende por opacidade. É o cross-fade que faz a rede "acender"; trocar a
+ * cor no atributo trocaria o desenho entre dois quadros, sem passagem nenhuma.
+ */
+function Redes({ acesas, parado }: { acesas: boolean; parado: boolean }) {
+  return (
+    <g>
+      {REDES_REAIS.map((rede, indice) => (
+        <g key={rede}>
+          <IconeDaRede
+            rede={rede}
+            x={REDE_X}
+            y={REDE_Y[indice]}
+            tamanho={REDE_TAMANHO}
+            cor={TRACO}
+            acesa={false}
+          />
+          <motion.g
+            initial={{ opacity: parado && acesas ? 1 : 0 }}
+            animate={{ opacity: acesas ? 1 : 0 }}
+            transition={{
+              duration: tempo(parado, 0.5),
+              ease: EASE,
+              delay: tempo(parado, indice * 0.1),
+            }}
+          >
+            <IconeDaRede
+              rede={rede}
+              x={REDE_X}
+              y={REDE_Y[indice]}
+              tamanho={REDE_TAMANHO}
+              cor={TRACO_ACESO}
+            />
+          </motion.g>
+        </g>
       ))}
     </g>
   );
@@ -180,22 +254,15 @@ export default function Sessenta() {
       <Fios visivel={espalhou} parado={parado} />
 
       <Pulsos visivel={chegou} parado={parado} />
-      {TRES_REDES.map((rede, indice) => (
-        <Sinal
-          key={rede}
-          rede={rede}
-          cx={REDE_X}
-          cy={REDE_Y[indice]}
-          raio={19}
-          cor={espalhou ? ARCO[indice + 2] : TINTA.linha}
-        />
-      ))}
+      <Redes acesas={espalhou} parado={parado} />
       <Copias visivel={chegou} parado={parado} />
 
       {fechou && (
         <g>
-          <Brilho x={88} y={128} raio={52} tinta="luz" aceso parado={parado} />
-          <Legenda x={88} y={145} corpo={48} tinta="arco">
+          {/* O 60 subiu 5: em 145 a barriga do zero encostava na borda de baixo
+              do palco, e o clímax da cena lia como rodapé cortado. */}
+          <Brilho x={88} y={124} raio={52} tinta="luz" aceso parado={parado} />
+          <Legenda x={88} y={140} corpo={48} tinta="arco">
             60
           </Legenda>
           <Faiscas x={88} y={72} raio={60} ativo parado={parado} quantidade={9} />
