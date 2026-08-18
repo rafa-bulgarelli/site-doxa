@@ -301,6 +301,50 @@ describe('responderAdmin — convite_criar', () => {
     expect(resposta.status).toBe(400);
     expect(chamadas.filter((c) => c.metodo === 'POST' && c.url.includes('convites'))).toHaveLength(0);
   });
+
+  it('leva o invite da plataforma para a linha do convite', async () => {
+    instalarFetch(rotasPadrao());
+    const resposta = await responderAdmin(
+      postar({
+        acao: 'convite_criar',
+        email: 'a@b.com',
+        empresa: 'AB',
+        invite_plataforma: '  https://app.doxaviral.com/convite/AbC123  ',
+      }),
+    );
+    expect(resposta.status).toBe(201);
+    const gravou = chamadas.find((c) => c.metodo === 'POST' && c.url.includes('manual_convites'));
+    // Aparado: o que vai para a coluna é o link limpo, do jeito que o `check`
+    // do banco espera e do jeito que a tela final vai abrir.
+    expect((gravou?.corpo as Record<string, unknown>).invite_plataforma).toBe(
+      'https://app.doxaviral.com/convite/AbC123',
+    );
+  });
+
+  it('sem o invite, a coluna vai NULL — e é ela que apaga o botão do cliente', async () => {
+    instalarFetch(rotasPadrao());
+    await responderAdmin(postar({ acao: 'convite_criar', email: 'a@b.com', empresa: 'AB' }));
+    const gravou = chamadas.find((c) => c.metodo === 'POST' && c.url.includes('manual_convites'));
+    const linha = gravou?.corpo as Record<string, unknown>;
+    expect(Object.keys(linha)).toContain('invite_plataforma');
+    expect(linha.invite_plataforma).toBeNull();
+  });
+
+  it.each([
+    ['sem esquema', 'app.doxaviral.com/convite/AbC123'],
+    ['esquema que não é http', 'javascript:alert(1)'],
+    ['maiúsculo — o `~` do Postgres recusaria', 'HTTPS://app.doxaviral.com/x'],
+    ['longo demais', `https://app.doxaviral.com/${'a'.repeat(500)}`],
+    ['não é texto', 42],
+  ])('recusa invite %s antes de gastar um token', async (_caso, invite) => {
+    instalarFetch(rotasPadrao());
+    const resposta = await responderAdmin(
+      postar({ acao: 'convite_criar', email: 'a@b.com', empresa: 'AB', invite_plataforma: invite }),
+    );
+    expect(resposta.status).toBe(400);
+    expect(await resposta.json()).toEqual({ erro: 'campo_invalido' });
+    expect(chamadas.filter((c) => c.metodo === 'POST' && c.url.includes('convites'))).toHaveLength(0);
+  });
 });
 
 describe('responderAdmin — revogar e regenerar', () => {
@@ -384,6 +428,100 @@ describe('responderAdmin — revogar e regenerar', () => {
     instalarFetch(rotasPadrao());
     const resposta = await responderAdmin(
       postar({ acao: 'convite_revogar', convite_id: 'x)or(1.eq.1' }),
+    );
+    expect(resposta.status).toBe(400);
+    expect(chamadas.filter((c) => c.url.includes('manual_convites'))).toHaveLength(0);
+  });
+
+  it('regenerar herda o invite da plataforma — o cadastro não mudou', async () => {
+    const invite = 'https://app.doxaviral.com/convite/AbC123';
+    instalarFetch(rotasPadrao('admin', { invite_plataforma: invite }));
+    const resposta = await responderAdmin(
+      postar({ acao: 'convite_regenerar', convite_id: CONVITE_ID }),
+    );
+    expect(resposta.status).toBe(201);
+    const novo = chamadas.find((c) => c.metodo === 'POST' && c.url.includes('manual_convites'));
+    expect((novo?.corpo as Record<string, unknown>).invite_plataforma).toBe(invite);
+  });
+
+  it('regenerar de convite sem invite continua sem invite', async () => {
+    instalarFetch(rotasPadrao());
+    await responderAdmin(postar({ acao: 'convite_regenerar', convite_id: CONVITE_ID }));
+    const novo = chamadas.find((c) => c.metodo === 'POST' && c.url.includes('manual_convites'));
+    expect((novo?.corpo as Record<string, unknown>).invite_plataforma).toBeNull();
+  });
+});
+
+describe('responderAdmin — convite_excluir', () => {
+  function deletes(): Chamada[] {
+    return chamadas.filter((c) => c.metodo === 'DELETE');
+  }
+
+  it('apaga o convite que nunca virou aceite', async () => {
+    instalarFetch(rotasPadrao('cx'));
+    const resposta = await responderAdmin(
+      postar({ acao: 'convite_excluir', convite_id: CONVITE_ID }),
+    );
+    expect(resposta.status).toBe(200);
+    expect(await resposta.json()).toEqual({ ok: true });
+    expect(deletes()).toHaveLength(1);
+    expect(deletes()[0].url).toContain(`manual_convites?id=eq.${CONVITE_ID}`);
+  });
+
+  it('não registra evento — o cascade apagaria o registro junto com o fato', async () => {
+    instalarFetch(rotasPadrao());
+    await responderAdmin(postar({ acao: 'convite_excluir', convite_id: CONVITE_ID }));
+    expect(chamadas.filter((c) => c.url.includes('manual_eventos'))).toHaveLength(0);
+  });
+
+  it('não apaga convite concluído — a prova fica, e nem chega a tentar', async () => {
+    instalarFetch(
+      rotasPadrao('admin', { status: 'concluido', concluido_em: '2026-08-10T00:00:00.000Z' }),
+    );
+    const resposta = await responderAdmin(
+      postar({ acao: 'convite_excluir', convite_id: CONVITE_ID }),
+    );
+    expect(resposta.status).toBe(409);
+    expect(await resposta.json()).toEqual({ erro: 'convite_concluido' });
+    expect(deletes()).toHaveLength(0);
+  });
+
+  it('convite que não existe é 404, sem DELETE no escuro', async () => {
+    instalarFetch([[/manual_convites\?id=/, () => ({ corpo: [] })], ...rotasPadrao()]);
+    const resposta = await responderAdmin(
+      postar({ acao: 'convite_excluir', convite_id: CONVITE_ID }),
+    );
+    expect(resposta.status).toBe(404);
+    expect(await resposta.json()).toEqual({ erro: 'convite_inexistente' });
+    expect(deletes()).toHaveLength(0);
+  });
+
+  it('a recusa do trigger vira 409 sem repetir o que o Postgres disse', async () => {
+    // O convite virou concluído entre a leitura e o apagar: a primeira chamada
+    // ainda vê 'pendente', e só a rede de segurança do banco pega o caso — ela
+    // responde 4xx com a mensagem da `raise`, que não pode vazar para fora.
+    let leu = false;
+    instalarFetch([
+      [/manual_convites\?id=/, () => {
+        if (!leu) {
+          leu = true;
+          return { corpo: [CONVITE] };
+        }
+        return { corpo: { message: 'convite concluido e prova — nao se apaga' }, status: 400 };
+      }],
+      ...rotasPadrao(),
+    ]);
+    const resposta = await responderAdmin(
+      postar({ acao: 'convite_excluir', convite_id: CONVITE_ID }),
+    );
+    expect(resposta.status).toBe(409);
+    expect(await resposta.json()).toEqual({ erro: 'convite_concluido' });
+  });
+
+  it('recusa id que não é uuid antes de olhar o banco', async () => {
+    instalarFetch(rotasPadrao());
+    const resposta = await responderAdmin(
+      postar({ acao: 'convite_excluir', convite_id: 'x)or(1.eq.1' }),
     );
     expect(resposta.status).toBe(400);
     expect(chamadas.filter((c) => c.url.includes('manual_convites'))).toHaveLength(0);
