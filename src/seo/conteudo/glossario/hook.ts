@@ -2,8 +2,8 @@ import type { Pagina } from '../../tipos';
 
 /**
  * Verbete: o termo e a definição. A EXECUÇÃO (como escrever um) é do guia
- * `/guias/como-fazer-videos-curtos-que-prendem` — este verbete não vira
- * tutorial, conforme a seção Canibalização do `docs/seo/keyword-map.md`.
+ * `/guias/como-fazer-hook-de-video-curto` — este verbete não vira tutorial,
+ * conforme a seção Canibalização do `docs/seo/keyword-map.md`.
  *
  * Sem fato da Doxa e sem estatística de terceiro: é definição de mecanismo.
  */
@@ -17,11 +17,11 @@ export const pagina: Pagina = {
   resumo:
     'Num feed de vídeo curto, é o pedaço que decide o alcance de tudo que vem depois.',
   intencao: 'informacional',
-  palavrasChave: ['hook', 'o que é hook em vídeo', 'gancho de vídeo', 'primeiros segundos'],
+  palavrasChave: ['hook', 'o que é hook em vídeo', 'gancho de vídeo'],
   hubs: ['/guias/videos-curtos'],
   relacionadas: [
     '/guias/videos-curtos',
-    '/guias/como-fazer-videos-curtos-que-prendem',
+    '/guias/como-fazer-hook-de-video-curto',
     '/glossario/retencao',
   ],
   atualizadoEm: '2026-08-18',
@@ -68,7 +68,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'O hook é o que decide quantas pessoas começam; a [retenção](/glossario/retencao) é o que mostra quantas ficaram. Para escrever hooks na prática, o guia [como fazer vídeos curtos que prendem](/guias/como-fazer-videos-curtos-que-prendem).',
+        'O hook é o que decide quantas pessoas começam; a [retenção](/glossario/retencao) é o que mostra quantas ficaram. Para escrever hooks na prática, o guia [como fazer hook de vídeo curto](/guias/como-fazer-hook-de-video-curto).',
     },
   ],
 };

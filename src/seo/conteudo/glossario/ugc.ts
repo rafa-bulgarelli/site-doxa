@@ -59,19 +59,9 @@ export const pagina: Pagina = {
         'Porque, no feed de vídeo curto, o que parece uma pessoa falando com você tende a segurar mais atenção do que o que parece um anúncio — e o que não segura atenção costuma perder distribuição. Uma peça de aparência caseira tem mais chance de atravessar a defesa automática que a audiência desenvolveu contra publicidade — e é por isso que marcas grandes passaram a encomendar vídeos que parecem não ter sido encomendados.',
     },
     {
-      tipo: 'titulo',
-      nivel: 2,
-      texto: 'O que isso exige de quem contrata',
-    },
-    {
       tipo: 'paragrafo',
       texto:
-        'Transparência, principalmente. Conteúdo pago apresentado como opinião espontânea é problema de publicidade, não de estética, e as plataformas têm regras próprias de sinalização. A aparência caseira é uma escolha de linguagem legítima; esconder que houve pagamento não é.',
-    },
-    {
-      tipo: 'paragrafo',
-      texto:
-        'Para os dois sentidos em detalhe, o guia [o que é UGC](/guias/o-que-e-ugc). Para escolher entre esse formato e o vídeo de marca, o comparativo [UGC ou conteúdo de marca](/comparativos/ugc-vs-conteudo-de-marca).',
+        'O que a contratação exige de sinalização — e o que acontece quando ela falta — está no guia [o que é UGC](/guias/o-que-e-ugc). Para escolher entre esse formato e o vídeo de marca, o comparativo [UGC ou conteúdo de marca](/comparativos/ugc-vs-conteudo-de-marca).',
     },
   ],
 };

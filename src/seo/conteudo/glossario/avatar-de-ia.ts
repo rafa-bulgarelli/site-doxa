@@ -48,8 +48,8 @@ export const pagina: Pagina = {
     {
       tipo: 'lista',
       itens: [
-        '**Avatar genérico:** um personagem que não corresponde a ninguém, escolhido de um catálogo. Rápido de usar e impessoal — a mesma figura pode estar apresentando o vídeo de outra marca no mesmo dia.',
-        '**Réplica de uma pessoa real:** construída a partir de material de alguém que autorizou. É o caso em que o avatar carrega o rosto de quem realmente responde pelo que está sendo dito.',
+        '**Avatar genérico:** um personagem de catálogo, que não corresponde a ninguém.',
+        '**Réplica de uma pessoa real:** construída a partir de material de quem autorizou.',
       ],
     },
     {
@@ -63,17 +63,9 @@ export const pagina: Pagina = {
         'O uso que faz diferença é o de volume: quando uma empresa precisa publicar vídeo com constância, o gargalo raramente é a ideia — é reunir a pessoa, o cenário e o tempo de gravação toda semana. Um avatar resolve exatamente esse gargalo, e não os outros. Ele não escreve um roteiro melhor nem descobre o que a audiência quer ouvir.',
     },
     {
-      tipo: 'titulo',
-      nivel: 2,
-      texto: 'Onde ele ainda não convence',
-    },
-    {
-      tipo: 'lista',
-      itens: [
-        'Emoção genuína e reação espontânea: um avatar entrega bem uma explicação, e mal uma comemoração.',
-        'Demonstração física: mostrar um produto sendo usado ainda pede câmera.',
-        'Vídeos em que a espontaneidade é a mensagem, como bastidores e resposta a comentário.',
-      ],
+      tipo: 'paragrafo',
+      texto:
+        'Onde o avatar ainda não convence — demonstração física, espontaneidade, ambiente real, assunto delicado — está listado caso a caso em [o que é avatar de IA](/guias/o-que-e-avatar-de-ia), junto com a diferença entre um avatar de catálogo e o clone de uma pessoa.',
     },
     {
       tipo: 'titulo',

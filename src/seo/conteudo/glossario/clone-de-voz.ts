@@ -30,6 +30,7 @@ export const pagina: Pagina = {
     '/guias/ia-no-marketing',
     '/glossario/avatar-de-ia',
     '/solucoes/clone-de-ia-para-videos',
+    '/solucoes/clone-de-voz-para-videos',
   ],
   atualizadoEm: '2026-08-18',
   corpo: [
