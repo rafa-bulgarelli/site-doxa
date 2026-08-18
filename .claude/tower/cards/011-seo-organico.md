@@ -370,6 +370,18 @@ embutida em página externa não muda papel de agente.
   repetida. Em paralelo: `track-seo-correcao-2` (60/90 sem ressalva em 6 páginas +
   NITs) e `track-seo-rodada-3` (2 adjacências §47: LinkedIn e social media).
 
+- **03:10–03:40** — Motor-2 fechado (SCOPE ampliado; contraste 26→0 nós, **A11Y 100**;
+  FAQ única verde; +12 testes) → **PR #61 (`e4a2165`, 26/975)**. Correção-2 READY (60/90
+  com ressalva em 6 páginas; NITs; Reels 826→917 com fato do §8 só do Instagram; lista
+  de 10 absolutos e o padrão "relacionadas × membros" nos 5 hubs) → diff lido pela
+  sessão principal → **PR #62 (`403e8b9`)**. Rodada-3 READY (2 adjacências §47, 0
+  frases repetidas por shingles) → collector APROVADO COM RESSALVAS (3 correções:
+  "não significa nada" × destaque; FAQ repetindo o contrato + "nada impede"; negação
+  além da fonte) → executor retomado. **QA transversal 2** lançado: 3 collectors lendo
+  as 61 páginas em fatias (soluções/plataformas/hubs/dores · guias ·
+  comparativos+glossário) → correção-3. Gate visual das rodadas 2/3: ok (nota: nos
+  verbetes, resumo e 1º parágrafo repetem a definição — vai para a correção-3).
+
 <!-- Preenchido pelo GESTOR -->
 ## Plano
 
