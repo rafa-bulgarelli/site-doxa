@@ -198,6 +198,19 @@ embutida em página externa não muda papel de agente.
   worktrees (usar `--strictPort`); scratchpad é compartilhado (subdir por track);
   grep de palavras do pack era cego a strings multilinha — medir no `<main>` do dist.
 
+- **~01:15** — FASE 1: os 4 executores READY. T3 `track-seo-conteudo-guias` (10
+  páginas: 5 guias + 5 comparativos com tabela; 24/574). T4 `track-seo-hubs-nav` (20
+  páginas: 5 hubs + 4 dores + 11 verbetes; 24/594; **rodapé da landing INTOCADO** — o
+  link "Guias" estoura 19px a 320px, medido, `Rodape.tsx` tem `nowrap` de propósito).
+  4 collectors em paralelo (T1 técnico; T2/T3/T4 editoriais). Total até aqui: 39
+  páginas (1 prelude + 8 + 10 + 20). Backlog do motor em
+  `.claude/tower/packs/_backlog-motor-011.md`.
+  **DECISÃO PARA O DONO (manhã): a porta da biblioteca na landing.** Opções: (1) soltar
+  `whitespace-nowrap` do rodapé só abaixo de `sm` e deixar "Guias" quebrar; (2) link no
+  cabeçalho da landing; (3) seção "Guias" na home (§56 diz "depois dos clusters, sem
+  virar índice de SEO"). Até lá a biblioteca é descoberta por sitemap + llms.txt +
+  links internos; a landing continua sem apontar para ela.
+
 <!-- Preenchido pelo GESTOR -->
 ## Plano
 
