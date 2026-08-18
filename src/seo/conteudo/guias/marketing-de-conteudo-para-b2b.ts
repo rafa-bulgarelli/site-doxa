@@ -187,7 +187,7 @@ export const pagina: Pagina = {
         {
           pergunta: 'E se o meu mercado tiver poucos clientes possíveis?',
           resposta:
-            'Aí o cálculo muda. Quando o mercado inteiro cabe numa lista curta, a maior parte do alcance é desperdício, e abordagem direta chega antes. Conteúdo ainda pode valer como reforço — a pessoa reconhecer o nome antes da ligação muda a conversa —, mas como apoio ao comercial, não como canal principal de aquisição.',
+            'Aí o cálculo muda. Quando o mercado inteiro cabe numa lista curta, o alcance atinge sobretudo gente que nunca poderá comprar, e abordagem direta chega antes. Conteúdo ainda pode valer como reforço — a pessoa reconhecer o nome antes da ligação muda a conversa —, mas como apoio ao comercial, não como canal principal de aquisição.',
         },
       ],
     },

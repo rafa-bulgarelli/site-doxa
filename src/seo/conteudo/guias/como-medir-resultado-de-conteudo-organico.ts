@@ -138,7 +138,7 @@ export const pagina: Pagina = {
     {
       tipo: 'lista',
       itens: [
-        '**Seguidores.** É o indicador mais lento a se mexer e o menos ligado à entrega: a maior parte do alcance em vídeo curto vem de quem não segue o perfil.',
+        '**Seguidores.** É o indicador mais lento a se mexer e o menos ligado à entrega: no vídeo curto, uma parte relevante do alcance costuma vir de quem ainda não segue o perfil.',
         '**Curtidas.** Uma ação opcional, que parte do público executa e parte não. Ficar assistindo é o que cada espectador faz ou deixa de fazer, sem exceção — e por isso diz muito mais.',
         '**O vídeo que explodiu.** Ele é um ponto, não uma curva. Reescrever o trimestre em cima de um resultado isolado costuma acabar com uma sequência de cópias que não repetem o resultado.',
         '**A soma de views sem contexto.** Um total que sobe porque você publicou mais não é melhora de desempenho — é mais publicação. Divida pelo número de peças antes de comemorar.',
