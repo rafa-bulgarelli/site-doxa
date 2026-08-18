@@ -2,9 +2,13 @@ import type { Pagina } from '../../tipos';
 
 /**
  * ADJACÊNCIA §47: o LinkedIn NÃO é uma das três redes da garantia, e a página
- * diz isso com todas as letras em vez de deixar a dúvida no ar. A Doxa aparece
- * UMA vez — no destaque, dizendo o que a meta cobre e o que ela não cobre — e
- * mais uma no `cta`.
+ * diz isso com todas as letras em vez de deixar a dúvida no ar. A marca aparece
+ * em DOIS lugares, e só: o destaque `doxa` — que diz o que a meta cobre e o que
+ * ela não cobre — e o `cta`. Dentro do destaque o nome é dito UMA vez; a
+ * segunda oração fala em "a operação", que é vocabulário do dono (§10). O FAQ é deliberadamente sem marca: a pergunta
+ * sobre a conta das views é respondida como conselho de leitura, sem repetir a
+ * redação do contrato, porque repetir ali seria uma terceira menção e um
+ * segundo enunciado da garantia na mesma página.
  *
  * Fronteira real com as vizinhas (medida, não afirmada):
  *  · `/guias/como-usar-o-mesmo-video-nas-tres-redes` é DONA da exportação:
@@ -110,7 +114,7 @@ export const pagina: Pagina = {
         '**Diga para quem é, logo no começo.** "Se você faz orçamento de obra" segura mais gente certa do que "hoje eu queria falar sobre orçamentos".',
         '**Adiante o conteúdo, não anuncie o vídeo.** "Assista ao vídeo abaixo" gasta a única linha garantida com uma instrução que ninguém pediu.',
         '**Uma frase, não um parágrafo.** O corte acontece cedo, e frase longa é frase interrompida no meio da ideia.',
-        '**Esse texto é a única coisa que você reescreve.** O arquivo continua idêntico ao que foi para as outras redes; o campo ao lado dele, não.',
+        '**Reescreva a primeira linha, não o vídeo.** O arquivo sobe idêntico; o que muda é onde o corte do "ver mais" cai.',
       ],
     },
     {
@@ -131,12 +135,12 @@ export const pagina: Pagina = {
     {
       tipo: 'titulo',
       nivel: 2,
-      texto: 'Som desligado, tela pequena, meio do expediente',
+      texto: 'Som, tela pequena e o meio do expediente',
     },
     {
       tipo: 'paragrafo',
       texto:
-        'O consumo acontece em horário de trabalho, com frequência numa aba do navegador ao lado de outras janelas, onde o vídeo vertical ocupa uma coluna estreita e não a tela inteira. Daí saem duas consequências diretas. A [legenda embutida](/glossario/legenda-embutida) deixa de ser só um cuidado de acessibilidade e passa a ser condição para o vídeo ser entendido. E o texto que você põe na imagem precisa continuar legível em tamanho reduzido — o que costuma significar menos palavras por quadro, e não fonte maior.',
+        'O consumo ali costuma acontecer em horário de trabalho, com frequência numa aba do navegador ao lado de outras janelas, onde o vídeo vertical ocupa uma coluna estreita e não a tela inteira. Daí saem duas consequências diretas. A [legenda embutida](/glossario/legenda-embutida) deixa de ser só um cuidado de acessibilidade e passa a ser condição para o vídeo ser entendido. E o texto que você põe na imagem precisa continuar legível em tamanho reduzido — o que costuma significar menos palavras por quadro, e não fonte maior.',
     },
     {
       tipo: 'titulo',
@@ -160,7 +164,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'O que não passa nesse filtro continua valendo nas outras redes, e não existe obrigação de paridade entre elas. Publicar menos ali, com escolha, custa menos do que publicar tudo e acostumar quem te segue a passar direto.',
+        'O que não passa nesse filtro continua valendo nas outras redes: não existe obrigação de paridade entre o feed profissional e as outras três. Publicar menos ali, com escolha, custa menos do que publicar tudo e acostumar quem te segue a passar direto.',
     },
     {
       tipo: 'titulo',
@@ -170,7 +174,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'São dois lugares distintos, e escolher entre eles não é uma decisão administrativa. Um perfil pessoal carrega um rosto e uma trajetória; uma página carrega a marca. A régua que evita o erro mais comum é decidir quem é o dono da peça antes de subir e não repetir o mesmo arquivo nos dois no mesmo dia — não porque isso seja proibido, mas porque você perde a única leitura que interessava, que é saber qual dos dois lugares levou aquele assunto adiante.',
+        'São dois lugares distintos, e escolher entre eles não é uma decisão administrativa. Um perfil pessoal carrega um rosto e uma trajetória; uma página carrega a marca. A régua que evita um erro comum é decidir quem é o dono da peça antes de subir e não repetir o mesmo arquivo nos dois no mesmo dia — não porque isso seja proibido, mas porque você perde a única leitura que interessava, que é saber qual dos dois lugares levou aquele assunto adiante.',
     },
     {
       tipo: 'destaque',
@@ -186,13 +190,13 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'Cada rede conta visualização do seu jeito, e um total somado entre plataformas diferentes é um número que não significa nada. O cuidado vale ainda mais quando existe meta contratada com alguém: antes de comemorar um resultado, confira em quais redes essa meta é contada. Como ler cada número sem se enganar é assunto de [como medir resultado de conteúdo orgânico](/guias/como-medir-resultado-de-conteudo-organico).',
+        'Cada rede conta visualização do seu jeito, e um total somado entre plataformas diferentes só significa alguma coisa se estiver combinado antes quais redes entram na soma. O cuidado vale ainda mais quando existe meta contratada com alguém: antes de comemorar um resultado, confira em quais redes essa meta é contada. Como ler cada número sem se enganar é assunto de [como medir resultado de conteúdo orgânico](/guias/como-medir-resultado-de-conteudo-organico).',
     },
     {
       tipo: 'destaque',
       variante: 'doxa',
       texto:
-        'No caso da Doxa, a conta é explícita, e vale dizer com todas as letras: a meta de views somadas cobre três redes — Instagram, TikTok e YouTube Shorts. Ela vale conforme as condições e o prazo do contrato, e o LinkedIn não é uma dessas redes: o que render ali fica fora da soma. Da Doxa sai o arquivo pronto para postar — vertical e legendado —, e a empresa é quem publica nos próprios perfis; levar a mesma peça para o feed profissional é decisão dela.',
+        'No caso da Doxa, a conta é explícita, e vale dizer com todas as letras: a meta de views somadas cobre três redes — Instagram, TikTok e YouTube Shorts. Ela vale conforme as condições e o prazo do contrato, e o LinkedIn não é uma dessas redes: o que render ali fica fora da soma. A peça que sai da operação é o arquivo pronto para postar, vertical e legendado; nos próprios perfis, quem publica é a empresa — levar essa mesma peça para o feed profissional é decisão dela.',
     },
     {
       tipo: 'titulo',
@@ -205,12 +209,12 @@ export const pagina: Pagina = {
         {
           pergunta: 'O vídeo do TikTok serve para o LinkedIn sem editar?',
           resposta:
-            'Serve, com uma condição: o arquivo tem de sair do editor, e não do botão de baixar da outra rede. O que desce dali costuma vir com selo e com o nome de um perfil por cima da imagem, e num feed de trabalho isso é lido como material de segunda mão. Partindo do arquivo limpo, nada dentro do vídeo precisa mudar.',
+            'Serve, com uma condição: o arquivo tem de sair do editor, e não do botão de baixar da outra rede — o porquê disso, com o resto das regras de exportação, vive em [como usar o mesmo vídeo nas três redes](/guias/como-usar-o-mesmo-video-nas-tres-redes). Partindo do arquivo limpo, nada dentro do vídeo precisa mudar; o que muda é o texto que vai em volta dele.',
         },
         {
-          pergunta: 'As visualizações do LinkedIn contam para a meta de views da Doxa?',
+          pergunta: 'O número daqui entra na mesma conta das outras redes?',
           resposta:
-            'Não contam. A meta de views somadas é apurada em três redes — Instagram, TikTok e YouTube Shorts. Ela vale conforme as condições e o prazo do contrato, e o feed profissional está fora dessa apuração. Levar a mesma peça para lá pode fazer sentido pelo público que existe ali, e nada impede; o número que aparecer nesse lugar simplesmente não entra na soma.',
+            'Isso depende do que estiver combinado por escrito com quem produz os vídeos, e é o que vale conferir antes de somar: quais redes compõem a conta. Enquanto essa lista não estiver clara, trate o número do feed profissional como leitura separada — ele ajuda a decidir o que publicar ali, e não substitui olhar cada uma das outras redes por si.',
         },
         {
           pergunta: 'Publico na página da empresa ou no meu perfil?',
@@ -251,7 +255,9 @@ export const pagina: Pagina = {
  *          quatro perguntas e a escolha entre página e perfil.
  * [x]  8. title (54 caracteres), description (153) e H1 exclusivos; H2 em
  *          hierarquia real.
- * [x]  9. Hub /guias/videos-curtos; quatro links contextuais, nenhum decorativo.
+ * [x]  9. Hub /guias/videos-curtos; cinco links contextuais, nenhum decorativo
+ *          (dois deles para a página dona da exportação, que é onde a dúvida
+ *          do arquivo aparece duas vezes).
  * [x] 10. Não é comparativo, e mesmo assim não conclui a favor da Doxa: diz que
  *          publicar ali pode fazer sentido e que o número não entra na meta.
  * [x] 11. CTA único, no fecho, pelo campo `cta`.

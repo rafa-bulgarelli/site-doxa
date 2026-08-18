@@ -30,6 +30,13 @@ import type { Pagina } from '../../tipos';
  *  · o entregável é o arquivo do vídeo pronto para postar, vertical e
  *    legendado, e quem publica é o cliente, no perfil dele → §2, fonte:
  *    `src/components/HowItWorks.tsx:92`; `public/llms.txt:25-26`;
+ *  · o destaque fica SÓ nas negações publicadas. Não diz "não escreve a
+ *    legenda do dia" (sem fonte, e a legenda é parte do entregável), nem que
+ *    todo o trabalho desta página fique de um lado só: o FAQ da empresa
+ *    registra que estratégia e performance são acompanhadas ao longo da
+ *    operação, junto do cliente — fonte: `src/components/faq/config.ts:537-538,
+ *    554-555`. Afirmar "a leitura continua sendo de quem está dentro"
+ *    contradiria isso;
  *  · retorno em até 24 horas para marcar a auditoria estratégica → §2, fonte:
  *    `public/llms.txt:47-49`; `src/components/comparacao/config.ts:273,297`.
  *
@@ -112,7 +119,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'A frustração mais comum com o cargo nasce de uma expectativa que ninguém escreveu: contrata-se alguém para cuidar das redes esperando que a fila de vídeos venha junto. Ela não vem. As quatro frentes abaixo são outros ofícios, e cada uma pode ou não estar na pessoa contratada — o que muda tudo é perguntar antes.',
+        'Uma frustração frequente com o cargo nasce de uma expectativa que ninguém escreveu: contrata-se alguém para cuidar das redes esperando que a fila de vídeos venha junto. Ela não vem. As quatro frentes abaixo são outros ofícios, e cada uma pode ou não estar na pessoa contratada — o que muda tudo é perguntar antes.',
     },
     {
       tipo: 'lista',
@@ -211,7 +218,7 @@ export const pagina: Pagina = {
         '**"Me mostre um número que você mudou."** Não o print do post que estourou: o que a pessoa decidiu, o que aconteceu depois e como ela soube.',
         '**"O que você parou de fazer no último trabalho?"** Quem nunca cortou nada nunca priorizou, e o cargo vive de escolher o que fica de fora.',
         '**"Como era a sua semana, hora a hora?"** A resposta separa quem coordenou de quem executou — as duas são legítimas, e você contrata uma.',
-        '**"Você grava e edita?"** Pergunte explicitamente e peça exemplo publicado. É a linha que mais gera mal-entendido depois.',
+        '**"Você grava e edita?"** Pergunte explicitamente e peça exemplo publicado. É uma linha que gera mal-entendido depois.',
         '**"O que você faria no primeiro mês aqui?"** Plano que não menciona o comercial nem os clientes atuais já veio pronto de casa.',
       ],
     },
@@ -229,7 +236,7 @@ export const pagina: Pagina = {
       tipo: 'destaque',
       variante: 'doxa',
       texto:
-        'É essa fronteira que descreve o lugar da Doxa: ela produz vídeo vertical em escala, e não faz gestão de rede. Não responde comentário, não escreve a legenda do dia, não cuida do perfil — e não é agência: do lado do cliente não existe estúdio, equipe de gravação nem calendário editorial. À empresa chega o arquivo pronto para postar — vertical, legendado —, e é ela quem publica, no perfil dela. O trabalho descrito nesta página continua sendo de quem está dentro.',
+        'É essa fronteira que descreve o lugar da Doxa: ela produz vídeo vertical em escala, e não faz gestão de rede. Não é agência — do lado do cliente não existe estúdio, equipe de gravação nem calendário editorial —, e à empresa chega o arquivo pronto para postar, vertical e legendado. Publicar no perfil e conversar com quem aparece nele segue sendo dela.',
     },
     {
       tipo: 'titulo',
