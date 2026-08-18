@@ -23,7 +23,14 @@ import type { Pagina } from '../../tipos';
  *  · propriedade e direitos de uso definidos no contrato de cada cliente →
  *    chave `direitos` do mesmo arquivo, palavra por palavra;
  *  · quem publica é o cliente, no perfil dele, com o arquivo pronto para postar
- *    → `src/components/HowItWorks.tsx`.
+ *    → `src/components/HowItWorks.tsx`;
+ *  · "baixou, publicou" — publicar exatamente o arquivo entregue, sem alterar
+ *    corte, duração, música, áudio, legendas, textos ou capa → seção de
+ *    integridade do arquivo do manual (`supabase/manual-seed-v1.sql`;
+ *    `.claude/tower/cards/004-manual-interativo-prompt-mestre.md`), §8. O
+ *    recorte desta página é o que só existe no Instagram: a própria tela de
+ *    publicação convida a mexer no arquivo. A regra em si é de
+ *    /solucoes/videos-curtos-para-empresas, e não é reexplicada aqui.
  *
  * Sobre a PLATAFORMA: nenhuma estatística, nenhuma política interna da Meta e
  * nenhuma promessa de alcance. Não há fonte para isso no projeto.
@@ -130,6 +137,11 @@ export const pagina: Pagina = {
         'O Instagram é uma das três redes usadas como referência da operação, com TikTok e YouTube Shorts, e as visualizações da meta são somadas entre elas, conforme as condições e o prazo do contrato. O que chega à empresa é o arquivo pronto para postar — vertical, legendado, no formato do feed — e quem publica no perfil é ela mesma. O detalhe do que faz um vídeo curto funcionar está em [vídeos curtos para empresas](/solucoes/videos-curtos-para-empresas); a comparação entre as duas redes principais, em [TikTok ou Instagram](/comparativos/tiktok-vs-instagram).',
     },
     {
+      tipo: 'paragrafo',
+      texto:
+        'Esse arquivo sobe como está, e no Instagram isso pede atenção extra: a tela de publicação oferece cortar de novo, escolher outra capa, colar figurinha e pôr uma música por cima, tudo a um toque de distância. A peça entregue já chega com corte, legenda, capa e áudio decididos, e a regra combinada com quem já é cliente cabe em três palavras — baixou, publicou. Mexer no upload não é ajuste estético: muda o que estava sendo testado naquele vídeo, e a comparação com o próximo deixa de dizer alguma coisa.',
+    },
+    {
       tipo: 'titulo',
       nivel: 2,
       texto: 'Quando Reels não é a prioridade',
@@ -186,8 +198,12 @@ export const pagina: Pagina = {
  * [x]  2. Todo fato sobre a Doxa tem entrada em docs/seo/source-of-truth.md.
  *          Cliente, número, prazo, preço, garantia e depoimento: zero invenção.
  * [x]  3. Nada da §9 (NÃO PUBLICÁVEL) apareceu — nem parafraseado, nem
- *          "suavizado": preço, mensalidade, fidelidade, direitos do vídeo,
- *          agência licenciada, os 1.500 clientes, "parceiros".
+ *          "suavizado": preço, mensalidade, fidelidade, agência licenciada, os
+ *          1.500 clientes, "parceiros". A pergunta de propriedade aparece no
+ *          FAQ, mas com a única resposta autorizada — a chave `direitos` de
+ *          `faq/config.ts`, palavra por palavra, que remete ao contrato de cada
+ *          cliente e não publica cláusula nenhuma. Mesma situação da pergunta
+ *          de `preco` em /solucoes/producao-de-videos-com-ia.
  * [x]  4. Termos proibidos ausentes: "agência" como autodefinição, "parceiros"
  *          para as ferramentas, "assinatura", "curso", "tráfego pago" como
  *          serviço, "garantimos que vai viralizar".
@@ -209,7 +225,7 @@ export const pagina: Pagina = {
  * [x] 12. Sem keyword stuffing: a keyword-alvo aparece onde caberia se o
  *          Google não existisse. Sem sinônimo empilhado, sem lista de cidades.
  * [x] 13. Frases do dono usadas palavra por palavra quando existem ("pronto
- *          para postar", "views somadas", "clone"). Vocabulário do §10.
+ *          para postar", "views somadas", "baixou, publicou"). Vocabulário do §10.
  * [x] 14. Teste final (§45): "eu publicaria isso se o Google não existisse?"
  *          Se não, reescrever — não ajustar.
  * ────────────────────────────────────────────────────────────────────────── */

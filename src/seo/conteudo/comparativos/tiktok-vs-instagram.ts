@@ -153,7 +153,7 @@ export const pagina: Pagina = {
       tipo: 'destaque',
       variante: 'doxa',
       texto:
-        'É por isso que a operação da Doxa nasce multiplataforma: 60 conteúdos únicos em 90 dias, um por dia útil, o mesmo arquivo publicado nas três redes no mesmo dia. Quem publica é o cliente, no perfil dele — o que chega é o vídeo pronto para postar.',
+        'É por isso que a operação da Doxa nasce multiplataforma, e o desenho é condição de quem já é cliente: 60 conteúdos únicos em 90 dias, um por dia útil, o mesmo arquivo publicado nas três redes no mesmo dia, conforme as condições e o prazo do contrato. Quem publica é o cliente, no perfil dele — o que chega é o vídeo pronto para postar.',
     },
     {
       tipo: 'titulo',

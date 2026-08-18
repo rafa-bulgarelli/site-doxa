@@ -112,7 +112,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'É o formato em que a operação inteira da Doxa trabalha. Cada vídeo entregue é único — roteiro, voz clonada, edição e capa —, sai vertical, legendado e no formato do feed, e vai para as três redes. A referência de volume da operação é de sessenta conteúdos únicos em noventa dias, um por dia útil, o que dá a ordem de grandeza do que se entende aqui por publicar com constância.',
+        'É o formato em que a operação inteira da Doxa trabalha. Cada vídeo entregue é único — roteiro, voz clonada, edição e capa —, sai vertical, legendado e no formato do feed, e vai para as três redes. A referência de volume da operação é de sessenta conteúdos únicos em noventa dias, um por dia útil — condição de quem já é cliente, conforme as condições e o prazo do contrato —, o que dá a ordem de grandeza do que se entende aqui por publicar com constância.',
     },
     {
       tipo: 'destaque',

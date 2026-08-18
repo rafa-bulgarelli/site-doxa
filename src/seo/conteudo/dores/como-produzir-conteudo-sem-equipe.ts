@@ -121,7 +121,7 @@ export const pagina: Pagina = {
     {
       tipo: 'lista',
       itens: [
-        'Cenário elaborado, iluminação de estúdio e equipamento caro: no feed, o que decide não é a produção: é o que prende. Um vídeo de celular bem aberto ganha de um vídeo caro mal aberto.',
+        'Cenário elaborado, iluminação de estúdio e equipamento caro: no feed, o que decide não é a produção, e sim o que prende. Um vídeo de celular bem aberto ganha de um vídeo caro mal aberto.',
         'Aprovação por comitê. Cada rodada de aprovação custa dias, e dias custam a cadência inteira.',
         'Trilha e efeito visual em cima de um conteúdo que não se sustenta sem eles.',
         'Pesquisa de tema que não passa pelas quatro fontes acima: o material que só você tem é o que ninguém encontra pesquisando.',

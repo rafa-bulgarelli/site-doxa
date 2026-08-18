@@ -163,7 +163,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'Duas leituras saem daí. A primeira: o formato em que a IA rende mais é justamente o que mais entrega para quem ainda não segue o perfil, o vídeo vertical — por isso a troca costuma compensar. A segunda: quanto mais o formato depende do que aconteceu hoje na sua empresa, menos há para automatizar, e insistir ali produz post sem informação.',
+        'Duas leituras saem daí. A primeira: o formato em que a IA rende mais é justamente o vídeo vertical, aquele em que uma parte relevante do alcance costuma vir de quem ainda não segue o perfil — por isso a troca costuma compensar. A segunda: quanto mais o formato depende do que aconteceu hoje na sua empresa, menos há para automatizar, e insistir ali produz post sem informação.',
     },
     {
       tipo: 'titulo',

@@ -161,7 +161,7 @@ export const pagina: Pagina = {
         '**Alcance de contas que não seguem**, na semana, comparado com a semana anterior. É o termômetro de descoberta.',
         '**Salvamentos e envios por publicação.** Dizem o que a audiência considerou útil o bastante para guardar ou repassar.',
         '**Retenção dos vídeos**, para separar o que prende do que só foi entregue. Um vídeo com alcance alto e retenção baixa foi mostrado, não assistido.',
-        '**Conversas iniciadas.** É a métrica que liga o perfil ao caixa, e a única que o time comercial reconhece.',
+        '**Conversas iniciadas.** É a métrica que liga o perfil ao caixa, e a que o time comercial costuma reconhecer.',
       ],
     },
     {
@@ -173,7 +173,7 @@ export const pagina: Pagina = {
       tipo: 'destaque',
       variante: 'doxa',
       texto:
-        'Na Doxa, esse método é a própria operação: 60 conteúdos únicos em 90 dias, um por dia útil, o mesmo arquivo publicado no Instagram, no TikTok e no YouTube Shorts, sem impulsionamento em nenhum deles — as visualizações contabilizadas nas metas são 100% orgânicas. Quem publica é o cliente, no perfil dele.',
+        'Na Doxa, esse método é a própria operação, e os números são condição de quem já é cliente: 60 conteúdos únicos em 90 dias, um por dia útil, o mesmo arquivo publicado no Instagram, no TikTok e no YouTube Shorts, sem impulsionamento em nenhum deles, conforme as condições e o prazo do contrato. As visualizações contabilizadas nas metas são 100% orgânicas, e quem publica é o cliente, no perfil dele.',
     },
     {
       tipo: 'titulo',

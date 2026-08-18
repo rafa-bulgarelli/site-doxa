@@ -171,7 +171,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'Das três causas, uma só é de capacidade: publicar vídeo com regularidade suficiente para o perfil voltar a ser mostrado a quem não segue. Conversão e escolha de assunto continuam sendo decisão de dentro da empresa — nenhum fornecedor decide o que a sua marca tem a dizer. A operação da Doxa trabalha nessa faixa: sessenta conteúdos únicos em noventa dias, um por dia útil, sendo o Instagram uma das três redes que recebem cada vídeo — e isso é condição de quem já é cliente, não uma promessa de aquisição.',
+        'Das três causas, uma só é de capacidade: publicar vídeo com regularidade suficiente para o perfil voltar a ser mostrado a quem não segue. Conversão e escolha de assunto continuam sendo decisão de dentro da empresa — nenhum fornecedor decide o que a sua marca tem a dizer. A operação da Doxa trabalha nessa faixa: sessenta conteúdos únicos em noventa dias, um por dia útil, sendo o Instagram uma das três redes que recebem cada vídeo — e isso é condição de quem já é cliente, conforme as condições e o prazo do contrato, não uma promessa de aquisição.',
     },
     {
       tipo: 'destaque',
