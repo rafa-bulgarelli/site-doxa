@@ -226,6 +226,18 @@ embutida em página externa não muda papel de agente.
   26/642 verdes, 0 conflitos → **PR #51 squash (`0ff3890`)**. Worktree fechada.
   Feature branch: motor + fundação + 9 páginas de soluções/plataformas.
 
+- **~02:45** — **FASE 1 inteira mergeada**: T4 PR #52 (`5f3d2c2`, 26/768, 33 rotas) e
+  T3 PR #53 (`2b547ad`, 26/831, **44 rotas** = 39 páginas + 5 índices). Cada merge com
+  merge de teste local + suíte inteira antes do PR. `seo:audit`: 3 avisos (hub Reels
+  órfão; 2 planejadas opcionais). Gate visual de amostra na base consolidada
+  (comparativo com TOC sticky, hub, verbete mobile 390): produto DOXA, sem overflow.
+  **Contrato da rodada 2** (PR #54): +21 rotas em `rotas-planejadas.ts`, keyword-map
+  com 39 `existe`, 3 packs `track-seo-rodada-2-*` (lições dos collectors embutidas).
+  **Rodada 2 aberta** (3 executores, dirs disjuntos): guias (9+2 opcionais) ·
+  comparativos+glossário (2+7) · dores+soluções (1+2, com QA adversarial transversal
+  da biblioteca no fim). Puladas de propósito: avatar-de-ia-para-empresas,
+  conteudo-recorrente, heygen-vs-gravacao, reels-vs-tiktok-vs-shorts.
+
 <!-- Preenchido pelo GESTOR -->
 ## Plano
 
