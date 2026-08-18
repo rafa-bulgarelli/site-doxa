@@ -225,6 +225,7 @@ function FluxoDoConvite({ token, navegar }: { token: string; navegar: (destino: 
           aoBaixar={pdf.pedir}
           baixando={pdf.pedindo}
           erro={pdf.erro}
+          invitePlataforma={situacao.invitePlataforma}
         />
       );
     case 'fluxo':

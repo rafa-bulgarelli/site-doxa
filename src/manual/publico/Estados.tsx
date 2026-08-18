@@ -11,7 +11,7 @@
  * resolve.
  */
 import type { ReactNode } from 'react';
-import { BaixarPdf, Botao, Casca, Linha, Quadro, Rotulo, Titulo } from './pecas';
+import { BaixarPdf, Botao, CadastroOficial, Casca, Linha, Quadro, Rotulo, Titulo } from './pecas';
 import { dataEHora } from './formato';
 import type { AceiteResumo } from '../tipos';
 
@@ -127,12 +127,18 @@ export function JaConcluido({
   aoBaixar,
   baixando,
   erro,
+  invitePlataforma,
 }: {
   aceite: AceiteResumo;
   pdfUrl?: string;
   aoBaixar: () => void;
   baixando: boolean;
   erro?: string;
+  /**
+   * O link do cadastro na plataforma, vindo do `abrir` do convite concluído.
+   * Ausente ou `null` = este convite não tem link, e o botão não existe.
+   */
+  invitePlataforma?: string | null;
 }) {
   return (
     <Recado titulo="Você já concluiu este manual">
@@ -144,8 +150,12 @@ export function JaConcluido({
         <Rotulo>Registro</Rotulo>
         <p className="mt-1.5 break-all font-mono text-[15px] text-white/80">{aceite.aceite_id}</p>
       </Quadro>
-      <div className="pt-2">
+      {/* A MESMA dupla da tela de quem acabou de aceitar: o comprovante e o
+          passo seguinte. Quem volta pelo link dias depois costuma voltar
+          justamente porque ainda não se cadastrou. */}
+      <div className="space-y-3 pt-2">
         <BaixarPdf url={pdfUrl} pedindo={baixando} erro={erro} aoPedir={aoBaixar} />
+        <CadastroOficial url={invitePlataforma} />
       </div>
     </Recado>
   );

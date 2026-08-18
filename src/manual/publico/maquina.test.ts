@@ -725,6 +725,25 @@ describe('o que o link abriu', () => {
     expect(resposta({ estado: 'concluido', aceite })).toEqual({ tipo: 'concluido', aceite });
   });
 
+  it('o link do cadastro na plataforma chega à tela de quem já concluiu', () => {
+    const aceite = {
+      aceite_id: 'a1',
+      aceito_em: '2026-08-14T12:00:00Z',
+      conteudo_sha256: 'abc',
+      versao_numero: 3,
+    };
+    const situacao = resposta({
+      estado: 'concluido',
+      aceite,
+      invite_plataforma: 'https://app.doxa/convite/xyz',
+    });
+    expect(situacao).toEqual({
+      tipo: 'concluido',
+      aceite,
+      invitePlataforma: 'https://app.doxa/convite/xyz',
+    });
+  });
+
   it('resposta válida SEM o manual é falha sem volta, não tela em branco', () => {
     const situacao = resposta({ estado: 'valido', convite: COM_NOME });
     expect(situacao.tipo).toBe('falha');

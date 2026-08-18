@@ -13,7 +13,7 @@
  * O que NÃO se faz aqui é fingir que o aceite não existiu. O tom das duas é o
  * mesmo: está feito.
  */
-import { BaixarPdf, Casca, Fio, Linha, Quadro, Rotulo, Titulo } from './pecas';
+import { BaixarPdf, CadastroOficial, Casca, Fio, Linha, Quadro, Rotulo, Titulo } from './pecas';
 import { dataEHora } from './formato';
 import type { Comprovante } from './memoria';
 
@@ -84,13 +84,17 @@ export function Conclusao({
         <Item rotulo="Versão do manual" valor={`Versão ${comprovante.versao_numero}`} />
       </div>
 
-      <div className="mt-7">
+      <div className="mt-7 space-y-3">
         <BaixarPdf
           url={pdfUrl ?? comprovante.pdf_url ?? undefined}
           pedindo={pedindoPdf}
           erro={erroDoPdf}
           aoPedir={aoPedirPdf}
         />
+        {/* O link vem no próprio comprovante (`RespostaConcluir`), então quem
+            acabou de aceitar já tem o cadastro a um toque. Sem link a peça não
+            desenha nada — o espaçamento é do `space-y`, que também some. */}
+        <CadastroOficial url={comprovante.invite_plataforma} />
       </div>
 
       <div className="mt-6">

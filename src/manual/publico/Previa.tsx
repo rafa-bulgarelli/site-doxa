@@ -91,7 +91,12 @@ function FaixaDePrevia({
     <div className="fixed inset-x-0 bottom-0 z-50 border-t border-white/[0.14] bg-doxa-bg/95 px-5 py-3 backdrop-blur">
       <div className="mx-auto flex w-full max-w-2xl flex-wrap items-center justify-between gap-3">
         <p className="text-[14px] leading-[1.4] text-white/55">
-          <span className="mr-2 rounded-full border border-white/25 px-2.5 py-1 uppercase tracking-[0.16em] text-white/80">
+          {/* A classe que forçava caixa alta saiu com a troca de tipografia do
+              fluxo. O TEXTO continua escrito em caixa alta no código porque
+              aqui ele não é título e sim tarja de aviso da EQUIPE — é a
+              etiqueta que impede alguém de confundir a prévia com o manual do
+              cliente, e é ela que `admin/previa.test.tsx` cobra por nome. */}
+          <span className="mr-2 rounded-full border border-white/25 px-2.5 py-1 font-serif tracking-[0.16em] text-white/80">
             PRÉVIA
           </span>
           nada aqui é gravado
