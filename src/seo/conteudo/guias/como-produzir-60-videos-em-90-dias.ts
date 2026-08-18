@@ -39,7 +39,7 @@ export const pagina: Pagina = {
     'Sessenta vídeos em noventa dias dá cerca de um por dia útil. A aritmética do trimestre, as quatro fases, o que se grava em lote e onde o plano quebra.',
   h1: 'Como produzir 60 vídeos em 90 dias',
   resumo:
-    'Sessenta vídeos em noventa dias corridos dá pouco mais de um por dia útil, com alguns dias de folga — e a parte difícil não é gravar, é manter a fila cheia na semana em que tudo aperta. Abaixo, a conta do trimestre, as quatro fases em que ele se divide, o que se produz em lote e os três pontos em que o plano costuma quebrar.',
+    'Sessenta vídeos em noventa dias corridos dá cerca de um por dia útil, com dois ou três dias de folga — e a parte difícil não é gravar, é manter a fila cheia na semana em que tudo aperta. Abaixo, a conta do trimestre, as quatro fases em que ele se divide, o que se produz em lote e os três pontos em que o plano costuma quebrar.',
   intencao: 'informacional',
   palavrasChave: [
     'como produzir 60 vídeos em 90 dias',
@@ -76,7 +76,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'A consequência dessa conta é a única coisa que precisa ficar clara antes de começar: **o trimestre não é um esforço, é uma linha de produção**. Ninguém sustenta sessenta gravações separadas em treze semanas. Quem chega ao fim produziu em lote, publicou no varejo, e nunca dependeu de ter uma ideia boa na terça para publicar na terça.',
+        'A consequência dessa conta precisa ficar clara antes de começar: **o trimestre não é um esforço, é uma linha de produção**. Sustentar sessenta gravações separadas em treze semanas é raro, e caro quando acontece. Quem chega ao fim produziu em lote e publicou no varejo — a rotina semanal que sai desse desenho está em [como postar todos os dias sem equipe](/guias/como-postar-todos-os-dias-sem-equipe).',
     },
     {
       tipo: 'titulo',
@@ -99,7 +99,7 @@ export const pagina: Pagina = {
         {
           titulo: 'Semanas 5 a 9 — profundidade',
           texto:
-            'Com quatro semanas no ar, já dá para ver o que a sua audiência assiste até o fim. Aqui o trabalho é o oposto do anterior: escolher dois formatos e um par de famílias de assunto e produzir variações densas em cima deles. É a fase que produz os melhores resultados do trimestre, e é a mais chata de executar.',
+            'Com quatro semanas no ar, já dá para ver o que a sua audiência assiste até o fim. Aqui o trabalho é o oposto do anterior: escolher dois formatos e um par de famílias de assunto e produzir variações densas em cima deles. Costuma ser a fase que rende mais no trimestre, e é a mais chata de executar.',
         },
         {
           titulo: 'Semanas 10 a 13 — consolidação',
@@ -144,7 +144,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'Um trimestre de sessenta vídeos não se mede pelo que já foi publicado, e sim por quantos dias de publicação existem prontos na pasta. Enquanto houver duas semanas de folga, um imprevisto vira atraso de gravação; quando a folga chega a zero, o mesmo imprevisto vira buraco no feed — e é o buraco que derruba o trimestre, não o imprevisto.',
+        'Um trimestre de sessenta vídeos não se mede pelo que já foi publicado, e sim por quantos dias de publicação existem prontos na pasta. Essa folga é o amortecedor do plano, e ela tem um tamanho recomendável: duas semanas. Abaixo disso, o trimestre passa a depender de nada dar errado — e treze semanas são tempo demais para essa aposta.',
     },
     {
       tipo: 'paragrafo',
@@ -241,8 +241,9 @@ export const pagina: Pagina = {
  * [x] 11. CTA único, no fim, pelo campo `cta`.
  * [x] 12. Sem stuffing: a keyword aparece no título, no resumo e onde a frase
  *          pede.
- * [x] 13. Vocabulário do dono: "conteúdos únicos", "dia útil", "views somadas"
- *          nas três redes, "auditoria estratégica".
+ * [x] 13. Vocabulário do dono: "conteúdos únicos", "dia útil", "pronto para
+ *          postar", "auditoria estratégica". (A página NÃO usa "views somadas":
+ *          ela fala de volume e cadência, não da meta.)
  * [x] 14. Teste final (§45): sim — é o plano que eu escreveria num guardanapo
  *          para alguém que me perguntasse por onde começar um trimestre.
  * ────────────────────────────────────────────────────────────────────────── */
