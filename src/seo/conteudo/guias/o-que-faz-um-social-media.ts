@@ -289,13 +289,13 @@ export const pagina: Pagina = {
  * [x]  7. Incremental: as cinco frentes da semana, as quatro que ficam de fora,
  *          a tabela por frente de trabalho, o diagnóstico de uma pergunta e as
  *          cinco perguntas de entrevista.
- * [x]  8. title (49 caracteres), description (150) e H1 exclusivos; H2 em
+ * [x]  8. title (49 caracteres), description (149) e H1 exclusivos; H2 em
  *          hierarquia real; nenhuma célula repetida na mesma linha da tabela.
- * [x]  9. Hub /guias/marketing-organico; seis links contextuais, cada um no
- *          ponto em que a dúvida aparece.
+ * [x]  9. Hub /guias/marketing-organico; cinco links contextuais no corpo,
+ *          cada um no ponto em que a dúvida aparece.
  * [x] 10. Não é comparativo, mas a tabela é imparcial: as três saídas têm o que
  *          trava primeiro, inclusive a de terceirizar.
- * [x] 11. CTA único, no fecho, condicionado a a cadeira já ter dono.
+ * [x] 11. CTA único, no fecho, condicionado à cadeira já ter dono.
  * [x] 12. Sem stuffing: "social media" aparece onde a frase pedia.
  * [x] 13. Vocabulário do dono: "pronto para postar", "vertical", "legendado",
  *          "em escala", "auditoria estratégica".
