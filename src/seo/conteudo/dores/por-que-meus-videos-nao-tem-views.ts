@@ -133,7 +133,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'Ninguém está rolando o feed procurando saber que a sua empresa completou doze anos. O vídeo que funciona começa por algo que a pessoa reconhece como dela — uma dúvida, um erro comum, um resultado inesperado — e só depois, se couber, chega à marca. A prova disso é fácil de ver nos seus próprios números: os vídeos institucionais quase sempre são os de pior desempenho do perfil.',
+        'Ninguém está rolando o feed procurando saber que a sua empresa completou doze anos. O vídeo que funciona começa por algo que a pessoa reconhece como dela — uma dúvida, um erro comum, um resultado inesperado — e só depois, se couber, chega à marca. Confira nos seus números: os institucionais costumam ficar entre os de pior desempenho do perfil.',
     },
     {
       tipo: 'paragrafo',
