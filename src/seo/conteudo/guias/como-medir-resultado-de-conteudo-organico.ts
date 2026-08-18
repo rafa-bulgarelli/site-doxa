@@ -128,7 +128,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'A regra que sustenta esse calendário é não deixar uma leitura invadir a outra. Tomar decisão de trimestre com dado de semana é o erro mais comum e o mais caro — é ele que faz gente trocar de estratégia toda segunda-feira e nunca terminar um teste.',
+        'A regra que sustenta esse calendário é não deixar uma leitura invadir a outra: cada janela responde as perguntas do próprio tamanho. Decisão de trimestre tomada com dado de semana é o erro mais caro da lista, porque ele não parece erro — parece agilidade.',
     },
     {
       tipo: 'titulo',
@@ -153,7 +153,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'Cada rede conta visualização com o próprio critério, então comparar o número de uma com o da outra mede a rede, não o vídeo. Some para saber o tamanho da operação; separe para saber o que a peça fez. O detalhe de como publicar a mesma peça nas três está em [como usar o mesmo vídeo nas três redes](/guias/como-usar-o-mesmo-video-nas-tres-redes).',
+        'Cada rede conta visualização com o próprio critério e entrega a um público diferente, então comparar o número de uma com o da outra mede a rede, não o vídeo. A soma serve para dimensionar a operação; o número separado serve para saber em que rede aquele assunto pegou. Como publicar a mesma peça nas três sem estragar o arquivo está em [como usar o mesmo vídeo nas três redes](/guias/como-usar-o-mesmo-video-nas-tres-redes).',
     },
     {
       tipo: 'titulo',
@@ -163,13 +163,13 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'Aqui vale a honestidade que quase nenhum relatório tem: conteúdo orgânico não entrega atribuição limpa. A pessoa vê três vídeos em semanas diferentes, procura a marca pelo nome dias depois e chega pelo site. Nenhum painel de rede social vai conseguir ligar essa venda àquele vídeo, e insistir em fazê-lo produz número inventado com cara de rigor.',
+        'Aqui vale a honestidade que poucos relatórios têm: conteúdo orgânico não entrega atribuição limpa. A pessoa vê três vídeos em semanas diferentes, procura a marca pelo nome dias depois e chega pelo site. Nenhum painel de rede social vai conseguir ligar essa venda àquele vídeo, e insistir em fazê-lo produz número inventado com cara de rigor.',
     },
     {
       tipo: 'lista',
       itens: [
         'Pergunte "como você chegou até a gente?" em todo primeiro contato, e registre a resposta em texto livre.',
-        'Acompanhe as buscas pelo nome da marca ao longo dos meses: é o sinal indireto mais confiável que existe.',
+        'Acompanhe as buscas pelo nome da marca ao longo dos meses: é o sinal indireto mais confiável de que se dispõe.',
         'Compare o volume de conversas iniciadas antes e depois do trimestre, e não vídeo a vídeo.',
         'Trate o conteúdo como canal de demanda, não como fechamento: ele gera conversa, quem fecha é o time comercial.',
       ],
