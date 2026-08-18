@@ -91,7 +91,7 @@ export const pagina: Pagina = {
       tipo: 'destaque',
       variante: 'atencao',
       texto:
-        'Nenhuma operação séria promete que um vídeo específico vai viralizar — a Doxa não promete, e ninguém deveria. O que se constrói é volume, dado e teste suficientes para aumentar as chances de alcançar grandes audiências.',
+        'Nenhuma operação séria promete que um vídeo específico vai viralizar. O que se constrói é volume, dado e teste suficientes para aumentar as chances de alcançar grandes audiências.',
     },
     {
       tipo: 'titulo',
@@ -178,9 +178,9 @@ export const pagina: Pagina = {
       tipo: 'lista',
       itens: [
         '**Comprar seguidores, curtidas, views ou comentários.** Além de contaminar a leitura do que funciona, engajamento artificial pode gerar penalização das redes — o vídeo passa a ser medido por uma audiência que nunca ia assisti-lo até o fim.',
-        '**Impulsionar as publicações do perfil onde o trabalho orgânico está rodando.** É a regra que a Doxa impõe a quem contrata: nos perfis com a estratégia ativa, nada é impulsionado, turbinado ou promovido. Sem isso não há como saber se o alcance veio do conteúdo ou da verba.',
+        '**Impulsionar as publicações do perfil onde o trabalho orgânico está rodando.** É regra de operação orgânica: no perfil em que a estratégia está ativa, nada é impulsionado, turbinado ou promovido. Sem isso não há como saber se o alcance veio do conteúdo ou da verba.',
         '**Limitar ou desativar comentários.** Comentário é sinal de distribuição e é a única leitura gratuita do que a audiência entendeu. Apagar o ofensivo é diferente de fechar a porta.',
-        '**Reeditar o vídeo depois de pronto.** Trocar corte, duração, música, legenda ou capa a cada publicação transforma cada peça num experimento diferente, e nenhum aprendizado se acumula. Na operação da Doxa isso vira uma regra de três palavras: baixou, publicou.',
+        '**Reeditar o vídeo depois de pronto.** Trocar corte, duração, música, legenda ou capa a cada publicação transforma cada peça num experimento diferente, e nenhum aprendizado se acumula. A regra prática cabe em três palavras: baixou, publicou.',
       ],
     },
     {
@@ -191,7 +191,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'Não existe número mágico, mas existe uma referência publicada: a operação da Doxa trabalha com **60 conteúdos únicos em 90 dias**, um por dia útil, publicados no TikTok, no Instagram e no YouTube Shorts — o mesmo arquivo, no mesmo dia, nas três redes. É o volume desenhado para que os testes gerem dado antes de o trimestre acabar, e vale como régua de grandeza mesmo para quem produz por conta própria.',
+        'Não existe número mágico, mas a régua da seção anterior dá a grandeza: **um vídeo por dia útil, sustentado por um trimestre** — o que dá algo em torno de sessenta peças. É volume desenhado para que os testes gerem dado antes de o trimestre acabar, e serve de referência mesmo para quem produz por conta própria.',
     },
     {
       tipo: 'paragrafo',
@@ -215,22 +215,22 @@ export const pagina: Pagina = {
         {
           pergunta: 'Quantos vídeos preciso publicar para viralizar no TikTok?',
           resposta:
-            'Não há número que garanta viralização, e quem afirma um está vendendo. O que o volume compra é dado: quanto mais vídeos publicados com constância, mais rápido fica claro qual hook, qual tema e qual formato a sua audiência assiste até o fim. Uma referência de grandeza usada em operação profissional é 60 conteúdos em 90 dias, um por dia útil.',
+            'Não há número que garanta viralização, e quem afirma um está vendendo. O que o volume compra é dado: quanto mais vídeos publicados com constância, mais rápido fica claro qual hook, qual tema e qual formato a sua audiência assiste até o fim. A régua de grandeza que esta página usa é um vídeo por dia útil, sustentado por um trimestre.',
         },
         {
           pergunta: 'Postar mais de uma vez por dia acelera o crescimento?',
           resposta:
-            'Costuma fazer o contrário. A distribuição de um vídeo continua por horas depois da publicação, e o vídeo seguinte é oferecido à mesma audiência que ainda estava recebendo o anterior. O intervalo de 24 horas de relógio entre publicações preserva o alcance do vídeo que já está rodando.',
+            'Costuma fazer o contrário. A distribuição de um vídeo continua por horas depois da publicação, e o vídeo seguinte é oferecido à mesma audiência que ainda estava recebendo o anterior — é a leitura que a Doxa aplica na rotina de quem contrata, e que sustenta o intervalo de 24 horas de relógio entre publicações.',
         },
         {
-          pergunta: 'Impulsionar o vídeo ajuda a viralizar depois?',
+          pergunta: 'Devo apagar os vídeos que foram mal?',
           resposta:
-            'Impulsionamento entrega o vídeo a quem foi comprado, não a quem a plataforma escolheu — e, com isso, você perde a única informação que interessava: se o conteúdo se sustenta sozinho. Em perfis com estratégia orgânica ativa a recomendação é não impulsionar nada, inclusive publicações que não fazem parte da estratégia.',
+            'Apagar não devolve o alcance do que já passou e tira de você a única base de comparação existente: o registro do que foi testado. Se o vídeo tem erro de fato, de marca ou de informação, apague sem pensar; se ele tem só poucas visualizações, ele é dado — e é dele que sai a resposta sobre o que a sua audiência não quis assistir.',
         },
         {
-          pergunta: 'Preciso aparecer em vídeo para crescer no TikTok?',
+          pergunta: 'Um vídeo foi bem. Repito o formato ou mudo de assunto?',
           resposta:
-            'Rosto humano ajuda a segurar os primeiros segundos, mas não é a única forma de fazer isso: demonstração de produto, tela, mão em cena, texto com ritmo e narração funcionam. Quando a limitação é a gravação em si, existem caminhos de produção que não passam por marcar uma diária — é o assunto de vídeo com IA e produção tradicional.',
+            'Repetir o formato com outro assunto é o teste que separa as duas hipóteses: se o segundo também vai bem, o ganho era do formato; se não vai, era do tema. Mudar formato e tema ao mesmo tempo apaga a informação e devolve você ao ponto de partida, com um vídeo a mais publicado e nada aprendido.',
         },
       ],
     },
@@ -266,6 +266,9 @@ export const pagina: Pagina = {
  *          "Viralizar" é palavra deste guia; "algoritmo" é do verbete.
  * [x]  7. Informação incremental: a cadência de 24 horas de relógio, com o
  *          exemplo da segunda às 22h, e os quatro erros que derrubam alcance.
+ *          Esta página é a DONA do bloco de cadência: as outras resumem e
+ *          linkam. A FAQ de impulsionamento é de /comparativos/organico-vs-pago
+ *          e a de "preciso aparecer" é do guia de vídeos curtos.
  * [x]  8. title exclusivo e orientado a intenção, description de 120–160
  *          caracteres, H1 único, H2 em hierarquia real.
  * [x]  9. Pertence ao hub de TikTok, envia links contextuais (verbetes, guia de

@@ -145,7 +145,7 @@ export const pagina: Pagina = {
       tipo: 'lista',
       itens: [
         '**Vertical e no formato do feed.** É o enquadramento que a rede entrega em tela cheia; qualquer coisa horizontal reduzida no meio da tela já começa perdendo.',
-        '**Legendado.** Boa parte da audiência assiste sem som, e a legenda também sustenta o ritmo — a palavra aparece junto com o corte.',
+        '**Legendado.** Trate o som como opcional: a peça precisa se sustentar com ele desligado, porque o feed é consumido tanto em lugar público quanto em casa. A legenda ainda sustenta o ritmo — a palavra aparece junto com o corte.',
         '**Cortes que acompanham a fala.** Silêncio, respiração e correção de frase saem na edição. Não é pressa: é retirar o que não carrega informação.',
         '**Capa coerente com o hook.** A capa é o hook de quem chega pelo perfil, e ela não pode prometer outra coisa.',
         '**Um arquivo por peça.** Cada vídeo é único — roteiro, voz, edição e capa próprios. Reaproveitar o mesmo corte com legenda trocada é o caminho mais rápido para o perfil parecer um catálogo.',

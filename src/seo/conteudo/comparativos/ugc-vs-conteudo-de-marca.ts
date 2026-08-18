@@ -113,7 +113,7 @@ export const pagina: Pagina = {
       tipo: 'lista',
       itens: [
         '**Venda que depende de confiança na empresa.** Serviço, consultoria, saúde, direito, educação, B2B: quem compra quer saber quem está do outro lado.',
-        '**Explicação que exige precisão.** Regra, prazo, condição, dado técnico. Um criador contratado não domina o assunto, e o erro é caro.',
+        '**Explicação que exige precisão.** Regra, prazo, condição, dado técnico. Um criador contratado dificilmente domina o assunto na profundidade necessária, e o erro é caro.',
         '**Rotina de publicação.** Perfil que publica todo dia útil não se sustenta com campanha: precisa de fila de conteúdo e de processo.',
         '**Posicionamento.** Ser lembrado por uma ideia específica exige repetir a mesma ideia com variação, coisa que só quem é dono do discurso faz.',
         '**Uso longo do material.** Peça própria pode ser reeditada, republicada e reaproveitada por anos, sem renegociar direito de imagem.',
@@ -123,7 +123,7 @@ export const pagina: Pagina = {
       tipo: 'destaque',
       variante: 'nota',
       texto:
-        'A resposta depende de onde está o gargalo da sua venda. Se o obstáculo é desconfiança de quem nunca comprou, UGC resolve antes. Se o obstáculo é não ser conhecido nem lembrado, conteúdo de marca resolve — e demora mais. Empresas que fazem os dois usam o segundo como base e o primeiro como campanha, não o contrário.',
+        'A resposta depende de onde está o gargalo da sua venda. Se o obstáculo é desconfiança de quem nunca comprou, UGC resolve antes. Se o obstáculo é não ser conhecido nem lembrado, conteúdo de marca resolve — e demora mais. Fazer os dois é possível, e a ordem tem consequência: o conteúdo de marca é o que sustenta a rotina do perfil, e o UGC entra como campanha em cima dela — no arranjo inverso, o perfil fica vazio no dia em que a campanha termina.',
     },
     {
       tipo: 'titulo',

@@ -199,7 +199,7 @@ export const pagina: Pagina = {
         {
           pergunta: 'Dá para usar os dois no mesmo perfil?',
           resposta:
-            'Dá, e é o arranjo mais comum. O material captado — produto, ambiente, equipe, cliente — entra como apoio nas peças geradas, e a rotina de publicação deixa de depender de novas gravações. O que precisa ser combinado é o padrão visual, para que as duas origens não pareçam dois perfis diferentes.',
+            'Dá, e tende a ser o arranjo mais estável. O material captado — produto, ambiente, equipe, cliente — entra como apoio nas peças geradas, e a rotina de publicação deixa de depender de novas gravações. O que precisa ser combinado é o padrão visual, para que as duas origens não pareçam dois perfis diferentes.',
         },
         {
           pergunta: 'Vídeo com IA funciona para produto físico?',
@@ -209,7 +209,7 @@ export const pagina: Pagina = {
         {
           pergunta: 'Preciso demitir a equipe de conteúdo para fazer essa troca?',
           resposta:
-            'A troca é de gargalo, não de gente. O que a geração elimina é a dependência da captação a cada peça; o que continua sendo trabalho humano é decidir o assunto, escrever, ler dados e escolher o que produzir em seguida. Times que fizeram a mudança costumam publicar mais com o mesmo número de pessoas, não com menos.',
+            'A troca é de gargalo, não de gente. O que a geração elimina é a dependência da captação a cada peça; o que continua sendo trabalho humano é decidir o assunto, escrever, ler dados e escolher o que produzir em seguida. Por isso a troca costuma ser avaliada errado quando entra na planilha como corte de pessoal: o que ela libera é o tempo que ia para a captação, e tempo liberado só vira resultado se for gasto em decisão.',
         },
       ],
     },

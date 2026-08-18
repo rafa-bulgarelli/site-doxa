@@ -12,7 +12,12 @@ import type { Pagina } from '../../tipos';
  *    distribuição) e o custo de R$ 8.000 a R$ 10.500 por mês → fonte:
  *    `docs/seo/source-of-truth.md` §4 (`src/components/comparacao/config.ts:44-70,100-101`).
  *    O arquivo de origem avisa que a lista é ILUSTRAÇÃO do que uma operação
- *    interna acumula, não levantamento de mercado — a página escreve isso;
+ *    interna acumula, não levantamento de mercado — a página escreve isso.
+ *    ATENÇÃO registrada pelo gate: a faixa soma produção E distribuição
+ *    (agência, gestor de tráfego, verba) — `src/components/semcom/config.ts:22`
+ *    e `public/llms.txt:11-15`. Por isso a lista aqui inclui a distribuição e a
+ *    página diz que a faixa é da operação completa: creditar o total só ao
+ *    lado "equipe interna" infla um dos lados desta comparação;
  *  · 18 dias até o primeiro vídeo pelo jeito antigo → fonte: §4
  *    (`src/components/semcom/config.ts:26`);
  *  · a Doxa não é agência: não há equipe de gravação, estúdio nem calendário
@@ -72,7 +77,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'Vale também desfazer uma confusão comum: **agência não é sinônimo de produção**. Boa parte das agências entrega estratégia, planejamento e gestão, e subcontrata a produção do vídeo. Se o gargalo da empresa é ter o que publicar amanhã, contratar planejamento resolve o item errado da lista.',
+        'Vale também desfazer uma confusão comum: **agência não é sinônimo de produção**. Boa parte das agências entrega estratégia, planejamento e gestão, e costuma subcontratar a produção do vídeo. Se o gargalo da empresa é ter o que publicar amanhã, contratar planejamento resolve o item errado da lista.',
     },
     {
       tipo: 'titulo',
@@ -101,12 +106,17 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'A conta que costuma faltar na planilha é a do que uma operação de vídeo acumula por dentro. Como ilustração — e é ilustração, não pesquisa de mercado —, uma operação montada em casa reúne algo em torno de 25 itens: video maker, roteirista, editor, social media e diretor de criação; câmera, lentes, tripé, microfone, estabilizador e cartões; estúdio, iluminação, cenário e horas de gravação; ilha e licença de edição, banco de trilhas, banco de imagens e legendagem; além de calendário editorial e relatórios. Somado, isso costuma custar de **R$ 8.000 a R$ 10.500 por mês**.',
+        'A conta que costuma faltar na planilha é a do que uma operação de vídeo acumula. Como ilustração — e é ilustração, não pesquisa de mercado —, o inventário do "jeito antigo" publicado pela Doxa reúne cerca de 25 itens: video maker, roteirista, editor, social media e diretor de criação; câmera, lentes, tripé, microfone, estabilizador e cartões; estúdio, iluminação, cenário e horas de gravação; ilha e licença de edição, banco de trilhas, banco de imagens e legendagem; e, na ponta da distribuição, uma agência, um gestor de tráfego, verba de tráfego pago, calendário editorial e relatórios. Somado, isso custa de **R$ 8.000 a R$ 10.500 por mês**.',
     },
     {
       tipo: 'paragrafo',
       texto:
-        'Há ainda o custo de calendário. Pelo caminho tradicional, uma peça passa por briefing, roteiro, aprovação, agenda, estúdio, filmmaker, captação, edição e publicação — e o primeiro vídeo leva cerca de **18 dias** para ir ao ar. Nenhuma dessas etapas é supérflua; o problema é que todas se repetem a cada peça, e é isso que trava o volume.',
+        'Repare no que a faixa cobre: a **operação completa**, produção por dentro e distribuição terceirizada juntas — a agência e o gestor de tráfego estão na mesma soma. Ou seja, não é o preço de montar só o time interno, nem o de contratar só uma agência: é o que a empresa gasta quando decide ter os dois, que costuma ser o cenário de quem chega a esta comparação. Comparar a faixa inteira contra uma proposta de agência sozinha infla um dos lados.',
+    },
+    {
+      tipo: 'paragrafo',
+      texto:
+        'Há ainda o custo de calendário. Pelo caminho tradicional, uma peça passa por briefing, roteiro, aprovação, agenda, estúdio, filmmaker, captação, edição e publicação — e o primeiro vídeo leva **18 dias** para ir ao ar. Nenhuma dessas etapas é supérflua; o problema é que todas se repetem a cada peça, e é isso que trava o volume.',
     },
     {
       tipo: 'titulo',
@@ -142,7 +152,7 @@ export const pagina: Pagina = {
       tipo: 'destaque',
       variante: 'nota',
       texto:
-        'A resposta depende de qual escassez dói mais. Falta de repertório e de mão de obra pede agência; falta de contexto e de velocidade pede time interno. Se as duas doem ao mesmo tempo, a decisão não é entre as duas colunas: é reconhecer que o gargalo é produção, e produção pode ser resolvida sem montar nenhuma das duas estruturas.',
+        'A resposta depende de qual escassez dói mais. Falta de repertório e de mão de obra pede agência; falta de contexto e de velocidade pede time interno. Se as duas doem ao mesmo tempo, o critério de desempate costuma ser o prazo: a agência entrega antes, o time interno acumula depois.',
     },
     {
       tipo: 'titulo',
@@ -163,7 +173,7 @@ export const pagina: Pagina = {
       tipo: 'destaque',
       variante: 'doxa',
       texto:
-        'Existe um terceiro arranjo, e a Doxa é ele: não é agência — não há equipe de gravação, estúdio nem calendário editorial do lado do cliente — e também não substitui o time interno. O que ela entrega é o vídeo pronto para postar, vertical e legendado; quem publica, responde e conduz a estratégia continua sendo a empresa. Serve quando o gargalo é volume de produção, e não falta de plano.',
+        'Existe um terceiro arranjo, e a Doxa é ele: não é agência — não há equipe de gravação, estúdio nem calendário editorial do lado do cliente — e também não substitui o time interno. O que ela entrega é o vídeo pronto para postar, vertical e legendado; quem publica e responde a audiência continua sendo a empresa, e a estratégia e a análise dos resultados são feitas junto — mapeadas no onboarding e acompanhadas ao longo da operação.',
     },
     {
       tipo: 'titulo',

@@ -201,12 +201,12 @@ export const pagina: Pagina = {
         {
           pergunta: 'Dá para fazer os dois ao mesmo tempo?',
           resposta:
-            'Dá, e é o arranjo mais comum em empresas que já vendem. O cuidado é não medir os dois no mesmo lugar: se a publicação orgânica for impulsionada, o número deixa de dizer se o conteúdo funciona. Separar os perfis, ou ao menos separar os relatórios, preserva as duas leituras.',
+            'Dá, e costuma ser o arranjo das empresas que já vendem. O cuidado é não medir os dois no mesmo lugar: se a publicação orgânica for impulsionada, o número deixa de dizer se o conteúdo funciona. Separar os perfis, ou ao menos separar os relatórios, preserva as duas leituras.',
         },
         {
           pergunta: 'Quanto tempo o orgânico leva para dar resultado?',
           resposta:
-            'Não há prazo que se possa prometer, e quem promete está vendendo. O que dá para dizer é o que encurta o caminho: volume de publicação com constância, uma ideia por vídeo e intervalo suficiente entre as peças para que uma não atrapalhe a outra. Sem volume, o prazo não é longo — é indefinido.',
+            'Prazo para um perfil específico ninguém pode prometer: ele depende do assunto, do histórico da conta e do volume que a empresa sustenta. O que dá para dizer é o que encurta o caminho: volume de publicação com constância, uma ideia por vídeo e intervalo suficiente entre as peças para que uma não atrapalhe a outra. Sem volume, o prazo não é longo — é indefinido.',
         },
         {
           pergunta: 'Impulsionar um vídeo que foi bem organicamente ajuda?',

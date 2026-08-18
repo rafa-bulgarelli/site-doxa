@@ -34,7 +34,7 @@ export const pagina: Pagina = {
   slug: 'o-que-e-ugc',
   titulo: 'O que é UGC e por que a sigla virou duas coisas',
   descricao:
-    'UGC começou como conteúdo espontâneo de usuário e virou também um formato pago com estética caseira. Os dois sentidos, o que muda no contrato e nos direitos.',
+    'UGC começou como conteúdo espontâneo de usuário e virou também um formato pago com estética caseira. Os dois sentidos da sigla, e como distinguir na prática.',
   h1: 'O que é UGC',
   resumo:
     'UGC é a sigla de user generated content — conteúdo gerado pelo usuário — e hoje ela nomeia duas coisas diferentes: o conteúdo espontâneo que um cliente publica por vontade própria e o conteúdo pago que um criador produz para a marca usar, com aparência de vídeo caseiro. Confundir os dois é o que faz uma campanha inteira sair errada, porque o valor de cada um vem de lugares opostos.',
@@ -102,22 +102,9 @@ export const pagina: Pagina = {
       ],
     },
     {
-      tipo: 'titulo',
-      nivel: 2,
-      texto: 'O que precisa estar no contrato',
-    },
-    {
       tipo: 'paragrafo',
       texto:
-        'A parte que mais gera problema em campanha com criador não é criativa, é contratual. Três pontos costumam ser esquecidos e resolvidos tarde:',
-    },
-    {
-      tipo: 'lista',
-      itens: [
-        '**Cessão de uso e prazo.** O vídeo entregue pode ser usado por quanto tempo, em quais canais e em anúncio pago? Uso ilimitado e uso por noventa dias não custam a mesma coisa e não deveriam ser tratados como se custassem.',
-        '**Imagem e voz da pessoa.** O criador aparece no vídeo, e a autorização de imagem é separada da entrega do arquivo. Sem ela, a marca tem um vídeo que não pode veicular.',
-        '**Exclusividade.** O mesmo criador pode gravar para um concorrente na semana seguinte? Se a resposta importa, ela precisa estar escrita.',
-      ],
+        'Sendo uma contratação, ela vem com contrato — cessão de uso com prazo e canal, autorização de imagem e voz, exclusividade quando ela importa. O que cada um desses pontos custa quando é esquecido está em [UGC ou conteúdo de marca](/comparativos/ugc-vs-conteudo-de-marca).',
     },
     {
       tipo: 'destaque',
@@ -128,22 +115,36 @@ export const pagina: Pagina = {
     {
       tipo: 'titulo',
       nivel: 2,
-      texto: 'O que UGC resolve — e o que ele não resolve',
+      texto: 'De onde veio a sigla, e por que ela mudou de sentido',
     },
     {
       tipo: 'paragrafo',
       texto:
-        'Resolve credibilidade e resolve variedade de rosto: cinco criadores diferentes dizendo a mesma coisa em cinco casas diferentes rendem cinco criativos que não parecem a mesma peça. Por isso o formato encontrou lugar natural em campanha de performance, em que a fadiga de criativo é um problema mensurável.',
+        'A expressão user generated content nasceu para descrever o que a internet passou a produzir quando publicar deixou de exigir permissão: avaliação de produto, comentário em fórum, foto enviada por leitor, vídeo caseiro. Ela servia para separar o que a empresa publicava do que o público publicava, e a fronteira era fácil de ver — a diferença de acabamento entre um e outro saltava aos olhos.',
     },
     {
       tipo: 'paragrafo',
       texto:
-        'O que ele **não** resolve é a operação de conteúdo do perfil da marca. Uma campanha com criadores tem começo, meio e fim; o perfil da empresa precisa publicar depois que a campanha termina. Também não resolve consistência de discurso — cada criador escreve do jeito dele, e o repertório da marca não se acumula em lugar nenhum. E não resolve custo por peça em volume alto: o preço é por vídeo, e ele não cai porque você pediu mais.',
+        'Foi essa fronteira que o vídeo vertical apagou. Quando o formato dominante do feed passou a ser alguém falando com o celular na mão, a estética caseira virou o padrão de tudo — inclusive do que é pago. "Parecer conteúdo de usuário" deixou de ser consequência de quem gravou e passou a ser uma decisão de linguagem, que qualquer marca pode encomendar. A sigla ficou com dois sentidos porque o mercado precisou de nome para a encomenda e usou o que já tinha à mão.',
+    },
+    {
+      tipo: 'titulo',
+      nivel: 2,
+      texto: 'Como saber de qual dos dois a pessoa está falando',
+    },
+    {
+      tipo: 'lista',
+      itens: [
+        '**"Vamos contratar UGC para a campanha."** Produção encomendada. Há briefing, prazo e pagamento, e a peça vai ao ar nos canais de quem contratou.',
+        '**"O UGC da marca cresceu neste mês."** Conteúdo espontâneo. Está se falando de menção, avaliação e vídeo de cliente — coisa que não se contrata, só se estimula.',
+        '**"Ela é criadora de UGC."** Prestação de serviço de produção. Não é sinônimo de influenciadora: a diferença está em quem publica e no que está sendo comprado.',
+        '**"Vamos usar UGC no anúncio."** Quase sempre o primeiro sentido: peça encomendada, veiculada como mídia paga — e, sendo anúncio, sinalizada como tal.',
+      ],
     },
     {
       tipo: 'paragrafo',
       texto:
-        'A decisão entre os dois caminhos, com os critérios lado a lado, está em [UGC ou conteúdo de marca](/comparativos/ugc-vs-conteudo-de-marca).',
+        'Cada um dos dois sentidos serve a uma coisa diferente, e escolher entre contratar criadores ou produzir no próprio perfil é outra conversa — com critérios, custo por peça e direito de uso lado a lado — que está inteira em [UGC ou conteúdo de marca](/comparativos/ugc-vs-conteudo-de-marca).',
     },
     {
       tipo: 'titulo',
@@ -174,7 +175,7 @@ export const pagina: Pagina = {
         {
           pergunta: 'Criador de UGC precisa ter seguidores?',
           resposta:
-            'Não, e essa é a diferença que define o serviço. O que a marca contrata é a produção do vídeo, não o acesso à audiência de quem gravou — a peça vai ao ar nos canais da marca. Quem cobra por audiência está vendendo outro serviço, e a conta é outra.',
+            'Seguidores não entram na conta desse serviço, e é isso que o define: o que a marca contrata é a produção do vídeo, não o acesso à audiência de quem gravou — a peça vai ao ar nos canais da marca. Quem cobra por audiência está vendendo outra coisa, e a negociação é outra.',
         },
         {
           pergunta: 'Posso republicar no perfil da empresa o vídeo que um cliente postou?',
@@ -182,14 +183,14 @@ export const pagina: Pagina = {
             'Só com autorização de quem publicou. A postagem ser pública não transfere direito de uso, e a imagem da pessoa que aparece continua sendo dela. O caminho seguro é pedir por escrito, combinar onde o vídeo será usado e por quanto tempo, e guardar a resposta.',
         },
         {
-          pergunta: 'UGC funciona melhor do que vídeo produzido pela marca?',
+          pergunta: 'Vídeo de criador precisa ser sinalizado como publicidade?',
           resposta:
-            'Depende do que a peça precisa fazer. Para quebrar desconfiança de quem nunca comprou, a estética de pessoa comum costuma render mais; para explicar um produto complexo, sustentar posicionamento ou publicar todo dia no perfil da empresa, o conteúdo produzido pela marca é mais previsível e mais barato por peça em volume.',
+            'A sinalização acompanha a natureza da peça, não a aparência dela: conteúdo pago veiculado como anúncio ou como publicação patrocinada precisa estar marcado, mesmo quando foi gravado no celular, em casa, sem nada de publicitário na imagem. A estética caseira é uma escolha de linguagem, e ela não muda o que a peça é.',
         },
         {
-          pergunta: 'Dá para montar uma operação só com UGC?',
+          pergunta: 'Quem produz UGC profissionalmente tem um nome?',
           resposta:
-            'Dá para alimentar uma campanha, não uma rotina de publicação. Um perfil que publica com constância precisa de fila de conteúdo, e fila de conteúdo com criadores externos significa briefing, negociação e aprovação a cada peça — o custo de coordenação cresce mais rápido do que o volume.',
+            'O mercado chama de criador de UGC, ou UGC creator, quem grava vídeos com estética de conteúdo caseiro por encomenda de marcas. É uma prestação de serviço de produção, e não uma vaga de influenciador: a entrega é o arquivo, e a publicação acontece nos canais de quem contratou.',
         },
       ],
     },
@@ -217,7 +218,10 @@ export const pagina: Pagina = {
  * [x]  6. Intenção própria: o verbete define em poucas linhas, o comparativo
  *          decide entre formatos, esta página explica os dois sentidos.
  * [x]  7. Informação incremental: a tabela de três colunas separando UGC
- *          espontâneo, criador e influenciador, e os três pontos de contrato.
+ *          espontâneo, criador e influenciador — a separação que a SERP não faz.
+ *          O bloco de contrato e o "resolve/não resolve" pertencem ao
+ *          comparativo (keyword-map: guia = os dois sentidos; comparativo =
+ *          decisão); aqui ficam uma linha e o link.
  * [x]  8. title exclusivo, description 120–160, H1 único, H2 em hierarquia.
  * [x]  9. Hub de vídeos curtos; links para o verbete, o comparativo e a solução
  *          de formato. Nenhum link decorativo.

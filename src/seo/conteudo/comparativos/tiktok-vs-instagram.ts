@@ -127,7 +127,7 @@ export const pagina: Pagina = {
       tipo: 'destaque',
       variante: 'nota',
       texto:
-        'A resposta depende de qual é a sua escassez. Falta gente que conheça a marca: TikTok primeiro. Falta transformar quem já conhece em cliente: Instagram primeiro. Falta as duas coisas — que é o caso mais comum — o TikTok tende a dar sinal antes, e o Instagram precisa existir do mesmo jeito, porque é lá que a compra é conferida.',
+        'A resposta depende de qual é a sua escassez. Falta gente que conheça a marca: TikTok primeiro. Falta transformar quem já conhece em cliente: Instagram primeiro. Falta as duas coisas — que costuma ser o caso — o TikTok tende a dar sinal antes, e o Instagram precisa existir do mesmo jeito, porque é lá que a compra é conferida.',
     },
     {
       tipo: 'titulo',
@@ -137,7 +137,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'A pergunta "qual escolher" costuma nascer de uma premissa errada — a de que publicar nas duas custa o dobro. Não custa: o formato é o mesmo. Um vídeo vertical, legendado, no formato do feed serve às duas redes, e é assim que operações de volume trabalham. Na Doxa, a regra é explícita: o mesmo arquivo, no mesmo dia, nas três redes — Instagram, TikTok e YouTube Shorts.',
+        'A pergunta "qual escolher" costuma nascer de uma premissa errada — a de que publicar nas duas custa o dobro. Não custa: o formato é o mesmo. Um vídeo vertical, legendado, no formato do feed serve às duas redes, e é assim que operações de volume trabalham: uma peça, publicada em todas elas.',
     },
     {
       tipo: 'paragrafo',
@@ -166,7 +166,7 @@ export const pagina: Pagina = {
         {
           pergunta: 'Publicar o mesmo vídeo nas duas redes prejudica o alcance?',
           resposta:
-            'As redes não competem entre si pelo mesmo espectador, e o mesmo arquivo vertical serve às duas. O cuidado é com o selo que uma rede grava no arquivo baixado dela e que aparece na outra, sinal costumeiramente lido como conteúdo reciclado — o caminho é exportar do editor, e não baixar de uma rede para subir na outra.',
+            'Publicar nas duas não derruba uma à outra, e o mesmo arquivo vertical serve às duas. O cuidado é com o selo que uma rede grava no arquivo baixado dela e que aparece na outra, sinal costumeiramente lido como conteúdo reciclado — o caminho é exportar do editor, e não baixar de uma rede para subir na outra.',
         },
         {
           pergunta: 'Por onde começar se só der para manter uma?',
@@ -181,7 +181,7 @@ export const pagina: Pagina = {
         {
           pergunta: 'E o YouTube Shorts, entra nessa conta?',
           resposta:
-            'Entra, e é a rede que mais gente deixa de fora. O mesmo arquivo serve, e o custo de publicar ali é o de mais um upload. Numa operação que já produz vídeo vertical em volume, deixar o Shorts vazio é abrir mão de distribuição que já está paga.',
+            'Entra, e costuma ser a rede que mais gente deixa de fora. O mesmo arquivo serve, e o custo de publicar ali é o de mais um upload. Numa operação que já produz vídeo vertical em volume, deixar o Shorts vazio é abrir mão de distribuição que já está paga.',
         },
       ],
     },

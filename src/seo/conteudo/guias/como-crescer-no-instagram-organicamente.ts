@@ -17,7 +17,9 @@ import type { Pagina } from '../../tipos';
  *  · comentários não devem ser limitados nem desativados; ofensivos podem ser
  *    excluídos → fonte: §8 (card 004, linhas 523-529);
  *  · no máximo um vídeo por dia útil, sem compensar acumulando, com 24 horas de
- *    relógio entre publicações → fonte: §8, regras `RT-2` e `RH-1`;
+ *    relógio entre publicações → fonte: §8, regras `RT-2` e `RH-1`. O bloco
+ *    completo pertence a `/guias/como-viralizar-no-tiktok`: aqui ficam duas
+ *    linhas e o link, para não duplicar a mesma explicação em dois guias;
  *  · de segunda a sexta os únicos vídeos curtos nos perfis participantes são os
  *    da operação; fotos, carrosséis e stories seguem liberados; no fim de semana
  *    o cliente pode publicar vídeos próprios → fonte: §8 (card 004, 445-463);
@@ -119,19 +121,9 @@ export const pagina: Pagina = {
       ],
     },
     {
-      tipo: 'titulo',
-      nivel: 2,
-      texto: 'A cadência: o intervalo entre as publicações',
-    },
-    {
       tipo: 'paragrafo',
       texto:
-        'Dois vídeos publicados com poucas horas de diferença disputam a mesma audiência: a distribuição do primeiro ainda está acontecendo quando o segundo entra. A regra prática que a Doxa escreve no manual de quem contrata é **um vídeo por dia útil**, com 24 horas de relógio entre um e o próximo — publicou segunda às 22h, o próximo sai a partir das 22h de terça —, e nada de compensar um dia parado publicando dois no dia seguinte.',
-    },
-    {
-      tipo: 'paragrafo',
-      texto:
-        'Isso vale para vídeo curto. Foto, carrossel e stories não entram nessa disputa e podem continuar no ritmo que a empresa aguentar. Quem produz por conta própria pode copiar a regra sem nenhuma adaptação: ela protege o alcance do que já está no ar.',
+        'Um aviso de cadência cabe aqui, e o resto dele está em outro lugar: dois vídeos publicados com poucas horas de diferença disputam a mesma audiência, e o intervalo de 24 horas de relógio entre um e o próximo protege o alcance do que ainda está rodando. A regra inteira, com o exemplo e a razão de ela existir, está em [como viralizar no TikTok](/guias/como-viralizar-no-tiktok) — e vale igual aqui, porque a disputa é entre as suas peças, não entre as redes.',
     },
     {
       tipo: 'titulo',
@@ -141,12 +133,16 @@ export const pagina: Pagina = {
     {
       tipo: 'lista',
       itens: [
-        '**Comprar seguidores, curtidas ou visualizações.** Contamina toda a leitura de desempenho, coloca o conteúdo diante de gente que nunca ia assistir e pode gerar penalização das redes. O prejuízo não é o dinheiro gasto: é ficar sem saber o que funciona.',
-        '**Impulsionar a publicação do perfil onde o trabalho orgânico está sendo medido.** Depois disso não há como distinguir o que o conteúdo fez do que a verba fez. Em operação orgânica ativa, nada é impulsionado — inclusive publicações que não fazem parte dela.',
         '**Seguir e deixar de seguir em massa.** Rende número e não rende audiência: quem seguiu de volta por reciprocidade não assiste, e um público que não assiste piora o desempenho de cada vídeo novo.',
-        '**Desativar ou limitar comentários.** É a conversa acontecendo, e ela sinaliza que o conteúdo merece continuar sendo entregue. Excluir comentário ofensivo é diferente de fechar a seção.',
         '**Repostar conteúdo genérico de terceiros.** Enche o calendário e não constrói nada: nada ali é seu, e o perfil vira mural de frases que a audiência já viu em outros dez lugares.',
+        '**Deixar o perfil desatualizado enquanto o alcance cresce.** Descrição antiga, destaques de uma campanha encerrada, link quebrado. É o único atalho desta lista que custa venda no mesmo dia em que um vídeo vai bem.',
+        '**Trocar de assunto toda semana.** Um perfil que fala de tudo não é lembrado por nada, e quem chega pelo vídeo não consegue prever o que vai receber ao seguir.',
       ],
+    },
+    {
+      tipo: 'paragrafo',
+      texto:
+        'Os dois atalhos mais caros não são específicos do Instagram e por isso ficam em outras páginas: comprar engajamento — que contamina a leitura e pode gerar penalização das redes — está entre [os erros que derrubam o alcance de um perfil](/guias/como-viralizar-no-tiktok), e impulsionar a publicação que está sendo medida como orgânica está em [orgânico ou pago](/comparativos/organico-vs-pago).',
     },
     {
       tipo: 'destaque',
@@ -188,24 +184,24 @@ export const pagina: Pagina = {
       tipo: 'faq',
       itens: [
         {
-          pergunta: 'Quantas vezes por semana preciso publicar para crescer?',
+          pergunta: 'Preciso publicar stories todo dia?',
           resposta:
-            'Mais importante do que a frequência é a regularidade: um ritmo que a empresa consegue manter todas as semanas vale mais do que um mês intenso seguido de silêncio. Como referência de operação profissional, um vídeo por dia útil é o ritmo que gera dado suficiente para comparar peças e decidir o que produzir em seguida.',
+            'Stories falam com quem já segue e não são o motor de descoberta do perfil — quem não conhece a marca chega pelo vídeo, não pelo story. Eles servem para manter a relação viva e para testar assunto a custo baixo, e um ritmo diário ali é opcional. O que não pode oscilar é a regularidade do vídeo, que é o que traz gente nova.',
         },
         {
           pergunta: 'Hashtag ainda ajuda a crescer no Instagram?',
           resposta:
-            'Hashtag ajuda a classificar o assunto do conteúdo, e não é ela que decide a entrega — o que decide é o que a audiência faz com o vídeo. Um punhado de termos realmente relacionados ao tema basta; blocos de trinta hashtags genéricas não compram alcance e deixam a legenda pior de ler.',
+            'Hashtag tende a funcionar como classificação do assunto, e não é ela que decide a entrega — o que decide é o que a audiência faz com o vídeo. Um punhado de termos realmente relacionados ao tema basta; blocos de trinta hashtags genéricas não compram alcance e deixam a legenda pior de ler.',
         },
         {
-          pergunta: 'Perdi alcance depois de publicar todo dia. O que aconteceu?',
+          pergunta: 'O feed precisa ser bonito para o perfil crescer?',
           resposta:
-            'A causa mais comum não é penalização, e sim competição interna: vídeos publicados com poucas horas de diferença disputam a mesma audiência, e o segundo derruba o alcance do primeiro. Espaçar as publicações em 24 horas de relógio costuma devolver o desempenho sem mudar nada no conteúdo.',
+            'Coerência pesa mais do que estética. Quem chega pelo vídeo abre o perfil para responder se aquilo é para ele, e essa resposta vem do assunto das primeiras publicações e da descrição, não da paleta de cores. Feed impecável e assunto disperso é a combinação que faz um perfil ganhar visitas e não ganhar seguidores.',
         },
         {
-          pergunta: 'Vale a pena impulsionar um post que foi bem?',
+          pergunta: 'Quantos seguidores são suficientes para começar a vender?',
           resposta:
-            'Impulsionar entrega mais, e impede que você entenda por quê: o desempenho passa a misturar entrega comprada com entrega espontânea. Em um perfil em que o crescimento orgânico está sendo construído e medido, a recomendação é não impulsionar — e, se houver campanha, mantê-la separada, com relatório próprio.',
+            'Não existe um número, e é por isso que esta página mede outra coisa: o que costuma preceder a venda é conversa iniciada. Perfis pequenos com audiência certa conversam mais do que perfis grandes com audiência genérica — e uma base inflada por sorteio ou por seguidor comprado atrasa a venda em vez de antecipá-la.',
         },
       ],
     },
@@ -233,8 +229,9 @@ export const pagina: Pagina = {
  * [x]  5. A garantia não é citada; o que aparece é a rotina de publicação.
  * [x]  6. Intenção própria: método de crescimento. A dor cuida do diagnóstico
  *          de queda, o verbete da definição, a plataforma do lado comercial.
- * [x]  7. Informação incremental: as quatro métricas semanais, a página de
- *          decisão do perfil e a regra das 24 horas de relógio.
+ * [x]  7. Informação incremental: as quatro métricas semanais e a página de
+ *          decisão do perfil. A cadência (RT-2/RH-1) é do guia de TikTok e aqui
+ *          aparece em duas linhas com link — um dono por bloco.
  * [x]  8. title exclusivo, description 120–160, H1 único, H2 em hierarquia.
  * [x]  9. Hub de Reels; links para a dor, o verbete, a plataforma, o
  *          comparativo de redes e o guia de execução da peça.
