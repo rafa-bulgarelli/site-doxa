@@ -27,24 +27,30 @@ export function Rodape(): ReactElement {
   return (
     <footer className="mt-20 border-t border-doxa-line bg-doxa-stage px-5 py-10 md:px-10">
       <div className="mx-auto flex w-full max-w-screen-2xl flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
+        {/* As opacidades daqui são de CONTRASTE, não de gosto: a 13px, branco
+            a 45% dá 4,42:1 e a 25% dá 2,0:1 sobre `bg-doxa-stage` — os dois
+            abaixo dos 4,5:1 da WCAG AA. 60% (links) e 50% (assinatura) passam
+            e mantêm a assinatura mais apagada que os links. A landing tem a
+            mesma classe no rodapé dela e NÃO muda: é decisão de design do
+            dono, e esta track é só das páginas SEO. */}
         <nav aria-label="Rodapé" className="flex flex-wrap gap-x-6 gap-y-3">
           {secoes().map((secao) => (
             <a
               key={secao.url}
               href={secao.url}
-              className="text-[13px] text-white/45 transition-colors hover:text-white"
+              className="text-[13px] text-white/60 transition-colors hover:text-white"
             >
               {secao.h1}
             </a>
           ))}
-          <a href="/" className="text-[13px] text-white/45 transition-colors hover:text-white">
+          <a href="/" className="text-[13px] text-white/60 transition-colors hover:text-white">
             Página inicial
           </a>
-          <a href={HREF_PERGUNTAS} className="text-[13px] text-white/45 transition-colors hover:text-white">
+          <a href={HREF_PERGUNTAS} className="text-[13px] text-white/60 transition-colors hover:text-white">
             Perguntas
           </a>
         </nav>
-        <p className="text-[13px] text-white/25">© {ANO} Doxa</p>
+        <p className="text-[13px] text-white/50">© {ANO} Doxa</p>
       </div>
     </footer>
   );

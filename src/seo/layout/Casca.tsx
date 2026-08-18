@@ -40,7 +40,10 @@ function Migalhas({ migalhas }: { migalhas: readonly Migalha[] }): ReactElement 
       aria-label="Você está aqui"
       className="mx-auto w-full max-w-screen-2xl px-5 pt-8 md:px-10"
     >
-      <ol className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[13px] text-white/40">
+      {/* /60 e não /40: a 13px sobre `bg-doxa-bg`, 40% dá 3,66:1 e a WCAG AA
+          pede 4,5:1. A migalha ATUAL segue mais clara (/70), então a hierarquia
+          "onde estou" × "por onde vim" continua de pé. */}
+      <ol className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[13px] text-white/60">
         {migalhas.map((migalha, indice) => {
           const ultima = indice === migalhas.length - 1;
           return (

@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'vitest';
-import { auditar, palavrasDe, relatorio } from './auditoria';
+import { FAIXA_DE_PALAVRAS, auditar, normalizarPergunta, palavrasDe, relatorio } from './auditoria';
 import { paginas, urlDe } from './indice';
 import { HUBS } from './site';
+import type { Tipo } from './tipos';
 
 /**
  * A auditoria não reprova nada — ela avisa. O que se testa aqui é o CONTRÁRIO
@@ -64,6 +65,106 @@ describe('auditar', () => {
   });
 });
 
+describe('a faixa de palavras', () => {
+  const { grafo, avisos } = auditar();
+  const foraDaFaixa = new Set(
+    avisos.filter((aviso) => aviso.codigo === 'palavras-fora-da-faixa').map((aviso) => aviso.alvo),
+  );
+
+  it('tem uma faixa coerente para todo tipo de página', () => {
+    for (const [tipo, faixa] of Object.entries(FAIXA_DE_PALAVRAS)) {
+      expect(faixa.minimo, `faixa de ${tipo}`).toBeGreaterThan(0);
+      expect(faixa.maximo, `faixa de ${tipo}`).toBeGreaterThan(faixa.minimo);
+    }
+  });
+
+  // Nos DOIS sentidos: avisar do que está dentro da faixa é ruído, e calar
+  // sobre o que está fora é o defeito que a faixa existe para pegar.
+  it('avisa exatamente das páginas cujo corpo está fora da faixa do tipo', () => {
+    for (const no of grafo) {
+      const faixa = FAIXA_DE_PALAVRAS[no.tipo];
+      const dentro = no.palavras >= faixa.minimo && no.palavras <= faixa.maximo;
+      expect(
+        foraDaFaixa.has(no.url),
+        `${no.url}: ${no.palavras} palavras, faixa ${faixa.minimo}–${faixa.maximo}`,
+      ).toBe(!dentro);
+    }
+  });
+
+  it('a mensagem diz o número medido e a faixa cobrada', () => {
+    for (const aviso of avisos) {
+      if (aviso.codigo !== 'palavras-fora-da-faixa') continue;
+      const no = grafo.find((candidato) => candidato.url === aviso.alvo);
+      if (no == null) throw new Error(`aviso sobre ${aviso.alvo}, que não está no grafo.`);
+      const faixa = FAIXA_DE_PALAVRAS[no.tipo];
+      expect(aviso.mensagem).toContain(`${no.palavras} palavras`);
+      expect(aviso.mensagem).toContain(`${faixa.minimo}–${faixa.maximo}`);
+    }
+  });
+
+  // A contagem é a do CORPO. Se ela passasse a medir o `<main>` renderizado,
+  // toda página ganharia as palavras fixas do cabeçalho, do breadcrumb e do
+  // rodapé, e a faixa mediria o layout.
+  it('mede o corpo, e é o mesmo número que `palavrasDe` devolve', () => {
+    for (const pagina of paginas()) {
+      const no = grafo.find((candidato) => candidato.url === urlDe(pagina));
+      expect(no?.palavras).toBe(palavrasDe(pagina));
+    }
+  });
+});
+
+describe('normalizarPergunta', () => {
+  it('ignora caixa, acento, espaço sobrando e pontuação final', () => {
+    expect(normalizarPergunta('  Quanto CUSTA?  ')).toBe(normalizarPergunta('Quanto custa'));
+    expect(normalizarPergunta('Vocês gravam vídeo?')).toBe(
+      normalizarPergunta('voces  gravam video'),
+    );
+  });
+
+  it('não confunde duas perguntas diferentes', () => {
+    expect(normalizarPergunta('Quanto custa?')).not.toBe(normalizarPergunta('Quanto demora?'));
+  });
+});
+
+describe('o aviso de FAQ repetida', () => {
+  const avisos = auditar().avisos;
+
+  /** As perguntas do corpus, normalizadas, e em que páginas cada uma está. */
+  function porPergunta(): Map<string, string[]> {
+    const mapa = new Map<string, string[]>();
+    for (const pagina of paginas()) {
+      for (const bloco of pagina.corpo) {
+        if (bloco.tipo !== 'faq') continue;
+        for (const item of bloco.itens) {
+          const chave = normalizarPergunta(item.pergunta);
+          mapa.set(chave, [...(mapa.get(chave) ?? []), urlDe(pagina)]);
+        }
+      }
+    }
+    return mapa;
+  }
+
+  it('avisa toda página que carrega uma pergunta repetida, e só elas', () => {
+    const esperado = new Set<string>();
+    for (const urls of porPergunta().values()) {
+      if (urls.length < 2) continue;
+      for (const url of urls) esperado.add(url);
+    }
+    const acusadas = new Set(
+      avisos.filter((aviso) => aviso.codigo === 'faq-repetida').map((aviso) => aviso.alvo),
+    );
+    expect([...acusadas].sort()).toEqual([...esperado].sort());
+  });
+
+  it('cada aviso cita a pergunta e as outras páginas em que ela está', () => {
+    for (const aviso of avisos) {
+      if (aviso.codigo !== 'faq-repetida') continue;
+      expect(aviso.mensagem).toContain('a pergunta "');
+      expect(aviso.mensagem).not.toContain(`${aviso.alvo},`);
+    }
+  });
+});
+
 describe('palavrasDe', () => {
   it('conta o texto e não a marcação', () => {
     const pagina = paginas()[0];
@@ -80,6 +181,21 @@ describe('relatorio', () => {
     expect(texto).toContain('AVISOS');
     for (const pagina of paginas()) {
       expect(texto).toContain(urlDe(pagina));
+    }
+  });
+
+  // O relatório é o que o gestor lê entre rodadas: um código de aviso que sai
+  // do `auditar()` e não aparece no texto é um defeito que ninguém vê.
+  it('imprime todo código de aviso que a auditoria emitiu', () => {
+    for (const aviso of auditar().avisos) {
+      expect(texto).toContain(`[${aviso.codigo}] ${aviso.alvo}`);
+    }
+  });
+
+  it('conhece a faixa de todo tipo publicado', () => {
+    for (const pagina of paginas()) {
+      const tipo: Tipo = pagina.tipo;
+      expect(FAIXA_DE_PALAVRAS[tipo]).toBeDefined();
     }
   });
 });

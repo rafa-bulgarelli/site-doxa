@@ -43,7 +43,8 @@ export function PaginaSolucao({ pagina }: { pagina: Pagina }): ReactElement {
         <Corpo blocos={pagina.corpo} />
       </div>
 
-      <p className="border-t border-doxa-line py-6 text-[13px] text-white/30">
+      {/* /50: 30% a 13px sobre `bg-doxa-bg` dá 2,47:1, abaixo dos 4,5:1 da AA. */}
+      <p className="border-t border-doxa-line py-6 text-[13px] text-white/50">
         Conteúdo atualizado em{' '}
         <time dateTime={pagina.atualizadoEm}>{porExtenso(pagina.atualizadoEm)}</time>.
       </p>

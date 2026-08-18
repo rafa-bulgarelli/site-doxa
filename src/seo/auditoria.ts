@@ -31,7 +31,9 @@ export type CodigoDeAviso =
   | 'sem-saida'
   | 'hub-sem-pagina'
   | 'hub-sem-membro'
-  | 'rota-planejada-sem-pagina';
+  | 'rota-planejada-sem-pagina'
+  | 'palavras-fora-da-faixa'
+  | 'faq-repetida';
 
 export interface Aviso {
   codigo: CodigoDeAviso;
@@ -39,6 +41,38 @@ export interface Aviso {
   alvo: string;
   mensagem: string;
 }
+
+/** Quantas palavras o CORPO de uma página daquele tipo deve ter. */
+export interface Faixa {
+  minimo: number;
+  maximo: number;
+}
+
+/**
+ * A faixa de palavras por tipo de página.
+ *
+ * Ela é AVISO e não gate, ao contrário do piso de 300 palavras que
+ * `seo.test.ts` cobra. O piso separa página de resumo de título; a faixa é
+ * calibragem editorial — um guia de 1.600 palavras não está errado, está fora
+ * do formato que este site combinou, e quem lê o audit decide se corta ou se o
+ * assunto pedia mesmo aquilo. Transformar calibragem em reprovação é o jeito
+ * mais rápido de ensinar todo mundo a ignorar a reprovação.
+ *
+ * `Record<Tipo, …>` de propósito: tipo novo em `tipos.ts` não compila sem
+ * decidir a faixa dele, em vez de nascer sem medida nenhuma.
+ *
+ * `plataforma` não estava na régua que veio do card — ela herda a de `solucao`
+ * porque é a mesma página comercial com o recorte de uma rede.
+ */
+export const FAIXA_DE_PALAVRAS: Record<Tipo, Faixa> = {
+  solucao: { minimo: 900, maximo: 1400 },
+  plataforma: { minimo: 900, maximo: 1400 },
+  guia: { minimo: 900, maximo: 1400 },
+  dor: { minimo: 900, maximo: 1400 },
+  comparativo: { minimo: 1000, maximo: 1500 },
+  hub: { minimo: 400, maximo: 800 },
+  glossario: { minimo: 150, maximo: 400 },
+};
 
 export interface NoDoGrafo {
   url: string;
@@ -78,6 +112,27 @@ function textosDe(bloco: Bloco): readonly string[] {
     default:
       throw new Error('Bloco de tipo desconhecido no corpo da página.');
   }
+}
+
+/**
+ * A pergunta reduzida ao que ela PERGUNTA: sem acento, sem caixa, sem
+ * pontuação, sem espaço sobrando.
+ *
+ * "Quanto custa?" e "Quanto custa" são a MESMA pergunta para quem lê e para o
+ * Google, e duas páginas que marcam `FAQPage` com ela disputam o mesmo rich
+ * result — o buscador escolhe uma e desconfia das duas. Comparar por `===` não
+ * enxergaria isso. Vive aqui, e não no teste, porque o gate (`seo.test.ts`) e o
+ * aviso (`pnpm seo:audit`) TÊM de concordar sobre o que é a mesma pergunta:
+ * duas normalizações divergentes fariam o audit dizer "limpo" sobre o que o
+ * teste reprova.
+ */
+export function normalizarPergunta(pergunta: string): string {
+  return pergunta
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, ' ')
+    .trim();
 }
 
 /**
@@ -154,6 +209,19 @@ export function auditar(): Auditoria {
         mensagem: 'não linka para nenhuma outra página do site, nem planejada.',
       });
     }
+    // A conta é a do CORPO (`palavrasDe`), e não a do `<main>` renderizado:
+    // cabeçalho, breadcrumb, TOC e relacionadas somariam algumas centenas de
+    // palavras iguais em toda página, e a medida diria mais sobre o layout do
+    // que sobre o texto.
+    const faixa = FAIXA_DE_PALAVRAS[no.tipo];
+    if (no.palavras < faixa.minimo || no.palavras > faixa.maximo) {
+      const lado = no.palavras < faixa.minimo ? 'curta' : 'longa';
+      avisos.push({
+        codigo: 'palavras-fora-da-faixa',
+        alvo: no.url,
+        mensagem: `${no.palavras} palavras no corpo — ${lado} para ${no.tipo}, cuja faixa é ${faixa.minimo}–${faixa.maximo}.`,
+      });
+    }
   }
 
   for (const hub of Object.keys(HUBS)) {
@@ -172,6 +240,42 @@ export function auditar(): Auditoria {
         codigo: 'hub-sem-membro',
         alvo: hub,
         mensagem: 'nenhuma página declarou este cluster — o hub nasceria com a lista vazia.',
+      });
+    }
+  }
+
+  /**
+   * A mesma pergunta em duas páginas é `FAQPage` duplicado — dois candidatos
+   * ao mesmo rich result, e o Google escolhe um. `seo.test.ts` reprova isso, e
+   * o aviso aqui é redundante de propósito: o audit é o que se lê ENTRE as
+   * rodadas, quando o teste ainda nem rodou, e é onde o defeito aparece cedo.
+   */
+  const perguntas = new Map<string, { pergunta: string; urls: string[] }>();
+  for (const pagina of todas) {
+    for (const bloco of pagina.corpo) {
+      if (bloco.tipo !== 'faq') continue;
+      for (const item of bloco.itens) {
+        const chave = normalizarPergunta(item.pergunta);
+        const registro = perguntas.get(chave) ?? { pergunta: item.pergunta, urls: [] };
+        registro.urls.push(urlDe(pagina));
+        perguntas.set(chave, registro);
+      }
+    }
+  }
+  const repetidas = [...perguntas.values()]
+    .filter((registro) => registro.urls.length > 1)
+    .sort((a, b) => a.pergunta.localeCompare(b.pergunta));
+  for (const registro of repetidas) {
+    const envolvidas = [...new Set(registro.urls)].sort();
+    for (const url of envolvidas) {
+      const outras = envolvidas.filter((candidata) => candidata !== url);
+      avisos.push({
+        codigo: 'faq-repetida',
+        alvo: url,
+        mensagem:
+          outras.length > 0
+            ? `a pergunta "${registro.pergunta}" também está em ${outras.join(', ')}.`
+            : `a pergunta "${registro.pergunta}" aparece mais de uma vez nesta própria página.`,
       });
     }
   }

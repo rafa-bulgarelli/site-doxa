@@ -97,10 +97,12 @@ function Passos({ itens }: { itens: readonly Passo[] }): ReactElement {
     <ol className="my-8 grid gap-4 md:grid-cols-3">
       {itens.map((passo, indice) => (
         <li
-          key={passo.titulo}
+          key={indice}
           className="rounded-xl border border-doxa-line bg-doxa-surface p-5 md:p-6"
         >
-          <span className="font-serif text-2xl text-white/30">
+          {/* /45 e não /30: o numeral é texto grande (24px), então a régua é
+              3:1 — e 30% sobre `bg-doxa-surface` dá 2,28:1, reprovado. */}
+          <span className="font-serif text-2xl text-white/45">
             {String(indice + 1).padStart(2, '0')}
           </span>
           <h3 className="mt-2 font-serif text-xl text-white">{passo.titulo}</h3>
@@ -124,8 +126,11 @@ function Passos({ itens }: { itens: readonly Passo[] }): ReactElement {
 function Perguntas({ itens }: { itens: readonly Faq[] }): ReactElement {
   return (
     <div className="my-8 divide-y divide-doxa-line rounded-xl border border-doxa-line bg-doxa-surface">
-      {itens.map((item) => (
-        <details key={item.pergunta} className="group px-5 py-4 md:px-6">
+      {/* Índice pela mesma razão da tabela: duas perguntas iguais no mesmo
+          bloco são erro de conteúdo, e não motivo para o React confundir dois
+          `<details>`. */}
+      {itens.map((item, indice) => (
+        <details key={indice} className="group px-5 py-4 md:px-6">
           <summary className="cursor-pointer list-none font-serif text-lg text-white marker:hidden">
             {item.pergunta}
           </summary>
@@ -150,20 +155,27 @@ function Tabela({
     // alternativa é a página inteira rolar de lado.
     <div className="my-8 overflow-x-auto rounded-xl border border-doxa-line">
       <table className="w-full min-w-[32rem] border-collapse text-left text-[15px]">
+        {/* A `key` é o ÍNDICE, e não o texto da célula: "Sim" na coluna 2 e na
+            coluna 3 da mesma linha — ou duas linhas idênticas — são conteúdo
+            legítimo numa tabela comparativa, e com a key vinda do texto viram
+            key duplicada entre irmãos. O React avisa em dev e, na renderização
+            de servidor que gera estas páginas, escolhe sozinho o que reusar,
+            sem erro nenhum na tela. A lista aqui é estática e nunca reordena,
+            então o índice é uma identidade estável. */}
         <thead className="bg-doxa-raised">
           <tr>
-            {cabecalho.map((celula) => (
-              <th key={celula} className="px-4 py-3 font-bold text-white md:px-5">
+            {cabecalho.map((celula, coluna) => (
+              <th key={coluna} className="px-4 py-3 font-bold text-white md:px-5">
                 {celula}
               </th>
             ))}
           </tr>
         </thead>
         <tbody className="divide-y divide-doxa-line">
-          {linhas.map((linha) => (
-            <tr key={linha.join('|')}>
-              {linha.map((celula) => (
-                <td key={celula} className="px-4 py-3 align-top text-white/60 md:px-5">
+          {linhas.map((linha, indiceDaLinha) => (
+            <tr key={indiceDaLinha}>
+              {linha.map((celula, coluna) => (
+                <td key={coluna} className="px-4 py-3 align-top text-white/60 md:px-5">
                   <Inline texto={celula} />
                 </td>
               ))}
@@ -212,16 +224,16 @@ export function BlocoDoCorpo({ bloco }: { bloco: Bloco }): ReactElement {
     case 'lista':
       return bloco.ordenada === true ? (
         <ol className="my-5 list-decimal space-y-2 pl-5 text-[15px] leading-[1.75] text-white/70 marker:text-white/30 md:text-base">
-          {bloco.itens.map((item) => (
-            <li key={item}>
+          {bloco.itens.map((item, indice) => (
+            <li key={indice}>
               <Inline texto={item} />
             </li>
           ))}
         </ol>
       ) : (
         <ul className="my-5 list-disc space-y-2 pl-5 text-[15px] leading-[1.75] text-white/70 marker:text-white/30 md:text-base">
-          {bloco.itens.map((item) => (
-            <li key={item}>
+          {bloco.itens.map((item, indice) => (
+            <li key={indice}>
               <Inline texto={item} />
             </li>
           ))}
@@ -230,7 +242,9 @@ export function BlocoDoCorpo({ bloco }: { bloco: Bloco }): ReactElement {
     case 'destaque':
       return (
         <aside className={`my-8 rounded-xl border p-5 md:p-6 ${ESTILO_DESTAQUE[bloco.variante]}`}>
-          <p className="text-[11px] uppercase tracking-[0.2em] text-white/40">
+          {/* 11px é texto pequeno: a régua é 4,5:1, e 40% sobre
+              `bg-doxa-raised` dava 3,6:1. */}
+          <p className="text-[11px] uppercase tracking-[0.2em] text-white/55">
             {ROTULO_DESTAQUE[bloco.variante]}
           </p>
           <p className="mt-2 text-[15px] leading-relaxed text-white/80">
