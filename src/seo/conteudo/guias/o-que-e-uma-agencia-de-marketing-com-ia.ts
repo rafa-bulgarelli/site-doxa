@@ -62,7 +62,7 @@ export const pagina: Pagina = {
   atualizadoEm: '2026-08-18',
   cta: {
     texto:
-      'Se depois dessa leitura o que a sua empresa procura é volume de vídeo publicado, e não mais uma estrutura para administrar, conte o que ela precisa por mês. O time da Doxa responde em até 24 horas.',
+      'Se as sete perguntas acima já estão respondidas e falta decidir com quem produzir, conte quantas peças a sua empresa precisa publicar por mês. O time da Doxa responde em até 24 horas para marcar a auditoria estratégica.',
     rotulo: 'Falar com a Doxa',
   },
   corpo: [
@@ -159,7 +159,7 @@ export const pagina: Pagina = {
       tipo: 'lista',
       itens: [
         '**O portfólio é o mesmo vídeo com marcas diferentes.** Se o formato, o enquadramento e o ritmo se repetem de cliente para cliente, o que está sendo vendido é o molde.',
-        '**A apresentação fala de ferramentas, não de entregáveis.** As contas estão a um cartão de distância de qualquer concorrente; elas não explicam resultado nenhum.',
+        '**A apresentação fala de ferramentas, não de entregáveis.** Ferramenta não diferencia fornecedor — o porquê está em [IA no marketing](/guias/ia-no-marketing). Numa proposta, o que precisa aparecer é o que chega pronto no fim do mês.',
         '**Volume prometido sem cadência.** "Cem vídeos por mês" sem dizer como eles serão distribuídos ao longo do mês é um número para impressionar, não um plano.',
         '**Garantia de viralizar.** Ninguém controla se um vídeo específico viraliza, e quem afirma o contrário está vendendo sorte com nome melhor.',
       ],
