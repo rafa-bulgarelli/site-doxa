@@ -42,12 +42,14 @@ export const pagina: Pagina = {
     'marketing com inteligência artificial',
   ],
   hubs: [],
+  // Aqui NÃO entra membro do cluster: `PaginaHub` já lista todos os membros
+  // (derivados de `hubs`) logo acima do bloco "Continue por aqui", e o mesmo
+  // card apareceria duas vezes na mesma página. O que entra é o que o hub não
+  // lista: os dois clusters vizinhos e a solução que pertence a eles.
   relacionadas: [
-    '/solucoes/producao-de-videos-com-ia',
-    '/solucoes/marketing-com-ia',
-    '/guias/o-que-e-uma-agencia-de-marketing-com-ia',
-    '/guias/o-que-e-avatar-de-ia',
-    '/comparativos/ia-vs-producao-tradicional-de-video',
+    '/guias/videos-curtos',
+    '/guias/marketing-organico',
+    '/solucoes/producao-de-conteudo-em-escala',
   ],
   atualizadoEm: '2026-08-18',
   cta: {

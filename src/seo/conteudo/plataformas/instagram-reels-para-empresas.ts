@@ -186,8 +186,12 @@ export const pagina: Pagina = {
  * [x]  2. Todo fato sobre a Doxa tem entrada em docs/seo/source-of-truth.md.
  *          Cliente, número, prazo, preço, garantia e depoimento: zero invenção.
  * [x]  3. Nada da §9 (NÃO PUBLICÁVEL) apareceu — nem parafraseado, nem
- *          "suavizado": preço, mensalidade, fidelidade, direitos do vídeo,
- *          agência licenciada, os 1.500 clientes, "parceiros".
+ *          "suavizado": preço, mensalidade, fidelidade, agência licenciada, os
+ *          1.500 clientes, "parceiros". A pergunta de propriedade aparece no
+ *          FAQ, mas com a única resposta autorizada — a chave `direitos` de
+ *          `faq/config.ts`, palavra por palavra, que remete ao contrato de cada
+ *          cliente e não publica cláusula nenhuma. Mesma situação da pergunta
+ *          de `preco` em /solucoes/producao-de-videos-com-ia.
  * [x]  4. Termos proibidos ausentes: "agência" como autodefinição, "parceiros"
  *          para as ferramentas, "assinatura", "curso", "tráfego pago" como
  *          serviço, "garantimos que vai viralizar".
