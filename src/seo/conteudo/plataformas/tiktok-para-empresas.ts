@@ -89,7 +89,7 @@ export const pagina: Pagina = {
         {
           titulo: 'Transformar o perfil em catálogo',
           texto:
-            'Uma sequência de vídeos de produto, sem nada além do produto, é anúncio sem verba: ninguém escolhe assistir. O que sustenta um perfil de marca é o assunto em volta do produto — a dúvida que o cliente traz, o erro que ele comete, o bastidor que explica o preço.',
+            'Catálogo em vídeo não segura ninguém no TikTok: o que sustenta um perfil de marca é o assunto em volta do produto — a dúvida que o cliente traz, o erro que ele comete, o bastidor que explica o preço.',
         },
         {
           titulo: 'Republicar peça de campanha',
@@ -111,7 +111,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'Nos perfis onde a operação da Doxa está ativa, impulsionar, turbinar ou promover publicação é proibido — inclusive posts que não são da Doxa —, e campanhas antigas nesses perfis são pausadas antes da primeira publicação. Não é purismo: alcance comprado se mistura ao orgânico e some com a única informação que interessa, que é o que o vídeo conseguiu fazer sozinho. As visualizações contabilizadas nas metas da Doxa são 100% orgânicas, provenientes da distribuição dos conteúdos produzidos dentro da operação.',
+        'O TikTok mostra, publicação por publicação, quanto do alcance veio de quem não segue o perfil — e é justamente esse dado que a mídia paga embaralha. Por isso, nos perfis onde a operação da Doxa está ativa, impulsionar publicação é proibido; a regra inteira, com o que continua permitido, está em [conteúdo orgânico para empresas](/solucoes/conteudo-organico-para-empresas). As visualizações contabilizadas nas metas são orgânicas, provenientes da distribuição dos conteúdos produzidos dentro da operação.',
     },
     {
       tipo: 'destaque',
@@ -174,7 +174,7 @@ export const pagina: Pagina = {
         {
           pergunta: 'Preciso postar todo dia?',
           resposta:
-            'A rotina combinada com quem já é cliente da Doxa prevê no máximo um vídeo da operação por dia útil, com pelo menos 24 horas entre um e outro: dois vídeos no mesmo dia disputam o mesmo espaço e um atropela o alcance do outro. O volume exato de cada operação é definido pela estratégia e pela meta de performance do cliente.',
+            'A rotina combinada com quem já é cliente da Doxa prevê no máximo um vídeo da operação por dia útil, com pelo menos 24 horas entre um e outro, porque peças publicadas juntas competem pela mesma janela de entrega. O volume exato de cada operação é definido pela estratégia e pela meta de performance do cliente.',
         },
       ],
     },

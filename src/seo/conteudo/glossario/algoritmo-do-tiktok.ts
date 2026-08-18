@@ -96,8 +96,8 @@ export const pagina: Pagina = {
       itens: [
         '**Que existe um castigo pessoal.** O que costuma haver é uma sequência de vídeos com retenção baixa, o que reduz a amostra inicial dos seguintes.',
         '**Que hashtag define o alcance.** Ela ajuda a classificar o assunto, e não substitui a reação das pessoas.',
-        '**Que o horário decide.** Ele muda pouco perto da abertura do vídeo e da regularidade da publicação.',
-        '**Que publicar mais no mesmo dia acelera.** Dois vídeos no mesmo dia disputam o mesmo espaço e um atropela o alcance do outro — é a razão pela qual a operação da Doxa limita a um vídeo por dia útil nos perfis dos clientes.',
+        '**Que o horário decide.** Ele pesa pouco ao lado do que abre o vídeo e da constância de quem publica.',
+        '**Que publicar mais no mesmo dia acelera.** As peças do mesmo dia concorrem pela mesma amostra inicial — é a razão pela qual a operação da Doxa limita a um vídeo por dia útil nos perfis dos clientes.',
       ],
     },
     {

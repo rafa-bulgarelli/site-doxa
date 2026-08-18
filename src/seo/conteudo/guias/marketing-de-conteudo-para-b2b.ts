@@ -134,7 +134,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'O que não funciona é o meio-termo: um vídeo com locução impessoal por cima de imagem de banco. Ele não tem pessoa nem tem demonstração, e o espectador não encontra motivo nenhum para acreditar naquilo.',
+        'O que não funciona é o meio-termo: um vídeo narrado por ninguém em particular, por cima de imagem de banco. Ele não tem pessoa nem tem demonstração, e o espectador não encontra motivo nenhum para acreditar naquilo.',
     },
     {
       tipo: 'titulo',
@@ -144,7 +144,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'Aqui a honestidade custa barato e evita frustração: nenhum painel de rede social vai ligar um contrato assinado ao vídeo que plantou o nome seis meses antes. O que sobra é bom o suficiente — a fatia do alcance que veio de quem não segue o perfil, o volume de conversas iniciadas por trimestre e as buscas pelo nome da empresa ao longo dos meses. A rotina completa está em [como medir resultado de conteúdo orgânico](/guias/como-medir-resultado-de-conteudo-organico).',
+        'Aqui a honestidade custa barato e evita frustração: não existe relatório que ligue um contrato assinado ao vídeo que plantou o nome seis meses antes. O que sobra é bom o suficiente — a fatia do alcance que veio de quem não segue o perfil, o volume de conversas iniciadas por trimestre e as buscas pelo nome da empresa ao longo dos meses. A rotina completa está em [como medir resultado de conteúdo orgânico](/guias/como-medir-resultado-de-conteudo-organico).',
     },
     {
       tipo: 'titulo',

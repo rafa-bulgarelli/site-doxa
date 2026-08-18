@@ -66,7 +66,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'Boa parte das quedas de alcance que as pessoas relatam não é queda: é mudança de mistura. Quem publicava três vídeos e dez fotos por mês e passou a publicar dez fotos e um vídeo vê o alcance despencar sem que nada tenha mudado na plataforma, porque o vídeo curto é o formato que mais entrega para quem não segue o perfil. Compare períodos com o mesmo tipo de conteúdo antes de concluir qualquer coisa.',
+        'Boa parte das quedas de alcance que as pessoas relatam não é queda: é mudança de mistura. Quem publicava três vídeos e dez fotos por mês e passou a publicar dez fotos e um vídeo vê o alcance despencar sem que nada tenha mudado na plataforma, porque o vídeo curto costuma ser o formato que mais entrega para quem não segue o perfil. Compare períodos com o mesmo tipo de conteúdo antes de concluir qualquer coisa.',
     },
     {
       tipo: 'paragrafo',
@@ -100,12 +100,12 @@ export const pagina: Pagina = {
         {
           titulo: 'O espaçamento entre publicações',
           texto:
-            'Dois vídeos no mesmo dia disputam a mesma audiência e um atropela o alcance do outro. Espalhar as publicações costuma render mais do que aumentar a quantidade.',
+            'Peças publicadas no mesmo dia concorrem entre si pela mesma audiência. Espalhar as publicações costuma render mais do que aumentar a quantidade.',
         },
         {
           titulo: 'A mesma peça nas três redes',
           texto:
-            'Publicar o mesmo vídeo no TikTok, no Reels e no YouTube Shorts multiplica a chance de encontrar a audiência sem multiplicar a produção. É a alavanca com melhor relação entre esforço e resultado.',
+            'Publicar o mesmo vídeo no TikTok, no Reels e no YouTube Shorts amplia o alcance sem exigir uma gravação a mais — é a alavanca com melhor relação entre esforço e resultado. Como fazer isso sem estragar o arquivo está em [como usar o mesmo vídeo nas três redes](/guias/como-usar-o-mesmo-video-nas-tres-redes).',
         },
         {
           titulo: 'O assunto, medido e não adivinhado',
@@ -123,10 +123,10 @@ export const pagina: Pagina = {
       tipo: 'lista',
       itens: [
         '**Hashtag.** Ela ajuda a plataforma a classificar o vídeo, e só. Não existe conjunto secreto que multiplique alcance.',
-        '**Horário de publicação.** Move pouco perto da abertura e da regularidade, e não salva um vídeo com retenção baixa.',
+        '**Horário de publicação.** Escolher um horário razoável basta; ajustá-lo em quinze minutos não muda a leitura de nada.',
         '**Pedir engajamento no vídeo.** "Comenta aí" sem motivo produz comentários vazios, que não sustentam distribuição nenhuma.',
-        '**Comprar seguidores, curtidas ou visualizações.** Contamina o dado que você usaria para decidir, viola as regras das plataformas e pode gerar penalização.',
-        '**Impulsionar.** Compra alcance no momento e apaga a informação: depois disso você não sabe mais se o conteúdo se sustentava sozinho.',
+        '**Comprar seguidores, curtidas ou visualizações.** Contamina o dado que você usaria para decidir, viola a metodologia e pode gerar penalização das redes.',
+        '**Impulsionar.** Compra alcance agora e apaga a leitura: a entrega passa a misturar o que foi comprado com o que foi conquistado.',
       ],
     },
     {
@@ -153,7 +153,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'A Doxa trabalha exatamente sobre este canal: as visualizações contabilizadas nas metas da empresa são orgânicas, vindas da distribuição dos conteúdos produzidos dentro da operação, e não é preciso investir em mídia paga para atingir as metas contratadas. Nos perfis em que a estratégia está ativa, impulsionar publicações é proibido — inclusive posts que não são da operação —, e a razão é a mesma que aparece na lista acima: mídia paga no mesmo perfil embaralha o dado que decide o que produzir a seguir.',
+        'A Doxa trabalha exatamente sobre este canal, e por isso a lista acima descreve a própria regra da operação: nos perfis em que a estratégia está ativa não se impulsiona nada. Como isso se combina com o resto do que a empresa publica está em [marketing orgânico](/guias/marketing-organico).',
     },
     {
       tipo: 'paragrafo',
@@ -181,7 +181,7 @@ export const pagina: Pagina = {
         {
           pergunta: 'Devo apagar os vídeos antigos que foram mal?',
           resposta:
-            'Apagar não ajuda: o que costuma reduzir a amostra dos próximos é a sequência de retenção baixa, não a existência do vídeo antigo — e apagar não desfaz isso. O histórico é justamente o dado que mostra qual formato funcionou, então vale mais republicar o conteúdo com uma abertura nova do que apagar o original.',
+            'Tirar do ar não ajuda: o que costuma reduzir a amostra dos próximos é a sequência de retenção baixa, não a existência do vídeo antigo — e apagar não desfaz isso. O histórico é justamente o dado que mostra qual formato funcionou, então vale mais republicar o conteúdo com uma abertura nova do que apagar o original.',
         },
         {
           pergunta: 'Seguidores ainda importam para o alcance?',

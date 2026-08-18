@@ -118,13 +118,13 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'Na operação da Doxa isso é combinado por escrito com quem já é cliente, no manual que ele aceita ao contratar: **no máximo um vídeo da operação por dia útil**, e com pelo menos 24 horas de relógio entre um e outro. Se um vídeo foi publicado na segunda-feira às 22h, o próximo só entra a partir das 22h de terça. A janela existe para preservar a distribuição do vídeo anterior, que ainda está sendo entregue quando o seguinte estreia.',
+        'Na operação da Doxa isso é combinado por escrito com quem já é cliente, no manual que ele aceita ao contratar: **no máximo um vídeo da operação por dia útil**, e com pelo menos 24 horas de relógio entre um e outro. A janela existe para preservar a distribuição do vídeo anterior, que ainda está sendo entregue quando o seguinte estreia; o exemplo de como ela cai na semana está em [como viralizar no TikTok](/guias/como-viralizar-no-tiktok).',
     },
     {
       tipo: 'destaque',
       variante: 'atencao',
       texto:
-        'Fotos, carrosséis e stories seguem liberados a qualquer hora. A regra é sobre vídeo curto, que é o formato que disputa a mesma fila de distribuição.',
+        'A regra é sobre vídeo curto; o resto do perfil segue rodando. Como essa convivência funciona no dia a dia está em [Reels para empresas](/plataformas/instagram-reels-para-empresas).',
     },
     {
       tipo: 'titulo',
@@ -139,7 +139,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'É a mesma razão pela qual comprar seguidor, curtida ou visualização está fora de cogitação: além de violar as políticas das próprias redes, engajamento artificial estraga exatamente o dado que a operação usa para decidir o próximo vídeo.',
+        'É a mesma razão pela qual comprar seguidor, curtida ou visualização está fora de cogitação: além de violar a metodologia e poder gerar penalização das redes, engajamento artificial estraga exatamente o dado que a operação usa para decidir o próximo vídeo.',
     },
     {
       tipo: 'titulo',

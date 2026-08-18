@@ -9,9 +9,9 @@ import type { Pagina } from '../../tipos';
  *  · "dois vídeos no mesmo dia disputam o mesmo espaço e um atropela o alcance
  *    do outro" → `RT-2` do manual do cliente, `docs/seo/source-of-truth.md` §8,
  *    fonte: `supabase/manual-seed-v1.sql:187-191`;
- *  · a janela de 24 horas de relógio entre publicações ("se um vídeo foi
- *    publicado segunda às 22h, o próximo só a partir das 22h de terça") →
- *    `RH-1`, §8, fonte: `supabase/manual-seed-v1.sql:205-207`;
+ *  · a janela de 24 horas de relógio entre publicações → `RH-1`, §8, fonte:
+ *    `supabase/manual-seed-v1.sql:205-207`. O exemplo da segunda às 22h fica
+ *    só em `guias/como-viralizar-no-tiktok` e `guias/quantas-vezes-postar`;
  *  · engajamento artificial contamina resultado e pode gerar penalização das
  *    redes → §8, fonte:
  *    `.claude/tower/cards/004-manual-interativo-prompt-mestre.md:531-543`;
@@ -112,13 +112,13 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'Este é o erro que costuma passar despercebido, e ele nasce de uma boa intenção: a semana ficou parada, então no sábado saem quatro vídeos de uma vez. O resultado é que os quatro disputam a mesma audiência ao mesmo tempo, e um atropela o alcance do outro. A regra que a Doxa aplica nos perfis dos clientes vai na mesma direção: no máximo um vídeo da operação por dia útil, com pelo menos 24 horas de relógio entre um e outro.',
+        'Este é o erro que costuma passar despercebido, e ele nasce de uma boa intenção: a semana ficou parada, então no sábado saem quatro vídeos de uma vez. O resultado é que os quatro concorrem entre si pela mesma audiência ao mesmo tempo. A regra que a Doxa aplica nos perfis dos clientes vai na mesma direção: no máximo um vídeo da operação por dia útil, com pelo menos 24 horas de relógio entre um e outro.',
     },
     {
       tipo: 'destaque',
       variante: 'nota',
       texto:
-        'A janela é de relógio, não de calendário: se um vídeo foi publicado na segunda-feira às 22h, o próximo só a partir das 22h de terça. A ideia é deixar o vídeo anterior terminar a própria distribuição antes de o seguinte entrar na fila.',
+        'A janela é de relógio, não de calendário: são 24 horas cheias entre uma publicação e a seguinte, e não uma por dia no calendário. O exemplo de como isso cai na semana está em [como viralizar no TikTok](/guias/como-viralizar-no-tiktok).',
     },
     {
       tipo: 'paragrafo',
@@ -168,7 +168,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        '**O teste:** você consegue nomear o formato que está testando agora e há quanto tempo? **O que fazer:** escolher um formato, rodar de dez a quinze vídeos nele, e só então decidir. Os primeiros conteúdos que performam abaixo do esperado não são desperdício: eles geram dado sobre audiência, temas, formatos, hooks e narrativas.',
+        '**O teste:** você consegue nomear o formato que está testando agora e há quanto tempo? **O que fazer:** escolher um formato, rodar de dez a quinze vídeos nele, e só então decidir. Os primeiros vídeos de um formato servem para calibrá-lo, e o porquê disso está na FAQ de [produção de vídeos com IA](/solucoes/producao-de-videos-com-ia).',
     },
     {
       tipo: 'titulo',
@@ -179,7 +179,7 @@ export const pagina: Pagina = {
       tipo: 'lista',
       itens: [
         '**O algoritmo não está te punindo.** Não existe castigo pessoal; existe um vídeo que não segurou a amostra que recebeu.',
-        '**Não é o horário da postagem.** Ele muda pouco quando a retenção é baixa, e não salva um vídeo que ninguém assiste até o fim.',
+        '**Não é o horário da postagem.** Nenhuma hora do dia salva um vídeo que ninguém assiste até o fim.',
         '**Não é falta de seguidores.** No vídeo curto, uma parte relevante do alcance costuma vir de quem ainda não segue o perfil.',
         '**Comprar views, curtidas ou seguidores piora.** Além de contaminar o dado que você usaria para decidir, pode gerar penalização das próprias redes.',
       ],
@@ -220,7 +220,7 @@ export const pagina: Pagina = {
         {
           pergunta: 'Vale a pena impulsionar um vídeo que não teve views?',
           resposta:
-            'Impulsionar compra alcance, mas apaga a informação que você estava buscando: depois disso, você deixa de saber se aquele conteúdo se sustentava sozinho. Para diagnóstico, é melhor manter o vídeo orgânico e testar outra abertura.',
+            'Impulsionar compra alcance e, junto, apaga o diagnóstico: o número passa a misturar entrega comprada e entrega espontânea, que é exatamente o que você estava tentando separar. Para diagnóstico, é melhor manter o vídeo orgânico e testar outra abertura.',
         },
       ],
     },

@@ -67,7 +67,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'A comparação honesta com mídia paga cabe em duas linhas: pago compra alcance imediato e para quando a verba para; orgânico demora mais e continua rendendo depois. Um vídeo que funcionou em março ainda pode trazer gente em setembro. Um anúncio desligado em março não trouxe mais ninguém no dia 2 de abril. A escolha entre os dois quase nunca é permanente, e tem página própria em [orgânico ou pago](/comparativos/organico-vs-pago).',
+        'A diferença para a mídia paga aparece no calendário: um vídeo que funcionou em março ainda pode trazer gente em setembro, e um anúncio desligado em março não trouxe mais ninguém no dia 2 de abril. A comparação por custo, prazo e previsibilidade tem página própria em [orgânico ou pago](/comparativos/organico-vs-pago).',
     },
     {
       tipo: 'titulo',

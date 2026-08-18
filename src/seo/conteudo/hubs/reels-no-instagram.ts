@@ -30,7 +30,7 @@ export const pagina: Pagina = {
     'Como os Reels são distribuídos para quem não segue o perfil, o que muda em relação ao feed antigo e como uma marca organiza produção e cadência.',
   h1: 'Reels no Instagram',
   resumo:
-    'O Reels é a parte do Instagram que ainda entrega vídeo para quem não segue o perfil — o resto da rede virou, na prática, um canal para quem já está lá. Este hub trata do formato, da cadência e da produção que sustentam Reels de marca, e aponta para a página de cada assunto do cluster.',
+    'O Reels é a parte do Instagram que costuma entregar vídeo a quem ainda não segue o perfil — o resto da rede tende a servir quem já está lá. Este hub trata do formato, da cadência e da produção que sustentam Reels de marca, e aponta para a página de cada assunto do cluster.',
   intencao: 'informacional',
   palavrasChave: [
     'reels no instagram',
@@ -56,17 +56,17 @@ export const pagina: Pagina = {
     {
       tipo: 'titulo',
       nivel: 2,
-      texto: 'Por que o Reels concentra o alcance de quem não te segue',
+      texto: 'Por que boa parte do alcance de quem não te segue costuma vir do Reels',
     },
     {
       tipo: 'paragrafo',
       texto:
-        'O Instagram tem dois modos de entregar conteúdo. Um mostra o que você publicou para quem já segue o perfil, e é o modo do feed clássico: previsível, limitado ao tamanho da sua lista. O outro recomenda vídeo vertical para gente que nunca ouviu falar de você, e é o modo do Reels. Para uma marca que precisa crescer, o segundo é o que mais entrega — o primeiro tende a conservar o que já existe.',
+        'O Instagram tem dois modos de entregar conteúdo. Um mostra o que você publicou para quem já segue o perfil, e é o modo do feed clássico: previsível, limitado ao tamanho da sua lista. O outro recomenda vídeo vertical para gente que nunca ouviu falar de você, e é o modo do Reels. Para uma marca que precisa crescer, o segundo costuma entregar mais — o primeiro tende a conservar o que já existe.',
     },
     {
       tipo: 'paragrafo',
       texto:
-        'Isso explica o desenho estranho de muitos perfis de empresa: carrossel bonito, engajamento razoável entre os seguidores e nenhuma pessoa nova chegando. O alcance que traz gente de fora se concentra no formato que boa parte das marcas produz menos, porque é o que dá mais trabalho.',
+        'Isso explica o desenho estranho de muitos perfis de empresa: carrossel bonito, engajamento razoável entre os seguidores e nenhuma pessoa nova chegando. O alcance que traz gente de fora costuma se concentrar no formato que boa parte das marcas produz menos, porque é o que dá mais trabalho.',
     },
     {
       tipo: 'titulo',
@@ -76,10 +76,9 @@ export const pagina: Pagina = {
     {
       tipo: 'lista',
       itens: [
-        'Assunto declarado nos primeiros segundos, sem vinheta e sem apresentação da empresa antes do conteúdo.',
-        'Vertical de ponta a ponta, com **legenda embutida no vídeo** — ela é acessibilidade para quem não ouve, salva quem está sem som e ajuda na retenção; a legenda automática, além disso, desaparece em recorte e reencaminhamento.',
-        'Um assunto por vídeo. Reels que tenta cobrir três tópicos perde nos três, porque a curva de [retenção](/glossario/retencao) cai na primeira transição fraca.',
-        'Um fecho que faça sentido sozinho: a maior parte de quem assiste não vai abrir o perfil para entender o contexto.',
+        'O básico de formato — vertical, assunto declarado nos primeiros segundos, um assunto por vídeo e [legenda embutida](/glossario/legenda-embutida) — vale igual nas três redes, e está reunido em [vídeos curtos](/guias/videos-curtos).',
+        'O que é próprio do Reels: a curva de [retenção](/glossario/retencao) cai na primeira transição fraca, e um vídeo que tenta cobrir três tópicos costuma perder nos três.',
+        'Um fecho que faça sentido sozinho: boa parte de quem assiste não vai abrir o perfil para entender o contexto.',
       ],
     },
     {
@@ -105,7 +104,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'O Instagram é uma das três redes em que a operação da Doxa publica, junto com TikTok e YouTube Shorts, e o vídeo entregue já sai vertical, legendado e no formato do feed. Duas condições da operação valem citar aqui porque explicam a lógica, e são condições de quem já é cliente: o mesmo arquivo vai para as três redes no mesmo dia, e nos dias úteis os únicos vídeos curtos publicados nos perfis participantes são os da operação — fotos, carrosséis e stories continuam liberados.',
+        'O Instagram é uma das três redes em que os vídeos da operação da Doxa são publicados, junto com TikTok e YouTube Shorts, e o vídeo entregue já sai vertical, legendado e no formato do feed. Duas condições da operação valem citar aqui porque explicam a lógica, e são condições de quem já é cliente: o mesmo arquivo vai para as três redes no mesmo dia, e nos dias úteis os únicos vídeos curtos publicados nos perfis participantes são os da operação — fotos, carrosséis e stories continuam liberados.',
     },
     {
       tipo: 'destaque',

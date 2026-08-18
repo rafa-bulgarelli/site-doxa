@@ -148,7 +148,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'A janela natural é o trimestre, porque é o tempo em que um volume razoável de peças gera dado suficiente para concluir algo. Nas primeiras semanas, o que aparece é ruído: os conteúdos que performam abaixo do esperado no começo são justamente os que geram os dados sobre audiência, temas, formatos e narrativas que orientam a revisão seguinte.',
+        'A janela natural é o trimestre, porque é o tempo em que um volume razoável de peças gera dado suficiente para concluir algo. Nas primeiras semanas, o que aparece é ruído: os primeiros vídeos são dado, não veredito, e é deles que a revisão seguinte tira o que corrigir.',
     },
     {
       tipo: 'paragrafo',

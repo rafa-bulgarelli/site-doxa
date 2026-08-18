@@ -108,7 +108,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'A tentação de compensar a semana parada publicando tudo de uma vez é forte, e é contraproducente: vídeos publicados no mesmo dia disputam a mesma audiência, e um atropela o alcance do outro. A regra que a Doxa aplica nos perfis dos clientes é de no máximo um vídeo por dia útil, com pelo menos 24 horas de relógio entre um e outro — se um vídeo saiu na segunda às 22h, o próximo só a partir das 22h de terça.',
+        'A tentação de compensar a semana parada publicando tudo de uma vez é forte, e é contraproducente: peças publicadas no mesmo dia acabam competindo entre si. A regra que a Doxa aplica nos perfis dos clientes é de no máximo um vídeo por dia útil, com pelo menos 24 horas de relógio entre um e outro — o exemplo de como esse intervalo cai na semana está em [como viralizar no TikTok](/guias/como-viralizar-no-tiktok).',
     },
     {
       tipo: 'destaque',

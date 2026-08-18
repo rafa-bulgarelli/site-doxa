@@ -94,7 +94,7 @@ export const pagina: Pagina = {
         {
           titulo: 'Semanas 1 a 4 — amplitude',
           texto:
-            'Os primeiros vinte vídeos existem para varrer possibilidades: três ou quatro formatos diferentes, assuntos de famílias distintas, aberturas de tipos opostos. Não tente acertar; tente cobrir terreno. Os conteúdos que performam abaixo do esperado nessa fase não são desperdício — é deles que sai o dado sobre audiência, tema, formato e abertura.',
+            'Os primeiros vinte vídeos existem para varrer possibilidades: três ou quatro formatos diferentes, assuntos de famílias distintas, aberturas de tipos opostos. Não tente acertar; tente cobrir terreno. Um vídeo fraco nessa fase é medida do terreno, não fracasso.',
         },
         {
           titulo: 'Semanas 5 a 9 — profundidade',
@@ -134,7 +134,7 @@ export const pagina: Pagina = {
       tipo: 'destaque',
       variante: 'atencao',
       texto:
-        'A última linha é a que mais gente ignora. Vídeos publicados no mesmo dia disputam a mesma audiência, e um atropela o alcance do outro — produzir em lote é economia, publicar em lote é prejuízo. O detalhe da cadência está em [como viralizar no TikTok](/guias/como-viralizar-no-tiktok).',
+        'A última linha é a que mais gente ignora. Produzir em lote é economia; publicar em lote é prejuízo, porque as peças do mesmo dia dividem a mesma janela de entrega. O detalhe da cadência está em [como viralizar no TikTok](/guias/como-viralizar-no-tiktok).',
     },
     {
       tipo: 'titulo',
@@ -161,7 +161,7 @@ export const pagina: Pagina = {
       itens: [
         '**Semana 3, o tédio do formato.** O formato ainda não deu resultado e já cansou quem grava. É cedo demais para concluir qualquer coisa: a fase de amplitude existe para ser desconfortável, e trocar tudo agora apaga o único dado que estava sendo construído.',
         '**Semana 6, a fila que zera.** A empolgação inicial produziu vinte vídeos em duas semanas e nada nas duas seguintes. O conserto não é publicar mais; é voltar a gravar em bloco, mesmo com peças no ar.',
-        '**A semana do vídeo que foi bem.** Um resultado alto tenta a operação inteira a virar cópia dele. Repita o formato com outro assunto antes de reescrever o trimestre — se o segundo também for bem, o ganho era do formato; se não for, era do tema, e o plano não deveria ter mudado.',
+        '**A semana do vídeo que foi bem.** Um resultado alto tenta a operação inteira a virar cópia dele. Repita o formato com outro assunto antes de reescrever o trimestre; por que esse é o teste que separa as duas hipóteses está em [como viralizar no TikTok](/guias/como-viralizar-no-tiktok).',
       ],
     },
     {

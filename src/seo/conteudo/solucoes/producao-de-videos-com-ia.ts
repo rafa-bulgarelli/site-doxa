@@ -86,7 +86,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'O que muda não é a estética do vídeo: é o **custo marginal do próximo vídeo**. Numa operação tradicional, o décimo vídeo do mês custa quase o mesmo que o primeiro, porque cada um exige gravação. Numa operação com IA, o caro é montar o clone uma vez; publicar todo dia deixa de ser uma questão de agenda e passa a ser uma questão de roteiro.',
+        'O que muda não é a estética do vídeo: é o **custo marginal do próximo vídeo** — a conta de por que ele não cai numa produção tradicional está em [produção de conteúdo em escala](/solucoes/producao-de-conteudo-em-escala). Numa operação com IA, o caro é montar o clone uma vez; publicar todo dia deixa de ser uma questão de agenda e passa a ser uma questão de roteiro.',
     },
     {
       tipo: 'lista',
@@ -138,17 +138,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'Montar essa operação por dentro custa entre **R$ 8.000 e R$ 10.500 por mês**, na conta que a Doxa publica na própria landing — o inventário de UMA operação, com produção, agência e tráfego somados. É ilustração do que uma empresa acumula para publicar com constância, não um levantamento de mercado, e não é o salário de uma pessoa.',
-    },
-    {
-      tipo: 'lista',
-      itens: [
-        'Gente: video maker, roteirista, editor de vídeo, social media, diretor de criação.',
-        'Equipamento: câmera, lentes, tripé, microfone de lapela, estabilizador, cartões de memória.',
-        'Espaço: estúdio, iluminação, cenário e as horas de gravação.',
-        'Pós: ilha de edição, licença de edição, banco de trilhas, banco de imagens, legendagem.',
-        'Distribuição: agência, gestor de tráfego, verba de tráfego pago, calendário editorial, relatórios.',
-      ],
+        'Montar essa operação por dentro custa entre **R$ 8.000 e R$ 10.500 por mês**, na conta que a Doxa publica na própria landing — o inventário item a item, e a ressalva de que é ilustração e não levantamento de mercado, estão em [produção de conteúdo em escala](/solucoes/producao-de-conteudo-em-escala).',
     },
     {
       tipo: 'paragrafo',

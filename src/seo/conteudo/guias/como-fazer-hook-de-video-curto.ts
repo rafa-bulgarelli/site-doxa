@@ -194,7 +194,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'A resposta está na curva de [retenção](/glossario/retencao): se a queda mais violenta está nos primeiros segundos, o começo não segurou; se a curva se mantém alta e cai no meio, o hook cumpriu o papel e o problema é outro. Um vídeo isolado não decide nada — os conteúdos que performam abaixo do esperado são os que geram dado sobre audiência, tema, formato e hook.',
+        'A resposta está na curva de [retenção](/glossario/retencao): se a queda mais violenta está nos primeiros segundos, o começo não segurou; se a curva se mantém alta e cai no meio, o hook cumpriu o papel e o problema é outro. Um vídeo isolado não decide nada — são os fracos do começo que calibram o hook seguinte.',
     },
     {
       tipo: 'paragrafo',

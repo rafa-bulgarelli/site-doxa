@@ -100,7 +100,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        '**O teste:** abra o alcance dos últimos trinta dias e veja a fatia de contas que não seguem o perfil. Compare com a mesma fatia de três meses atrás. Se ela encolheu, é esta. **O que fazer:** o vídeo vertical é a superfície que o Instagram usa para mostrar conteúdo a quem não segue, e um perfil que passou a publicar mais foto e carrossel do que vídeo conversa quase só com a própria base. Formato, produção e cadência de Reels estão reunidos em [Reels no Instagram](/guias/reels-no-instagram).',
+        '**O teste:** abra o alcance dos últimos trinta dias e veja a fatia de contas que não seguem o perfil. Compare com a mesma fatia de três meses atrás. Se ela encolheu, é esta. **O que fazer:** o vídeo vertical costuma ser a superfície pela qual o Instagram mostra conteúdo a quem não segue, e um perfil que passou a publicar mais foto e carrossel do que vídeo conversa quase só com a própria base. Formato, produção e cadência de Reels estão reunidos em [Reels no Instagram](/guias/reels-no-instagram).',
     },
     {
       tipo: 'titulo',

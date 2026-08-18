@@ -92,12 +92,12 @@ export const pagina: Pagina = {
     {
       tipo: 'titulo',
       nivel: 2,
-      texto: 'O mesmo arquivo nas três redes',
+      texto: 'Por que o mesmo arquivo serve às três redes',
     },
     {
       tipo: 'paragrafo',
       texto:
-        'TikTok, Instagram Reels e YouTube Shorts pedem o mesmo formato e costumam responder a sinais parecidos, o que torna o reaproveitamento honesto — não é preguiça, é distribuição. Publicar o mesmo vídeo nas três multiplica a chance de encontrar a audiência sem multiplicar a produção, e as diferenças reais entre as redes aparecem depois, na leitura dos dados, não na hora de exportar o arquivo.',
+        'TikTok, Instagram Reels e YouTube Shorts pedem o mesmo formato e costumam responder a sinais parecidos, o que torna o reaproveitamento honesto — não é preguiça, é distribuição. Como publicar a mesma peça nas três sem estragar o arquivo está em [como usar o mesmo vídeo nas três redes](/guias/como-usar-o-mesmo-video-nas-tres-redes).',
     },
     {
       tipo: 'paragrafo',
@@ -118,7 +118,7 @@ export const pagina: Pagina = {
       tipo: 'destaque',
       variante: 'doxa',
       texto:
-        'A regra que o manual do cliente resume em duas palavras: baixou, publicou. O arquivo entregue vai ao ar exatamente como saiu — sem mudar corte, duração, velocidade, proporção, legenda ou capa. A razão está escrita lá: cada elemento é decidido com foco em desempenho, alterar um detalhe muda a peça inteira, e a Doxa não consegue responder pelo resultado de um conteúdo que não é mais o que produziu.',
+        'A regra que o manual do cliente resume em duas palavras: baixou, publicou — o arquivo entregue vai ao ar exatamente como saiu. O que cada alteração custa, item por item, está em [vídeos curtos para empresas](/solucoes/videos-curtos-para-empresas).',
     },
     {
       tipo: 'paragrafo',

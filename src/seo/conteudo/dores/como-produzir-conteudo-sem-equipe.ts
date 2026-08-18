@@ -145,7 +145,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'O ponto de virada não é o dia em que você se cansa: é o dia em que a produção vira o gargalo do negócio. Vale fazer a conta do que uma operação interna acumula — video maker, roteirista, editor, social media, câmera, microfone, estúdio, ilha de edição, banco de trilhas, calendário, relatórios. Somado, isso custa entre **R$ 8.000 e R$ 10.500 por mês** na conta que a Doxa publica na própria landing, e é uma ilustração do que uma operação interna acumula, não um levantamento de mercado.',
+        'O ponto de virada não é o dia em que você se cansa: é o dia em que a produção vira o gargalo do negócio. Vale fazer a conta do que uma operação interna acumula: entre **R$ 8.000 e R$ 10.500 por mês** na conta que a Doxa publica na própria landing. O inventário item a item está em [produção de conteúdo em escala](/solucoes/producao-de-conteudo-em-escala).',
     },
     {
       tipo: 'paragrafo',

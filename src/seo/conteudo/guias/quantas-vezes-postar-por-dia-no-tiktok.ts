@@ -120,7 +120,7 @@ export const pagina: Pagina = {
     {
       tipo: 'lista',
       itens: [
-        '**Não apague o segundo.** Apagar não devolve o alcance que o primeiro perdeu e ainda tira do ar uma peça que já recebeu audiência.',
+        '**Não apague o segundo.** Tirar do ar não recupera o alcance que o primeiro perdeu e ainda tira do ar uma peça que já recebeu audiência.',
         '**Não publique um terceiro para "compensar".** O erro é de acúmulo; acrescentar mais uma peça só divide a mesma audiência em três.',
         '**Conte 24 horas a partir do segundo**, e retome a régua a partir daí. Um dia sem publicar não custa nada; dois vídeos no mesmo dia disputam o mesmo espaço, e um atropela o alcance do outro.',
         '**Anote o horário.** O caso mais comum de publicação dupla nasce de não saber que horas o vídeo anterior saiu — e é o item mais barato de consertar da lista inteira.',

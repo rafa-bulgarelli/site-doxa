@@ -43,7 +43,7 @@ export const pagina: Pagina = {
     'Como encaixar Reels no perfil que a sua empresa já tem: convivência com feed e stories, por que o botão de impulsionar atrapalha e o que a Doxa entrega pronto.',
   h1: 'Reels para empresas',
   resumo:
-    'Reels é o formato do Instagram que alcança quem ainda não segue a sua empresa — o resto do perfil serve a quem já chegou. Quem trata os dois como a mesma coisa acaba publicando vídeo para os próprios seguidores e concluindo que a rede não funciona.',
+    'Reels convive no mesmo perfil com feed, stories e a base que a sua empresa já tem, e é dele que costuma vir o alcance de quem ainda não chegou. Quem trata os dois como a mesma coisa acaba publicando vídeo para os próprios seguidores e concluindo que a rede não funciona.',
   intencao: 'comercial',
   palavrasChave: [
     'reels para empresas',
@@ -75,7 +75,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'Um perfil de empresa no Instagram atende duas pessoas diferentes ao mesmo tempo, e elas quase não se cruzam. A primeira já segue: vê stories, acompanha lançamento, responde enquete. A segunda não faz ideia de que a sua empresa existe e só vai encontrá-la se um vídeo for entregue a ela. **Reels é o formato que fala com a segunda**; feed e stories cuidam da primeira.',
+        'Um perfil de empresa no Instagram atende duas pessoas diferentes ao mesmo tempo, e elas quase não se cruzam. A primeira já segue: vê stories, acompanha lançamento, responde enquete. A segunda não faz ideia de que a sua empresa existe e só vai encontrá-la se um vídeo for entregue a ela. **Boa parte do alcance de quem não segue costuma vir dos Reels** — por que isso acontece está em [Reels no Instagram](/guias/reels-no-instagram); aqui o assunto é a convivência com o resto do perfil.',
     },
     {
       tipo: 'paragrafo',
@@ -103,12 +103,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'O Instagram deixa o botão de impulsionar embaixo do post, e a tentação aparece justamente quando um vídeo vai bem. Nos perfis em que a operação da Doxa está ativa isso é proibido — impulsionar, turbinar ou promover publicação, inclusive posts que não são da Doxa —, e campanhas antigas nesses perfis são pausadas antes da primeira publicação. Google Ads e campanhas em outros perfis continuam permitidos.',
-    },
-    {
-      tipo: 'paragrafo',
-      texto:
-        'A razão é medir: para atingir as metas orgânicas contratadas não é preciso investir em mídia, e alcance comprado misturado ao orgânico impede saber o que o vídeo fez sozinho. Se a empresa quiser complementar a estratégia com anúncios, isso é feito separadamente.',
+        'O Instagram deixa o botão de impulsionar embaixo do post, e a tentação aparece justamente quando um vídeo vai bem. É esse botão que a regra da operação desliga: nos perfis em que ela está ativa, impulsionar publicação é proibido, e o porquê está em [conteúdo orgânico para empresas](/solucoes/conteudo-organico-para-empresas). Se a empresa quiser complementar a estratégia com anúncios, isso é feito separadamente, fora do perfil onde o orgânico é medido.',
     },
     {
       tipo: 'titulo',
@@ -139,7 +134,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'Esse arquivo sobe como está, e no Instagram isso pede atenção extra: a tela de publicação oferece cortar de novo, escolher outra capa, colar figurinha e pôr uma música por cima, tudo a um toque de distância. A peça entregue já chega com corte, legenda, capa e áudio decididos, e a regra combinada com quem já é cliente cabe em três palavras — baixou, publicou. Mexer no upload não é ajuste estético: muda o que estava sendo testado naquele vídeo, e a comparação com o próximo deixa de dizer alguma coisa.',
+        'Esse arquivo sobe como está, e no Instagram isso pede atenção extra: a tela de publicação oferece cortar de novo, escolher outra capa, colar figurinha e pôr uma música por cima, tudo a um toque de distância. A peça entregue já chega com corte, legenda, capa e áudio decididos, e a regra combinada com quem já é cliente cabe em duas palavras — baixou, publicou —, cujo porquê está em [vídeos curtos para empresas](/solucoes/videos-curtos-para-empresas). Mexer na tela de upload não é ajuste estético.',
     },
     {
       tipo: 'titulo',

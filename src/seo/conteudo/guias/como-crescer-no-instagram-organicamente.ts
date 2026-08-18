@@ -158,10 +158,9 @@ export const pagina: Pagina = {
     {
       tipo: 'lista',
       itens: [
-        '**Alcance de contas que não seguem**, na semana, comparado com a semana anterior. É o termômetro de descoberta.',
-        '**Salvamentos e envios por publicação.** Dizem o que a audiência considerou útil o bastante para guardar ou repassar.',
-        '**Retenção dos vídeos**, para separar o que prende do que só foi entregue. Um vídeo com alcance alto e retenção baixa foi mostrado, não assistido.',
+        '**Alcance de contas que não seguem**, na semana, comparado com a semana anterior. É o termômetro de descoberta, e no Instagram é o primeiro número a acusar que o perfil parou de crescer.',
         '**Conversas iniciadas.** É a métrica que liga o perfil ao caixa, e a que o time comercial costuma reconhecer.',
+        'O painel completo — o que cada métrica responde e o que ela não responde — está em [como medir resultado de conteúdo orgânico](/guias/como-medir-resultado-de-conteudo-organico).',
       ],
     },
     {
@@ -213,7 +212,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'Reescreva a descrição do perfil para dizer o que você resolve e para quem, confira se há dois vídeos publicados a menos de 24 horas um do outro e escolha o assunto que você consegue defender em quatro vídeos diferentes na semana que vem. São três horas de trabalho e resolvem mais do que qualquer mudança de horário de postagem.',
+        'Reescreva a descrição do perfil para dizer o que você resolve e para quem, confira se há dois vídeos publicados a menos de 24 horas um do outro e escolha o assunto que você consegue defender em quatro vídeos diferentes na semana que vem. São três horas de trabalho e costumam render mais do que mexer no horário de postagem, assunto tratado em [como postar todos os dias sem equipe](/guias/como-postar-todos-os-dias-sem-equipe).',
     },
   ],
 };

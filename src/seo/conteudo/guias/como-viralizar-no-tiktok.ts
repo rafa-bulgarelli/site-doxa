@@ -196,7 +196,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'O corolário desagradável é que os primeiros vídeos costumam performar abaixo do esperado, e isso faz parte: eles geram os dados de audiência, tema, formato e hook que orientam os próximos. Uma estratégia que depende de acertar todos os vídeos não é estratégia, é sorte com nome melhor.',
+        'O corolário desagradável é que os primeiros vídeos costumam performar abaixo do esperado, e isso faz parte: eles são a matéria-prima da leitura seguinte. Uma estratégia que depende de acertar todos os vídeos não é estratégia, é sorte com nome melhor.',
     },
     {
       tipo: 'destaque',

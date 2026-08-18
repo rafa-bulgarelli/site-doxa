@@ -138,8 +138,8 @@ export const pagina: Pagina = {
     {
       tipo: 'lista',
       itens: [
-        '**Subir o arquivo baixado de outra rede.** Ele vem com selo, com nome de outro perfil em cima da imagem e com qualidade menor. Quem assiste percebe em meio segundo, e o canal inteiro passa a parecer um espelho.',
-        '**Publicar em lote depois de semanas parado.** Vale o mesmo que nas outras redes: peças publicadas perto demais disputam a mesma audiência. Uma por dia rende mais do que dez num sábado.',
+        '**Subir o arquivo baixado de outra rede.** Quem assiste percebe em meio segundo, e o canal inteiro passa a parecer um espelho — o que o download carrega junto e como evitar está em [como usar o mesmo vídeo nas três redes](/guias/como-usar-o-mesmo-video-nas-tres-redes).',
+        '**Publicar em lote depois de semanas parado.** Uma por dia rende mais do que dez num sábado, pelo mesmo motivo que vale nas outras redes — a régua está em [como viralizar no TikTok](/guias/como-viralizar-no-tiktok).',
         '**Deixar o canal sem resposta.** Nome genérico, descrição vazia, nenhuma seção organizada: a pessoa que gostou do vídeo chega, não entende o que é aquilo, e sai. Foi alcance conquistado e desperdiçado na porta.',
       ],
     },
