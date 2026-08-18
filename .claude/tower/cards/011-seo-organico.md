@@ -164,6 +164,15 @@ embutida em página externa não muda papel de agente.
   Pré-condições da noite: `caffeinate -dims` ativo, sessão em bypass de permissões.
   Merge da noite = `feat/seo-organico`; `main`/deploy só com o dono acordado.
 
+- **23:52** — `track-seo-docs` READY → gate leve (diff só `docs/seo/`, zero volume
+  numérico, "não fazer" com arquivo:linha) → **PR #48 squash em `feat/seo-organico`
+  (`334ac27`)**. Worktree fechada. `BLOCKED_EXTERNAL_CREDENTIAL` registrado no topo
+  do keyword-map (sem GSC/GA/volume/SERP). Os 5 fatos frágeis para o dono conferir
+  estão em `docs/seo/source-of-truth.md` §11 — o mais caro: "1.500 clientes,
+  G4, Natália Beauty, EUA" no FAQ (`faq/config.ts:197`) sem outra fonte no repo;
+  a torre NÃO replica isso em página nova. `tower-close.sh` passou a aceitar squash
+  (árvore idêntica à base) e `BASE` por env.
+
 <!-- Preenchido pelo GESTOR -->
 ## Plano
 
