@@ -109,7 +109,7 @@ export const pagina: Pagina = {
         'Quem está na primeira leva de espectadores, e o humor dela naquele dia.',
         'O assunto que está em alta na semana — entrar nele atrasado costuma render menos do que publicar o que você já sabia dizer.',
         'O desempenho de um vídeo isolado. Um resultado, bom ou ruim, é um ponto, não uma curva.',
-        'O número de seguidores como garantia de entrega: base grande ajuda no começo da distribuição, não decide o fim dela.',
+        'O número de seguidores como garantia de entrega: o tamanho do perfil pesa pouco na distribuição — não é passaporte nem teto.',
         'O resultado do vídeo de outra marca, produzido com outro contexto, outra audiência e outro histórico de perfil.',
       ],
     },

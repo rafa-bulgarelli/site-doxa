@@ -138,7 +138,7 @@ export const pagina: Pagina = {
         '**"Vamos contratar UGC para a campanha."** Produção encomendada. Há briefing, prazo e pagamento, e a peça vai ao ar nos canais de quem contratou.',
         '**"O UGC da marca cresceu neste mês."** Conteúdo espontâneo. Está se falando de menção, avaliação e vídeo de cliente — coisa que não se contrata, só se estimula.',
         '**"Ela é criadora de UGC."** Prestação de serviço de produção. Não é sinônimo de influenciadora: a diferença está em quem publica e no que está sendo comprado.',
-        '**"Vamos usar UGC no anúncio."** Na maior parte das vezes em que a sigla aparece em briefing, é o primeiro sentido: peça encomendada, veiculada como mídia paga — e, sendo anúncio, sinalizada como tal.',
+        '**"Vamos usar UGC no anúncio."** Na maior parte das vezes em que a sigla aparece em briefing, é o segundo sentido: peça encomendada, veiculada como mídia paga — e, sendo anúncio, sinalizada como tal.',
       ],
     },
     {
@@ -202,7 +202,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'UGC espontâneo você conquista; UGC de criador você contrata; e nenhum dos dois substitui o conteúdo que a sua empresa precisa publicar no próprio perfil na semana que vem.',
+        'UGC espontâneo você conquista; UGC de criador você contrata; e nenhum dos dois resolve a constância: campanha tem fim, o perfil não.',
     },
   ],
 };

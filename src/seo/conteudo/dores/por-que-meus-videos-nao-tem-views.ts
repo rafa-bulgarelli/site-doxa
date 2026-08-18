@@ -102,7 +102,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        '**O teste:** conte quantos vídeos você publicou nos últimos trinta dias. Se foram menos de uns doze, é provavelmente esta. **O que fazer:** subir a frequência antes de refinar qualquer coisa. Como referência de ordem de grandeza, a operação da Doxa trabalha com sessenta conteúdos únicos em noventa dias, um por dia útil, condição de quem já é cliente conforme as condições e o prazo do contrato — não porque o número seja mágico, mas porque é a partir dessa faixa que dá para separar padrão de acaso.',
+        '**O teste:** conte quantos vídeos você publicou nos últimos trinta dias. Se foram menos de uns doze, é provavelmente esta. **O que fazer:** subir a frequência antes de refinar qualquer coisa. Como referência de ordem de grandeza, a operação da Doxa trabalha com sessenta conteúdos únicos em noventa dias, um por dia útil, condição de quem já é cliente conforme as condições e o prazo do contrato — não porque o número seja mágico, mas porque é dela que sai volume por formato suficiente para ler padrão em vez de acaso.',
     },
     {
       tipo: 'titulo',
@@ -215,7 +215,7 @@ export const pagina: Pagina = {
         {
           pergunta: 'Meu alcance caiu de repente. Fui punido?',
           resposta:
-            'A explicação mais comum é bem menos dramática: mudança na frequência de publicação, dois vídeos publicados perto demais, ou uma série de vídeos com retenção baixa que reduziu a amostra inicial dos seguintes. Vale conferir essas três coisas antes de procurar punição.',
+            'A explicação mais comum é bem menos dramática: mudança na frequência de publicação, dois vídeos publicados perto demais, ou uma série de vídeos com retenção baixa, que costuma reduzir a amostra inicial dos seguintes. Vale conferir essas três coisas antes de procurar punição.',
         },
         {
           pergunta: 'Vale a pena impulsionar um vídeo que não teve views?',

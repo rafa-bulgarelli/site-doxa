@@ -228,7 +228,7 @@ export const pagina: Pagina = {
         {
           pergunta: 'Texto na tela conta como hook mesmo sem fala?',
           resposta:
-            'Conta, e às vezes é o canal que mais trabalha: boa parte do feed é assistida sem som, e o texto é o que declara o assunto para quem está nessa situação. A condição é que seja legível numa tela pequena e fique longe das bordas, onde a interface passa por cima.',
+            'Conta, e às vezes é o canal que mais trabalha: há muita situação em que ligar o som não é opção, e o texto é o que declara o assunto para quem está nessa situação. A condição é que seja legível numa tela pequena e fique longe das bordas, onde a interface passa por cima.',
         },
       ],
     },

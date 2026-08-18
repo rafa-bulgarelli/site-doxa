@@ -85,7 +85,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'A conta que a Doxa publica no próprio site serve de ilustração do que uma operação interna acumula quando decide gravar com constância — não é levantamento de mercado, é o inventário de uma operação montada por dentro. São **cerca de 25 contratações**, entre gente, equipamento, espaço, pós-produção e distribuição, somando de **R$ 8.000 a R$ 10.500 por mês**:',
+        'A conta que a Doxa publica no próprio site serve de ilustração do que uma operação interna acumula quando decide gravar com constância — não é levantamento de mercado, é o inventário de uma operação montada por dentro. São **cerca de 25 contratações**, entre gente, equipamento, espaço, pós-produção e distribuição, somando de **R$ 8.000 a R$ 10.500 por mês** — é a faixa da operação completa, produção e distribuição, e a parte de distribuição é igual nos dois caminhos:',
     },
     {
       tipo: 'lista',
@@ -118,7 +118,7 @@ export const pagina: Pagina = {
         ['Variações da mesma ideia', 'Caras: cada versão é um novo take', 'Baratas: cinco aberturas do mesmo texto'],
         ['Demonstração física do produto', 'Resolve: a câmera mostra o objeto', 'Não resolve — fala sobre, não segura'],
         ['Ambiente e pessoas reais', 'Loja, fábrica, equipe, cliente em cena', 'Fora do alcance sem captação'],
-        ['Custo mensal para manter', 'R$ 8.000 a R$ 10.500 por dentro, no inventário ilustrativo acima', 'Depende do volume, não da diária'],
+        ['Custo mensal para manter', 'R$ 8.000 a R$ 10.500 na operação completa do inventário acima — a distribuição, igual nos dois caminhos, está dentro', 'Depende do volume, não da diária'],
       ],
     },
     {

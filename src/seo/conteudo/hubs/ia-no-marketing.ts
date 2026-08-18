@@ -92,7 +92,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'A fronteira desta tabela é a coisa mais importante do assunto. Toda operação com IA que dá errado erra no mesmo lugar: automatiza também a linha de baixo, e publica conteúdo que soa como qualquer marca de qualquer setor. O termo técnico para o que sai dali é conteúdo genérico, e nenhuma ferramenta conserta isso.',
+        'A fronteira desta tabela é a coisa mais importante do assunto. Um erro recorrente em operação com IA é automatizar também a linha de baixo, e publicar conteúdo que soa como qualquer marca de qualquer setor. O termo técnico para o que sai dali é conteúdo genérico, e nenhuma ferramenta conserta isso.',
     },
     {
       tipo: 'titulo',

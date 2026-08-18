@@ -171,7 +171,7 @@ export const pagina: Pagina = {
         {
           pergunta: 'Posso usar os vídeos produzidos por vocês em outras redes ou campanhas?',
           resposta:
-            'Em geral sim: os conteúdos produzidos para a marca podem ser aproveitados em diferentes canais próprios, respeitando as condições estabelecidas no contrato. Um mesmo conteúdo também pode ser adaptado para diferentes plataformas e formatos.',
+            'Em geral sim: os conteúdos produzidos para a marca podem ser aproveitados em diferentes canais próprios, respeitando as condições estabelecidas no contrato.',
         },
         {
           pergunta: 'Posso editar o vídeo antes de publicar?',

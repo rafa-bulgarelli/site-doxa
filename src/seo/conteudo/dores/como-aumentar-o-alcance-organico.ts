@@ -176,12 +176,12 @@ export const pagina: Pagina = {
         {
           pergunta: 'Publicar o mesmo vídeo nas três redes prejudica o alcance?',
           resposta:
-            'Publicar o mesmo conteúdo em redes diferentes não é penalizado: cada plataforma distribui dentro dela mesma. O que prejudica é publicar um arquivo com marcas visíveis de outra rede, porque isso é lido como material reaproveitado.',
+            'Nada indica que publicar o mesmo conteúdo em redes diferentes seja penalizado: cada plataforma distribui dentro dela mesma. O que costuma pesar é publicar um arquivo com marcas visíveis de outra rede, porque a rede de destino pode tratar isso como material reciclado.',
         },
         {
           pergunta: 'Devo apagar os vídeos antigos que foram mal?',
           resposta:
-            'Apagar não ajuda: o que reduz a amostra dos próximos é a sequência de retenção baixa, não a existência do vídeo antigo — e apagar não desfaz isso. O histórico é justamente o dado que mostra qual formato funcionou, então vale mais republicar o conteúdo com uma abertura nova do que apagar o original.',
+            'Apagar não ajuda: o que costuma reduzir a amostra dos próximos é a sequência de retenção baixa, não a existência do vídeo antigo — e apagar não desfaz isso. O histórico é justamente o dado que mostra qual formato funcionou, então vale mais republicar o conteúdo com uma abertura nova do que apagar o original.',
         },
         {
           pergunta: 'Seguidores ainda importam para o alcance?',

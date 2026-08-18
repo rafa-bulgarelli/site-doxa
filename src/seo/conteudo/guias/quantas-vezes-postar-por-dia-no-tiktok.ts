@@ -153,7 +153,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'Um por dia útil dá algo entre vinte e vinte e dois vídeos por mês, e cerca de sessenta num trimestre. É o teto prático da régua — e, não por acaso, também é a faixa em que o volume começa a gerar dado suficiente para separar padrão de acaso. Quem produz menos não está violando regra nenhuma; está só demorando mais para aprender.',
+        'Um por dia útil dá algo entre vinte e vinte e dois vídeos por mês, e cerca de sessenta num trimestre. É o teto prático da régua — e é também a faixa em que dez a quinze peças por formato cabem sem apertar, que é o volume por formato que costuma separar padrão de acaso. Quem produz menos não está violando regra nenhuma; está só demorando mais para aprender.',
     },
     {
       tipo: 'destaque',

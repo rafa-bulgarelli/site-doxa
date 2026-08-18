@@ -37,7 +37,7 @@ export const pagina: Pagina = {
     'Por que um perfil novo ainda alcança gente no TikTok, o que trava um perfil de empresa na rede e como a Doxa opera conteúdo vertical por lá, sem impulsionar.',
   h1: 'TikTok para empresas',
   resumo:
-    'No TikTok, quem decide o alcance de um vídeo é o desempenho dele, não o tamanho do perfil que o publicou — e é isso que mantém a porta aberta para uma empresa que está começando. O preço dessa porta é publicar com constância e aceitar que cada vídeo recomeça a disputa do zero.',
+    'No TikTok, quem decide o alcance de um vídeo é o desempenho dele, não o tamanho do perfil que o publicou — e é isso que mantém a porta aberta para uma empresa que está começando. O preço dessa porta é publicar com constância: o resultado de um vídeo não garante o do próximo.',
   intencao: 'comercial',
   palavrasChave: [
     'tiktok para empresas',
@@ -75,7 +75,7 @@ export const pagina: Pagina = {
       tipo: 'lista',
       itens: [
         'A boa: um perfil novo não está condenado. Não é preciso acumular audiência antes de alcançar alguém.',
-        'A dura: nada é acumulado de graça. Um vídeo que foi bem não garante o próximo — cada peça recomeça a disputa, e por isso postar em rajada e sumir não acumula nada.',
+        'A dura: um vídeo que foi bem não garante o próximo — e uma sequência de peças fracas costuma reduzir a amostra inicial das seguintes, e é por isso que postar em rajada e sumir rende pouco.',
       ],
     },
     {

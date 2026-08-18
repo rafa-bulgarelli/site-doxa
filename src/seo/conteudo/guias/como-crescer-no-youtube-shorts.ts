@@ -126,7 +126,7 @@ export const pagina: Pagina = {
         {
           titulo: 'Só então olhe os números',
           texto:
-            'Antes de trinta peças, qualquer conclusão é sobre ruído. Depois delas, a leitura útil é por título e por tema — quais assuntos continuaram recebendo visualização depois da primeira semana.',
+            'Antes de umas trinta peças, a leitura costuma ser sobre ruído. Depois delas, a leitura útil é por título e por tema — quais assuntos continuaram recebendo visualização depois da primeira semana.',
         },
       ],
     },
@@ -180,7 +180,7 @@ export const pagina: Pagina = {
         {
           pergunta: 'Quantos inscritos são necessários para começar a aparecer?',
           resposta:
-            'Nenhum. O feed de Shorts é de recomendação, o que significa que a peça é oferecida a quem não conhece o canal desde o primeiro dia. Um canal recém-aberto e um canal antigo entram nessa fila em pé de igualdade quanto a isso; o que os separa é o acervo de títulos que cada um já deixou encontrável.',
+            'Nenhum inscrito é necessário: o feed de Shorts é de recomendação, o que significa que a peça é oferecida a quem não conhece o canal desde o primeiro dia. Um canal recém-aberto e um canal antigo entram na mesma fila — o tamanho do canal pesa pouco ali, não é passaporte nem teto; o que costuma separá-los é o acervo de títulos que cada um já deixou encontrável.',
         },
       ],
     },

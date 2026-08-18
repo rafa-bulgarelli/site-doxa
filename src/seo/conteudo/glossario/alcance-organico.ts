@@ -59,7 +59,7 @@ export const pagina: Pagina = {
       tipo: 'destaque',
       variante: 'nota',
       texto:
-        'Alcance orgânico, nesse sentido, é o que a Doxa contabiliza nas metas dos clientes: visualizações orgânicas, vindas da distribuição dos conteúdos produzidos na operação, sem depender da compra de mídia.',
+        'O que a Doxa contabiliza nas metas dos clientes são visualizações orgânicas — views, não alcance —, vindas da distribuição dos conteúdos produzidos na operação, sem depender da compra de mídia.',
     },
     {
       tipo: 'titulo',

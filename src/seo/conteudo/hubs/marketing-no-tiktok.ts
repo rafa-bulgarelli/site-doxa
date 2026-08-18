@@ -65,12 +65,12 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'No TikTok o tamanho do perfil decide pouco sobre o alcance do próximo vídeo. A distribuição não parte da lista de seguidores: parte de uma amostra de pessoas que não conhecem a marca, e o que elas fazem nos primeiros segundos — ficar, sair, voltar, comentar, compartilhar — define se a plataforma continua entregando. Um perfil de empresa com poucos seguidores e um vídeo bom compete com um perfil grande e um vídeo morno, e às vezes ganha.',
+        'No TikTok o tamanho do perfil pesa pouco sobre o alcance do próximo vídeo — não é passaporte nem teto. A distribuição costuma começar por uma amostra de pessoas que não conhecem a marca, e o que elas fazem nos primeiros segundos — ficar, sair, voltar, comentar, compartilhar — orienta se a plataforma continua entregando. Um perfil de empresa com poucos seguidores e um vídeo bom compete com um perfil grande e um vídeo morno, e às vezes ganha.',
     },
     {
       tipo: 'paragrafo',
       texto:
-        'A consequência prática é desconfortável para quem vem do marketing tradicional: **não existe audiência acumulada que garanta o resultado do vídeo de amanhã**. Cada publicação recomeça a prova. Isso torna o TikTok o canal em que volume e teste valem mais do que planejamento longo — e o canal em que uma marca descobre rápido que o assunto que ela achava interessante não é o assunto que a audiência dela assiste até o fim.',
+        'A consequência prática é desconfortável para quem vem do marketing tradicional: **um vídeo que foi bem não garante o próximo**. Isso torna o TikTok o canal em que volume e teste valem mais do que planejamento longo — e o canal em que uma marca descobre rápido que o assunto que ela achava interessante não é o assunto que a audiência dela assiste até o fim.',
     },
     {
       tipo: 'titulo',

@@ -95,7 +95,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'A quinta linha da tabela é a que separa um roteiro de um texto. Vídeo curto é consumido com o som desligado numa parte considerável do tempo, e a legenda embutida, o texto de apoio e o que está sendo mostrado carregam metade do recado. Se isso não estiver escrito, será improvisado na edição — e improviso na edição custa mais caro do que planejamento na escrita.',
+        'A quinta linha da tabela é a que separa um roteiro de um texto. Há muita situação em que ligar o som não é opção — fila, transporte, escritório, madrugada em casa —, e a legenda embutida, o texto de apoio e o que está sendo mostrado carregam metade do recado. Se isso não estiver escrito, será improvisado na edição — e improviso na edição custa mais caro do que planejamento na escrita.',
     },
     {
       tipo: 'paragrafo',

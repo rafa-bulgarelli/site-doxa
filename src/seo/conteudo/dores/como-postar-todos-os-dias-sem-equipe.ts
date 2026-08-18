@@ -149,7 +149,7 @@ export const pagina: Pagina = {
       tipo: 'lista',
       itens: [
         'Agendar um mês inteiro de conteúdo em um único planejamento fechado: quando o quinto vídeo mostrar o que a audiência quer, os outros vinte e cinco já estão presos.',
-        'Publicar qualquer coisa só para não quebrar a sequência. Um vídeo fraco não é neutro: ele consome a amostra que o próximo teria.',
+        'Publicar qualquer coisa só para não quebrar a sequência. Um vídeo fraco não é neutro: ele costuma consumir a amostra que o próximo teria.',
         'Terceirizar só a edição e continuar sendo o gargalo da gravação, que é a etapa cara.',
         'Trocar o formato toda semana em nome da variedade, o que impede qualquer conclusão sobre o que funcionou.',
       ],

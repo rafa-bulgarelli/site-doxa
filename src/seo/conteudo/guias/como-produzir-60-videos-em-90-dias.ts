@@ -191,7 +191,7 @@ export const pagina: Pagina = {
         {
           pergunta: 'Sessenta é um número mágico?',
           resposta:
-            'Não é mágico, é aritmético: sessenta peças é o que cabe em um vídeo por dia útil dentro de um trimestre, e é a partir dessa faixa que dá para separar padrão de acaso. Um plano de trinta funciona pela metade — menos dado, conclusões mais lentas —, e um plano de cento e vinte exige publicar duas vezes por dia, o que faz os vídeos competirem entre si.',
+            'Não é mágico, é aritmético: sessenta peças é o que cabe em um vídeo por dia útil dentro de um trimestre, e é uma faixa em que cabem dez a quinze peças por formato — o volume a partir do qual dá para separar padrão de acaso. Um plano de trinta funciona pela metade — menos dado, conclusões mais lentas —, e um plano de cento e vinte exige publicar duas vezes por dia, o que faz os vídeos competirem entre si.',
         },
         {
           pergunta: 'Preciso de sessenta assuntos diferentes?',
