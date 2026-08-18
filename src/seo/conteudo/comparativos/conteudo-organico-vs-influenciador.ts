@@ -2,12 +2,28 @@ import type { Pagina } from '../../tipos';
 
 /**
  * A alternativa que o lead considera de verdade quando pensa em "aparecer":
- * pagar quem já tem audiência, ou construir a própria. O ângulo que separa
- * esta página de `/comparativos/ugc-vs-conteudo-de-marca` é o EIXO da
- * comparação: lá o assunto é o FORMATO da peça (estética de criador contra
- * peça de marca) e onde ela roda; aqui o assunto é a AUDIÊNCIA — alugada por
- * publicação contra construída no próprio perfil. Nenhum critério da tabela
- * daquela página se repete nesta.
+ * pagar quem já tem audiência, ou construir a própria.
+ *
+ * ─── A FRONTEIRA COM `/comparativos/ugc-vs-conteudo-de-marca` ────────────────
+ *
+ * As duas páginas são VIZINHAS DE VERDADE, e não territórios separados: as
+ * duas têm criador de um lado e marca do outro. O que as separa é o eixo —
+ * lá o assunto é o FORMATO da peça (estética de conteúdo caseiro contra peça
+ * de marca) e onde ela roda; aqui é a AUDIÊNCIA: de quem ela é, o que
+ * acontece com ela quando o combinado acaba, e de quem fica o dado depois.
+ *
+ * O gate da rodada 2 reprovou a primeira versão desta página justamente por
+ * ter atravessado essa fronteira. Blocos que TÊM DONO LÁ e que aqui só podem
+ * ser resumidos em uma frase com link:
+ *  · o que precisa estar no contrato com um criador (cessão, sinalização,
+ *    entrega do arquivo) → FAQ de `ugc-vs-conteudo-de-marca`;
+ *  · custo por peça caindo com volume ("a sessenta custa menos que a dez");
+ *  · precisão de assunto técnico como vantagem da marca;
+ *  · prova de uso e teste de ângulo como vantagem do criador;
+ *  · o veredito "faça os dois, e a ordem importa".
+ * Nenhum desses aparece aqui na forma dele: quando o assunto encosta, esta
+ * página troca para a pergunta de audiência ("de quem é", "o que sobra",
+ * "quem some quando").
  *
  * ─── DE ONDE VEM CADA FATO DESTA PÁGINA ──────────────────────────────────────
  *
@@ -44,6 +60,7 @@ export const pagina: Pagina = {
   intencao: 'comercial',
   palavrasChave: [
     'conteúdo próprio ou influenciador',
+    'conteúdo orgânico ou influenciador',
     'marketing de influência ou conteúdo',
     'contratar influenciador',
     'audiência própria',
@@ -76,7 +93,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'Ao publicar conteúdo no próprio perfil, a empresa compra outra coisa: acúmulo. Cada vídeo publicado continua podendo ser entregue depois, cada pessoa que passa a seguir volta sem custo adicional, e a biblioteca é da empresa. Em compensação, ninguém entrega audiência pronta na primeira semana — é preciso construir, e construir demora.',
+        'Ao publicar conteúdo orgânico no próprio perfil, a empresa compra outra coisa: acúmulo. Cada vídeo publicado continua podendo ser entregue depois, cada pessoa que passa a seguir volta sem custo adicional, e a biblioteca é da empresa. Em compensação, ninguém entrega audiência pronta na primeira semana — é preciso construir, e construir demora.',
     },
     {
       tipo: 'paragrafo',
@@ -109,7 +126,7 @@ export const pagina: Pagina = {
         ],
         [
           'Efeito no mês seguinte',
-          'Cai junto com o fim da veiculação',
+          'Cai quando a publicação sai do ar',
           'Soma ao que já estava publicado',
         ],
         [
@@ -123,9 +140,9 @@ export const pagina: Pagina = {
           'Limitado ao que a própria empresa publica',
         ],
         [
-          'Como o custo se comporta com volume',
-          'Sobe a cada publicação e a cada novo criador',
-          'Concentrado no processo, e dilui conforme cresce',
+          'O que muda quando o volume dobra',
+          'Mais criadores, e mais audiências novas para conhecer',
+          'A mesma audiência recebe mais vezes, sem fornecedor novo',
         ],
         [
           'O que dá para medir depois',
@@ -142,16 +159,16 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'Esta seção existe porque comparativo com um vencedor só não é comparativo. Há situações em que insistir no perfil próprio é teimosia cara:',
+        'Há cenários em que construir audiência própria é o caminho mais caro, e alugar a de outra pessoa é a decisão certa:',
     },
     {
       tipo: 'lista',
       itens: [
-        '**Você precisa de atenção numa data.** Lançamento, inauguração, temporada. Audiência própria não se agenda; a agenda de um criador, sim.',
-        '**Ninguém conhece a marca ainda.** Ser apresentado por alguém em quem a pessoa já confia encurta anos de construção — é confiança emprestada, e ela funciona.',
+        '**Existe uma data, e ela não se move.** Um criador assina para publicar no dia 12 e publica no dia 12. Audiência própria não assina nada: ela aparece quando aparece.',
+        '**A sua audiência ainda não existe.** Perfil sem público não distribui nada: o vídeo pode ser ótimo e ser visto por trinta pessoas. Alugar a atenção de quem já reuniu gente é a forma de falar com muitos antes de ter alguém.',
         '**A audiência certa está concentrada num nicho.** Quando um criador reuniu exatamente o público que você quer, chegar até ele por conta própria custa muito mais tempo.',
-        '**Prova de uso.** Ver alguém real usando o produto responde o que nenhuma peça institucional responde, principalmente em consumo cotidiano.',
-        '**Teste de mensagem.** Descobrir qual promessa segura a atenção sai mais rápido na audiência de outra pessoa do que num perfil que ainda não tem alcance.',
+        '**Entrar numa audiência que não procuraria você.** Quem acompanha um criador de assunto vizinho dificilmente buscaria a sua marca — mas assiste ao vídeo dele até o fim, e é ali que fica sabendo que você existe.',
+        '**Atravessar para uma rede nova.** Marca forte num canal e inexistente em outro: um criador nativo do segundo canal encurta a travessia mais do que recomeçar do zero por lá.',
       ],
     },
     {
@@ -163,9 +180,9 @@ export const pagina: Pagina = {
       tipo: 'lista',
       itens: [
         '**O que fica.** Ao fim de um ano, um perfil que publicou tem biblioteca, audiência e histórico; uma sequência de campanhas com criadores tem relatórios.',
-        '**Custo do próximo vídeo.** Definido o processo, a peça número sessenta custa menos que a número dez. Com criadores, cada peça é uma negociação nova.',
-        '**Precisão.** Prazo, condição, regra técnica, restrição do setor: assunto que exige exatidão dá menos trabalho — e menos risco — quando quem fala responde pela empresa.',
-        '**Independência.** Um perfil que publica não depende da agenda, do humor nem da tabela de ninguém para chegar até o público.',
+        '**A audiência volta sem ser paga de novo.** Quem passou a seguir depois de um vídeo assiste ao próximo sem que ninguém emita uma nota fiscal nova.',
+        '**Ninguém muda de nicho no meio do caminho.** Criador troca de assunto, de tom e de patrocinador; o seu perfil só muda quando você decide. A audiência reunida em volta do seu tema continua sendo sobre o seu tema.',
+        '**A relação é direta.** Comentário, dúvida e mensagem chegam a quem pode responder, e a conversa fica registrada no seu perfil — não no de outra pessoa, junto com a de outras marcas.',
         '**Dado próprio.** Você vê a curva de cada vídeo no seu painel e aprende com ela. No post de um criador, você vê o print que ele mandar.',
       ],
     },
@@ -173,7 +190,7 @@ export const pagina: Pagina = {
       tipo: 'destaque',
       variante: 'nota',
       texto:
-        'A resposta depende de qual escassez dói mais. Falta de conhecimento da marca no curto prazo pede influenciador; falta de canal próprio pede publicação constante. Fazer os dois é comum, e a ordem tem consequência: o perfil próprio sustenta a rotina, e a campanha com criador entra em cima dela — no arranjo inverso, quem chegar pelo vídeo do criador vai encontrar um perfil vazio, que é onde a compra costuma morrer.',
+        'O desempate é por prazo de posse, não por preço da peça. O que se contrata de um criador tem data de início e data de fim; o que se publica no perfil próprio não tem data de fim — e é por isso que as duas contas nunca fecham no mesmo período. Se a empresa precisa ser vista em setembro, um criador entrega setembro. Se precisa ser vista todos os meses do ano que vem, nenhuma campanha entrega isso: só a rotina entrega, e ela começa a valer depois de já estar rodando há um tempo.',
     },
     {
       tipo: 'titulo',
@@ -188,28 +205,18 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'Do lado do conteúdo próprio, o item que some é a **constância**. Um perfil que publica em rajadas e some por seis semanas não constrói audiência: constrói um arquivo. É o formato que mais rende no longo prazo e o que mais depende de rotina para render alguma coisa — por isso a decisão real, aqui, é sobre quem produz toda semana, e não sobre ter ou não uma ideia boa.',
+        'Do lado do conteúdo próprio, o item que some é a **constância**. Um perfil que publica em rajadas e some por seis semanas não constrói audiência: constrói um arquivo. Audiência própria é feita de reencontro — a pessoa precisa ver você de novo para lembrar quem você é —, e reencontro é função de frequência, não de uma peça boa isolada. Por isso a decisão real aqui é sobre quem produz toda semana.',
     },
     {
-      tipo: 'titulo',
-      nivel: 2,
-      texto: 'Se for contratar um criador, combine isto por escrito',
-    },
-    {
-      tipo: 'lista',
-      itens: [
-        '**Sinalização de publicidade.** Conteúdo pago apresentado como opinião espontânea é problema de publicidade, e as plataformas têm regras próprias de marcação.',
-        '**Cessão de uso.** Canais, prazo e se a peça pode ser veiculada como anúncio.',
-        '**Aprovação de roteiro.** O que a marca pode ajustar, e o que fica a critério de quem grava — sem isso, a discussão acontece com o vídeo já gravado.',
-        '**Exclusividade de categoria.** Por quanto tempo o mesmo criador não anuncia um concorrente direto.',
-        '**Entrega do arquivo.** Receber o vídeo em alta, e não só o link do post, é o que permite reaproveitar o material depois.',
-      ],
+      tipo: 'paragrafo',
+      texto:
+        'O que precisa estar escrito num contrato de criador — cessão de uso, sinalização de publicidade e entrega do arquivo — está no FAQ de [UGC ou conteúdo de marca](/comparativos/ugc-vs-conteudo-de-marca), que é onde esse contrato tem dono.',
     },
     {
       tipo: 'destaque',
       variante: 'doxa',
       texto:
-        'A Doxa está de um lado só desta comparação: produz conteúdo vertical em escala para o perfil da própria empresa — cada vídeo único, com roteiro, voz, edição e capa, entregue pronto para postar. Ela não intermedeia criadores, não agencia influenciadores e não vende tráfego pago: as visualizações contabilizadas nas metas são orgânicas, sem depender de compra de mídia, dentro das metas de performance definidas em contrato. Quem publica é o cliente, no perfil dele.',
+        'Onde a Doxa entra: ela produz para o perfil da empresa, e não para o de terceiros. O que sai da operação é conteúdo vertical em escala, entregue pronto para postar — e como quem publica é o cliente, a audiência que aparecer aparece na conta dele. Ela não agencia nem intermedeia criadores, e não vende tráfego pago: as visualizações contabilizadas nas metas são orgânicas, sem depender de compra de mídia, dentro das metas de performance definidas em contrato.',
     },
     {
       tipo: 'titulo',
@@ -222,7 +229,7 @@ export const pagina: Pagina = {
         {
           pergunta: 'Contratar influenciador faz o meu perfil crescer?',
           resposta:
-            'Faz crescer o alcance daquela publicação, que é diferente. Parte de quem assiste visita o perfil da marca, e é aí que a conversão de audiência acontece ou não: quem chega e encontra um perfil sem vídeos recentes costuma não voltar. O ganho de seguidores por campanha de influência depende muito mais do que existe no seu perfil do que do tamanho do criador.',
+            'Faz crescer o alcance daquela publicação, que é diferente. Parte de quem assiste visita o perfil da marca, e é aí que a conversão de audiência acontece ou não: quem chega e encontra um perfil sem vídeos recentes costuma não voltar. O ganho de seguidores por campanha de influência costuma depender mais do que a pessoa encontra no seu perfil do que do tamanho do criador.',
         },
         {
           pergunta: 'Micro criador ou perfil grande?',
@@ -266,10 +273,12 @@ export const pagina: Pagina = {
  * [x]  5. A garantia entra pela redação prudente do FAQ ("metas de performance
  *          definidas em contrato"), sem número e sem prazo.
  * [x]  6. Intenção própria: audiência alugada × audiência construída. O par
- *          `ugc-vs-conteudo-de-marca` compara FORMATO de peça, não audiência.
- * [x]  7. Informação incremental: a tabela de oito critérios por audiência, os
- *          dois itens que somem das propostas e a lista do que combinar por
- *          escrito com um criador.
+ *          `ugc-vs-conteudo-de-marca` compara FORMATO de peça, e é DONO do
+ *          contrato com criador, do custo por peça e da prova de uso — aqui
+ *          esses blocos viram uma frase com link, nunca a versão longa.
+ * [x]  7. Informação incremental e SÓ do eixo audiência: a tabela de oito
+ *          critérios, "prazo de posse" como desempate, audiência como
+ *          reencontro, e de quem fica o dado depois da campanha.
  * [x]  8. title exclusivo (53 caracteres), description 120–160, H1 único.
  * [x]  9. Hub de marketing orgânico; links para o comparativo de formato, o de
  *          canal, a solução de conteúdo orgânico e o verbete de alcance.
