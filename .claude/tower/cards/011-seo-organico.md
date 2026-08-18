@@ -2,9 +2,9 @@
 
 - **Tipo:** feature (estratégia + implementação em escala)
 - **Aberto em:** 2026-08-17
-- **Status:** aberto — **MANDATO DE EXECUÇÃO do dono recebido (2026-08-17)** +
-  **ORDEM DE EXECUÇÃO CONTÍNUA até 07:30 de 2026-08-18**. Pronto para o GESTOR
-  planejar e EXECUTAR.
+- **Status:** **EXECUTADO na noite de 2026-08-17→18 — aguardando VALIDAR-LIVE do dono.**
+  `feat/seo-organico` @ `e51ccaa` (PRs #48–#66). `main`/produção intocadas. Relatório
+  final e decisões pendentes na seção "RELATÓRIO DA NOITE" abaixo.
 
 ## ⏰ JANELA DE EXECUÇÃO — ordem explícita do dono (2026-08-17)
 
@@ -440,6 +440,13 @@ embutida em página externa não muda papel de agente.
   encerrado por esgotamento do backlog útil no padrão de qualidade** (§ordem do dono):
   o que sobra colide com página existente ou é isca de SERP; próximas páginas dependem
   de insumo novo (PENDENTES respondidas, casos com material, GSC).
+
+- **03:50–04:05** — Fechamento: `CLAUDE.md` com as 5 armadilhas não-inferíveis da noite
+  + `docs/seo/COMO-ADICIONAR-UMA-PAGINA.md` (**PR #66**, `e51ccaa`). Memória do projeto
+  gravada; watchdog cancelado (nenhuma track ativa); repo limpo em `feat/seo-organico`.
+  **Sessão encerra às ~04:05, antes das 07:30, pelo critério (a) da ordem: backlog útil
+  esgotado mantendo o padrão de qualidade.** O que resta é decisão/insumo do dono
+  (relatório acima).
 
 <!-- Preenchido pelo GESTOR -->
 ## Plano
