@@ -253,6 +253,15 @@ embutida em página externa não muda papel de agente.
   Lição da rodada: mesmo com as "LIÇÕES DA FASE 1" no pack, dois executores copiaram
   blocos de vizinhas — o collector continua obrigatório em conteúdo.
 
+- **02:00–02:20** — Rodada 2: R2-C corrigido → **PR #55 (`8a9a451`, 47 rotas)**; R2-B
+  reescrito → re-gate APROVADO COM RESSALVAS → 4 ajustes → **PR #56 (`bb8d3e4`, 56
+  rotas, 26/903)**; R2-A collector APROVADO COM RESSALVAS (9 itens D1–D9: aritmética
+  no resumo, "quatro campos"×tabela de cinco, quantificador inventado no destaque, FAQ
+  negando regra pública de marca-d'água, hook invertendo o critério da dona, Shorts
+  com destaque quase idêntico à comercial, RH-1 sem atribuição, hedges, frases quase
+  idênticas) → executor retomado. Depois de R2-A: `track-seo-correcao-1` (13 itens
+  transversais) como única track de conteúdo ativa.
+
 <!-- Preenchido pelo GESTOR -->
 ## Plano
 
