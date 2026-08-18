@@ -65,7 +65,8 @@ esses gates no motor — sem tocar em conteúdo.
    única, trecho achatado) e "Faixas de palavras (medidas no corpo, pelo audit)".
 
 ## SCOPE
-- src/seo/layout/Cabecalho.tsx  <!-- SCOPE ampliado às 03:05: os 4 layouts abaixo entraram porque o contraste tinha 26 nós em 5 arquivos, não 1 -->
+<!-- SCOPE ampliado às 03:05: os 4 layouts do fim entraram porque o contraste tinha 26 nós em 5 arquivos, não 1 -->
+- src/seo/layout/Cabecalho.tsx
 - src/seo/layout/Rodape.tsx
 - src/seo/layout/Blocos.tsx
 - src/seo/seo.test.ts
