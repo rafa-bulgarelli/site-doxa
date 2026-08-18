@@ -72,6 +72,15 @@ informação, com ponte legítima para o que a Doxa faz de verdade.
 - Armadilhas: **pnpm** · sem `any`/`as` · aspas SIMPLES como o resto de `src/` (o STYLE fala em duplas para outro repo; aqui a convenção estabelecida vence) · nome de arquivo = slug.
 - **Estilo OBRIGATÓRIO**: `.claude/STYLE-GOOGLE-TS.md`.
 
+**AVISO DA SESSÃO PRINCIPAL (pós-prelude, PR #49):** o motor de hoje NÃO resolve link
+inline para a landing (`/`, `/#forms`, `/#faq` viram `desconhecida` e o render lança).
+A track de fundação (T1) está corrigindo em paralelo. Até lá: **não escreva link
+inline para a landing** — o CTA da página (hero + fecho, via `cta`) já leva ao
+formulário. Também NÃO registre nada em `rotas-planejadas.ts` (é contrato; slug fora
+da lista = PARE e reporte). O hash de `dist/assets/index-*.js` muda por cascata de CSS
+e NÃO é critério de nada. Rastro de fatos no topo de cada arquivo (`fonte:` por fato,
+apontando `docs/seo/source-of-truth.md`) e o checklist da régua no fim, como comentário.
+
 ## A TASK
 1. Uma a uma: keyword-map → escrever → `pnpm test src/seo` → `pnpm build` → ler no
    preview → checklist da `regua-de-copy.md` + §45 + a pergunta do QA adversarial

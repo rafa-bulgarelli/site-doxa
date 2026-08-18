@@ -173,6 +173,22 @@ embutida em página externa não muda papel de agente.
   a torre NÃO replica isso em página nova. `tower-close.sh` passou a aceitar squash
   (árvore idêntica à base) e `BASE` por env.
 
+- **00:25** — `prelude-seo-motor` READY (com desvio declarado do hash) → gate pesado:
+  collector **APROVADO COM RESSALVAS** + verificação independente da sessão principal
+  (mesmo ambiente: 34 chunks JS idênticos após normalizar hash; CSS 1217→1253 regras,
+  0 sumidas; `curl` sem JS ok; visual desktop/mobile emulado 390/320 sem overflow;
+  Vercel preview da branch Ready e Build Output com `308` + `handle: filesystem` antes
+  do rewrite) → **PR #49 squash em `feat/seo-organico` (`7495d0c`)**. Critério "hash da
+  landing igual" era errado por construção (CSS compartilhado → `augmentChunkHash`);
+  substituído por "JS idêntico normalizado" nos packs. Ressalvas do collector roteadas:
+  T1 (cabeçalho mobile, `resolverLink` p/ landing, âncoras de `ancoras.ts`, ordem do
+  menu, README, NITs do motor, régua item 11) e T2 (rastro/régua/wording da página-
+  modelo). Achado lateral: `vercel build` imprime 59× TS2835 em `api/` (pré-existente
+  na base, não falha) — relatar de manhã. `tower-close.sh` agora compara só arquivos
+  tocados (track pode ficar atrás da base). Ferramenta nova:
+  `.claude/tower/bin/mobile-shot.mjs` (viewport emulado via DevTools; `--window-size`
+  do Chrome mente abaixo de ~500px). **FASE 1 aberta**: 4 executores.
+
 <!-- Preenchido pelo GESTOR -->
 ## Plano
 

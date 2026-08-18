@@ -78,6 +78,15 @@ rodapé — para a biblioteca não ser órfã do site.
   `rodape/config.ts` é da landing: uma linha por idioma, nada além.
 - **Estilo OBRIGATÓRIO**: `.claude/STYLE-GOOGLE-TS.md`.
 
+**AVISO DA SESSÃO PRINCIPAL (pós-prelude, PR #49):** o motor de hoje NÃO resolve link
+inline para a landing (`/`, `/#forms`, `/#faq` viram `desconhecida` e o render lança).
+A track de fundação (T1) está corrigindo em paralelo. Até lá: **não escreva link
+inline para a landing** — o CTA da página (hero + fecho, via `cta`) já leva ao
+formulário. Também NÃO registre nada em `rotas-planejadas.ts` (é contrato; slug fora
+da lista = PARE e reporte). O hash de `dist/assets/index-*.js` muda por cascata de CSS
+e NÃO é critério de nada. Rastro de fatos no topo de cada arquivo (`fonte:` por fato,
+apontando `docs/seo/source-of-truth.md`) e o checklist da régua no fim, como comentário.
+
 ## A TASK
 1. Os cinco hubs primeiro (são o esqueleto que as outras tracks apontam), depois
    dores, depois glossário. Por página: keyword-map → escrever → `pnpm test src/seo`
@@ -97,6 +106,9 @@ rodapé — para a biblioteca não ser órfã do site.
 ## DEPENDS ON
 `prelude-seo-motor` e `track-seo-docs` mergeados em `feat/seo-organico`. PARALELA a
 `track-seo-fundacao`, `track-seo-conteudo-solucoes`, `track-seo-conteudo-guias`.
+
+**Medidor de mobile (use no VERIFY, não confie em `--window-size=390`):**
+`(pnpm preview --port 5299 >/dev/null 2>&1 &); sleep 2; node .claude/tower/bin/mobile-shot.mjs http://localhost:5299/<rota>/ 320 <print.png>` — imprime `scrollWidth`/`clientWidth` (têm de ser iguais) e os elementos que passam da borda (só a tabela dentro de `overflow-x-auto` é aceitável). Print vai para o scratchpad e é descrito no report.
 
 ## VERIFY (pass/fail executável — cole a saída no report)
 - `pnpm typecheck` = 0 erros · `pnpm test` verde · `pnpm build` ok

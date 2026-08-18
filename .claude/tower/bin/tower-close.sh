@@ -36,12 +36,18 @@ fi
 # ancestral da base — contar commits diria "não mergeada" para toda track
 # entregue. O critério é a ÁRVORE: se o conteúdo da track está todo na base
 # (`git diff` vazio), o trabalho não se perde ao fechar.
+# A track pode estar ATRÁS da base (outras tracks mergearam depois dela), então
+# a comparação é só nos arquivos que ELA tocou desde o merge-base.
 unmerged="$(git rev-list --count "$BASE..$BRANCH")"
-if [ "$unmerged" -ne 0 ] && ! git diff --quiet "$BASE" "$BRANCH"; then
-  echo "ERRO: '$BRANCH' tem $unmerged commit(s) fora de $BASE e a árvore difere — não está mergeada." >&2
-  echo "Fechar agora perde esse trabalho. Mergeie primeiro, ou apague à mão se for descarte." >&2
-  git diff --stat "$BASE" "$BRANCH" | tail -5 >&2
-  exit 1
+if [ "$unmerged" -ne 0 ]; then
+  mb="$(git merge-base "$BASE" "$BRANCH")"
+  tocados="$(git diff --name-only "$mb" "$BRANCH")"
+  if [ -n "$tocados" ] && ! printf '%s\n' "$tocados" | xargs git diff --quiet "$BASE" "$BRANCH" --; then
+    echo "ERRO: '$BRANCH' tem $unmerged commit(s) fora de $BASE e arquivos tocados que diferem da base — não está mergeada." >&2
+    echo "Fechar agora perde esse trabalho. Mergeie primeiro, ou apague à mão se for descarte." >&2
+    printf '%s\n' "$tocados" | xargs git diff --stat "$BASE" "$BRANCH" -- | tail -5 >&2
+    exit 1
+  fi
 fi
 
 if [ -d "$WORKTREE" ]; then

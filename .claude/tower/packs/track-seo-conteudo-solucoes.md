@@ -79,7 +79,28 @@ número, sem virar propaganda em cada parágrafo. Parece produto Doxa, não blog
   slug exato.
 - **Estilo OBRIGATÓRIO**: `.claude/STYLE-GOOGLE-TS.md`.
 
+**AVISO DA SESSÃO PRINCIPAL (pós-prelude, PR #49):** o motor de hoje NÃO resolve link
+inline para a landing (`/`, `/#forms`, `/#faq` viram `desconhecida` e o render lança).
+A track de fundação (T1) está corrigindo em paralelo. Até lá: **não escreva link
+inline para a landing** — o CTA da página (hero + fecho, via `cta`) já leva ao
+formulário. Também NÃO registre nada em `rotas-planejadas.ts` (é contrato; slug fora
+da lista = PARE e reporte). O hash de `dist/assets/index-*.js` muda por cascata de CSS
+e NÃO é critério de nada. Rastro de fatos no topo de cada arquivo (`fonte:` por fato,
+apontando `docs/seo/source-of-truth.md`) e o checklist da régua no fim, como comentário.
+
 ## A TASK
+0. **PRIMEIRO — a página-modelo do prelude é sua (collector do PR #49):**
+   `src/seo/conteudo/solucoes/producao-de-videos-com-ia.ts` — (a) o rastro de fatos no
+   topo (`:19-20`, `:31-32`) está desatualizado: `midia-extra` virou parágrafo, faltam
+   `tom-de-voz` e `preco`, e o comentário diz "preço não está aqui" enquanto o FAQ da
+   `:263` é a pergunta de preço com a resposta autorizada (§9.1) — corrija o COMENTÁRIO,
+   não o conteúdo; (b) cole no fim do arquivo o checklist de 14 itens de
+   `docs/seo/regua-de-copy.md` como comentário, marcado — é o modelo que as outras
+   páginas copiam; (c) `:224` "compartilhamentos" → "reposts" (é o que a fonte diz);
+   `:179` "assume a produção e a distribuição" → "a produção e a estratégia de
+   distribuição" (a palavra "distribuição" na `:143` significa agência/tráfego).
+   Todo arquivo NOVO já nasce com rastro de fatos no topo e o checklist no fim.
+
 1. Uma a uma, na ordem acima: ler as linhas do keyword-map, escrever o arquivo,
    `pnpm test src/seo`, `pnpm build`, ler no preview, aplicar o checklist da
    `regua-de-copy.md` e o teste do §45 ("publicaria se o Google não existisse?").

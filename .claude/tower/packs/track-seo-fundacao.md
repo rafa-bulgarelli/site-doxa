@@ -97,13 +97,41 @@ com a Doxa" de qualquer página nova CHEGA no formulário da landing — hoje o
 - Armadilhas do repo (desta track): **pnpm** · `App.tsx`/`main.tsx` são a landing —
   mudança incremental, cada linha justificada em comentário; `focus()` na montagem
   rola a página sozinha; o `#forms` mora num elemento SEM transform (`ancoras.ts`
-  explica) · o build da landing é medido pelo hash: se `dist/assets/index-*.js` mudar
-  (vai mudar — você tocou App/main), o diff de `src/App.tsx` tem de ser SÓ o bloco do
-  hash · robots servido ≠ repo · `verbatimModuleSyntax` só no projeto api (não é o
+  explica) · o hash de `dist/assets/index-*.js` NÃO é critério (muda por cascata de CSS —
+  provado no prelude); a não-regressão da landing é medida por diff de `src/App.tsx`
+  e `src/main.tsx` SÓ com o bloco do fragmento, e pelo executor colar
+  `git diff origin/feat/seo-organico...HEAD -- src/App.tsx src/main.tsx` inteiro no
+  report · robots servido ≠ repo · `verbatimModuleSyntax` só no projeto api (não é o
   seu) · `noUnusedLocals`.
 - **Estilo OBRIGATÓRIO**: `.claude/STYLE-GOOGLE-TS.md`.
 
 ## A TASK
+0. **PRIMEIRO — ressalvas do collector do prelude (PR #49), você é dono do motor:**
+   a. `src/seo/layout/Cabecalho.tsx` — nav `flex-nowrap` + `whitespace-nowrap` estoura
+      em 320/375px com 3+ seções (~470px). Conserto: só **Soluções · Guias** no
+      cabeçalho (o resto vai no rodapé, que já lista tudo) OU `flex-wrap`; prove com o
+      medidor de mobile abaixo em 320px com as 5 seções simuladas no teste.
+   b. `src/seo/indice.ts` `resolverLink` (~:148) — `/`, `/#forms`, `/#faq` (a landing)
+      têm de resolver como `existe`; hoje viram `desconhecida` e `Blocos.tsx:47-50`
+      lança no render. Teste cobrindo os três.
+   c. Âncoras à mão: `src/seo/site.ts:150` (`'/#forms'`) e `src/seo/layout/Rodape.tsx:41`
+      (`'/#faq'`) → importar de `src/ancoras.ts` (`HREF_FORMS`, `HREF_FAQ`; é puro, só
+      leitura — NÃO edite `ancoras.ts`).
+   d. `src/seo/indice.ts:119-120` — tirar o `.sort()` de `Object.keys(SECOES)`; a ordem
+      de inserção em `SECOES` já é a ordem editorial (Soluções primeiro).
+   e. `src/seo/README.md` — apontar a fonte de fatos para `docs/seo/source-of-truth.md`
+      (não "landing, FAQ, llms.txt"); dizer que `Hub` é union fechada (hub novo =
+      `tipos.ts` + `HUBS` em `site.ts` + `rotas-planejadas.ts`, decisão do gestor).
+   f. NITs do motor: `head.ts:77` `twitter:card` = `summary` enquanto `OG_IMAGEM` for
+      null (você vai criar a og.png nesta track — então vira `summary_large_image`
+      junto); `Cta.tsx:21` passar `cta.texto` por `Inline` (o contrato promete marcação
+      em todo `texto`); `schema.ts:79-90` `faqPage` achata `resposta` via `tokens()`
+      antes de ir ao JSON-LD; `seo.test.ts:147,162` escapar HTML antes de comparar
+      title/description (`&`, `'`, `"`); `scripts/prerender.mjs` build SSR com
+      `publicDir: false` (hoje copia 27 MB de `public/` a cada build).
+   g. `docs/seo/regua-de-copy.md` item 11 ("CTA um só, no fim") vs layout (CTA no hero
+      + no fecho + botão do cabeçalho): decisão do gestor = **layout fica**; ajuste a
+      régua para "CTA no hero e no fecho, nunca no meio do corpo" (1 linha).
 1. `scripts/og-imagem.mjs` + `public/og.png` (1200×630, < 300 KB).
 2. `index.html`: og:image/og:image:alt/width/height, og:url, canonical, twitter:image,
    JSON-LD Organization + WebSite; comentário atualizado.
@@ -119,6 +147,7 @@ com a Doxa" de qualquer página nova CHEGA no formulário da landing — hoje o
 6. `public/robots.txt`, `public/llms.txt`.
 
 ## SCOPE
+- docs/seo/regua-de-copy.md
 - index.html
 - public/og.png
 - public/robots.txt
@@ -152,6 +181,9 @@ com a Doxa" de qualquer página nova CHEGA no formulário da landing — hoje o
 ## DEPENDS ON
 `prelude-seo-motor` mergeado em `feat/seo-organico`. Roda em PARALELO com
 `track-seo-conteudo-solucoes`, `track-seo-conteudo-guias`, `track-seo-hubs-nav`.
+
+**Medidor de mobile (use no VERIFY, não confie em `--window-size=390`):**
+`(pnpm preview --port 5299 >/dev/null 2>&1 &); sleep 2; node .claude/tower/bin/mobile-shot.mjs http://localhost:5299/<rota>/ 320 <print.png>` — imprime `scrollWidth`/`clientWidth` (têm de ser iguais) e os elementos que passam da borda (só a tabela dentro de `overflow-x-auto` é aceitável). Print vai para o scratchpad e é descrito no report.
 
 ## VERIFY (pass/fail executável — cole a saída no report)
 - `pnpm typecheck` = 0 erros · `pnpm test` verde (baseline main 19/504 + prelude +
