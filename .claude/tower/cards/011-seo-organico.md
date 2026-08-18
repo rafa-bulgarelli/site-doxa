@@ -222,6 +222,10 @@ embutida em página externa não muda papel de agente.
   o gate de VERIFY precisa da saída colada — está nos reports dos executores (24/569,
   24/574, 24/594) e a sessão principal roda a suíte de novo no merge.
 
+- **~02:05** — T2 corrigido (`1238bfd`) → merge de teste local contra a base com T1:
+  26/642 verdes, 0 conflitos → **PR #51 squash (`0ff3890`)**. Worktree fechada.
+  Feature branch: motor + fundação + 9 páginas de soluções/plataformas.
+
 <!-- Preenchido pelo GESTOR -->
 ## Plano
 
