@@ -74,4 +74,31 @@ export const ROTAS_PLANEJADAS: readonly string[] = [
   '/glossario/clone-de-voz',
   '/glossario/algoritmo-do-tiktok',
   '/glossario/conteudo-evergreen',
+
+  // ─── Rodada 2 (2026-08-18) — backlog do keyword-map, sem canibalizar a FASE 1 ───
+  // Guias de execução (metodologia com fonte no manual) + adjacência §47 + B2B + Shorts
+  '/guias/como-produzir-60-videos-em-90-dias',
+  '/guias/como-usar-o-mesmo-video-nas-tres-redes',
+  '/guias/como-fazer-hook-de-video-curto',
+  '/guias/como-escrever-roteiro-de-video-curto',
+  '/guias/quantas-vezes-postar-por-dia-no-tiktok',
+  '/guias/como-medir-resultado-de-conteudo-organico',
+  '/guias/o-que-e-uma-agencia-de-marketing-com-ia',
+  '/guias/como-crescer-no-youtube-shorts',
+  '/guias/marketing-de-conteudo-para-b2b',
+  // Comparativos: as alternativas que o lead considera de verdade
+  '/comparativos/freelancer-vs-agencia-de-conteudo',
+  '/comparativos/conteudo-organico-vs-influenciador',
+  // Glossário: métricas-base e termos da entrega
+  '/glossario/engajamento',
+  '/glossario/impressoes',
+  '/glossario/clone-digital',
+  '/glossario/roteiro-de-video-curto',
+  '/glossario/legenda-embutida',
+  '/glossario/feed-recomendado',
+  '/glossario/cta',
+  // Dor + soluções (cabeça de cluster ampla e a metade voz do clone)
+  '/guias/por-que-meu-instagram-parou-de-crescer',
+  '/solucoes/conteudo-para-redes-sociais-com-ia',
+  '/solucoes/clone-de-voz-para-videos',
 ];
