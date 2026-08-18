@@ -88,7 +88,7 @@ export const pagina: Pagina = {
     {
       tipo: 'titulo',
       nivel: 2,
-      texto: 'Os erros que aparecem em quase todo perfil de marca',
+      texto: 'Os erros que mais aparecem em perfil de marca',
     },
     {
       tipo: 'lista',

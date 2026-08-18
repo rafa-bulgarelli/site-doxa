@@ -84,7 +84,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'O começo do vídeo é a única parte que todo mundo vê. Ele não serve para se apresentar, situar o assunto ou agradecer: serve para dar ao espectador um motivo específico de ficar. Um hook funciona quando entrega uma das quatro coisas abaixo antes que o dedo decida.',
+        'O começo do vídeo é a única parte que ninguém pula. Ele não serve para se apresentar, situar o assunto ou agradecer: serve para dar ao espectador um motivo específico de ficar. Um hook funciona quando entrega uma das quatro coisas abaixo antes que o dedo decida.',
     },
     {
       tipo: 'lista',
@@ -134,7 +134,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'O que não funciona é o fecho administrativo — "comenta aí", "salva esse vídeo", "segue o perfil". Ele ocupa o segundo mais valioso da peça com um pedido que só interessa a quem publicou, e quase sempre chega depois de a atenção já ter ido embora.',
+        'O que não funciona é o fecho administrativo — "comenta aí", "salva esse vídeo", "segue o perfil". Ele ocupa o segundo mais valioso da peça com um pedido que só interessa a quem publicou, e costuma chegar depois de a atenção já ter ido embora.',
     },
     {
       tipo: 'titulo',

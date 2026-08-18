@@ -101,5 +101,5 @@ export const pagina: Pagina = {
  * [x] 12. Sem stuffing.
  * [x] 13. Vocabulário do dono: "clone", "voz clonada".
  * [x] 14. Publicaria sem Google: sim — o parágrafo do consentimento é o que
- *          falta na maioria das páginas sobre o tema.
+ *          falta em boa parte das páginas sobre o tema.
  * ────────────────────────────────────────────────────────────────────────── */

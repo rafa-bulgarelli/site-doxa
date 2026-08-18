@@ -39,7 +39,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'A plataforma mostra um vídeo novo para um grupo pequeno de pessoas e observa o que elas fazem. Se a maioria sai nos primeiros segundos, a entrega para por ali. Como quase todo o abandono acontece no começo, o hook é a variável com maior efeito sobre quantas pessoas vão ver o vídeo — e é também a mais barata de mudar, porque não exige regravar o conteúdo inteiro.',
+        'A plataforma mostra um vídeo novo para um grupo pequeno de pessoas e observa o que elas fazem. Se boa parte dessas pessoas sai nos primeiros segundos, a entrega para por ali. Como o abandono se concentra no começo, o hook é a variável com maior efeito sobre quantas pessoas vão ver o vídeo — e é também a mais barata de mudar, porque não exige regravar o conteúdo inteiro.',
     },
     {
       tipo: 'titulo',

@@ -160,7 +160,7 @@ export const pagina: Pagina = {
       tipo: 'destaque',
       variante: 'nota',
       texto:
-        'A resposta depende de quantas peças e de que tipo. Poucas peças por trimestre, com demonstração física ou presença real: grave. Muitas peças por mês, explicativas, com o mesmo rosto e a mesma marca: gerar sai mais barato e mais previsível. A maioria das empresas precisa das duas coisas, em proporções diferentes.',
+        'A resposta depende de quantas peças e de que tipo. Poucas peças por trimestre, com demonstração física ou presença real: grave. Muitas peças por mês, explicativas, com o mesmo rosto e a mesma marca: gerar sai mais barato e mais previsível. Boa parte das empresas precisa das duas coisas, em proporções diferentes.',
     },
     {
       tipo: 'titulo',

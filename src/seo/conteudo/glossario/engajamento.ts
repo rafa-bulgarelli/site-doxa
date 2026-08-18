@@ -65,7 +65,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'Taxa de engajamento é o total de ações dividido por uma base, e há duas em uso. Sobre **seguidores**, ela premia perfis pequenos e infla quando o vídeo alcança muita gente de fora — o número sobe sem que a base tenha mudado. Sobre **alcance**, mede o que aconteceu com quem viu. São números diferentes para o mesmo vídeo: comparar o seu com o de outra pessoa sem conferir a fórmula não diz nada.',
+        'Taxa de engajamento é o total de ações dividido por uma base, e há duas em uso. Sobre **seguidores**, ela favorece perfis pequenos e infla quando o vídeo alcança muita gente de fora — o número sobe sem que a base tenha mudado. Sobre **alcance**, mede o que aconteceu com quem viu. São números diferentes para o mesmo vídeo: comparar o seu com o de outra pessoa sem conferir a fórmula não diz nada.',
     },
     {
       tipo: 'titulo',

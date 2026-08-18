@@ -97,7 +97,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'TikTok, Instagram Reels e YouTube Shorts pedem o mesmo formato e premiam coisas parecidas, o que torna o reaproveitamento honesto — não é preguiça, é distribuição. Publicar o mesmo vídeo nas três multiplica a chance de encontrar a audiência sem multiplicar a produção, e as diferenças reais entre as redes aparecem depois, na leitura dos dados, não na hora de exportar o arquivo.',
+        'TikTok, Instagram Reels e YouTube Shorts pedem o mesmo formato e costumam responder a sinais parecidos, o que torna o reaproveitamento honesto — não é preguiça, é distribuição. Publicar o mesmo vídeo nas três multiplica a chance de encontrar a audiência sem multiplicar a produção, e as diferenças reais entre as redes aparecem depois, na leitura dos dados, não na hora de exportar o arquivo.',
     },
     {
       tipo: 'paragrafo',

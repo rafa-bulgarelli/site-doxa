@@ -129,7 +129,7 @@ export const pagina: Pagina = {
         '**Ela já existe.** Não há processo seletivo, período de adaptação nem compra de equipamento antes da primeira entrega.',
         '**Repertório.** Quem trabalha com vários clientes viu formatos, erros e soluções que um time de uma empresa só levaria anos para ver.',
         '**Absorve pico.** Lançamento, sazonalidade e campanha extraordinária não exigem contratar gente que sobra no mês seguinte.',
-        '**Especialista sob demanda.** Direção de arte, redação, mídia, edição — cargos que a maioria das empresas não sustenta em tempo integral.',
+        '**Especialista sob demanda.** Direção de arte, redação, mídia, edição — cargos que boa parte das empresas não sustenta em tempo integral.',
         '**Olhar de fora.** Quem está dentro da empresa acha óbvio justamente o que o cliente não sabe. A distância ajuda a ver isso.',
       ],
     },

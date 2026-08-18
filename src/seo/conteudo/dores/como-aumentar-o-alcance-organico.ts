@@ -95,7 +95,7 @@ export const pagina: Pagina = {
         {
           titulo: 'A frequência, até um piso razoável',
           texto:
-            'Abaixo de dois ou três vídeos por semana, a plataforma tem pouca amostra para entender quem é o seu público. Subir a frequência quase sempre aumenta o alcance total antes de aumentar o alcance por vídeo.',
+            'Abaixo de dois ou três vídeos por semana, a plataforma tem pouca amostra para entender quem é o seu público. Subir a frequência costuma aumentar o alcance total antes de aumentar o alcance por vídeo.',
         },
         {
           titulo: 'O espaçamento entre publicações',

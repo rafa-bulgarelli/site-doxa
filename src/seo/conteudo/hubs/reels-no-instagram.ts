@@ -66,7 +66,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'Isso explica o desenho estranho de muitos perfis de empresa: carrossel bonito, engajamento razoável entre os seguidores e nenhuma pessoa nova chegando. O alcance que traz gente de fora se concentra no formato que a maioria das marcas produz menos, porque é o que dá mais trabalho.',
+        'Isso explica o desenho estranho de muitos perfis de empresa: carrossel bonito, engajamento razoável entre os seguidores e nenhuma pessoa nova chegando. O alcance que traz gente de fora se concentra no formato que boa parte das marcas produz menos, porque é o que dá mais trabalho.',
     },
     {
       tipo: 'titulo',
@@ -95,7 +95,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'A pergunta que quase todo mundo faz em seguida é como manter esse ritmo sem uma equipe. Ela tem página própria: [como postar todos os dias sem equipe](/guias/como-postar-todos-os-dias-sem-equipe) trata da rotina, e [como produzir conteúdo sem equipe](/guias/como-produzir-conteudo-sem-equipe) trata de onde o material sai.',
+        'A pergunta que vem em seguida é como manter esse ritmo sem uma equipe. Ela tem página própria: [como postar todos os dias sem equipe](/guias/como-postar-todos-os-dias-sem-equipe) trata da rotina, e [como produzir conteúdo sem equipe](/guias/como-produzir-conteudo-sem-equipe) trata de onde o material sai.',
     },
     {
       tipo: 'titulo',

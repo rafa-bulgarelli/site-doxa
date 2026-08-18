@@ -35,7 +35,7 @@ export const pagina: Pagina = {
     'As causas mais comuns de um vídeo sem visualizações, na ordem em que vale investigar, com o teste que identifica cada uma e o que fazer depois.',
   h1: 'Por que os seus vídeos não têm views',
   resumo:
-    'Na maioria dos casos são três coisas, nesta ordem: o vídeo não prende nos primeiros segundos, o volume é baixo demais para gerar dado, ou os vídeos competem entre si por serem publicados perto demais. Nenhuma delas é sorte. Abaixo, como identificar qual é a sua e o que fazer em cada caso.',
+    'Na maior parte dos casos são três coisas, nesta ordem: o vídeo não prende nos primeiros segundos, o volume é baixo demais para gerar dado, ou os vídeos competem entre si por serem publicados perto demais. Nenhuma delas é sorte. Abaixo, como identificar qual é a sua e o que fazer em cada caso.',
   intencao: 'informacional',
   palavrasChave: [
     'meu vídeo não tem views',
@@ -66,7 +66,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'A ordem importa. As causas abaixo estão organizadas da mais frequente para a menos frequente, e as três primeiras explicam a maioria dos casos. Comece pela primeira, faça o teste indicado, e só siga adiante se ela estiver descartada — mexer em cinco coisas ao mesmo tempo garante que você não vai saber qual delas era.',
+        'A ordem importa. As causas abaixo estão organizadas da mais frequente para a menos frequente, e as três primeiras explicam a maior parte dos casos. Comece pela primeira, faça o teste indicado, e só siga adiante se ela estiver descartada — mexer em cinco coisas ao mesmo tempo garante que você não vai saber qual delas era.',
     },
     {
       tipo: 'destaque',

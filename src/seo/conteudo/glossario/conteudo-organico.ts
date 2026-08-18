@@ -17,7 +17,7 @@ export const pagina: Pagina = {
     'Conteúdo orgânico é o que a empresa publica sem pagar pela exibição. O que entra nessa definição, o que fica de fora e por que a distinção importa.',
   h1: 'Conteúdo orgânico',
   resumo:
-    'Conteúdo orgânico é tudo que uma empresa publica sem pagar para que apareça — a distribuição vem do interesse de quem assiste, não de verba de mídia. É a definição por trás de quase todo o vocabulário de crescimento em redes sociais.',
+    'Conteúdo orgânico é tudo que uma empresa publica sem pagar para que apareça — a distribuição vem do interesse de quem assiste, não de verba de mídia. É a definição por trás de boa parte do vocabulário de crescimento em redes sociais.',
   intencao: 'informacional',
   palavrasChave: ['conteúdo orgânico', 'o que é conteúdo orgânico', 'post orgânico'],
   hubs: ['/guias/marketing-organico'],

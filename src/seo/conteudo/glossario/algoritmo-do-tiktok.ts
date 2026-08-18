@@ -79,7 +79,7 @@ export const pagina: Pagina = {
     {
       tipo: 'lista',
       itens: [
-        'Tempo assistido em relação à duração — a [retenção](/glossario/retencao) é o sinal mais denso, porque quase todo espectador o produz.',
+        'Tempo assistido em relação à duração — a [retenção](/glossario/retencao) é o sinal mais denso, porque qualquer espectador o produz.',
         'Reassistir o mesmo vídeo, que é uma versão ainda mais forte do sinal anterior.',
         'Compartilhamento, que carrega intenção clara de recomendar a alguém.',
         'Comentário, principalmente quando gera resposta e conversa.',
