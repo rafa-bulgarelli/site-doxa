@@ -87,6 +87,19 @@ frase e diga no report.
    organico` têm). Acrescentar.
 10. **`guias/como-fazer-videos-curtos-que-prendem.ts:~231`** — legenda automática "erra
     em nome próprio, número e termo técnico" → hedge ("costuma errar…").
+10b. **Generalizações de T3 achadas pela rodada 2** (mesma família): `guias/como-fazer-
+    videos-curtos-que-prendem.ts:~87` "a única parte que todo mundo vê" → "a única parte
+    que toda pessoa que abriu vê"/"que ninguém pula"; `:~137` "quase sempre chega
+    depois" → "costuma chegar depois"; `guias/o-que-e-ugc.ts:~141` "Quase sempre o
+    primeiro sentido" → "Na maior parte das vezes em que a sigla aparece em briefing,
+    é o primeiro sentido" (ou "costuma ser").
+10c. **`/guias/como-usar-ia-no-marketing` não vai existir** (rodada 2 decidiu: o eixo já
+    tem 3 donos). Trocar as citações inline em `solucoes/marketing-com-ia.ts` e
+    `solucoes/producao-de-videos-com-ia.ts` (`grep -rn "como-usar-ia-no-marketing"
+    src/seo/conteudo`) por `/guias/o-que-e-uma-agencia-de-marketing-com-ia` (se a frase
+    é sobre avaliar fornecedor) ou `/guias/ia-no-marketing` (se é sobre onde a IA entra).
+    A rota some do contrato numa passada do gestor depois — você NÃO edita
+    `rotas-planejadas.ts`.
 11. Herdados dos collectors da FASE 1 sem dono (NIT, se sobrar tempo): `dores/por-que-
     meus-videos-nao-tem-views.ts:~105` "menos de uns doze, é provavelmente esta" — ok
     como está (já hedgeado); confira só.
