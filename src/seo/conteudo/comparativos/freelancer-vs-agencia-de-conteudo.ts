@@ -236,12 +236,12 @@ export const pagina: Pagina = {
         {
           pergunta: 'Agência pequena é a mesma coisa que um freelancer?',
           resposta:
-            'Não, e a diferença que importa é a cobertura: uma agência de três pessoas ainda tem quem substitua quem faltou, e um freelancer não tem. O que costuma sumir na agência pequena é o processo escrito — o padrão vive na cabeça dos sócios. Vale perguntar quem executa de fato e o que acontece na semana em que essa pessoa não puder.',
+            'Uma agência pequena não é a mesma coisa, e a diferença que importa é a cobertura: uma agência de três pessoas ainda tem quem substitua quem faltou, e um freelancer não tem. O que costuma sumir na agência pequena é o processo escrito — o padrão vive na cabeça dos sócios. Vale perguntar quem executa de fato e o que acontece na semana em que essa pessoa não puder.',
         },
         {
-          pergunta: 'Dá para usar os dois ao mesmo tempo?',
+          pergunta: 'Freelancer e agência podem trabalhar juntos?',
           resposta:
-            'Dá, e é o arranjo que mais se vê quando o volume aperta: a estrutura cuida do que se repete toda semana, e o freelancer entra no que é pontual. A condição é uma só — deixar claro quem é dono do padrão. Dois fornecedores com liberdade editorial igual produzem um perfil com duas vozes.',
+            'Os dois convivem bem, e é o arranjo que mais se vê quando o volume aperta: a estrutura cuida do que se repete toda semana, e o freelancer entra no que é pontual. A condição é uma só — deixar claro quem é dono do padrão. Dois fornecedores com liberdade editorial igual produzem um perfil com duas vozes.',
         },
       ],
     },

@@ -187,7 +187,7 @@ export const pagina: Pagina = {
         {
           pergunta: 'Preciso da estratégia pronta antes de começar a publicar?',
           resposta:
-            'Não, e esperar por ela costuma custar mais caro do que começar com ela pela metade. Os campos de objetivo, público e promessa dá para responder hoje; o critério de descarte só fica bom depois de ver as primeiras peças no ar. O que não funciona é chegar ao terceiro mês sem nenhum dos sete respondidos, porque aí não há como decidir nada com o que foi publicado.',
+            'A estratégia não precisa estar pronta para começar, e esperar por ela costuma custar mais caro do que começar com ela pela metade. Os campos de objetivo, público e promessa dá para responder hoje; o critério de descarte só fica bom depois de ver as primeiras peças no ar. O que não funciona é chegar ao terceiro mês sem nenhum dos sete respondidos, porque aí não há como decidir nada com o que foi publicado.',
         },
         {
           pergunta: 'Quem deveria escrever esse documento?',

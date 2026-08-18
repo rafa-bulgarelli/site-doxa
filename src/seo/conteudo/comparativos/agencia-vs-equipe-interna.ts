@@ -191,7 +191,7 @@ export const pagina: Pagina = {
         {
           pergunta: 'Dá para começar com agência e internalizar depois?',
           resposta:
-            'Dá, e é um caminho razoável, desde que a transferência de conhecimento esteja combinada desde o início: quem é dono dos arquivos, dos acessos, dos aprendizados e do que já foi testado. Sem isso, internalizar é recomeçar, e o segundo começo custa o mesmo que o primeiro.',
+            'Esse caminho é razoável, desde que a transferência de conhecimento esteja combinada desde o início: quem é dono dos arquivos, dos acessos, dos aprendizados e do que já foi testado. Sem isso, internalizar é recomeçar, e o segundo começo custa o mesmo que o primeiro.',
         },
         {
           pergunta: 'Agência resolve a falta de conteúdo para publicar?',

@@ -197,9 +197,9 @@ export const pagina: Pagina = {
             'A comparação justa não é entre um vídeo gerado e um comercial com direção de arte: é entre um vídeo gerado e o vídeo que a empresa realmente conseguiria gravar toda semana, com celular, luz de escritório e a agenda de quem decide. Para peça publicitária de alto acabamento, a produção tradicional continua à frente; para conteúdo recorrente de perfil, a diferença que a audiência percebe está no roteiro.',
         },
         {
-          pergunta: 'Dá para usar os dois no mesmo perfil?',
+          pergunta: 'Gravação e geração por IA cabem no mesmo perfil?',
           resposta:
-            'Dá, e tende a ser o arranjo mais estável. O material captado — produto, ambiente, equipe, cliente — entra como apoio nas peças geradas, e a rotina de publicação deixa de depender de novas gravações. O que precisa ser combinado é o padrão visual, para que as duas origens não pareçam dois perfis diferentes.',
+            'Os dois cabem no mesmo perfil, e tende a ser o arranjo mais estável. O material captado — produto, ambiente, equipe, cliente — entra como apoio nas peças geradas, e a rotina de publicação deixa de depender de novas gravações. O que precisa ser combinado é o padrão visual, para que as duas origens não pareçam dois perfis diferentes.',
         },
         {
           pergunta: 'Vídeo com IA funciona para produto físico?',

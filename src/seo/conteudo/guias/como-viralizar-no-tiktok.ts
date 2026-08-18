@@ -220,7 +220,7 @@ export const pagina: Pagina = {
         {
           pergunta: 'Postar mais de uma vez por dia acelera o crescimento?',
           resposta:
-            'Costuma fazer o contrário. A distribuição de um vídeo continua por horas depois da publicação, e o vídeo seguinte é oferecido à mesma audiência que ainda estava recebendo o anterior — é a leitura que a Doxa aplica na rotina de quem contrata, e que sustenta o intervalo de 24 horas de relógio entre publicações.',
+            'Costuma fazer o contrário. A distribuição de um vídeo continua por horas depois da publicação, e o vídeo seguinte é oferecido à mesma audiência que ainda estava recebendo o anterior — e é o que sustenta o intervalo de 24 horas de relógio entre publicações.',
         },
         {
           pergunta: 'Devo apagar os vídeos que foram mal?',

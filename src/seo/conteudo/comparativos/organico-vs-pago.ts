@@ -199,9 +199,9 @@ export const pagina: Pagina = {
       tipo: 'faq',
       itens: [
         {
-          pergunta: 'Dá para fazer os dois ao mesmo tempo?',
+          pergunta: 'Orgânico e pago podem rodar ao mesmo tempo?',
           resposta:
-            'Dá, e costuma ser o arranjo das empresas que já vendem. O cuidado é não medir os dois no mesmo lugar: se a publicação orgânica for impulsionada, o número deixa de dizer se o conteúdo funciona. Separar os perfis, ou ao menos separar os relatórios, preserva as duas leituras.',
+            'Os dois rodam juntos, e costuma ser o arranjo das empresas que já vendem. O cuidado é não medir os dois no mesmo lugar: se a publicação orgânica for impulsionada, o número deixa de dizer se o conteúdo funciona. Separar os perfis, ou ao menos separar os relatórios, preserva as duas leituras.',
         },
         {
           pergunta: 'Quanto tempo o orgânico leva para dar resultado?',

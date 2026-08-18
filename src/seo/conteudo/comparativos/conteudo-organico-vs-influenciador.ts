@@ -181,7 +181,7 @@ export const pagina: Pagina = {
       itens: [
         '**O que fica.** Ao fim de um ano, um perfil que publicou tem biblioteca, audiência e histórico; uma sequência de campanhas com criadores tem relatórios.',
         '**A audiência volta sem ser paga de novo.** Quem passou a seguir depois de um vídeo assiste ao próximo sem que ninguém emita uma nota fiscal nova.',
-        '**Ninguém muda de nicho no meio do caminho.** Criador troca de assunto, de tom e de patrocinador; o seu perfil só muda quando você decide. A audiência reunida em volta do seu tema continua sendo sobre o seu tema.',
+        '**O seu nicho só muda quando você decide.** Criador troca de assunto, de tom e de patrocinador; o seu perfil só muda quando você decide. A audiência reunida em volta do seu tema continua sendo sobre o seu tema.',
         '**A relação é direta.** Comentário, dúvida e mensagem chegam a quem pode responder, e a conversa fica registrada no seu perfil — não no de outra pessoa, junto com a de outras marcas.',
         '**Dado próprio.** Você vê a curva de cada vídeo no seu painel e aprende com ela. No post de um criador, você vê o print que ele mandar.',
       ],
@@ -244,7 +244,7 @@ export const pagina: Pagina = {
         {
           pergunta: 'Dá para construir audiência própria sem aparecer em vídeo?',
           resposta:
-            'Dá, e é o caminho de muitas empresas: quem aparece pode ser um profissional do time, um cliente autorizado, uma demonstração de produto sem rosto ou um apresentador gerado a partir de material de alguém que autorizou. O que não dá é publicar em rajadas e esperar acúmulo — a audiência própria é construída pela frequência, não pelo rosto.',
+            'Construir audiência própria não exige que o dono apareça, e é o caminho de muitas empresas: quem aparece pode ser um profissional do time, um cliente autorizado, uma demonstração de produto sem rosto ou um apresentador gerado a partir de material de alguém que autorizou. O que não dá é publicar em rajadas e esperar acúmulo — a audiência própria é construída pela frequência, não pelo rosto.',
         },
       ],
     },

@@ -183,7 +183,7 @@ export const pagina: Pagina = {
         {
           pergunta: 'Preciso de câmera e microfone profissionais?',
           resposta:
-            'Não para começar. Um celular recente, luz natural e um microfone de lapela de baixo custo cobrem o essencial. O que separa um vídeo assistido de um vídeo ignorado é a abertura e o assunto, não a resolução.',
+            'Para começar, não: um celular recente, luz natural e um microfone de lapela de baixo custo cobrem o essencial. O que separa um vídeo assistido de um vídeo ignorado é a abertura e o assunto, não a resolução.',
         },
         {
           pergunta: 'Conteúdo gravado por celular funciona para uma marca?',

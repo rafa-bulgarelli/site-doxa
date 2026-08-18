@@ -157,7 +157,7 @@ export const pagina: Pagina = {
         {
           pergunta: 'Dá para usar UGC no perfil da marca, e não só em anúncio?',
           resposta:
-            'Dá, desde que a cessão de uso cubra esse canal e o vídeo não destoe do resto do perfil. O risco não é jurídico apenas: uma sequência de rostos diferentes falando pela empresa dilui quem é a empresa. Funciona melhor como intercalação — a voz da marca sustenta a rotina, o vídeo de criador entra como prova.',
+            'UGC pode ir ao perfil da marca, desde que a cessão de uso cubra esse canal e o vídeo não destoe do resto do perfil. O risco não é jurídico apenas: uma sequência de rostos diferentes falando pela empresa dilui quem é a empresa. Funciona melhor como intercalação — a voz da marca sustenta a rotina, o vídeo de criador entra como prova.',
         },
         {
           pergunta: 'Conteúdo de marca precisa ter aparência profissional?',
