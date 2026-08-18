@@ -14,7 +14,35 @@
 # ATENÇÃO ao caminho de volta: tirar uma URL do índice é lento e não depende de
 # nós. Se o site precisar sair do ar para o Google, `Disallow: /` aqui só impede
 # NOVOS rastreios — o que já entrou sai no tempo do buscador.
+# ─── O QUE FICA DE FORA, E POR QUÊ ───────────────────────────────────────────
+#
+# Quatro ferramentas internas e a API. Nenhuma delas é conteúdo: são telas de
+# trabalho atrás de senha ou de token, e a Central de leads guarda nome e
+# WhatsApp de gente que preencheu o formulário. Um sitemap diz "isto eu QUERO
+# que apareça"; estas linhas dizem o contrário, sobre o que nunca deveria ter
+# sido oferecido ao buscador.
+#
+# `Disallow` NÃO é segurança — quem tem a URL abre do mesmo jeito, e quem
+# protege é a senha de cada uma. Ele é higiene de índice: impede a Central de
+# aparecer numa busca por "doxa leads" e o painel de virar porta de entrada de
+# rastreador. O `Allow: /` acima continua valendo para todo o resto; em
+# robots.txt a regra mais específica é a que decide.
+#
+# Casam por PREFIXO. O manual leva DUAS linhas e não uma: `/manual-doxa/` pega o
+# caminho interno inteiro (`/manual-doxa/admin` inclusive), e `/manual-doxa`
+# sozinho pega a porta de entrada — a rota existe sem barra (`App.tsx` compara o
+# caminho com a barra final removida), e só a regra com barra a deixaria de fora.
+# Duas linhas exatas em vez de um prefixo largo: `/manual` prenderia uma futura
+# página de conteúdo que comece com as mesmas letras. `/api/` cobre
+# `api/lead.ts`, `api/conversor.ts` e `api/manual/` — função serverless não tem
+# nada a indexar.
 User-agent: *
 Allow: /
+Disallow: /leads
+Disallow: /admin
+Disallow: /conversor
+Disallow: /manual-doxa
+Disallow: /manual-doxa/
+Disallow: /api/
 
 Sitemap: https://www.doxaviral.com/sitemap.xml

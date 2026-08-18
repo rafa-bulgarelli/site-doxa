@@ -4,6 +4,42 @@ O schema da Vercel **recusa** qualquer propriedade extra — inclusive a chave
 `"//"`, que é a convenção usual para comentar JSON. O deploy falha com
 _"should NOT have additional property"_. Então a explicação mora aqui.
 
+## `buildCommand`
+
+```json
+"buildCommand": "pnpm build"
+```
+
+O `pnpm build` deixou de ser `tsc -b && vite build`: agora ele termina em
+`node scripts/prerender.mjs`, que escreve um `dist/<rota>/index.html` por página
+SEO e o `dist/sitemap.xml`. Sem esta linha o deploy fica na mão do preset
+detectado pela Vercel — que roda `vite build` direto quando reconhece o
+framework, pula o prerender e publica um `dist/` sem nenhuma das páginas
+orgânicas. O sintoma é cruel: build verde, site no ar, e todo caminho
+`/solucoes/...` caindo no rewrite da SPA com o título da landing.
+
+## `trailingSlash`
+
+```json
+"trailingSlash": false
+```
+
+Cada página SEO existe como `dist/<rota>/index.html`, e o filesystem tem
+precedência sobre o `rewrite` abaixo — a mesma razão pela qual `/robots.txt` não
+vira a landing. Com um arquivo em `dist/solucoes/x/index.html`, portanto, a
+Vercel atende **as duas formas** do caminho, com e sem barra: duas URLs para o
+mesmo conteúdo, que é exatamente a duplicata que um canonical existe para
+evitar.
+
+`false` fecha isso: a forma sem barra é a canônica, e `/solucoes/x/` responde
+**308** para `/solucoes/x`. É a mesma URL que o `<link rel="canonical">` e o
+`sitemap.xml` publicam — os três têm de continuar concordando.
+
+Atenção ao provar isso localmente: o `vite preview` usa o **sirv**, que faz o
+contrário. Ele serve o arquivo em `/solucoes/x/` **com** barra e manda
+`/solucoes/x` para a SPA. Não é a Vercel discordando do repositório; é outro
+servidor. A prova sem barra é no Preview da Vercel.
+
 ## `rewrites`
 
 ```json
@@ -38,7 +74,8 @@ A exclusão vale só para o **último segmento** do caminho, o que preserva o qu
 importa: caminho sem extensão continua indo para a SPA (`/leads`, e qualquer rota
 futura), e caminho com extensão que não existe no disco volta a devolver 404.
 
-Quatro casos que precisam continuar passando depois de qualquer mexida aqui:
+Seis casos que precisam continuar passando depois de qualquer mexida aqui — os
+quatro de sempre e os dois que as páginas SEO acrescentaram:
 
 | Caminho | Esperado |
 |---|---|
@@ -46,6 +83,12 @@ Quatro casos que precisam continuar passando depois de qualquer mexida aqui:
 | `/api/lead` | chega na função, não na landing |
 | `/assets/<hash>.js`, `/robots.txt` | 200, o arquivo de verdade |
 | `/qualquer-coisa.txt` | **404** |
+| `/solucoes/<slug>` | 200, o HTML pré-gerado (title da página, não o da landing) |
+| `/solucoes/<slug>/` | **308** para a forma sem barra |
+
+As duas últimas não passam pelo `rewrite`: elas existem no disco como
+`dist/solucoes/<slug>/index.html`. Se alguma delas devolver o título da landing,
+o prerender não rodou — comece pelo `buildCommand`.
 
 ## `headers`
 

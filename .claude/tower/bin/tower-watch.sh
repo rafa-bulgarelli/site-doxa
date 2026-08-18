@@ -11,7 +11,13 @@ REPO_ROOT="$(git rev-parse --show-toplevel)"
 PACK_DIR="$REPO_ROOT/.claude/tower/packs"
 
 # Base de comparação: origin/main quando existe remote, senão main local.
-if git rev-parse --verify --quiet origin/main >/dev/null; then
+# Base = de onde as tracks partem. Sozinho, origin/main (ou main local). Quando as
+# tracks de uma noite mergeiam numa feature branch, passe-a por env:
+#   BASE=origin/feat/xyz .claude/tower/bin/tower-watch.sh <tracks>
+# — senão tudo que já está na feature branch aparece como "fora do pack".
+if [ -n "${BASE:-}" ]; then
+  :
+elif git rev-parse --verify --quiet origin/main >/dev/null; then
   BASE="origin/main"
 else
   BASE="main"
@@ -62,12 +68,27 @@ for branch in "${branches[@]}"; do
   # --- ESCOPO: o pack declara os arquivos permitidos na seção "## SCOPE" ---
   pack="$PACK_DIR/$branch.md"
   if [ -f "$pack" ]; then
+    # Uma entrada por linha, prefixo "- ". Anotação entre parênteses depois do
+    # caminho é ignorada ("- public/sitemap.xml (remoção)"). Entrada terminada em
+    # "/**" cobre tudo abaixo do diretório — é como as tracks de conteúdo declaram
+    # um diretório exclusivo sem listar arquivos que ainda não existem.
     scope="$(awk '/^## SCOPE/{f=1;next} /^## /{f=0} f' "$pack" \
-             | sed -n 's/^[[:space:]]*-[[:space:]]*//p')"
+             | sed -n 's/^[[:space:]]*-[[:space:]]*//p' \
+             | sed -E 's/[[:space:]]+\(.*$//; s/[[:space:]]+$//' \
+             | sed -E 's/^`(.*)`$/\1/')"
     if [ -n "$scope" ]; then
       while IFS= read -r file; do
         [ -z "$file" ] && continue
-        if ! printf '%s\n' "$scope" | grep -qxF "$file"; then
+        ok=0
+        while IFS= read -r entry; do
+          [ -z "$entry" ] && continue
+          case "$entry" in
+            */\*\*) [[ "$file" == "${entry%\*\*}"* ]] && ok=1 ;;
+            *)      [ "$file" = "$entry" ] && ok=1 ;;
+          esac
+          [ "$ok" = 1 ] && break
+        done <<< "$scope"
+        if [ "$ok" != 1 ]; then
           printf '      ⚠ ESCOPO: %s está fora do pack\n' "$file"
         fi
       done <<< "$changed"
