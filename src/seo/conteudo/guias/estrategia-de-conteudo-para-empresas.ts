@@ -116,12 +116,12 @@ export const pagina: Pagina = {
     {
       tipo: 'titulo',
       nivel: 2,
-      texto: 'O campo que quase ninguém preenche',
+      texto: 'O campo que costuma ficar em branco',
     },
     {
       tipo: 'paragrafo',
       texto:
-        'O critério de descarte é o sexto campo e o mais ignorado, e a ausência dele é o que faz operações de conteúdo continuarem publicando por hábito. Sem uma regra escrita, nada morre: o formato que não funciona sobrevive porque alguém gostou dele, e o mês seguinte repete os erros do anterior por inércia.',
+        'O critério de descarte é o sexto campo e o mais ignorado. Sem uma regra escrita, nada morre — e o que mantém vivo o formato que não funciona raramente é o dado: é alguém ter gostado dele, ou o trabalho já feito nele. Um critério combinado antes tira essa decisão da esfera do gosto.',
     },
     {
       tipo: 'paragrafo',
@@ -169,7 +169,7 @@ export const pagina: Pagina = {
       tipo: 'destaque',
       variante: 'doxa',
       texto:
-        'É a mesma ordem que uma operação contratada segue: na Doxa, o processo começa por um onboarding em que a empresa, os objetivos, o público, o posicionamento e as referências são levantados — identidade, linguagem e restrições passam a orientar a produção —, e só depois a estratégia é estruturada e a produção começa. Quem chega com a folha preenchida encurta essa etapa pela metade.',
+        'É a mesma ordem que uma operação contratada segue: na Doxa, o processo começa por um onboarding em que a empresa, os objetivos, o público, o posicionamento e as referências são levantados — identidade, linguagem e restrições passam a orientar a produção —, e só depois a estratégia é estruturada e a produção começa. Quem chega com a folha preenchida chega com boa parte dessa conversa pronta.',
     },
     {
       tipo: 'titulo',
