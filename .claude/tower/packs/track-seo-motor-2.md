@@ -65,13 +65,17 @@ esses gates no motor — sem tocar em conteúdo.
    única, trecho achatado) e "Faixas de palavras (medidas no corpo, pelo audit)".
 
 ## SCOPE
-- src/seo/layout/Cabecalho.tsx
+- src/seo/layout/Cabecalho.tsx  <!-- SCOPE ampliado às 03:05: os 4 layouts abaixo entraram porque o contraste tinha 26 nós em 5 arquivos, não 1 -->
 - src/seo/layout/Rodape.tsx
 - src/seo/layout/Blocos.tsx
 - src/seo/seo.test.ts
 - src/seo/auditoria.ts
 - src/seo/auditoria.test.ts
 - src/seo/README.md
+- src/seo/layout/Casca.tsx
+- src/seo/layout/PaginaArtigo.tsx
+- src/seo/layout/PaginaSolucao.tsx
+- src/seo/layout/PaginaHub.tsx
 (INTOCÁVEIS: `src/seo/conteudo/**`, `src/seo/tipos.ts`, `src/seo/rotas-planejadas.ts`,
 landing, tailwind/vite config. Precisou → PARE e reporte.)
 
