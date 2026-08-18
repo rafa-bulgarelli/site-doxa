@@ -39,7 +39,14 @@ hub do union `Hub` com página publicada ou rota planejada.
 
 **O texto:** corpo com ≥ 300 palavras (verbete de glossário, ≥ 120) · nenhuma
 página abrindo com "no mundo digital", "em um mundo", "atualmente", "nos dias de
-hoje" ou "cada vez mais" (§19).
+hoje" ou "cada vez mais" (§19) · o primeiro parágrafo VISÍVEL no `<main>`,
+comparado como TEXTO ACHATADO — o teste passa o parágrafo pelo mesmo `tokens()`
+que o layout usa e tira as tags do HTML, então `**negrito**` e `[link](/rota)`
+na abertura são ênfase legítima e não reprovação · a mesma **pergunta de FAQ**
+não pode aparecer em duas páginas (normalizada: sem acento, sem caixa, sem
+pontuação — `normalizarPergunta` em `auditoria.ts`), porque cada bloco `faq`
+vira um nó `FAQPage` e dois deles com a mesma pergunta disputam o mesmo rich
+result. A mensagem de erro lista pergunta → páginas.
 
 **O HTML gerado:** um `<h1>` por página · zero `<script type="module">` ·
 canonical absoluto sem barra final e igual ao `og:url` · `og:image` absoluta com
@@ -56,8 +63,30 @@ do `index.html` idêntico ao que `organization()` e `webSite()` montam.
 
 Ela imprime o grafo — quem recebe link de quem, quem envia, quantas palavras
 cada página tem — e uma lista de avisos: página **órfã** (só recebe link do
-índice da seção), página **sem saída**, **hub sem página**, **hub sem membro** e
-**rota citada antes de existir**.
+índice da seção), página **sem saída**, **hub sem página**, **hub sem membro**,
+**rota citada antes de existir**, **corpo fora da faixa de palavras** do tipo e
+**FAQ repetida** entre páginas.
+
+### Faixas de palavras (medidas no CORPO, pelo audit)
+
+| Tipo | Faixa |
+|---|---|
+| `solucao`, `plataforma`, `guia`, `dor` | 900 – 1400 |
+| `comparativo` | 1000 – 1500 |
+| `hub` | 400 – 800 |
+| `glossario` | 150 – 400 |
+
+A medida é a de `palavrasDe()`: o `corpo` da página depois de `tokens()` — não o
+`<main>` renderizado. Cabeçalho, breadcrumb, TOC e rodapé somam algumas centenas
+de palavras IGUAIS em toda página, e contá-las faria a faixa medir o layout em
+vez do texto. Marcação também não conta: `**escala**` é uma palavra.
+
+A faixa **avisa**; quem REPROVA é o piso de 300 palavras do `seo.test.ts`. São
+réguas diferentes de propósito — o piso separa página de resumo de título, a
+faixa é calibragem editorial, e um guia de 1.600 palavras não está errado, está
+fora do formato que este site combinou. A tabela mora em `FAIXA_DE_PALAVRAS`
+(`auditoria.ts`), tipada como `Record<Tipo, Faixa>`: tipo novo em `tipos.ts` não
+compila sem alguém decidir a faixa dele.
 
 Ela **não reprova o build**, e é decisão: o que ela mede depende do que as
 OUTRAS páginas escreveram, e conteúdo mergeia em ordem imprevisível. Reprovar a
