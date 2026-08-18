@@ -85,7 +85,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'Vale desfazer uma confusão que aparece já no briefing: **"freelancer de conteúdo" quase nunca é um cargo só**. Publicar um vídeo curto exige pauta, roteiro, gravação, edição, legenda, capa, descrição e publicação. Um editor excelente não escreve roteiro; um roteirista excelente não edita; um social media organiza a publicação e não grava. Contratar "um freelancer" para a operação inteira costuma significar contratar a pessoa mais forte numa etapa e mais fraca em todas as outras.',
+        'Vale desfazer uma confusão que aparece já no briefing: **"freelancer de conteúdo" raramente é um cargo só**. Publicar um vídeo curto exige pauta, roteiro, gravação, edição, legenda, capa, descrição e publicação. Um editor excelente não escreve roteiro; um roteirista excelente não edita; um social media organiza a publicação e não grava. Contratar "um freelancer" para a operação inteira costuma significar contratar a pessoa mais forte numa etapa e mais fraca em todas as outras.',
     },
     {
       tipo: 'paragrafo',
@@ -151,11 +151,11 @@ export const pagina: Pagina = {
     {
       tipo: 'lista',
       itens: [
-        '**Custo por peça.** Sem estrutura para sustentar, o valor cobrado tende a ficar perto do trabalho executado, e não de uma tabela de escopo.',
-        '**Acesso direto a quem executa.** O ajuste é dito para a pessoa que vai fazer, e não para alguém que vai repassar. Isso encurta a distância entre "não ficou bom" e a correção.',
+        '**Custo por peça.** Sem estrutura para sustentar, o valor cobrado tende a ficar perto do trabalho executado, não de uma tabela de escopo.',
+        '**Acesso direto a quem executa.** O ajuste é dito para quem vai fazer, e não para alguém que vai repassar. Encurta a distância entre "não ficou bom" e a correção.',
         '**Escopo pequeno e bem definido.** Quatro vídeos por mês, um formato só, um assunto só: montar contrato de agência para isso é comprar coordenação que você não vai usar.',
         '**Especialidade rara.** Motion, sound design, um nicho técnico. Quem faz uma coisa muito bem costuma trabalhar por conta própria, e você contrata aquilo.',
-        '**Reversibilidade.** Um teste de três meses com freelancer é fácil de encerrar; contrato de agência costuma ter aviso prévio e escopo mínimo.',
+        '**Reversibilidade.** Um teste de três meses com freelancer é fácil de encerrar; contrato de agência tem aviso prévio e escopo mínimo.',
       ],
     },
     {
@@ -169,7 +169,7 @@ export const pagina: Pagina = {
         '**Continuidade.** Alguém adoece, alguém sai, alguém tira férias — e a entrega da semana continua acontecendo. Numa operação de conteúdo, essa é a diferença entre um perfil que publica e um que publicava.',
         '**Cadeia completa num contrato só.** Roteiro, gravação, edição, legenda e capa não precisam ser costurados por você a cada peça.',
         '**Processo escrito.** Padrão de abertura, de corte, de legenda e de capa documentados — o que faz a peça número quarenta parecer irmã da número três.',
-        '**Absorve pico.** Lançamento e sazonalidade cabem no escopo maior sem você ter de achar dois fornecedores novos em uma semana.',
+        '**Alguém revisa antes de você.** Numa estrutura a peça passa por outra pessoa antes de chegar ao cliente, e parte dos erros morre ali. Com fornecedor único, o primeiro revisor é você.',
         '**Responsabilidade contratual.** Prazo, entregável e refação estão escritos, e há a quem cobrar quando não acontecem. Com uma pessoa só, a cobrança é sempre pessoal.',
       ],
     },
@@ -231,7 +231,7 @@ export const pagina: Pagina = {
         {
           pergunta: 'Como avaliar um freelancer antes de fechar?',
           resposta:
-            'Peça peças publicadas, não portfólio montado — e peça as de um cliente com o mesmo problema que o seu, não a melhor de todas. Combine um piloto pago e curto, com um prazo e um entregável definidos, para ver como a pessoa reage a um ajuste. O que se está testando não é talento: é previsibilidade.',
+            'Peça exemplos publicados, não portfólio montado — e os de um cliente com o mesmo problema que o seu, não o melhor de todos. Combine um piloto pago e curto, com prazo e entregável definidos, para ver como a pessoa reage a um ajuste. O que se testa não é talento: é previsibilidade.',
         },
         {
           pergunta: 'Agência pequena é a mesma coisa que um freelancer?',

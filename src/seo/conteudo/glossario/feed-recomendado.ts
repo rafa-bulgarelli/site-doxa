@@ -24,7 +24,7 @@ export const pagina: Pagina = {
   palavrasChave: [
     'feed recomendado',
     'para você',
-    'for you page',
+    'aba de recomendações',
     'feed de recomendação',
   ],
   hubs: ['/guias/marketing-no-tiktok'],
@@ -59,10 +59,10 @@ export const pagina: Pagina = {
     {
       tipo: 'lista',
       itens: [
-        'Cada vídeo é avaliado quase do zero. Um vídeo forte pode ir longe num perfil pequeno; um vídeo fraco não é salvo pelo tamanho da conta.',
+        'O tamanho da conta não é passaporte: a tela mistura perfis grandes e perfis que ninguém conhece, e o critério de quem entra é do sistema de recomendação, não seu.',
         'O contexto tem de estar dentro da peça: quem vê não sabe quem você é, não viu o vídeo anterior e não vai ler a bio antes.',
         'Seguidor deixa de ser a métrica que resume tudo — o que resume é quanta gente nova o conteúdo alcança, assunto de [alcance orgânico](/glossario/alcance-organico).',
-        'A vida útil é maior: um vídeo pode voltar a ser recomendado semanas depois, porque a seleção não é cronológica.',
+        'A ordem não é cronológica: publicar mais tarde não coloca ninguém no topo da tela de ninguém.',
       ],
     },
     {

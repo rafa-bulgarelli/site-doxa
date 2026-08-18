@@ -39,7 +39,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'Impressões é a contagem de quantas vezes um conteúdo foi exibido na tela de alguém — inclusive quando foi a mesma pessoa, várias vezes, no mesmo dia. A palavra que faz o trabalho na definição é **vezes**: impressão conta aparições, e não gente.',
+        'Impressões é a contagem de quantas vezes um conteúdo foi exibido na tela de alguém — inclusive quando foi a mesma pessoa, várias vezes, no mesmo dia. Repare no que está sendo contado: **aparições**, e não gente.',
     },
     {
       tipo: 'titulo',

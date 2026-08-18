@@ -81,7 +81,7 @@ export const pagina: Pagina = {
       tipo: 'destaque',
       variante: 'nota',
       texto:
-        'Na operação da Doxa, o roteiro é parte do entregável: cada vídeo é único, com roteiro, voz clonada, edição e capa — e temas, roteiros e versões são acompanhados pela empresa cliente ao longo da produção.',
+        'Na operação da Doxa, o roteiro é parte do entregável: cada vídeo é único, com roteiro, voz clonada, edição e capa — e temas, roteiros e versões podem ser acompanhados pela empresa cliente ao longo da produção.',
     },
     {
       tipo: 'paragrafo',

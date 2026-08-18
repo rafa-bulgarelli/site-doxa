@@ -61,7 +61,7 @@ export const pagina: Pagina = {
     {
       tipo: 'titulo',
       nivel: 2,
-      texto: 'Por que a embutida virou padrão em vídeo vertical',
+      texto: 'Por que a embutida é comum em vídeo vertical',
     },
     {
       tipo: 'lista',
