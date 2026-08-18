@@ -12,15 +12,14 @@ import type { Pagina } from '../../tipos';
  *  · a redação mais ampla ("TikTok, Instagram, YouTube e outras redes
  *    relevantes") → `src/components/faq/config.ts`, chave `redes`;
  *  · views 100% orgânicas, sem compra de mídia → chave `organico`;
- *  · não garantir que um vídeo específico viralize → chave `viralizar-garantido`;
  *  · o entregável vertical, legendado, pronto para postar, publicado pelo
  *    cliente → `src/components/HowItWorks.tsx`;
  *  · o mesmo arquivo nas três redes no mesmo dia, um vídeo por dia útil e a
  *    proibição de impulsionar nos perfis da estratégia → `RT-1`, `RT-2` e a
  *    seção de impulsionamento do manual (`supabase/manual-seed-v1.sql`),
  *    apresentados como o que se combina com quem JÁ é cliente (§8);
- *  · público e empresas pequenas → chaves `para-quem` e `pequenas`; o volume
- *    definido pela estratégia e pela meta de cada cliente → chave `volume`;
+ *  · o público a que a operação serve → chave `para-quem`; o volume definido
+ *    pela estratégia e pela meta de cada cliente → chave `volume`;
  *  · engajamento artificial (comprar seguidor, curtida ou visualização)
  *    contamina resultados, viola a metodologia e pode gerar penalização das
  *    redes → `supabase/manual-seed-v1.sql` e o card 004, source of truth §8.
@@ -94,12 +93,12 @@ export const pagina: Pagina = {
         {
           titulo: 'Republicar peça de campanha',
           texto:
-            'Vídeo feito para TV, site ou reunião chega aqui com a linguagem errada: começa se apresentando, fala de si e demora. É o tipo de vídeo que se reconhece em dois segundos — e o polegar reconhece antes.',
+            'Vídeo feito para TV, site ou reunião chega aqui com a linguagem errada: começa se apresentando, fala de si e demora. É o tipo de vídeo que se reconhece em dois segundos — e o polegar reconhece antes. Reaproveitar não é o problema; reaproveitar sem reescrever a abertura é.',
         },
         {
           titulo: 'Desistir no segundo mês',
           texto:
-            'A conta que costuma levar ao abandono: publica em rajada por três semanas, não vê retorno e para. Como a distribuição é por vídeo, parar significa recomeçar — e quem recomeça três vezes gastou três vezes sem completar nenhum ciclo de aprendizado.',
+            'A conta que costuma levar ao abandono: publica em rajada por três semanas, não vê retorno e para. Como a distribuição é por vídeo, parar significa recomeçar — e quem recomeça três vezes gastou três vezes sem completar nenhum ciclo de aprendizado. O que faltou não foi verba nem ideia: foi terminar um teste.',
         },
       ],
     },
@@ -159,12 +158,7 @@ export const pagina: Pagina = {
         {
           pergunta: 'Quantos seguidores minha empresa precisa ter para começar no TikTok?',
           resposta:
-            'Nenhum número é pré-requisito. O feed principal da rede é de recomendação: a peça costuma ser oferecida a gente que não segue o perfil, e o tamanho do perfil pesa pouco nessa decisão — não é passaporte nem teto. O que muda com o tempo é menos o número de seguidores e mais o acervo de vídeos que já mostrou à plataforma quem assiste o assunto da empresa.',
-        },
-        {
-          pergunta: 'Dá para publicar no TikTok o mesmo vídeo que vai para o Reels?',
-          resposta:
-            'O mesmo arquivo serve às três redes, e é o que uma operação de volume faz: ele vai para TikTok, Reels e Shorts no mesmo dia. O cuidado é exportar do original em vez de baixar de uma rede para subir na outra — o passo a passo está em [como usar o mesmo vídeo nas três redes](/guias/como-usar-o-mesmo-video-nas-tres-redes).',
+            'Nenhum número é pré-requisito. O feed principal da rede é de recomendação: a peça costuma ser oferecida a gente que não segue o perfil, e o tamanho do perfil pesa pouco nessa decisão: ele não adianta o começo nem impede o resto. O que muda com o tempo é menos o número de seguidores e mais o acervo de vídeos que já mostrou à plataforma quem assiste o assunto da empresa.',
         },
         {
           pergunta: 'Quanto tempo até dar para julgar se o TikTok funciona para a minha empresa?',

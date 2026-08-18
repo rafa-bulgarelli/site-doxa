@@ -115,7 +115,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'Esse é o nome da regra de integridade da operação, e ela é mais dura do que parece: o arquivo entregue é publicado como está, sem alterar corte, duração, velocidade, proporção, resolução, música, áudio, voz, legendas, textos, capa, roteiro, estética, elementos gráficos ou marca. Cortar dois segundos "para ficar melhor" muda a peça que foi testada, e o resultado deixa de ser comparável com o que veio antes.',
+        'Esse é o nome da regra de integridade da operação, e ela é mais dura do que parece: o arquivo entregue é publicado como está, sem alterar corte, duração, velocidade, proporção, resolução, música, áudio, voz, legendas, textos, capa, roteiro, estética, elementos gráficos ou marca. Cortar dois segundos "para ficar melhor" muda a peça que foi testada, e o resultado deixa de ser comparável com o que veio antes — e uma série que não é comparável deixa de ensinar qualquer coisa sobre o que funciona.',
     },
     {
       tipo: 'paragrafo',
@@ -171,7 +171,7 @@ export const pagina: Pagina = {
         {
           pergunta: 'Posso usar os vídeos produzidos por vocês em outras redes ou campanhas?',
           resposta:
-            'Em geral sim: os conteúdos produzidos para a marca podem ser aproveitados em diferentes canais próprios, respeitando as condições estabelecidas no contrato. O que não muda de canal para canal é o arquivo: ele vai ao ar do jeito que foi entregue.',
+            'Em geral sim: os conteúdos produzidos para a marca podem ser aproveitados em diferentes canais próprios, respeitando as condições estabelecidas no contrato.',
         },
         {
           pergunta: 'Posso editar o vídeo antes de publicar?',

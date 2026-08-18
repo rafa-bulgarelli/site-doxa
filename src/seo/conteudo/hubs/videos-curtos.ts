@@ -116,7 +116,7 @@ export const pagina: Pagina = {
       tipo: 'destaque',
       variante: 'doxa',
       texto:
-        'A regra que o manual do cliente resume em duas palavras: baixou, publicou — o arquivo entregue vai ao ar exatamente como saiu. O que cada alteração custa, item por item, está em [vídeos curtos para empresas](/solucoes/videos-curtos-para-empresas).',
+        'A regra que o manual do cliente resume em duas palavras: baixou, publicou — o arquivo entregue vai ao ar exatamente como saiu. O que não se altera, e por quê, está em [vídeos curtos para empresas](/solucoes/videos-curtos-para-empresas).',
     },
     {
       tipo: 'paragrafo',

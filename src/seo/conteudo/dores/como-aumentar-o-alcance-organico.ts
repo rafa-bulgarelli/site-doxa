@@ -122,10 +122,10 @@ export const pagina: Pagina = {
       tipo: 'lista',
       itens: [
         '**Hashtag.** Ela ajuda a plataforma a classificar o vídeo, e só. Não existe conjunto secreto que multiplique alcance.',
-        '**Horário de publicação.** Escolher um horário razoável basta; ajustá-lo em quinze minutos não muda a leitura de nada.',
+        '**Horário de publicação.** Escolher um horário razoável basta; mudar de faixa não muda a leitura.',
         '**Pedir engajamento no vídeo.** "Comenta aí" sem motivo produz comentários vazios, que não sustentam distribuição nenhuma.',
         '**Comprar seguidores, curtidas ou visualizações.** Contamina o dado que você usaria para decidir, viola a metodologia e pode gerar penalização das redes.',
-        '**Impulsionar.** Compra alcance agora e apaga a leitura: a entrega passa a misturar o que foi comprado com o que foi conquistado, e não há como separar os dois depois.',
+        '**Impulsionar.** Compra alcance agora e apaga a leitura: a entrega passa a misturar o que foi comprado com o que foi conquistado, e a leitura do que ele faria sozinho se perde.',
       ],
     },
     {

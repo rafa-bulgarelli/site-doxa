@@ -75,7 +75,7 @@ export const pagina: Pagina = {
       tipo: 'lista',
       itens: [
         'O básico de formato — vertical, assunto declarado nos primeiros segundos, um assunto por vídeo e [legenda embutida](/glossario/legenda-embutida) — vale igual nas três redes, e está reunido em [vídeos curtos](/guias/videos-curtos).',
-        'O que é próprio do Reels: a curva de [retenção](/glossario/retencao) cai na primeira transição fraca, e um vídeo que tenta cobrir três tópicos costuma perder nos três.',
+        'Vale lembrar aqui: a curva de [retenção](/glossario/retencao) cai na primeira transição fraca, e um vídeo que tenta cobrir três tópicos costuma perder nos três.',
         'Um fecho que faça sentido sozinho: boa parte de quem assiste não vai abrir o perfil para entender o contexto.',
       ],
     },

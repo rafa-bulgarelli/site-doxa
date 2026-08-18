@@ -43,7 +43,7 @@ export const pagina: Pagina = {
     'Como encaixar Reels no perfil que a sua empresa já tem: convivência com feed e stories, por que o botão de impulsionar atrapalha e o que a Doxa entrega pronto.',
   h1: 'Reels para empresas',
   resumo:
-    'Reels convive no mesmo perfil com feed, stories e a base que a sua empresa já tem, e é dele que costuma vir o alcance de quem ainda não chegou. Quem trata os dois como a mesma coisa acaba publicando vídeo para os próprios seguidores e concluindo que a rede não funciona.',
+    'Reels convive no mesmo perfil com feed, stories e a base que a sua empresa já tem, e é dele que costuma vir o alcance de quem ainda não chegou. Quem trata Reels e feed como a mesma coisa acaba publicando vídeo para os próprios seguidores e concluindo que a rede não funciona.',
   intencao: 'comercial',
   palavrasChave: [
     'reels para empresas',

@@ -10,16 +10,18 @@ import type { Pagina } from '../../tipos';
  * a lista abaixo é o rastro de cada afirmação, para quem for revisar:
  *
  *  · os três passos → `src/components/HowItWorks.tsx` (`STEPS_PT`);
- *  · R$ 8.000–10.500/mês e o inventário do jeito antigo →
- *    `src/components/comparacao/config.ts` (`CUSTO_DE`, `CUSTO_ATE`, `ITENS`);
+ *  · a faixa de R$ 8.000–10.500/mês →
+ *    `src/components/comparacao/config.ts` (`CUSTO_DE`, `CUSTO_ATE`). O
+ *    inventário item a item é de `/solucoes/producao-de-conteudo-em-escala`;
  *  · "Um milhão de views. Ou seu dinheiro de volta." → `GARANTIA` no mesmo
  *    arquivo, que é a manchete do topo da landing;
  *  · a letra da garantia ("metas de performance definidas em contrato") →
  *    `src/components/faq/config.ts`, resposta `garantia`, palavra por palavra;
- *  · as quatro respostas do FAQ → o mesmo arquivo, chaves `gravar`, `organico`,
- *    `primeiros-videos` e `preco`, palavra por palavra. `volume` e `tom-de-voz`
- *    saíram daqui porque as donas dessas perguntas são
- *    `/solucoes/producao-de-conteudo-em-escala` e `/solucoes/marketing-com-ia`;
+ *  · as três respostas do FAQ → o mesmo arquivo, chaves `gravar`,
+ *    `primeiros-videos` e `preco`, palavra por palavra. `volume`, `tom-de-voz` e
+ *    `organico` saíram daqui porque as donas dessas perguntas são
+ *    `/solucoes/producao-de-conteudo-em-escala`, `/solucoes/marketing-com-ia` e
+ *    `/solucoes/conteudo-organico-para-empresas`;
  *  · o parágrafo sobre complementar a estratégia com anúncios → chave
  *    `midia-extra` do mesmo arquivo, que virou prosa em vez de pergunta porque
  *    a dúvida "preciso de tráfego pago?" já está respondida no corpo;
