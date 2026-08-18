@@ -34,10 +34,10 @@ export const pagina: Pagina = {
   slug: 'como-escrever-roteiro-de-video-curto',
   titulo: 'Como escrever roteiro de vídeo curto: estrutura e ritmo',
   descricao:
-    'Um roteiro de vídeo curto tem quatro campos e cabe em meia página. A estrutura, a coluna que costuma ficar de fora e como medir a duração antes de gravar.',
+    'Um roteiro de vídeo curto tem cinco campos e cabe em meia página. A estrutura, a coluna que costuma ficar de fora e como medir a duração antes de gravar.',
   h1: 'Como escrever roteiro de vídeo curto',
   resumo:
-    'Roteiro de vídeo curto não se parece com roteiro: são quatro campos numa folha — abertura, uma afirmação, o fecho e a coluna do que aparece na tela — e ele cabe em meia página. Abaixo, o modelo, o jeito de medir a duração antes de gravar, as cinco frases que sempre saem no corte e onde um modelo de IA ajuda de verdade nesta etapa.',
+    'Roteiro de vídeo curto não se parece com roteiro: são cinco campos numa folha — abertura, afirmação, desenvolvimento, fecho e a coluna do que aparece na tela — e ele cabe em meia página. Abaixo, o modelo, o jeito de medir a duração antes de gravar, as cinco frases que sempre saem no corte e onde um modelo de IA ajuda de verdade nesta etapa.',
   intencao: 'informacional',
   palavrasChave: [
     'roteiro de vídeo curto',
@@ -64,12 +64,12 @@ export const pagina: Pagina = {
     {
       tipo: 'titulo',
       nivel: 2,
-      texto: 'Quatro campos, meia página',
+      texto: 'Cinco campos, meia página',
     },
     {
       tipo: 'paragrafo',
       texto:
-        'O documento que serve a um vídeo de trinta segundos não tem cabeçalho de cena, não tem descrição de plano e não tem rubrica. Ele tem quatro campos, e cada um responde uma pergunta que só se responde antes de ligar a câmera:',
+        'O documento que serve a um vídeo de trinta segundos não tem cabeçalho de cena, não tem descrição de plano e não tem rubrica. Ele tem cinco campos, e cada um responde uma pergunta que só se responde antes de ligar a câmera:',
     },
     {
       tipo: 'tabela',
@@ -132,7 +132,7 @@ export const pagina: Pagina = {
       tipo: 'lista',
       itens: [
         '**"Antes de começar…"** — se vem antes de começar, não faz parte do vídeo.',
-        '**"Como eu falei no vídeo anterior…"** — a maior parte de quem está assistindo não viu o anterior, e a frase avisa isso.',
+        '**"Como eu falei no vídeo anterior…"** — boa parte de quem está assistindo pode não ter visto o anterior, e a frase avisa isso.',
         '**"Vou explicar direitinho…"** — anuncia a explicação em vez de explicar.',
         '**"Bom, então…"** e as outras muletas de transição — elas existem para dar tempo a quem fala, não informação a quem ouve.',
         '**"Se você gostou, comenta aqui embaixo"** no meio da peça — pedido administrativo que interrompe a única coisa que estava segurando a atenção.',
@@ -184,7 +184,7 @@ export const pagina: Pagina = {
         {
           pergunta: 'Quantas palavras cabem em trinta segundos?',
           resposta:
-            'Não há um número que sirva a qualquer pessoa: quem fala rápido cabe muito mais do que quem faz pausa, e o mesmo texto muda de duração conforme o assunto exija ênfase. Em vez de contar palavras, leia em voz alta com cronômetro no ritmo em que vai gravar. É a única medida que não erra, e leva menos tempo do que procurar a regra.',
+            'Não há um número que sirva a qualquer pessoa: quem fala rápido cabe muito mais do que quem faz pausa, e o mesmo texto muda de duração conforme o assunto exija ênfase. Em vez de contar palavras, leia em voz alta com cronômetro no ritmo em que vai gravar. É a medida que não erra, e leva menos tempo do que procurar a regra.',
         },
         {
           pergunta: 'Vale escrever roteiro para vídeo de demonstração, sem fala?',
@@ -207,7 +207,7 @@ export const pagina: Pagina = {
 };
 
 /* ─── RÉGUA DE COPY — docs/seo/regua-de-copy.md ───────────────────────────────
- * [x]  1. A primeira frase responde: quatro campos, meia página.
+ * [x]  1. A primeira frase responde: cinco campos, meia página.
  * [x]  2. Todo fato sobre a Doxa tem entrada no source of truth (§2).
  * [x]  3. Nada da §9.
  * [x]  4. Termos proibidos ausentes.
