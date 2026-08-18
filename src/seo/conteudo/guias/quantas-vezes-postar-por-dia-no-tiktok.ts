@@ -51,7 +51,6 @@ export const pagina: Pagina = {
   ],
   hubs: ['/guias/marketing-no-tiktok'],
   relacionadas: [
-    '/guias/marketing-no-tiktok',
     '/guias/como-viralizar-no-tiktok',
     '/guias/como-postar-todos-os-dias-sem-equipe',
     '/glossario/algoritmo-do-tiktok',
@@ -120,7 +119,7 @@ export const pagina: Pagina = {
     {
       tipo: 'lista',
       itens: [
-        '**Não apague o segundo.** Apagar não devolve o alcance que o primeiro perdeu e ainda tira do ar uma peça que já recebeu audiência.',
+        '**Não apague o segundo.** Tirar do ar não recupera o alcance que o primeiro perdeu e ainda tira do ar uma peça que já recebeu audiência.',
         '**Não publique um terceiro para "compensar".** O erro é de acúmulo; acrescentar mais uma peça só divide a mesma audiência em três.',
         '**Conte 24 horas a partir do segundo**, e retome a régua a partir daí. Um dia sem publicar não custa nada; dois vídeos no mesmo dia disputam o mesmo espaço, e um atropela o alcance do outro.',
         '**Anote o horário.** O caso mais comum de publicação dupla nasce de não saber que horas o vídeo anterior saiu — e é o item mais barato de consertar da lista inteira.',
@@ -153,7 +152,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'Um por dia útil dá algo entre vinte e vinte e dois vídeos por mês, e cerca de sessenta num trimestre. É o teto prático da régua — e, não por acaso, também é a faixa em que o volume começa a gerar dado suficiente para separar padrão de acaso. Quem produz menos não está violando regra nenhuma; está só demorando mais para aprender.',
+        'Um por dia útil dá algo entre vinte e vinte e dois vídeos por mês, e cerca de sessenta num trimestre. É o teto prático da régua — e é também a faixa em que dez a quinze peças por formato cabem sem apertar, que é o volume por formato que costuma separar padrão de acaso. Quem produz menos não está violando regra nenhuma; está só demorando mais para aprender.',
     },
     {
       tipo: 'destaque',
@@ -172,7 +171,7 @@ export const pagina: Pagina = {
         {
           pergunta: 'Stories e carrosséis atrapalham o vídeo do dia?',
           resposta:
-            'Não competem pelo mesmo espaço: o vídeo curto é distribuído no feed de recomendação, e story, foto e carrossel vivem em outras superfícies, entregues principalmente a quem já segue o perfil. Dá para publicar os três no mesmo dia sem prejuízo nenhum ao vídeo — e, em perfis que precisam falar todo dia, é justamente aí que o resto do assunto cabe.',
+            'Stories e carrosséis não competem pelo mesmo espaço: o vídeo curto é distribuído no feed de recomendação, e story, foto e carrossel vivem em outras superfícies, entregues principalmente a quem já segue o perfil. Dá para publicar os três no mesmo dia sem prejuízo nenhum ao vídeo — e, em perfis que precisam falar todo dia, é justamente aí que o resto do assunto cabe.',
         },
         {
           pergunta: 'Tenho dois perfis. Posso publicar nos dois no mesmo dia?',

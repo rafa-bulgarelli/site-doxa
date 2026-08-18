@@ -43,7 +43,6 @@ export const pagina: Pagina = {
   ],
   hubs: ['/guias/marketing-organico'],
   relacionadas: [
-    '/guias/marketing-organico',
     '/guias/como-produzir-conteudo-sem-equipe',
     '/guias/estrategia-de-conteudo-para-empresas',
     '/guias/como-aumentar-o-alcance-organico',
@@ -58,12 +57,12 @@ export const pagina: Pagina = {
     {
       tipo: 'titulo',
       nivel: 2,
-      texto: 'O erro de desenho que derruba a maior parte das tentativas',
+      texto: 'O erro de desenho que costuma derrubar a rotina',
     },
     {
       tipo: 'paragrafo',
       texto:
-        'A rotina que falha é sempre a mesma: acordar, pensar no que postar, produzir e publicar no mesmo dia. Ela funciona por uma semana, talvez duas, e cai no primeiro dia de agenda cheia — porque depende de três coisas darem certo ao mesmo tempo, todos os dias, para sempre.',
+        'A rotina que falha costuma ser a mesma: acordar, pensar no que postar, produzir e publicar no mesmo dia. Ela funciona por uma semana, talvez duas, e cai no primeiro dia de agenda cheia — porque depende de três coisas darem certo ao mesmo tempo, todos os dias, para sempre.',
     },
     {
       tipo: 'paragrafo',
@@ -108,7 +107,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'A tentação de compensar a semana parada publicando tudo de uma vez é forte, e é contraproducente: vídeos publicados no mesmo dia disputam a mesma audiência, e um atropela o alcance do outro. A regra que a Doxa aplica nos perfis dos clientes é de no máximo um vídeo por dia útil, com pelo menos 24 horas de relógio entre um e outro — se um vídeo saiu na segunda às 22h, o próximo só a partir das 22h de terça.',
+        'A tentação de compensar a semana parada publicando tudo de uma vez é forte, e é contraproducente: peças publicadas no mesmo dia acabam competindo entre si. A regra que a Doxa aplica nos perfis dos clientes é de no máximo um vídeo por dia útil, com pelo menos 24 horas de relógio entre um e outro — o exemplo de como esse intervalo cai na semana está em [como viralizar no TikTok](/guias/como-viralizar-no-tiktok).',
     },
     {
       tipo: 'destaque',
@@ -149,7 +148,7 @@ export const pagina: Pagina = {
       tipo: 'lista',
       itens: [
         'Agendar um mês inteiro de conteúdo em um único planejamento fechado: quando o quinto vídeo mostrar o que a audiência quer, os outros vinte e cinco já estão presos.',
-        'Publicar qualquer coisa só para não quebrar a sequência. Um vídeo fraco não é neutro: ele consome a amostra que o próximo teria.',
+        'Publicar qualquer coisa só para não quebrar a sequência. Um vídeo fraco não é neutro: ele costuma consumir a amostra que o próximo teria.',
         'Terceirizar só a edição e continuar sendo o gargalo da gravação, que é a etapa cara.',
         'Trocar o formato toda semana em nome da variedade, o que impede qualquer conclusão sobre o que funcionou.',
       ],

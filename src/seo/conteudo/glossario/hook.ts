@@ -2,8 +2,8 @@ import type { Pagina } from '../../tipos';
 
 /**
  * Verbete: o termo e a definição. A EXECUÇÃO (como escrever um) é do guia
- * `/guias/como-fazer-videos-curtos-que-prendem` — este verbete não vira
- * tutorial, conforme a seção Canibalização do `docs/seo/keyword-map.md`.
+ * `/guias/como-fazer-hook-de-video-curto` — este verbete não vira tutorial,
+ * conforme a seção Canibalização do `docs/seo/keyword-map.md`.
  *
  * Sem fato da Doxa e sem estatística de terceiro: é definição de mecanismo.
  */
@@ -15,13 +15,12 @@ export const pagina: Pagina = {
     'Hook é a abertura que decide se alguém continua assistindo. O que ele precisa fazer nos primeiros segundos e por que ele vale mais que o resto do vídeo.',
   h1: 'Hook',
   resumo:
-    'Hook é a abertura de um vídeo — as primeiras palavras e a primeira imagem — e a única função dela é impedir que a pessoa vá para o próximo vídeo. Num feed de vídeo curto, é o pedaço que decide o alcance de tudo que vem depois.',
+    'Num feed de vídeo curto, é o pedaço que decide o alcance de tudo que vem depois.',
   intencao: 'informacional',
-  palavrasChave: ['hook', 'o que é hook em vídeo', 'gancho de vídeo', 'primeiros segundos'],
+  palavrasChave: ['hook', 'o que é hook em vídeo', 'gancho de vídeo'],
   hubs: ['/guias/videos-curtos'],
   relacionadas: [
-    '/guias/videos-curtos',
-    '/guias/como-fazer-videos-curtos-que-prendem',
+    '/guias/como-fazer-hook-de-video-curto',
     '/glossario/retencao',
   ],
   atualizadoEm: '2026-08-18',
@@ -39,7 +38,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'A plataforma mostra um vídeo novo para um grupo pequeno de pessoas e observa o que elas fazem. Se boa parte dessas pessoas sai nos primeiros segundos, a entrega para por ali. Como o abandono se concentra no começo, o hook é a variável com maior efeito sobre quantas pessoas vão ver o vídeo — e é também a mais barata de mudar, porque não exige regravar o conteúdo inteiro.',
+        'A plataforma mostra um vídeo novo para um grupo pequeno de pessoas e observa o que elas fazem. Se boa parte dessas pessoas sai nos primeiros segundos, a entrega para por ali. Como o abandono se concentra no começo, o hook costuma ser a variável de maior efeito sobre quantas pessoas vão ver o vídeo — e é também a mais barata de mudar, porque não exige regravar o conteúdo inteiro.',
     },
     {
       tipo: 'titulo',
@@ -68,7 +67,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'O hook é o que decide quantas pessoas começam; a [retenção](/glossario/retencao) é o que mostra quantas ficaram. Para escrever hooks na prática, o guia [como fazer vídeos curtos que prendem](/guias/como-fazer-videos-curtos-que-prendem).',
+        'O hook é o que decide quantas pessoas começam; a [retenção](/glossario/retencao) é o que mostra quantas ficaram. Para escrever hooks na prática, o guia [como fazer hook de vídeo curto](/guias/como-fazer-hook-de-video-curto).',
     },
   ],
 };

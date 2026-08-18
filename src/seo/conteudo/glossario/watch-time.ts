@@ -14,11 +14,14 @@ export const pagina: Pagina = {
     'Watch time é a soma do tempo que as pessoas passaram assistindo ao seu vídeo. Como ele difere da retenção e por que vídeo curto pode ganhar de vídeo longo.',
   h1: 'Watch time',
   resumo:
-    'Watch time é a soma do tempo que todas as pessoas passaram assistindo ao seu vídeo. Enquanto a retenção mede proporção, o watch time mede tempo absoluto — e é ele que responde se o vídeo prendeu muita gente ou prendeu pouca gente por muito tempo.',
+    'Enquanto a retenção mede proporção, o watch time mede tempo absoluto — e é a leitura dos dois juntos que diz se o vídeo prendeu muita gente ou pouca gente por muito tempo.',
   intencao: 'informacional',
   palavrasChave: ['watch time', 'tempo de exibição', 'tempo médio de visualização'],
   hubs: ['/guias/videos-curtos'],
-  relacionadas: ['/guias/videos-curtos', '/glossario/retencao', '/glossario/short-form'],
+  relacionadas: [
+    '/glossario/retencao',
+    '/glossario/short-form',
+  ],
   atualizadoEm: '2026-08-18',
   corpo: [
     {

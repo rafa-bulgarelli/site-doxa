@@ -47,7 +47,6 @@ export const pagina: Pagina = {
   ],
   hubs: ['/guias/videos-curtos'],
   relacionadas: [
-    '/guias/videos-curtos',
     '/plataformas/youtube-shorts-para-empresas',
     '/guias/como-usar-o-mesmo-video-nas-tres-redes',
     '/guias/como-medir-resultado-de-conteudo-organico',
@@ -90,7 +89,7 @@ export const pagina: Pagina = {
       itens: [
         '**Escreva o título como pergunta ou afirmação**, do jeito que uma pessoa digitaria. "Por que o joelho dói ao correr" encontra gente; "Dica #14" não encontra ninguém.',
         '**Repita no título a promessa do vídeo**, e não o nome da série. Numeração é organização interna, não informação.',
-        '**Use o campo de descrição** para uma frase que situe o assunto. É o único dos três lugares em que ela é lida por quem chegou de propósito.',
+        '**Use o campo de descrição** para uma frase que situe o assunto. É o lugar em que ela é lida por quem chegou de propósito.',
         '**Não copie a legenda do TikTok.** Aquele texto foi escrito para ser visto sob o vídeo, não para responder a uma busca.',
       ],
     },
@@ -126,7 +125,7 @@ export const pagina: Pagina = {
         {
           titulo: 'Só então olhe os números',
           texto:
-            'Antes de trinta peças, qualquer conclusão é sobre ruído. Depois delas, a leitura útil é por título e por tema — quais assuntos continuaram recebendo visualização depois da primeira semana.',
+            'Antes de umas trinta peças, a leitura costuma ser sobre ruído. Depois delas, a leitura útil é por título e por tema — quais assuntos continuaram recebendo visualização depois da primeira semana.',
         },
       ],
     },
@@ -138,8 +137,8 @@ export const pagina: Pagina = {
     {
       tipo: 'lista',
       itens: [
-        '**Subir o arquivo baixado de outra rede.** Ele vem com selo, com nome de outro perfil em cima da imagem e com qualidade menor. Quem assiste percebe em meio segundo, e o canal inteiro passa a parecer um espelho.',
-        '**Publicar em lote depois de semanas parado.** Vale o mesmo que nas outras redes: peças publicadas perto demais disputam a mesma audiência. Uma por dia rende mais do que dez num sábado.',
+        '**Subir o arquivo baixado de outra rede.** Quem assiste percebe em meio segundo, e o canal inteiro passa a parecer um espelho — o que o download carrega junto e como evitar está em [como usar o mesmo vídeo nas três redes](/guias/como-usar-o-mesmo-video-nas-tres-redes).',
+        '**Publicar em lote depois de semanas parado.** Uma por dia rende mais do que dez num sábado, pelo mesmo motivo que vale nas outras redes — a régua está em [como viralizar no TikTok](/guias/como-viralizar-no-tiktok).',
         '**Deixar o canal sem resposta.** Nome genérico, descrição vazia, nenhuma seção organizada: a pessoa que gostou do vídeo chega, não entende o que é aquilo, e sai. Foi alcance conquistado e desperdiçado na porta.',
       ],
     },
@@ -180,7 +179,7 @@ export const pagina: Pagina = {
         {
           pergunta: 'Quantos inscritos são necessários para começar a aparecer?',
           resposta:
-            'Nenhum. O feed de Shorts é de recomendação, o que significa que a peça é oferecida a quem não conhece o canal desde o primeiro dia. Um canal recém-aberto e um canal antigo entram nessa fila em pé de igualdade quanto a isso; o que os separa é o acervo de títulos que cada um já deixou encontrável.',
+            'Nenhum inscrito é necessário: o feed de Shorts é de recomendação, o que significa que a peça é oferecida a quem não conhece o canal desde o primeiro dia. Um canal recém-aberto e um canal antigo entram na mesma fila — o tamanho do canal pesa pouco ali, e não abre nem fecha porta; o que costuma separá-los é o acervo de títulos que cada um já deixou encontrável.',
         },
       ],
     },

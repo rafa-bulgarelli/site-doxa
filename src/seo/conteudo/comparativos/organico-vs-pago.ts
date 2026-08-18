@@ -77,7 +77,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'Daí sai a única regra que vale para os dois: pago resolve o mês, orgânico resolve o ano. Quem precisa de resultado em quinze dias e não tem histórico de conteúdo não vai conseguir isso organicamente; quem quer parar de pagar por cada visualização não vai conseguir isso comprando mídia.',
+        'Daí sai a regra que vale para os dois: pago resolve o mês, orgânico resolve o ano. Quem precisa de resultado em quinze dias e não tem histórico de conteúdo não vai conseguir isso organicamente; quem quer parar de pagar por cada visualização não vai conseguir isso comprando mídia.',
     },
     {
       tipo: 'titulo',
@@ -180,7 +180,7 @@ export const pagina: Pagina = {
         {
           titulo: 'Dê ao orgânico volume, não paciência',
           texto:
-            'Quatro vídeos por mês não produzem dado suficiente para nenhuma conclusão. Se o orgânico vai entrar, ele entra com volume de publicação — ou não entra.',
+            'Quatro vídeos por mês dificilmente produzem dado suficiente para alguma conclusão. Se o orgânico vai entrar, ele entra com volume de publicação — ou não entra.',
         },
       ],
     },
@@ -199,9 +199,9 @@ export const pagina: Pagina = {
       tipo: 'faq',
       itens: [
         {
-          pergunta: 'Dá para fazer os dois ao mesmo tempo?',
+          pergunta: 'Orgânico e pago podem rodar ao mesmo tempo?',
           resposta:
-            'Dá, e costuma ser o arranjo das empresas que já vendem. O cuidado é não medir os dois no mesmo lugar: se a publicação orgânica for impulsionada, o número deixa de dizer se o conteúdo funciona. Separar os perfis, ou ao menos separar os relatórios, preserva as duas leituras.',
+            'Os dois rodam juntos, e costuma ser o arranjo das empresas que já vendem. O cuidado é não medir os dois no mesmo lugar: se a publicação orgânica for impulsionada, o número deixa de dizer se o conteúdo funciona. Separar os perfis, ou ao menos separar os relatórios, preserva as duas leituras.',
         },
         {
           pergunta: 'Quanto tempo o orgânico leva para dar resultado?',
@@ -228,7 +228,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'Pago é aluguel de atenção, orgânico é construção de patrimônio — e quase toda empresa saudável faz os dois, em proporções que mudam conforme ela deixa de precisar do primeiro.',
+        'Pago é atenção alugada; orgânico é acervo que fica — e boa parte das empresas saudáveis faz os dois, em proporções que mudam conforme ela deixa de precisar do primeiro.',
     },
   ],
 };

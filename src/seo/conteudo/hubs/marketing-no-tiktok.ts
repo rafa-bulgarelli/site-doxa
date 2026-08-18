@@ -44,11 +44,9 @@ export const pagina: Pagina = {
   ],
   hubs: [],
   relacionadas: [
-    '/plataformas/tiktok-para-empresas',
-    '/guias/como-viralizar-no-tiktok',
-    '/glossario/algoritmo-do-tiktok',
-    '/comparativos/tiktok-vs-instagram',
     '/guias/videos-curtos',
+    '/guias/marketing-organico',
+    '/solucoes/videos-curtos-para-empresas',
   ],
   atualizadoEm: '2026-08-18',
   cta: {
@@ -65,12 +63,12 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'No TikTok o tamanho do perfil decide pouco sobre o alcance do próximo vídeo. A distribuição não parte da lista de seguidores: parte de uma amostra de pessoas que não conhecem a marca, e o que elas fazem nos primeiros segundos — ficar, sair, voltar, comentar, compartilhar — define se a plataforma continua entregando. Um perfil de empresa com poucos seguidores e um vídeo bom compete com um perfil grande e um vídeo morno, e às vezes ganha.',
+        'No TikTok o tamanho do perfil pesa pouco sobre o alcance do próximo vídeo — não é passaporte nem teto. A distribuição costuma começar por uma amostra de pessoas que não conhecem a marca, e o que elas fazem nos primeiros segundos — ficar, sair, voltar, comentar, compartilhar — orienta se a plataforma continua entregando. Um perfil de empresa com poucos seguidores e um vídeo bom compete com um perfil grande e um vídeo morno, e às vezes ganha.',
     },
     {
       tipo: 'paragrafo',
       texto:
-        'A consequência prática é desconfortável para quem vem do marketing tradicional: **não existe audiência acumulada que garanta o resultado do vídeo de amanhã**. Cada publicação recomeça a prova. Isso torna o TikTok o canal em que volume e teste valem mais do que planejamento longo — e o canal em que uma marca descobre rápido que o assunto que ela achava interessante não é o assunto que a audiência dela assiste até o fim.',
+        'A consequência prática é desconfortável para quem vem do marketing tradicional: **um vídeo que foi bem não garante o próximo**. Isso torna o TikTok o canal em que volume e teste valem mais do que planejamento longo — e o canal em que uma marca descobre rápido que o assunto que ela achava interessante não é o assunto que a audiência dela assiste até o fim.',
     },
     {
       tipo: 'titulo',
@@ -80,8 +78,8 @@ export const pagina: Pagina = {
     {
       tipo: 'lista',
       itens: [
-        '**Formato.** Vertical, com o assunto declarado nos primeiros segundos e legenda embutida — ela torna o vídeo acessível a quem não ouve, funciona para quem está com o som desligado e ajuda a segurar a atenção de quem já começou a assistir. O que abre o vídeo é o [hook](/glossario/hook), e é ele que decide se existe segundo 10.',
-        '**Cadência.** Publicar com regularidade dá à plataforma amostras suficientes para aprender quem é o público do perfil. Publicar em rajada não acelera nada: dois vídeos no mesmo dia disputam a mesma audiência.',
+        '**Formato.** Vertical, assunto declarado nos primeiros segundos e [legenda embutida](/glossario/legenda-embutida) — o conjunto vale igual nas três redes e está em [vídeos curtos](/guias/videos-curtos). O que abre o vídeo é o [hook](/glossario/hook), e é ele que decide se existe segundo 10.',
+        '**Cadência.** Publicar com regularidade dá à plataforma amostras suficientes para aprender quem é o público do perfil; publicar em rajada não acelera nada. O intervalo que a operação usa está em [conteúdo orgânico para empresas](/solucoes/conteudo-organico-para-empresas).',
         '**Medida.** Seguidor é vaidade tardia. O que diz se o conteúdo está funcionando é [retenção](/glossario/retencao), [watch time](/glossario/watch-time) e a proporção de quem chegou sem seguir o perfil.',
       ],
     },
@@ -95,7 +93,7 @@ export const pagina: Pagina = {
       itens: [
         'Adaptar o comercial de TV: vinheta, logo e trinta segundos de contexto antes do assunto. O corte acontece antes da mensagem.',
         'Postar só quando há campanha. O perfil fica sem dado nenhum entre uma campanha e outra, e cada retomada começa do zero.',
-        'Publicar em rajada para "compensar" a semana parada, o que faz os vídeos concorrerem entre si.',
+        'Publicar em rajada para "compensar" a semana parada, em vez de espaçar o que já está pronto.',
         'Trocar o formato a cada semana antes de qualquer teste terminar, o que impede saber o que funcionou.',
         'Tratar o vídeo que performou como exceção de sorte, em vez de refazê-lo em cinco variações.',
       ],
@@ -108,7 +106,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'O TikTok é uma das três redes em que a operação da Doxa publica — as outras duas são o Instagram e o YouTube Shorts. Duas regras da operação dizem bem o que a empresa acredita sobre este canal, e valem como condição de quem já é cliente, não como conselho universal: o mesmo arquivo vai para as três redes no mesmo dia, e cada perfil recebe no máximo um vídeo da operação por dia útil.',
+        'O TikTok é uma das três redes em que os vídeos da operação da Doxa são publicados — as outras duas são o Instagram e o YouTube Shorts. Duas regras da operação dizem bem o que a empresa acredita sobre este canal, e valem como condição de quem já é cliente, não como conselho universal: o mesmo arquivo vai para as três redes no mesmo dia, e cada perfil recebe no máximo um vídeo da operação por dia útil.',
     },
     {
       tipo: 'destaque',
@@ -119,7 +117,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'O que a Doxa não faz, e nunca fez: prometer que um vídeo específico vai viralizar. A operação é construída para gerar volume, dados e testes suficientes para aumentar as chances de alcançar audiências grandes — e é assim que a empresa descreve a própria garantia.',
+        'O que a Doxa não faz: prometer que um vídeo específico vai viralizar. A operação é construída para gerar volume, dados e testes suficientes para aumentar as chances de alcançar audiências grandes — e é assim que a empresa descreve a própria garantia.',
     },
     {
       tipo: 'titulo',

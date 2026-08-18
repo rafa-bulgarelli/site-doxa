@@ -70,7 +70,6 @@ export const pagina: Pagina = {
   ],
   hubs: ['/guias/videos-curtos'],
   relacionadas: [
-    '/guias/videos-curtos',
     '/guias/como-usar-o-mesmo-video-nas-tres-redes',
     '/guias/marketing-de-conteudo-para-b2b',
     '/glossario/legenda-embutida',
@@ -106,7 +105,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'O feed corta o texto do post depois de poucas linhas e esconde o resto atrás de um "ver mais". Isso é o que se observa abrindo o aplicativo, e tem uma consequência prática: a frase que sobra visível é a única parte do texto que não depende de um clique. Ela ocupa, ali, o lugar que a capa ocupa nas redes de recomendação — se ela não segura, o vídeo abaixo não chega a ser aberto.',
+        'O feed corta o texto do post depois de poucas linhas e esconde o resto atrás de um "ver mais". Isso é o que se observa abrindo o aplicativo, e tem uma consequência prática: a frase que sobra visível é a parte do texto que não depende de um clique. Ela ocupa, ali, o lugar que a capa ocupa nas redes de recomendação — se ela não segura, o vídeo abaixo não chega a ser aberto.',
     },
     {
       tipo: 'lista',

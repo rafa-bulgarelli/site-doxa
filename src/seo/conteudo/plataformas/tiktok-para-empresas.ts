@@ -12,15 +12,14 @@ import type { Pagina } from '../../tipos';
  *  · a redação mais ampla ("TikTok, Instagram, YouTube e outras redes
  *    relevantes") → `src/components/faq/config.ts`, chave `redes`;
  *  · views 100% orgânicas, sem compra de mídia → chave `organico`;
- *  · não garantir que um vídeo específico viralize → chave `viralizar-garantido`;
  *  · o entregável vertical, legendado, pronto para postar, publicado pelo
  *    cliente → `src/components/HowItWorks.tsx`;
  *  · o mesmo arquivo nas três redes no mesmo dia, um vídeo por dia útil e a
  *    proibição de impulsionar nos perfis da estratégia → `RT-1`, `RT-2` e a
  *    seção de impulsionamento do manual (`supabase/manual-seed-v1.sql`),
  *    apresentados como o que se combina com quem JÁ é cliente (§8);
- *  · público e empresas pequenas → chaves `para-quem` e `pequenas`; o volume
- *    definido pela estratégia e pela meta de cada cliente → chave `volume`;
+ *  · o público a que a operação serve → chave `para-quem`; o volume definido
+ *    pela estratégia e pela meta de cada cliente → chave `volume`;
  *  · engajamento artificial (comprar seguidor, curtida ou visualização)
  *    contamina resultados, viola a metodologia e pode gerar penalização das
  *    redes → `supabase/manual-seed-v1.sql` e o card 004, source of truth §8.
@@ -37,7 +36,7 @@ export const pagina: Pagina = {
     'Por que um perfil novo ainda alcança gente no TikTok, o que trava um perfil de empresa na rede e como a Doxa opera conteúdo vertical por lá, sem impulsionar.',
   h1: 'TikTok para empresas',
   resumo:
-    'No TikTok, quem decide o alcance de um vídeo é o desempenho dele, não o tamanho do perfil que o publicou — e é isso que mantém a porta aberta para uma empresa que está começando. O preço dessa porta é publicar com constância e aceitar que cada vídeo recomeça a disputa do zero.',
+    'No TikTok, o que costuma decidir o alcance de um vídeo é o desempenho dele: o tamanho do perfil pesa pouco ali, não é passaporte nem teto — e é isso que mantém a porta aberta para uma empresa que está começando. O preço dessa porta é publicar com constância: o resultado de um vídeo não garante o do próximo.',
   intencao: 'comercial',
   palavrasChave: [
     'tiktok para empresas',
@@ -69,13 +68,13 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'Numa rede organizada por seguidores, publicar para dez pessoas alcança dez pessoas: o tamanho da audiência é o teto. No TikTok o feed principal é de recomendação — o vídeo é mostrado a um público que não segue o perfil, e o que ele fizer ali decide se será mostrado a mais gente. Isso tem duas consequências opostas, e as duas importam para uma empresa.',
+        'Numa rede organizada por seguidores, publicar para dez pessoas alcança dez pessoas: o tamanho da audiência é o teto. No TikTok o feed principal é de recomendação — o vídeo costuma ser mostrado a um público que não segue o perfil, e o que ele fizer ali orienta se será mostrado a mais gente. Isso tem duas consequências opostas, e as duas importam para uma empresa.',
     },
     {
       tipo: 'lista',
       itens: [
         'A boa: um perfil novo não está condenado. Não é preciso acumular audiência antes de alcançar alguém.',
-        'A dura: nada é acumulado de graça. Um vídeo que foi bem não garante o próximo — cada peça recomeça a disputa, e por isso postar em rajada e sumir não acumula nada.',
+        'A dura: um vídeo que foi bem não garante o próximo — e uma sequência de peças fracas costuma reduzir a amostra inicial das seguintes, e é por isso que postar em rajada e sumir rende pouco.',
       ],
     },
     {
@@ -89,17 +88,17 @@ export const pagina: Pagina = {
         {
           titulo: 'Transformar o perfil em catálogo',
           texto:
-            'Uma sequência de vídeos de produto, sem nada além do produto, é anúncio sem verba: ninguém escolhe assistir. O que sustenta um perfil de marca é o assunto em volta do produto — a dúvida que o cliente traz, o erro que ele comete, o bastidor que explica o preço.',
+            'Catálogo em vídeo não segura ninguém no TikTok: o que sustenta um perfil de marca é o assunto em volta do produto — a dúvida que o cliente traz, o erro que ele comete, o bastidor que explica o preço.',
         },
         {
           titulo: 'Republicar peça de campanha',
           texto:
-            'Vídeo feito para TV, site ou reunião chega aqui com a linguagem errada: começa se apresentando, fala de si e demora. É o tipo de vídeo que se reconhece em dois segundos — e o polegar reconhece antes.',
+            'Vídeo feito para TV, site ou reunião chega aqui com a linguagem errada: começa se apresentando, fala de si e demora. É o tipo de vídeo que se reconhece em dois segundos — e o polegar reconhece antes. Reaproveitar não é o problema; reaproveitar sem reescrever a abertura é.',
         },
         {
           titulo: 'Desistir no segundo mês',
           texto:
-            'A conta que costuma levar ao abandono: publica em rajada por três semanas, não vê retorno e para. Como a distribuição é por vídeo, parar significa recomeçar — e quem recomeça três vezes gastou três vezes sem completar nenhum ciclo de aprendizado.',
+            'A conta que costuma levar ao abandono: publica em rajada por três semanas, não vê retorno e para. Como a distribuição é por vídeo, parar significa recomeçar — e quem recomeça três vezes gastou três vezes sem completar nenhum ciclo de aprendizado. O que faltou não foi verba nem ideia: foi terminar um teste.',
         },
       ],
     },
@@ -111,7 +110,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'Nos perfis onde a operação da Doxa está ativa, impulsionar, turbinar ou promover publicação é proibido — inclusive posts que não são da Doxa —, e campanhas antigas nesses perfis são pausadas antes da primeira publicação. Não é purismo: alcance comprado se mistura ao orgânico e some com a única informação que interessa, que é o que o vídeo conseguiu fazer sozinho. As visualizações contabilizadas nas metas da Doxa são 100% orgânicas, provenientes da distribuição dos conteúdos produzidos dentro da operação.',
+        'O TikTok mostra, publicação por publicação, quanto do alcance veio de quem não segue o perfil — e é justamente esse dado que a mídia paga embaralha. Por isso, nos perfis onde a operação da Doxa está ativa, impulsionar publicação é proibido; a regra inteira, com o que continua permitido, está em [conteúdo orgânico para empresas](/solucoes/conteudo-organico-para-empresas). As visualizações contabilizadas nas metas são orgânicas, provenientes da distribuição dos conteúdos produzidos dentro da operação.',
     },
     {
       tipo: 'destaque',
@@ -142,7 +141,7 @@ export const pagina: Pagina = {
     {
       tipo: 'lista',
       itens: [
-        'Empresas que precisam ser conhecidas por quem ainda não as procura: é a rede em que alcançar desconhecidos é o comportamento padrão.',
+        'Empresas que precisam ser conhecidas por quem ainda não as procura: alcançar desconhecidos é o comportamento comum da rede.',
         'Marcas que têm assunto além do catálogo, e alguém disposto a falar dele com regularidade.',
         'Negócios B2B, com linguagem e formatos adaptados — decisor também rola feed, e o argumento é que ele encontre a sua empresa antes de precisar dela.',
         'Não compensa para quem quer testar por um mês. Sem constância, o teste não mede a rede: mede a desistência.',
@@ -157,24 +156,19 @@ export const pagina: Pagina = {
       tipo: 'faq',
       itens: [
         {
-          pergunta: 'As visualizações do TikTok são orgânicas?',
+          pergunta: 'Quantos seguidores minha empresa precisa ter para começar no TikTok?',
           resposta:
-            'As visualizações contabilizadas nas metas da Doxa são 100% orgânicas, provenientes da distribuição dos conteúdos produzidos dentro da nossa operação. Sem depender da compra de mídia para atingir as metas contratadas.',
+            'Nenhum número é pré-requisito. O feed principal da rede é de recomendação: a peça costuma ser oferecida a gente que não segue o perfil, e o tamanho do perfil pesa pouco nessa decisão: ele não adianta o começo nem impede o resto. O que muda com o tempo é menos o número de seguidores e mais o acervo de vídeos que já mostrou à plataforma quem assiste o assunto da empresa.',
         },
         {
-          pergunta: 'Vocês conseguem garantir que meu conteúdo vai viralizar no TikTok?',
+          pergunta: 'Quanto tempo até dar para julgar se o TikTok funciona para a minha empresa?',
           resposta:
-            'Não garantimos que um vídeo específico vai viralizar. O que fazemos é construir uma operação com volume, dados e testes suficientes para aumentar significativamente as chances de alcançar grandes audiências. Nossa garantia está relacionada à performance total contratada, e não ao desempenho de um único conteúdo.',
-        },
-        {
-          pergunta: 'Minha empresa é pequena. Faz sentido trabalhar com a Doxa?',
-          resposta:
-            'Empresas pequenas também podem trabalhar com a Doxa, desde que exista potencial para transformar conteúdo em um canal relevante de crescimento. O mais importante não é o tamanho da empresa, e sim os objetivos, o mercado, o produto e a capacidade de aproveitar a audiência gerada pela operação.',
+            'Um mês não responde. Como a distribuição é decidida vídeo a vídeo, o perfil só produz leitura depois de acumular peças suficientes no mesmo formato para comparar umas com as outras — o critério está em [por que meus vídeos não têm views](/guias/por-que-meus-videos-nao-tem-views). Antes disso o que existe são resultados isolados, que dizem pouco sozinhos.',
         },
         {
           pergunta: 'Preciso postar todo dia?',
           resposta:
-            'A rotina combinada com quem já é cliente da Doxa prevê no máximo um vídeo da operação por dia útil, com pelo menos 24 horas entre um e outro: dois vídeos no mesmo dia disputam o mesmo espaço e um atropela o alcance do outro. O volume exato de cada operação é definido pela estratégia e pela meta de performance do cliente.',
+            'A rotina combinada com quem já é cliente da Doxa prevê no máximo um vídeo da operação por dia útil, com pelo menos 24 horas entre um e outro, porque peças publicadas juntas competem pela mesma janela de entrega. O volume exato de cada operação é definido pela estratégia e pela meta de performance do cliente.',
         },
       ],
     },

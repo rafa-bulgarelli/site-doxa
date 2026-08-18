@@ -12,12 +12,11 @@ export const pagina: Pagina = {
     'Conteúdo evergreen é o que continua útil meses depois de publicado. Como saber se um assunto é perene e por que isso muda o retorno da produção.',
   h1: 'Conteúdo evergreen',
   resumo:
-    'Conteúdo evergreen é o que continua fazendo sentido meses ou anos depois de publicado, porque responde a algo que não muda com a semana. É o oposto do conteúdo de contexto, que só funciona enquanto o assunto está no ar.',
+    'O oposto do conteúdo de contexto, que só funciona enquanto o assunto está no ar.',
   intencao: 'informacional',
   palavrasChave: ['conteúdo evergreen', 'conteúdo perene', 'evergreen significado'],
   hubs: ['/guias/marketing-organico'],
   relacionadas: [
-    '/guias/marketing-organico',
     '/guias/estrategia-de-conteudo-para-empresas',
     '/glossario/conteudo-organico',
   ],

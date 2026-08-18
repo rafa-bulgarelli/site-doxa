@@ -56,7 +56,6 @@ export const pagina: Pagina = {
   ],
   hubs: ['/guias/marketing-organico'],
   relacionadas: [
-    '/guias/marketing-organico',
     '/solucoes/conteudo-organico-para-empresas',
     '/guias/como-produzir-60-videos-em-90-dias',
     '/guias/como-medir-resultado-de-conteudo-organico',
@@ -148,7 +147,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'A janela natural é o trimestre, porque é o tempo em que um volume razoável de peças gera dado suficiente para concluir algo. Nas primeiras semanas, o que aparece é ruído: os conteúdos que performam abaixo do esperado no começo são justamente os que geram os dados sobre audiência, temas, formatos e narrativas que orientam a revisão seguinte.',
+        'A janela natural é o trimestre, porque é o tempo em que um volume razoável de peças gera dado suficiente para concluir algo. Nas primeiras semanas, o que aparece é ruído: os primeiros vídeos são dado, não veredito, e é deles que a revisão seguinte tira o que corrigir.',
     },
     {
       tipo: 'paragrafo',
@@ -187,7 +186,7 @@ export const pagina: Pagina = {
         {
           pergunta: 'Preciso da estratégia pronta antes de começar a publicar?',
           resposta:
-            'Não, e esperar por ela costuma custar mais caro do que começar com ela pela metade. Os campos de objetivo, público e promessa dá para responder hoje; o critério de descarte só fica bom depois de ver as primeiras peças no ar. O que não funciona é chegar ao terceiro mês sem nenhum dos sete respondidos, porque aí não há como decidir nada com o que foi publicado.',
+            'A estratégia não precisa estar pronta para começar, e esperar por ela costuma custar mais caro do que começar com ela pela metade. Os campos de objetivo, público e promessa dá para responder hoje; o critério de descarte só fica bom depois de ver as primeiras peças no ar. O que não funciona é chegar ao terceiro mês sem nenhum dos sete respondidos, porque aí não há como decidir nada com o que foi publicado.',
         },
         {
           pergunta: 'Quem deveria escrever esse documento?',

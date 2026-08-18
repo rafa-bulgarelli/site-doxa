@@ -70,7 +70,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'A diferença que explica quase todas as outras é o que cada aplicativo mostra quando você abre. No TikTok, a tela inicial é de recomendação: o que aparece vem de perfis que você não segue, e a base de seguidores conta pouco para o vídeo de hoje. No Instagram, o vídeo de quem você não segue divide espaço com o resto — feed de quem você acompanha, stories, mensagens — porque a rede foi construída em torno de uma lista de contatos, e o vídeo entrou depois.',
+        'A diferença que explica quase todas as outras é o que cada aplicativo mostra quando você abre. No TikTok, a tela inicial é de recomendação: o que aparece vem de perfis que você não segue, e a base de seguidores costuma contar pouco para o vídeo de hoje. No Instagram, o vídeo de quem você não segue divide espaço com o resto — feed de quem você acompanha, stories, mensagens — porque a rede foi construída em torno de uma lista de contatos, e o vídeo entrou depois.',
     },
     {
       tipo: 'paragrafo',
@@ -87,11 +87,11 @@ export const pagina: Pagina = {
       cabecalho: ['Critério', 'TikTok', 'Instagram'],
       linhas: [
         ['De onde vem o alcance', 'Recomendação para quem não segue', 'Mistura de seguidores e recomendação'],
-        ['Perfil novo, sem base', 'Consegue alcance desde os primeiros vídeos', 'Costuma depender mais de base e de tempo'],
+        ['Perfil novo, sem base', 'Pode ter alcance desde os primeiros vídeos', 'Costuma depender mais de base e de tempo'],
         ['Formatos disponíveis', 'O vídeo vertical é o centro de tudo', 'Vídeo, foto, carrossel, stories e mensagem'],
         ['Como a audiência responde', 'Comentário público, em volume', 'Conversa privada: salvar, story e mensagem direta'],
         ['Papel no funil', 'Descoberta de quem nunca ouviu falar', 'Prova, catálogo e fechamento da conversa'],
-        ['Tolerância a conteúdo cru', 'Alta: produção caseira é a norma', 'Média — o perfil também é vitrine'],
+        ['Tolerância a conteúdo cru', 'Alta: produção caseira é comum', 'Média — o perfil também é vitrine'],
         ['O arquivo do vídeo', 'Vertical e legendado', 'O mesmo, com atenção à área segura da tela'],
       ],
     },
@@ -120,7 +120,7 @@ export const pagina: Pagina = {
         '**Fechar a conversa.** A pessoa assiste, olha o perfil, vê a prova, manda mensagem. O caminho inteiro acontece dentro do aplicativo.',
         '**Sustentar a relação.** Stories e mensagem direta mantêm contato com quem já conhece a marca — e é dessa base que costuma sair a venda repetida.',
         '**Formatos que o vídeo não cobre.** Carrossel explicativo, foto de produto, catálogo, lista de perguntas. Nem toda informação cabe em vídeo.',
-        '**Ser onde a empresa já é procurada.** Muita gente confere o perfil da marca antes de comprar. Perfil vazio ali custa venda de um jeito que nenhuma outra rede compensa.',
+        '**Ser onde a empresa já é procurada.** Muita gente confere o perfil da marca antes de comprar. Perfil vazio ali custa venda.',
       ],
     },
     {
@@ -142,7 +142,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'O que muda de uma rede para outra não é a peça, é a **expectativa**. O mesmo vídeo pode render alcance alto no TikTok e conversa no Instagram, e comparar os dois números como se medissem a mesma coisa leva à conclusão errada. Compare cada rede com ela mesma, mês a mês. A terceira, que quase ninguém completa, está em [YouTube Shorts para empresas](/plataformas/youtube-shorts-para-empresas).',
+        'O que muda de uma rede para outra não é a peça, é a **expectativa**. O mesmo vídeo pode render alcance alto no TikTok e conversa no Instagram, e comparar os dois números como se medissem a mesma coisa leva à conclusão errada. Compare cada rede com ela mesma, mês a mês. A terceira, que costuma ficar de fora, está em [YouTube Shorts para empresas](/plataformas/youtube-shorts-para-empresas).',
     },
     {
       tipo: 'paragrafo',
@@ -166,7 +166,7 @@ export const pagina: Pagina = {
         {
           pergunta: 'Publicar o mesmo vídeo nas duas redes prejudica o alcance?',
           resposta:
-            'Publicar nas duas não derruba uma à outra, e o mesmo arquivo vertical serve às duas. O cuidado é com o selo que uma rede grava no arquivo baixado dela e que aparece na outra, sinal costumeiramente lido como conteúdo reciclado — o caminho é exportar do editor, e não baixar de uma rede para subir na outra.',
+            'Publicar nas duas não derruba uma à outra, e o mesmo arquivo vertical serve às duas. O cuidado é com o selo que uma rede grava no arquivo baixado dela e que aparece na outra, sinal que a outra rede pode tratar como conteúdo reciclado — o caminho é exportar do editor, e não baixar de uma rede para subir na outra.',
         },
         {
           pergunta: 'Por onde começar se só der para manter uma?',

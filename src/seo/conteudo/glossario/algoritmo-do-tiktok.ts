@@ -21,7 +21,7 @@ export const pagina: Pagina = {
     'O que se sabe sobre a distribuição do TikTok: como um vídeo é testado com um grupo pequeno, que sinais pesam e o que é mito sobre o funcionamento.',
   h1: 'Algoritmo do TikTok',
   resumo:
-    'O algoritmo do TikTok é o sistema que decide para quem cada vídeo é mostrado. Ele funciona por testes sucessivos: mostra a um grupo pequeno, observa o comportamento e amplia ou interrompe a entrega a partir do que viu.',
+    'Funciona por testes sucessivos: mostra a um grupo pequeno, observa o comportamento e amplia ou interrompe a entrega a partir do que viu.',
   intencao: 'informacional',
   palavrasChave: [
     'algoritmo do tiktok',
@@ -30,7 +30,6 @@ export const pagina: Pagina = {
   ],
   hubs: ['/guias/marketing-no-tiktok'],
   relacionadas: [
-    '/guias/marketing-no-tiktok',
     '/guias/como-viralizar-no-tiktok',
     '/glossario/retencao',
   ],
@@ -74,16 +73,16 @@ export const pagina: Pagina = {
     {
       tipo: 'titulo',
       nivel: 2,
-      texto: 'Os sinais que mais pesam',
+      texto: 'Os sinais que costumam pesar',
     },
     {
       tipo: 'lista',
       itens: [
-        'Tempo assistido em relação à duração — a [retenção](/glossario/retencao) é o sinal mais denso, porque qualquer espectador o produz.',
+        'Tempo assistido em relação à duração, medido pela [retenção](/glossario/retencao).',
         'Reassistir o mesmo vídeo, que é uma versão ainda mais forte do sinal anterior.',
         'Compartilhamento, que carrega intenção clara de recomendar a alguém.',
         'Comentário, principalmente quando gera resposta e conversa.',
-        'Seguir o perfil depois de assistir, que é o sinal mais raro e o mais valioso.',
+        'Seguir o perfil depois de assistir, que é o sinal mais raro dos cinco.',
       ],
     },
     {
@@ -96,8 +95,8 @@ export const pagina: Pagina = {
       itens: [
         '**Que existe um castigo pessoal.** O que costuma haver é uma sequência de vídeos com retenção baixa, o que reduz a amostra inicial dos seguintes.',
         '**Que hashtag define o alcance.** Ela ajuda a classificar o assunto, e não substitui a reação das pessoas.',
-        '**Que o horário decide.** Ele muda pouco perto da abertura do vídeo e da regularidade da publicação.',
-        '**Que publicar mais no mesmo dia acelera.** Dois vídeos no mesmo dia disputam o mesmo espaço e um atropela o alcance do outro — é a razão pela qual a operação da Doxa limita a um vídeo por dia útil nos perfis dos clientes.',
+        '**Que o horário decide.** Ele pesa pouco ao lado do que abre o vídeo e da constância de quem publica.',
+        '**Que publicar mais no mesmo dia acelera.** As peças do mesmo dia concorrem pela mesma amostra inicial — é a razão pela qual a operação da Doxa limita a um vídeo por dia útil nos perfis dos clientes.',
       ],
     },
     {

@@ -91,7 +91,7 @@ export const pagina: Pagina = {
       tipo: 'destaque',
       variante: 'atencao',
       texto:
-        'Nenhuma operação séria promete que um vídeo específico vai viralizar. O que se constrói é volume, dado e teste suficientes para aumentar as chances de alcançar grandes audiências.',
+        'Não dá para prometer que um vídeo específico vai viralizar. O que se constrói é volume, dado e teste suficientes para aumentar as chances de alcançar grandes audiências.',
     },
     {
       tipo: 'titulo',
@@ -101,7 +101,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'Vale começar pela lista curta do que não adianta tentar administrar, porque é nela que a maior parte do tempo de quem posta se perde:',
+        'Vale começar pela lista curta do que não adianta tentar administrar, porque é nela que boa parte do tempo de quem posta se perde:',
     },
     {
       tipo: 'lista',
@@ -109,7 +109,7 @@ export const pagina: Pagina = {
         'Quem está na primeira leva de espectadores, e o humor dela naquele dia.',
         'O assunto que está em alta na semana — entrar nele atrasado costuma render menos do que publicar o que você já sabia dizer.',
         'O desempenho de um vídeo isolado. Um resultado, bom ou ruim, é um ponto, não uma curva.',
-        'O número de seguidores como garantia de entrega: base grande ajuda no começo da distribuição, não decide o fim dela.',
+        'O número de seguidores como garantia de entrega — o tamanho do perfil pesa pouco, e não garante entrega nem limita alcance.',
         'O resultado do vídeo de outra marca, produzido com outro contexto, outra audiência e outro histórico de perfil.',
       ],
     },
@@ -134,7 +134,7 @@ export const pagina: Pagina = {
         {
           titulo: 'A cadência: o intervalo entre uma publicação e a próxima',
           texto:
-            'Publicar dois vídeos com poucas horas de diferença faz um disputar espaço com o outro na mesma audiência. É a alavanca mais barata de corrigir e a que quase ninguém usa — está detalhada na seção seguinte.',
+            'Publicar dois vídeos com poucas horas de diferença faz um disputar espaço com o outro na mesma audiência. É a alavanca mais barata de corrigir e a que costuma ficar de fora — está detalhada na seção seguinte.',
         },
         {
           titulo: 'O volume: quantos testes por mês',
@@ -146,7 +146,7 @@ export const pagina: Pagina = {
     {
       tipo: 'titulo',
       nivel: 2,
-      texto: 'A cadência é a alavanca que quase ninguém usa',
+      texto: 'A cadência é a alavanca que costuma ficar de fora',
     },
     {
       tipo: 'paragrafo',
@@ -167,7 +167,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'A contrapartida é que a agenda deixa de depender de inspiração: com o intervalo fixo, o que decide a publicação de amanhã é a fila de vídeos prontos, não a vontade de postar. Fotos, carrosséis e stories não competem nessa janela — a regra é sobre vídeo curto.',
+        'A contrapartida é que a agenda deixa de depender de inspiração: com o intervalo fixo, o que decide a publicação de amanhã é a fila de vídeos prontos, não a vontade de postar.',
     },
     {
       tipo: 'titulo',
@@ -179,7 +179,7 @@ export const pagina: Pagina = {
       itens: [
         '**Comprar seguidores, curtidas, views ou comentários.** Além de contaminar a leitura do que funciona, engajamento artificial pode gerar penalização das redes — o vídeo passa a ser medido por uma audiência que nunca ia assisti-lo até o fim.',
         '**Impulsionar as publicações do perfil onde o trabalho orgânico está rodando.** É regra de operação orgânica: no perfil em que a estratégia está ativa, nada é impulsionado, turbinado ou promovido. Sem isso não há como saber se o alcance veio do conteúdo ou da verba.',
-        '**Limitar ou desativar comentários.** Comentário é sinal de distribuição e é a única leitura gratuita do que a audiência entendeu. Apagar o ofensivo é diferente de fechar a porta.',
+        '**Limitar ou desativar comentários.** Comentário é sinal de distribuição e é a leitura mais barata do que a audiência entendeu. Apagar o ofensivo é diferente de fechar a porta.',
         '**Reeditar o vídeo depois de pronto.** Trocar corte, duração, música, legenda ou capa a cada publicação transforma cada peça num experimento diferente, e nenhum aprendizado se acumula. A regra prática cabe em três palavras: baixou, publicou.',
       ],
     },
@@ -196,7 +196,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'O corolário desagradável é que os primeiros vídeos costumam performar abaixo do esperado, e isso faz parte: eles geram os dados de audiência, tema, formato e hook que orientam os próximos. Uma estratégia que depende de acertar todos os vídeos não é estratégia, é sorte com nome melhor.',
+        'O corolário desagradável é que os primeiros vídeos costumam performar abaixo do esperado, e isso faz parte: eles são a matéria-prima da leitura seguinte. Uma estratégia que depende de acertar todos os vídeos não é estratégia, é sorte com nome melhor.',
     },
     {
       tipo: 'destaque',
@@ -220,7 +220,7 @@ export const pagina: Pagina = {
         {
           pergunta: 'Postar mais de uma vez por dia acelera o crescimento?',
           resposta:
-            'Costuma fazer o contrário. A distribuição de um vídeo continua por horas depois da publicação, e o vídeo seguinte é oferecido à mesma audiência que ainda estava recebendo o anterior — é a leitura que a Doxa aplica na rotina de quem contrata, e que sustenta o intervalo de 24 horas de relógio entre publicações.',
+            'Costuma fazer o contrário. A distribuição de um vídeo continua por horas depois da publicação, e o vídeo seguinte é oferecido à mesma audiência que ainda estava recebendo o anterior — e é o que sustenta o intervalo de 24 horas de relógio entre publicações.',
         },
         {
           pergunta: 'Devo apagar os vídeos que foram mal?',

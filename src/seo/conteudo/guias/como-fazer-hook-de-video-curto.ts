@@ -194,7 +194,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'A resposta está na curva de [retenção](/glossario/retencao): se a queda mais violenta está nos primeiros segundos, o começo não segurou; se a curva se mantém alta e cai no meio, o hook cumpriu o papel e o problema é outro. Um vídeo isolado não decide nada — os conteúdos que performam abaixo do esperado são os que geram dado sobre audiência, tema, formato e hook.',
+        'A resposta está na curva de [retenção](/glossario/retencao): se a queda mais violenta está nos primeiros segundos, o começo não segurou; se a curva se mantém alta e cai no meio, o hook cumpriu o papel e o problema é outro. Um vídeo isolado não decide nada — são os fracos do começo que calibram o hook seguinte.',
     },
     {
       tipo: 'paragrafo',
@@ -223,12 +223,12 @@ export const pagina: Pagina = {
         {
           pergunta: 'Dá para reaproveitar o mesmo hook em vários vídeos?',
           resposta:
-            'O formato, sim: uma estrutura que funciona pode virar padrão da série. A frase literal, não — repetida, ela vira vinheta, e vinheta é a primeira coisa que o espectador aprende a pular. Mantenha a estrutura, troque o específico.',
+            'O formato, sim: uma estrutura que funciona pode virar padrão da série. A frase literal, não — repetida, ela vira vinheta, e vinheta é das primeiras coisas que o espectador aprende a pular. Mantenha a estrutura, troque o específico.',
         },
         {
           pergunta: 'Texto na tela conta como hook mesmo sem fala?',
           resposta:
-            'Conta, e às vezes é o canal que mais trabalha: boa parte do feed é assistida sem som, e o texto é o que declara o assunto para quem está nessa situação. A condição é que seja legível numa tela pequena e fique longe das bordas, onde a interface passa por cima.',
+            'Conta, e às vezes é o canal que mais trabalha: há muita situação em que ligar o som não é opção, e o texto é o que declara o assunto para quem está nessa situação. A condição é que seja legível numa tela pequena e fique longe das bordas, onde a interface passa por cima.',
         },
       ],
     },

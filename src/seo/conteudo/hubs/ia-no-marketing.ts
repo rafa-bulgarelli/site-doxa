@@ -66,7 +66,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'A parte cara de um vídeo nunca foi o software de edição. Era reunir gente, câmera, luz, estúdio e agenda a cada gravação, e refazer tudo isso na semana seguinte. O que a IA derruba é exatamente esse pedaço: a pessoa na frente da câmera, a voz e o cenário podem ser gerados a partir de material que já existe, e o custo do décimo vídeo do mês deixa de ser igual ao do primeiro.',
+        'A parte cara de um vídeo nunca foi o software de edição. Era reunir gente, câmera, luz, estúdio e agenda a cada gravação, e refazer tudo isso na semana seguinte. O que a IA derruba é exatamente esse pedaço: a pessoa na frente da câmera, a voz e o cenário podem ser gerados a partir de material que já existe, e o custo do décimo vídeo do mês deixa de ser igual ao do primeiro — a conta está em [produção de conteúdo em escala](/solucoes/producao-de-conteudo-em-escala).',
     },
     {
       tipo: 'paragrafo',
@@ -92,7 +92,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'A fronteira desta tabela é a coisa mais importante do assunto. Toda operação com IA que dá errado erra no mesmo lugar: automatiza também a linha de baixo, e publica conteúdo que soa como qualquer marca de qualquer setor. O termo técnico para o que sai dali é conteúdo genérico, e nenhuma ferramenta conserta isso.',
+        'A fronteira desta tabela é a coisa mais importante do assunto. Um erro recorrente em operação com IA é automatizar também a linha de baixo, e publicar conteúdo que soa como qualquer marca de qualquer setor. O termo técnico para o que sai dali é conteúdo genérico, e nenhuma ferramenta conserta isso.',
     },
     {
       tipo: 'titulo',
@@ -122,7 +122,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'A produção roda sobre ferramentas de mercado — HeyGen, ChatGPT, Claude, Meta e ElevenLabs. São ferramentas usadas, e nada além disso: nenhuma delas é parceira da Doxa nem endossa o que está escrito aqui. Vale dizer também o que a Doxa não é, porque encurta a conversa: não é agência, não vende curso, ferramenta nem assinatura de software.',
+        'A produção roda sobre ferramentas de mercado — HeyGen, ChatGPT, Claude, Meta e ElevenLabs. São ferramentas usadas, e nada além disso: nenhuma delas é parceira da Doxa nem endossa o que está escrito aqui. Vale dizer também o que a Doxa não é, porque encurta a conversa: não é agência nem tráfego pago — a lista inteira está em [marketing com IA](/solucoes/marketing-com-ia).',
     },
     {
       tipo: 'destaque',

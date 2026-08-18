@@ -49,7 +49,6 @@ export const pagina: Pagina = {
   ],
   hubs: ['/guias/videos-curtos'],
   relacionadas: [
-    '/guias/videos-curtos',
     '/comparativos/tiktok-vs-instagram',
     '/plataformas/youtube-shorts-para-empresas',
     '/guias/como-medir-resultado-de-conteudo-organico',
@@ -147,7 +146,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'O que precisa ser respeitado é o intervalo **dentro de cada rede** — e vale o mesmo que está em [como viralizar no TikTok](/guias/como-viralizar-no-tiktok): dois vídeos publicados perto demais no mesmo perfil disputam a mesma audiência ali, e um atropela o alcance do outro. A régua de 24 horas de relógio entre uma publicação e a próxima naquele perfil é a que a Doxa combina com quem já é cliente, e ela se copia sem contratar nada. Publicar em três redes não conta como três vídeos; conta como um, três vezes.',
+        'O que precisa ser respeitado é o intervalo **dentro de cada rede** — e vale o mesmo que está em [como viralizar no TikTok](/guias/como-viralizar-no-tiktok): dois vídeos publicados perto demais no mesmo perfil competem entre si ali. A régua de 24 horas de relógio entre uma publicação e a próxima naquele perfil é a que a Doxa combina com quem já é cliente, e ela se copia sem contratar nada. Publicar em três redes não conta como três vídeos; conta como um, três vezes.',
     },
     {
       tipo: 'titulo',
@@ -163,7 +162,6 @@ export const pagina: Pagina = {
       tipo: 'lista',
       itens: [
         '**Compare cada rede com ela mesma.** O vídeo de terça contra o de quinta, no mesmo perfil, é a única comparação limpa.',
-        '**Some para medir a operação, separe para medir a peça.** O total das três dimensiona o trimestre; o número isolado diz em que rede aquele assunto pegou.',
         '**Olhe a fatia de quem não segue o perfil** em cada uma. É o recorte que mostra se a peça está encontrando gente nova ou circulando entre conhecidos.',
         '**Não desligue a rede que rende menos** antes de um trimestre inteiro. Ela é a que custa menos para manter — o arquivo já existe.',
       ],
@@ -195,12 +193,12 @@ export const pagina: Pagina = {
         {
           pergunta: 'Preciso escrever uma descrição diferente em cada rede?',
           resposta:
-            'O arquivo é o mesmo; o campo de texto ao lado dele, não precisa ser. Vale escrever uma versão por rede porque cada uma usa esse campo de um jeito: no YouTube ele é lido por quem chega pela busca, e nas outras duas ele funciona mais como legenda de apoio. É o único item da publicação que compensa personalizar, e leva menos de um minuto.',
+            'O arquivo é o mesmo; o campo de texto ao lado dele não precisa ser. Vale escrever uma versão por rede porque cada uma usa esse campo de um jeito: no YouTube ele é lido por quem chega pela busca, e nas outras duas ele funciona mais como legenda de apoio. É o único item da publicação que compensa personalizar, e leva menos de um minuto.',
         },
         {
           pergunta: 'Posso publicar em dias diferentes em cada rede para render mais?',
           resposta:
-            'Pode, mas você perde a comparação: com datas diferentes, deixa de dar para saber se a diferença de resultado veio da rede ou do dia. Manter a mesma data custa nada e transforma cada peça num teste com três leituras.',
+            'Pode, mas você perde a comparação: com datas diferentes, deixa de dar para saber se a diferença de resultado veio da rede ou do dia. Manter a mesma data não custa nada e transforma cada peça num teste com três leituras.',
         },
       ],
     },

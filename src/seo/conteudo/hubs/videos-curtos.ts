@@ -36,7 +36,7 @@ export const pagina: Pagina = {
     'O que faz um vídeo curto ser assistido até o fim: hook, retenção, watch time e as decisões de formato que valem no TikTok, no Reels e no Shorts.',
   h1: 'Vídeos curtos',
   resumo:
-    'Um vídeo curto é assistido ou descartado em menos tempo do que leva para ler esta frase, e quase tudo que decide o resultado acontece antes do quinto segundo. Este hub reúne o vocabulário do formato — hook, retenção, watch time — e as decisões de produção que valem igual no TikTok, no Reels e no YouTube Shorts.',
+    'Um vídeo curto é assistido ou descartado em menos tempo do que leva para ler esta frase, e boa parte do que decide o resultado acontece nos primeiros segundos. Este hub reúne o vocabulário do formato — hook, retenção, watch time — e as decisões de produção que valem igual no TikTok, no Reels e no YouTube Shorts.',
   intencao: 'informacional',
   palavrasChave: [
     'vídeos curtos',
@@ -46,11 +46,9 @@ export const pagina: Pagina = {
   ],
   hubs: [],
   relacionadas: [
-    '/solucoes/videos-curtos-para-empresas',
-    '/guias/como-fazer-videos-curtos-que-prendem',
-    '/glossario/hook',
-    '/glossario/retencao',
-    '/guias/por-que-meus-videos-nao-tem-views',
+    '/guias/marketing-organico',
+    '/guias/reels-no-instagram',
+    '/guias/marketing-no-tiktok',
   ],
   atualizadoEm: '2026-08-18',
   cta: {
@@ -67,7 +65,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'Num feed de vídeo curto, a pessoa não escolhe o que assistir: ela recebe. A decisão dela não é "vou ver este", é "vou continuar vendo este". Essa inversão explica quase tudo que parece estranho no formato — por que a abertura importa mais do que o fim, por que contexto no começo mata o vídeo, e por que um assunto excelente mal apresentado tem menos alcance do que um assunto banal bem aberto.',
+        'Num feed de vídeo curto, a pessoa não escolhe o que assistir: ela recebe. A decisão dela não é "vou ver este", é "vou continuar vendo este". Essa inversão explica boa parte do que parece estranho no formato — por que a abertura importa mais do que o fim, por que contexto no começo mata o vídeo, e por que um assunto excelente mal apresentado tem menos alcance do que um assunto banal bem aberto.',
     },
     {
       tipo: 'paragrafo',
@@ -83,7 +81,7 @@ export const pagina: Pagina = {
       tipo: 'lista',
       itens: [
         'Vertical de ponta a ponta, sem barras e sem recorte de material horizontal — vídeo reaproveitado de outro formato aparece como vídeo reaproveitado.',
-        '**Legenda embutida no arquivo**: é acessibilidade para quem não ouve, resolve o consumo sem som e ajuda a segurar a atenção — e, diferente da legenda automática, ela não some quando o vídeo é baixado e republicado.',
+        '**Legenda embutida no arquivo**: é acessibilidade para quem não ouve, resolve as situações em que ligar o som não é opção e ajuda a segurar a atenção — e, diferente da legenda automática, ela não some quando o vídeo é baixado e republicado.',
         'Assunto declarado nos primeiros segundos, antes de qualquer apresentação da marca.',
         'Um assunto por vídeo. Dois assuntos criam uma transição, e é na transição que a curva cai.',
         'Duração ditada pelo conteúdo, não por uma regra: o vídeo termina quando a ideia termina, e nem um segundo depois.',
@@ -92,12 +90,12 @@ export const pagina: Pagina = {
     {
       tipo: 'titulo',
       nivel: 2,
-      texto: 'O mesmo arquivo nas três redes',
+      texto: 'Por que o mesmo arquivo serve às três redes',
     },
     {
       tipo: 'paragrafo',
       texto:
-        'TikTok, Instagram Reels e YouTube Shorts pedem o mesmo formato e costumam responder a sinais parecidos, o que torna o reaproveitamento honesto — não é preguiça, é distribuição. Publicar o mesmo vídeo nas três multiplica a chance de encontrar a audiência sem multiplicar a produção, e as diferenças reais entre as redes aparecem depois, na leitura dos dados, não na hora de exportar o arquivo.',
+        'TikTok, Instagram Reels e YouTube Shorts pedem o mesmo formato e costumam responder a sinais parecidos, o que torna o reaproveitamento honesto — não é preguiça, é distribuição. O que fazer com o arquivo na hora de subir em cada uma está em [como usar o mesmo vídeo nas três redes](/guias/como-usar-o-mesmo-video-nas-tres-redes).',
     },
     {
       tipo: 'paragrafo',
@@ -118,7 +116,7 @@ export const pagina: Pagina = {
       tipo: 'destaque',
       variante: 'doxa',
       texto:
-        'A regra que o manual do cliente resume em duas palavras: baixou, publicou. O arquivo entregue vai ao ar exatamente como saiu — sem mudar corte, duração, velocidade, proporção, legenda ou capa. A razão está escrita lá: cada elemento é decidido com foco em desempenho, alterar um detalhe muda a peça inteira, e a Doxa não consegue responder pelo resultado de um conteúdo que não é mais o que produziu.',
+        'A regra que o manual do cliente resume em duas palavras: baixou, publicou — o arquivo entregue vai ao ar exatamente como saiu. O que não se altera, e por quê, está em [vídeos curtos para empresas](/solucoes/videos-curtos-para-empresas).',
     },
     {
       tipo: 'paragrafo',

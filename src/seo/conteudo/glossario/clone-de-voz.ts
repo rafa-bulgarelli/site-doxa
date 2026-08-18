@@ -22,14 +22,14 @@ export const pagina: Pagina = {
     'Clone de voz é a reprodução da voz de uma pessoa por software, a partir de uma amostra. Como funciona, para que serve e o que exige em consentimento.',
   h1: 'Clone de voz',
   resumo:
-    'Clone de voz é a reprodução sintética da voz de uma pessoa específica, construída a partir de uma amostra do que ela falou. A partir dela, qualquer texto pode virar locução naquela voz — o que torna o consentimento a parte mais importante do assunto.',
+    'Com o modelo pronto, qualquer texto vira locução naquela voz — o que torna o consentimento a parte mais importante do assunto.',
   intencao: 'informacional',
   palavrasChave: ['clone de voz', 'voz sintética', 'clonagem de voz ia'],
   hubs: ['/guias/ia-no-marketing'],
   relacionadas: [
-    '/guias/ia-no-marketing',
     '/glossario/avatar-de-ia',
     '/solucoes/clone-de-ia-para-videos',
+    '/solucoes/clone-de-voz-para-videos',
   ],
   atualizadoEm: '2026-08-18',
   corpo: [
@@ -70,7 +70,7 @@ export const pagina: Pagina = {
     {
       tipo: 'titulo',
       nivel: 2,
-      texto: 'Como isso aparece na Doxa',
+      texto: 'O que a Doxa faz com isso',
     },
     {
       tipo: 'paragrafo',

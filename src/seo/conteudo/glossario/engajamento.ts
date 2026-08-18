@@ -25,7 +25,7 @@ export const pagina: Pagina = {
     'Engajamento é a soma das ações que uma pessoa faz além de assistir. O que entra na conta, os dois denominadores possíveis e por que a taxa engana.',
   h1: 'Engajamento',
   resumo:
-    'Engajamento é a soma das ações que as pessoas fazem num conteúdo além de simplesmente vê-lo: curtir, comentar, compartilhar, salvar, clicar e seguir. É uma medida de reação — e não de quanta gente foi alcançada, que é outra métrica.',
+    'Uma medida de reação — e não de quanta gente foi alcançada, que é outra métrica.',
   intencao: 'informacional',
   palavrasChave: [
     'engajamento',
@@ -35,7 +35,6 @@ export const pagina: Pagina = {
   ],
   hubs: ['/guias/marketing-organico'],
   relacionadas: [
-    '/guias/marketing-organico',
     '/glossario/alcance-organico',
     '/glossario/impressoes',
     '/glossario/retencao',
@@ -79,7 +78,7 @@ export const pagina: Pagina = {
         'Salvamento diz "quero isto de volta": é interesse com prazo.',
         'Compartilhamento diz "isto serve para outra pessoa", e leva o vídeo a quem você não alcança.',
         'Comentário abre conversa, e conversa costuma manter o vídeo em circulação.',
-        'Seguir é a ação mais rara, e a única que muda a relação daí em diante.',
+        'Seguir é a ação mais rara, e a que muda a relação daí em diante.',
       ],
     },
     {
@@ -91,7 +90,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'A métrica que costuma explicar melhor a distribuição de um vídeo curto não é o engajamento, e sim a [retenção](/glossario/retencao): assistir já produz esse sinal, e só uma parte de quem assiste toca num botão.',
+        'A métrica que costuma explicar melhor a distribuição de um vídeo curto não é o engajamento, e sim a [retenção](/glossario/retencao) — o verbete explica por quê.',
     },
   ],
 };

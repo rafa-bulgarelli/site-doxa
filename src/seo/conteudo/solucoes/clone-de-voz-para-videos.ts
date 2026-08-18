@@ -67,7 +67,6 @@ export const pagina: Pagina = {
     '/solucoes/clone-de-ia-para-videos',
     '/solucoes/producao-de-videos-com-ia',
     '/glossario/avatar-de-ia',
-    '/guias/ia-no-marketing',
   ],
   atualizadoEm: '2026-08-18',
   cta: {
@@ -198,7 +197,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'Vale dizer com todas as letras, porque é a pergunta que chega por esta busca: não é possível contratar a Doxa só para clonar uma voz. O clone é um componente da entrega, e a entrega é conteúdo em vídeo. A Doxa também não vende curso, ferramenta nem assinatura de software — quem quer apenas gerar uma locução para usar por conta própria procura uma ferramenta de mercado, e isso não é o que esta página oferece.',
+        'Vale dizer com todas as letras, porque é a pergunta que chega por esta busca: não é possível contratar a Doxa só para clonar uma voz. O clone é um componente da entrega, e a entrega é conteúdo em vídeo. Quem quer apenas gerar uma locução para usar por conta própria procura uma ferramenta de mercado, e isso não é o que esta página oferece.',
     },
     {
       tipo: 'destaque',
@@ -222,7 +221,7 @@ export const pagina: Pagina = {
         {
           pergunta: 'Posso usar a voz de um sócio ou de um funcionário nos vídeos?',
           resposta:
-            'Só com a autorização da própria pessoa, e para o uso que ela autorizou. Vale deixar combinado por escrito o que acontece com os vídeos já publicados se ela sair da empresa: é a parte que costuma ficar para depois e é a única que não tem conserto barato.',
+            'Só com a autorização da própria pessoa, e para o uso que ela autorizou. O que acontece com os vídeos já publicados se ela sair da empresa é assunto de contrato, e está registrado em [clone digital](/glossario/clone-digital).',
         },
         {
           pergunta: 'Nome de produto e sigla saem com a pronúncia certa?',

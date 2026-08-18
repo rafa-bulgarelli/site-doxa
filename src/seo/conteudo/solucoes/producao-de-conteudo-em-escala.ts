@@ -96,7 +96,7 @@ export const pagina: Pagina = {
       tipo: 'lista',
       itens: [
         'Com poucos vídeos, um resultado bom é indistinguível de sorte, e um ruim não ensina nada.',
-        'Com volume, os primeiros conteúdos abaixo do esperado viram dado sobre audiência, temas, formatos, hooks e narrativas.',
+        'Com volume, o vídeo que não foi bem deixa de ser prejuízo e vira leitura.',
         'A decisão que sobra é a boa: aumentar a produção em torno do que funciona e descartar rápido o que não funciona.',
       ],
     },
@@ -154,7 +154,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'A referência de volume é de **sessenta conteúdos únicos em noventa dias**, conforme as condições e o prazo do contrato, com no máximo um vídeo da operação por dia útil. Por que existe um teto, e não só um piso, é o assunto de [conteúdo orgânico para empresas](/solucoes/conteudo-organico-para-empresas): dois vídeos no mesmo dia disputam o mesmo espaço e um atropela o alcance do outro. O volume exato de cada operação depende do plano contratado, e a Doxa trabalha com operações de alta frequência.',
+        'A referência de volume é de **sessenta conteúdos únicos em noventa dias**, conforme as condições e o prazo do contrato, com no máximo um vídeo da operação por dia útil. Por que existe um teto, e não só um piso, é o assunto de [conteúdo orgânico para empresas](/solucoes/conteudo-organico-para-empresas). O volume exato de cada operação depende do plano contratado, e a Doxa trabalha com operações de alta frequência.',
     },
     {
       tipo: 'titulo',
@@ -213,7 +213,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'Faça a conta antes da reunião: quantas peças a sua empresa publicou nos últimos noventa dias e quantas pessoas encostaram em cada uma. Esses dois números dizem mais sobre a viabilidade da escala do que qualquer proposta. Depois disso, quem preenche o formulário é chamado pelo time da Doxa em até 24 horas para marcar a auditoria estratégica.',
+        'Faça a conta antes da reunião: quantas peças a sua empresa conseguiu publicar no último trimestre e quantas pessoas encostaram em cada uma. Esses dois números dizem mais sobre a viabilidade da escala do que qualquer proposta. Depois disso, quem preenche o formulário é chamado pelo time da Doxa em até 24 horas para marcar a auditoria estratégica.',
     },
   ],
 };

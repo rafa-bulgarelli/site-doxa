@@ -48,7 +48,6 @@ export const pagina: Pagina = {
   ],
   hubs: ['/guias/videos-curtos'],
   relacionadas: [
-    '/guias/videos-curtos',
     '/guias/como-fazer-hook-de-video-curto',
     '/guias/como-fazer-videos-curtos-que-prendem',
     '/glossario/roteiro-de-video-curto',
@@ -95,7 +94,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'A quinta linha da tabela é a que separa um roteiro de um texto. Vídeo curto é consumido com o som desligado numa parte considerável do tempo, e a legenda embutida, o texto de apoio e o que está sendo mostrado carregam metade do recado. Se isso não estiver escrito, será improvisado na edição — e improviso na edição custa mais caro do que planejamento na escrita.',
+        'A quinta linha da tabela é a que separa um roteiro de um texto. Há muita situação em que ligar o som não é opção — fila, transporte, escritório, madrugada em casa —, e a legenda embutida, o texto de apoio e o que está sendo mostrado carregam metade do recado. Se isso não estiver escrito, será improvisado na edição — e improviso na edição custa mais caro do que planejamento na escrita.',
     },
     {
       tipo: 'paragrafo',
@@ -110,12 +109,12 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'Não existe número de palavras por segundo que sirva a qualquer pessoa: o ritmo muda com o locutor, com o assunto e com o quanto o vídeo tem de pausa. O único método confiável é banal e ninguém faz — **leia o roteiro em voz alta, no ritmo em que você vai gravar, com o cronômetro do celular na mão**. O número que aparecer é a duração real; qualquer estimativa feita lendo com os olhos vem curta.',
+        'Não existe número de palavras por segundo que sirva a qualquer pessoa: o ritmo muda com o locutor, com o assunto e com o quanto o vídeo tem de pausa. O método confiável é banal e costuma ficar de fora — **leia o roteiro em voz alta, no ritmo em que você vai gravar, com o cronômetro do celular na mão**. O número que aparecer é a duração real; qualquer estimativa feita lendo com os olhos vem curta.',
     },
     {
       tipo: 'paragrafo',
       texto:
-        'Feita a leitura, corte. Não porque exista uma duração ideal, mas porque a primeira versão sempre tem gordura: a régua que funciona é tirar cerca de um quinto do texto e ler de novo. Se o sentido não se perdeu, aquele quinto não estava fazendo nada.',
+        'Feita a leitura, corte. Não porque exista uma duração ideal, mas porque a primeira versão costuma ter gordura: a régua que funciona é tirar cerca de um quinto do texto e ler de novo. Se o sentido não se perdeu, aquele quinto não estava fazendo nada.',
     },
     {
       tipo: 'destaque',
@@ -126,7 +125,7 @@ export const pagina: Pagina = {
     {
       tipo: 'titulo',
       nivel: 2,
-      texto: 'As cinco frases que sempre saem no corte',
+      texto: 'As cinco frases que costumam sair no corte',
     },
     {
       tipo: 'lista',

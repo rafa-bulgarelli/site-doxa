@@ -83,7 +83,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'O começo do vídeo é a única parte que ninguém pula. Ele não serve para se apresentar, situar o assunto ou agradecer: serve para dar ao espectador um motivo específico de ficar. Um hook funciona quando entrega uma das quatro coisas abaixo antes que o dedo decida.',
+        'O começo do vídeo é a parte que quase não se pula. Ele não serve para se apresentar, situar o assunto ou agradecer: serve para dar ao espectador um motivo específico de ficar. Um hook funciona quando entrega uma das quatro coisas abaixo antes que o dedo decida.',
     },
     {
       tipo: 'lista',
@@ -118,7 +118,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'Na prática isso muda a forma de escrever. Em vez de "cinco dicas de conteúdo", cinco vídeos, cada um defendendo uma dica com um exemplo concreto. A versão em lista parece mais eficiente e rende menos: ninguém assiste até a dica cinco, e nenhuma das cinco fica clara o suficiente para ser lembrada.',
+        'Na prática isso muda a forma de escrever. Em vez de "cinco dicas de conteúdo", cinco vídeos, cada um defendendo uma dica com um exemplo concreto. A versão em lista parece mais eficiente e costuma render menos: pouca gente chega à dica cinco, e nenhuma das cinco fica clara o suficiente para ser lembrada.',
     },
     {
       tipo: 'titulo',
@@ -181,7 +181,7 @@ export const pagina: Pagina = {
         {
           titulo: 'Confira o intervalo desde a última publicação',
           texto:
-            'Vídeo bom publicado poucas horas depois do anterior disputa audiência com ele. Se o intervalo for curto, o melhor lugar da peça é a fila, não o feed.',
+            'Vídeo bom publicado poucas horas depois do anterior disputa audiência com ele. Se o intervalo for curto, o melhor lugar da peça é a fila, não o feed — a régua está em [como viralizar no TikTok](/guias/como-viralizar-no-tiktok).',
         },
       ],
     },
@@ -193,7 +193,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'Acontece, e com frequência maior do que qualquer roteiro admite. Um vídeo isolado é um ponto, não uma curva: os primeiros conteúdos que performam abaixo do esperado fazem parte do processo, porque é deles que saem os dados sobre audiência, temas, formatos, hooks e narrativas. A leitura útil só aparece quando existem peças suficientes para comparar — e a pergunta muda de "por que este vídeo não foi" para "o que os três que foram tinham em comum".',
+        'Acontece, e com frequência maior do que qualquer roteiro admite. Um vídeo isolado é um ponto, não uma curva: o que os primeiros vídeos entregam é leitura, não nota. A leitura útil só aparece quando existem peças suficientes para comparar — e a pergunta muda de "por que este vídeo não foi" para "o que os três que foram tinham em comum".',
     },
     {
       tipo: 'paragrafo',
@@ -227,12 +227,12 @@ export const pagina: Pagina = {
         {
           pergunta: 'Legenda automática serve ou preciso legendar manualmente?',
           resposta:
-            'A automática resolve a acessibilidade e costuma errar em nome próprio, número e termo técnico — que costumam ser justamente as palavras que carregam a informação. O caminho barato é gerar automático e revisar as palavras-chave da peça, cuidando também do posicionamento: legenda coberta pela interface da rede é legenda que ninguém leu.',
+            'A automática resolve a acessibilidade e costuma errar em nome próprio, número e termo técnico — que costumam ser justamente as palavras que carregam a informação. O caminho barato é gerar a legenda automática no editor, embuti-la no arquivo e revisar as palavras-chave da peça, cuidando também do posicionamento: legenda coberta pela interface da rede é legenda que ninguém leu.',
         },
         {
           pergunta: 'O mesmo vídeo pode ir para TikTok, Reels e Shorts?',
           resposta:
-            'Pode, e é o que uma operação de volume faz: o mesmo arquivo vertical vai às três redes no mesmo dia. O cuidado é com a área segura da tela — cada rede põe interface em lugares diferentes —, e com a expectativa de resultado, que não é a mesma nas três.',
+            'Pode, e é o que uma operação de volume faz: o mesmo arquivo vertical vai às três redes no mesmo dia. O cuidado é com a área segura da tela — cada rede põe interface em lugares diferentes —, e com a expectativa de resultado, que não é a mesma nas três. O passo a passo está em [como usar o mesmo vídeo nas três redes](/guias/como-usar-o-mesmo-video-nas-tres-redes).',
         },
       ],
     },

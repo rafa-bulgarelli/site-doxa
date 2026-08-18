@@ -51,7 +51,6 @@ export const pagina: Pagina = {
   ],
   hubs: ['/guias/marketing-organico'],
   relacionadas: [
-    '/guias/marketing-organico',
     '/glossario/alcance-organico',
     '/glossario/retencao',
     '/glossario/watch-time',
@@ -72,7 +71,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'O relatório de redes sociais que ninguém lê tem sempre a mesma característica: ele informa. Nenhuma linha dele diz o que fazer diferente na semana seguinte. Antes de escolher métrica, escolha as decisões — repetir ou descartar um formato, mudar a abertura, subir ou baixar a frequência, insistir ou sair de uma rede. Cada número que sobrar deve responder a uma dessas quatro.',
+        'O relatório de redes sociais que ninguém lê costuma ter a mesma característica: ele informa, e nenhuma linha dele diz o que fazer diferente na semana seguinte. Antes de escolher métrica, escolha as decisões — repetir ou descartar um formato, mudar a abertura, subir ou baixar a frequência, insistir ou sair de uma rede. Cada número que sobrar deve responder a uma dessas quatro.',
     },
     {
       tipo: 'titulo',
@@ -169,7 +168,7 @@ export const pagina: Pagina = {
       tipo: 'lista',
       itens: [
         'Pergunte "como você chegou até a gente?" em todo primeiro contato, e registre a resposta em texto livre.',
-        'Acompanhe as buscas pelo nome da marca ao longo dos meses: é o sinal indireto mais confiável de que se dispõe.',
+        'Acompanhe as buscas pelo nome da marca ao longo dos meses: é um dos sinais indiretos mais confiáveis de que se dispõe.',
         'Compare o volume de conversas iniciadas antes e depois do trimestre, e não vídeo a vídeo.',
         'Trate o conteúdo como canal de demanda, não como fechamento: ele gera conversa, quem fecha é o time comercial.',
       ],

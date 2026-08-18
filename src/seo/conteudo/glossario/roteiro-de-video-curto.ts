@@ -21,7 +21,7 @@ export const pagina: Pagina = {
     'Roteiro de vídeo curto é o texto que define o que será dito e mostrado, na ordem. O que ele contém, o que o diferencia de um roteiro longo e por que existe.',
   h1: 'Roteiro de vídeo curto',
   resumo:
-    'Roteiro de vídeo curto é o texto que define, antes de qualquer gravação, o que vai ser dito e mostrado e em que ordem. Em quinze a sessenta segundos não há espaço para improviso: cada frase ocupa uma fatia grande do total, e é o roteiro que decide qual delas fica.',
+    'Em quinze a sessenta segundos não há espaço para improviso: cada frase ocupa uma fatia grande do total, e é o roteiro que decide qual delas fica.',
   intencao: 'informacional',
   // A dona da busca exata "roteiro de vídeo curto" é a página de tutorial,
   // /guias/como-escrever-roteiro-de-video-curto (keyword-map:130). Aqui fica a
@@ -34,7 +34,6 @@ export const pagina: Pagina = {
   ],
   hubs: ['/guias/videos-curtos'],
   relacionadas: [
-    '/guias/videos-curtos',
     '/guias/como-escrever-roteiro-de-video-curto',
     '/glossario/hook',
     '/glossario/cta',
@@ -78,7 +77,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'Sem roteiro, o vídeo é gravado várias vezes até sair aceitável, e a decisão do que dizer acaba sendo tomada na edição, quando as opções já acabaram. Com roteiro, a discussão acontece no texto — que é barato de mudar — e a gravação vira execução. É também o que torna possível manter padrão entre uma peça e a seguinte, e o que permite aprovar conteúdo antes de produzi-lo.',
+        'Sem roteiro, o vídeo costuma ser gravado várias vezes até sair aceitável, e a decisão do que dizer acaba sendo tomada na edição, quando as opções já acabaram. Com roteiro, a discussão acontece no texto — que é barato de mudar — e a gravação vira execução. É também o que torna possível manter padrão entre uma peça e a seguinte, e o que permite aprovar conteúdo antes de produzi-lo.',
     },
     {
       tipo: 'destaque',

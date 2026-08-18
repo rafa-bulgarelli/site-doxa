@@ -19,7 +19,7 @@ export const pagina: Pagina = {
     'Impressões contam quantas vezes um conteúdo apareceu na tela, repetições incluídas. Como elas diferem de visualizações e o que a frequência revela.',
   h1: 'Impressões',
   resumo:
-    'Impressões é o número de vezes que um conteúdo apareceu na tela de alguém, contando as repetições da mesma pessoa. Costuma ser o maior número do painel e o que menos diz sozinho — porque ele mede exibição, não interesse.',
+    'Costuma ser o maior número do painel e o que menos diz sozinho — porque mede exibição, não interesse.',
   intencao: 'informacional',
   palavrasChave: [
     'impressões',
@@ -29,7 +29,6 @@ export const pagina: Pagina = {
   ],
   hubs: ['/guias/marketing-organico'],
   relacionadas: [
-    '/guias/marketing-organico',
     '/glossario/alcance-organico',
     '/glossario/engajamento',
     '/glossario/watch-time',
@@ -59,7 +58,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'Dividir impressões por [alcance](/glossario/alcance-organico) dá a frequência: quantas vezes, em média, cada pessoa viu aquilo. Uma frequência próxima de 1 significa que o conteúdo se espalhou para gente nova. Uma frequência alta significa que ele circulou repetidamente entre as mesmas pessoas — o que pode ser bom, quando a intenção é fixar uma mensagem, e ruim quando a intenção era crescer.',
+        'Dividir impressões por [alcance](/glossario/alcance-organico) dá a frequência: quantas vezes, em média, cada pessoa viu aquilo. Uma frequência próxima de 1 significa que quase ninguém viu o conteúdo duas vezes. Uma frequência alta significa que ele circulou repetidamente entre as mesmas pessoas — o que pode ser bom, quando a intenção é fixar uma mensagem, e ruim quando a intenção era crescer.',
     },
     {
       tipo: 'titulo',

@@ -10,16 +10,18 @@ import type { Pagina } from '../../tipos';
  * a lista abaixo é o rastro de cada afirmação, para quem for revisar:
  *
  *  · os três passos → `src/components/HowItWorks.tsx` (`STEPS_PT`);
- *  · R$ 8.000–10.500/mês e o inventário do jeito antigo →
- *    `src/components/comparacao/config.ts` (`CUSTO_DE`, `CUSTO_ATE`, `ITENS`);
+ *  · a faixa de R$ 8.000–10.500/mês →
+ *    `src/components/comparacao/config.ts` (`CUSTO_DE`, `CUSTO_ATE`). O
+ *    inventário item a item é de `/solucoes/producao-de-conteudo-em-escala`;
  *  · "Um milhão de views. Ou seu dinheiro de volta." → `GARANTIA` no mesmo
  *    arquivo, que é a manchete do topo da landing;
  *  · a letra da garantia ("metas de performance definidas em contrato") →
  *    `src/components/faq/config.ts`, resposta `garantia`, palavra por palavra;
- *  · as quatro respostas do FAQ → o mesmo arquivo, chaves `gravar`, `organico`,
- *    `primeiros-videos` e `preco`, palavra por palavra. `volume` e `tom-de-voz`
- *    saíram daqui porque as donas dessas perguntas são
- *    `/solucoes/producao-de-conteudo-em-escala` e `/solucoes/marketing-com-ia`;
+ *  · as três respostas do FAQ → o mesmo arquivo, chaves `gravar`,
+ *    `primeiros-videos` e `preco`, palavra por palavra. `volume`, `tom-de-voz` e
+ *    `organico` saíram daqui porque as donas dessas perguntas são
+ *    `/solucoes/producao-de-conteudo-em-escala`, `/solucoes/marketing-com-ia` e
+ *    `/solucoes/conteudo-organico-para-empresas`;
  *  · o parágrafo sobre complementar a estratégia com anúncios → chave
  *    `midia-extra` do mesmo arquivo, que virou prosa em vez de pergunta porque
  *    a dúvida "preciso de tráfego pago?" já está respondida no corpo;
@@ -86,7 +88,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'O que muda não é a estética do vídeo: é o **custo marginal do próximo vídeo**. Numa operação tradicional, o décimo vídeo do mês custa quase o mesmo que o primeiro, porque cada um exige gravação. Numa operação com IA, o caro é montar o clone uma vez; publicar todo dia deixa de ser uma questão de agenda e passa a ser uma questão de roteiro.',
+        'O que muda não é a estética do vídeo: é o **custo marginal do próximo vídeo** — a conta de por que ele não cai numa produção tradicional está em [produção de conteúdo em escala](/solucoes/producao-de-conteudo-em-escala). Numa operação com IA, o caro é montar o clone uma vez; publicar todo dia deixa de ser uma questão de agenda e passa a ser uma questão de roteiro.',
     },
     {
       tipo: 'lista',
@@ -138,17 +140,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'Montar essa operação por dentro custa entre **R$ 8.000 e R$ 10.500 por mês**, na conta que a Doxa publica na própria landing — o inventário de UMA operação, com produção, agência e tráfego somados. É ilustração do que uma empresa acumula para publicar com constância, não um levantamento de mercado, e não é o salário de uma pessoa.',
-    },
-    {
-      tipo: 'lista',
-      itens: [
-        'Gente: video maker, roteirista, editor de vídeo, social media, diretor de criação.',
-        'Equipamento: câmera, lentes, tripé, microfone de lapela, estabilizador, cartões de memória.',
-        'Espaço: estúdio, iluminação, cenário e as horas de gravação.',
-        'Pós: ilha de edição, licença de edição, banco de trilhas, banco de imagens, legendagem.',
-        'Distribuição: agência, gestor de tráfego, verba de tráfego pago, calendário editorial, relatórios.',
-      ],
+        'Montar essa operação por dentro custa entre **R$ 8.000 e R$ 10.500 por mês**, na conta que a Doxa publica na própria landing — o inventário item a item, e a ressalva de que é ilustração e não levantamento de mercado, estão em [produção de conteúdo em escala](/solucoes/producao-de-conteudo-em-escala).',
     },
     {
       tipo: 'paragrafo',
@@ -173,7 +165,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'A garantia é sobre a **performance total contratada**, não sobre um vídeo específico. Nenhuma operação séria promete que a peça número 14 vai viralizar; o que se pode construir é volume, dados e testes suficientes para aumentar as chances de alcançar grandes audiências.',
+        'A garantia é sobre a **performance total contratada**, não sobre um vídeo específico. Não dá para prometer que a peça número 14 vai viralizar; o que se pode construir é volume, dados e testes suficientes para aumentar as chances de alcançar grandes audiências.',
     },
     {
       tipo: 'titulo',
@@ -245,11 +237,6 @@ export const pagina: Pagina = {
           pergunta: 'Eu preciso gravar os vídeos ou vocês fazem tudo?',
           resposta:
             'A Doxa consegue assumir grande parte da operação de conteúdo. No onboarding entendemos quais materiais — imagens, vídeos, áudios ou participações — serão necessários. A necessidade de gravação do cliente varia conforme o formato escolhido para a marca.',
-        },
-        {
-          pergunta: 'As visualizações são orgânicas?',
-          resposta:
-            'As visualizações contabilizadas nas metas da Doxa são 100% orgânicas, provenientes da distribuição dos conteúdos produzidos dentro da nossa operação. Sem depender da compra de mídia para atingir as metas contratadas.',
         },
         {
           pergunta: 'E se os primeiros vídeos não performarem bem?',

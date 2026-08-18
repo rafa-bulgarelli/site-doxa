@@ -70,7 +70,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'Quase toda comparação entre gravar e gerar erra o alvo porque compara o custo do primeiro vídeo. O número que decide a operação de uma empresa é outro: quanto custa o **décimo vídeo do mês**. Na produção tradicional ele custa quase o mesmo que o primeiro, porque cada peça exige agenda, equipe e captação. Na produção com IA o caro é montar uma vez — depois disso, publicar mais vira uma questão de roteiro.',
+        'Boa parte das comparações entre gravar e gerar erra o alvo porque compara o custo do primeiro vídeo. O número que decide a operação de uma empresa é outro: quanto custa o **décimo vídeo do mês**. Na produção tradicional ele custa quase o mesmo que o primeiro, porque cada peça exige agenda, equipe e captação. Na produção com IA o caro é montar uma vez — depois disso, publicar mais vira uma questão de roteiro.',
     },
     {
       tipo: 'paragrafo',
@@ -85,7 +85,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'A conta que a Doxa publica no próprio site serve de ilustração do que uma operação interna acumula quando decide gravar com constância — não é levantamento de mercado, é o inventário de uma operação montada por dentro. São **cerca de 25 contratações**, entre gente, equipamento, espaço, pós-produção e distribuição, somando de **R$ 8.000 a R$ 10.500 por mês**:',
+        'A conta que a Doxa publica no próprio site serve de ilustração do que uma operação interna acumula quando decide gravar com constância — não é levantamento de mercado, é o inventário de uma operação montada por dentro. São **cerca de 25 contratações**, entre gente, equipamento, espaço, pós-produção e distribuição, somando de **R$ 8.000 a R$ 10.500 por mês** — é a faixa da operação completa, produção e distribuição, e a parte de distribuição é igual nos dois caminhos:',
     },
     {
       tipo: 'lista',
@@ -118,7 +118,7 @@ export const pagina: Pagina = {
         ['Variações da mesma ideia', 'Caras: cada versão é um novo take', 'Baratas: cinco aberturas do mesmo texto'],
         ['Demonstração física do produto', 'Resolve: a câmera mostra o objeto', 'Não resolve — fala sobre, não segura'],
         ['Ambiente e pessoas reais', 'Loja, fábrica, equipe, cliente em cena', 'Fora do alcance sem captação'],
-        ['Custo mensal para manter', 'R$ 8.000 a R$ 10.500 por dentro, no inventário ilustrativo acima', 'Depende do volume, não da diária'],
+        ['Custo mensal para manter', 'R$ 8.000 a R$ 10.500 na operação completa do inventário acima — a distribuição, igual nos dois caminhos, está dentro', 'Depende do volume, não da diária'],
       ],
     },
     {
@@ -152,7 +152,7 @@ export const pagina: Pagina = {
         '**Volume com constância.** Publicar todo dia útil deixa de depender de marcar dia, hora e estúdio com cinco pessoas.',
         '**Teste de mensagem.** A mesma ideia em cinco aberturas diferentes custa quase o mesmo que uma, e é assim que se descobre qual prende antes de investir em produção pesada.',
         '**Atualização.** Mudou o preço, a regra ou o nome do plano? O roteiro é corrigido e a peça é refeita, sem remarcar nada.',
-        '**Independência da agenda de quem aparece.** O gargalo mais comum de uma operação de conteúdo é uma pessoa só — normalmente a que decide.',
+        '**Independência da agenda de quem aparece.** O gargalo de uma operação de conteúdo costuma ser uma pessoa só — normalmente a que decide.',
         '**Idiomas e versões.** O mesmo conteúdo em outra língua não vira outra produção.',
       ],
     },
@@ -160,7 +160,7 @@ export const pagina: Pagina = {
       tipo: 'destaque',
       variante: 'nota',
       texto:
-        'A resposta depende de quantas peças e de que tipo. Poucas peças por trimestre, com demonstração física ou presença real: grave. Muitas peças por mês, explicativas, com o mesmo rosto e a mesma marca: gerar sai mais barato e mais previsível. Boa parte das empresas precisa das duas coisas, em proporções diferentes.',
+        'A resposta depende de quantas peças e de que tipo. Poucas peças por trimestre, com demonstração física ou presença real: grave. Muitas peças por mês, explicativas, com o mesmo rosto e a mesma marca: gerar costuma sair mais barato e mais previsível. Boa parte das empresas precisa das duas coisas, em proporções diferentes.',
     },
     {
       tipo: 'titulo',
@@ -170,7 +170,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'Operação madura não escolhe um lado: usa a geração para sustentar o volume — o conteúdo explicativo, recorrente, que precisa sair toda semana — e guarda a câmera para o que só ela faz. Um dia de captação por trimestre rende material de apoio para dezenas de peças, e a produção diária deixa de brigar por espaço na agenda com a gravação especial.',
+        'Operação madura raramente escolhe um lado: usa a geração para sustentar o volume — o conteúdo explicativo, recorrente, que precisa sair toda semana — e guarda a câmera para o que só ela faz. Um dia de captação por trimestre rende material de apoio para dezenas de peças, e a produção diária deixa de brigar por espaço na agenda com a gravação especial.',
     },
     {
       tipo: 'paragrafo',
@@ -197,9 +197,9 @@ export const pagina: Pagina = {
             'A comparação justa não é entre um vídeo gerado e um comercial com direção de arte: é entre um vídeo gerado e o vídeo que a empresa realmente conseguiria gravar toda semana, com celular, luz de escritório e a agenda de quem decide. Para peça publicitária de alto acabamento, a produção tradicional continua à frente; para conteúdo recorrente de perfil, a diferença que a audiência percebe está no roteiro.',
         },
         {
-          pergunta: 'Dá para usar os dois no mesmo perfil?',
+          pergunta: 'Gravação e geração por IA cabem no mesmo perfil?',
           resposta:
-            'Dá, e tende a ser o arranjo mais estável. O material captado — produto, ambiente, equipe, cliente — entra como apoio nas peças geradas, e a rotina de publicação deixa de depender de novas gravações. O que precisa ser combinado é o padrão visual, para que as duas origens não pareçam dois perfis diferentes.',
+            'Os dois cabem no mesmo perfil, e tende a ser o arranjo mais estável. O material captado — produto, ambiente, equipe, cliente — entra como apoio nas peças geradas, e a rotina de publicação deixa de depender de novas gravações. O que precisa ser combinado é o padrão visual, para que as duas origens não pareçam dois perfis diferentes.',
         },
         {
           pergunta: 'Vídeo com IA funciona para produto físico?',

@@ -26,7 +26,7 @@ export const pagina: Pagina = {
     'Legenda embutida é o texto queimado nos quadros do vídeo, que não se desliga. Como ela difere da legenda automática e o que cada uma resolve.',
   h1: 'Legenda embutida',
   resumo:
-    'Legenda embutida é o texto gravado dentro da imagem do vídeo, quadro a quadro, que aparece para qualquer pessoa e não pode ser desligado. É diferente da legenda que a plataforma gera por cima e que o espectador pode ativar ou não.',
+    'Diferente da legenda que a plataforma gera por cima, que o espectador pode ativar ou não.',
   intencao: 'informacional',
   palavrasChave: [
     'legenda embutida',
@@ -36,7 +36,6 @@ export const pagina: Pagina = {
   ],
   hubs: ['/guias/videos-curtos'],
   relacionadas: [
-    '/guias/videos-curtos',
     '/glossario/short-form',
     '/glossario/retencao',
     '/solucoes/videos-curtos-para-empresas',
@@ -66,7 +65,7 @@ export const pagina: Pagina = {
     {
       tipo: 'lista',
       itens: [
-        'Há muitas situações em que ligar o som não é opção: transporte, fila, sala de espera, escritório. Sem texto na tela, o vídeo não comunica nada ali.',
+        'Há muitas situações em que ligar o som não é opção: transporte, fila, sala de espera, escritório. Sem texto na tela, o vídeo comunica pouco ali.',
         'Ela sobrevive ao reaproveitamento: o mesmo arquivo publicado em outra rede continua legendado.',
         'O texto sincronizado dá ao olho o que acompanhar, e isso costuma ajudar a segurar quem assiste — assunto de [retenção](/glossario/retencao).',
         'O controle é de quem produz: fonte, posição, quebra de linha e destaque são decisões suas, não da transcrição automática.',

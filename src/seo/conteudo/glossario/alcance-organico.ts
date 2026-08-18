@@ -19,12 +19,11 @@ export const pagina: Pagina = {
     'Alcance orgânico é quanta gente diferente viu o seu conteúdo sem que ninguém pagasse por isso. O que ele mede, como se calcula e a diferença para impressões.',
   h1: 'Alcance orgânico',
   resumo:
-    'Alcance orgânico é o número de pessoas diferentes que viram o seu conteúdo sem que ninguém tenha pagado para que ele aparecesse. É a métrica que separa distribuição conquistada de distribuição comprada.',
+    'A métrica que separa distribuição conquistada de distribuição comprada — e a que mais se confunde com impressões.',
   intencao: 'informacional',
   palavrasChave: ['alcance orgânico', 'o que é alcance orgânico', 'alcance x impressões'],
   hubs: ['/guias/marketing-organico'],
   relacionadas: [
-    '/guias/marketing-organico',
     '/guias/como-aumentar-o-alcance-organico',
     '/glossario/conteudo-organico',
   ],
@@ -43,7 +42,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'Impressões contam quantas vezes o conteúdo apareceu na tela; alcance conta quantas pessoas o viram. Se a mesma pessoa assiste ao seu vídeo três vezes, são três impressões e um alcance. Por isso impressões é sempre um número maior, e por isso comparar o alcance de um mês com as impressões de outro produz conclusões erradas.',
+        'Impressões contam quantas vezes o conteúdo apareceu na tela; alcance conta quantas pessoas o viram. Se a mesma pessoa assiste ao seu vídeo três vezes, são três impressões e um alcance. Por isso o número de impressões nunca é menor que o de alcance, e por isso comparar o alcance de um mês com as impressões de outro produz conclusões erradas.',
     },
     {
       tipo: 'titulo',
@@ -53,13 +52,13 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'Num perfil que quer crescer, o alcance total diz pouco sozinho. O recorte útil é a fatia que veio de gente que ainda não segue o perfil, porque é ela que mede se você está encontrando público novo ou apenas conversando com quem já chegou. As três redes de vídeo curto mostram esse recorte nas métricas de cada publicação.',
+        'Num perfil que quer crescer, o alcance total diz pouco sozinho. O recorte útil é a fatia que veio de gente que ainda não segue o perfil, porque é ela que mede se você está encontrando público novo ou apenas conversando com quem já chegou. As redes de vídeo curto costumam mostrar esse recorte nas métricas de cada publicação.',
     },
     {
       tipo: 'destaque',
       variante: 'nota',
       texto:
-        'Alcance orgânico, nesse sentido, é o que a Doxa contabiliza nas metas dos clientes: visualizações orgânicas, vindas da distribuição dos conteúdos produzidos na operação, sem depender da compra de mídia.',
+        'O que a Doxa contabiliza nas metas dos clientes são visualizações orgânicas — views, não alcance —, vindas da distribuição dos conteúdos produzidos na operação, sem depender da compra de mídia.',
     },
     {
       tipo: 'titulo',

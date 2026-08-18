@@ -71,7 +71,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'O dinheiro que se perde com IA em marketing costuma sair do mesmo erro: tratar "IA" como um bloco só. Existem tarefas em que um modelo rende mais do que qualquer contratação, e tarefas em que ele é o pior conselheiro disponível. A régua é simples — **quanto mais a tarefa depende de repetir uma forma conhecida, mais a IA entrega; quanto mais ela depende de decidir o que a marca vai defender, menos**.',
+        'O dinheiro que se perde com IA em marketing costuma sair do mesmo erro: tratar "IA" como um bloco só. Existem tarefas em que um modelo costuma render mais do que uma contratação, e tarefas em que ele é o pior conselheiro disponível. A régua é simples — **quanto mais a tarefa depende de repetir uma forma conhecida, mais a IA entrega; quanto mais ela depende de decidir o que a marca vai defender, menos**.',
     },
     {
       tipo: 'lista',
@@ -182,12 +182,12 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'O que sobra é a descrição honesta: uma operação de produção de conteúdo vertical em escala para empresas e agências, com metas de performance definidas em contrato. Se o que a sua empresa procura é gestão de anúncios ou montar um time criativo dentro de casa, o caminho é outro — e [agência, equipe interna ou operação terceirizada](/comparativos/agencia-vs-equipe-interna) compara os três sem colocar a Doxa no meio.',
+        'O que sobra é a descrição honesta: uma operação de produção de conteúdo vertical em escala para empresas e agências, com metas de performance definidas em contrato. Se o que a sua empresa procura é gestão de anúncios ou montar um time criativo dentro de casa, o caminho é outro — e [agência, equipe interna ou operação terceirizada](/comparativos/agencia-vs-equipe-interna) compara os arranjos e diz onde cada um ganha.',
     },
     {
       tipo: 'titulo',
       nivel: 2,
-      texto: 'O erro que aparece em toda operação de IA malfeita',
+      texto: 'O erro recorrente quando a IA é mal empregada',
     },
     {
       tipo: 'paragrafo',

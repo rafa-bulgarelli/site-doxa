@@ -19,12 +19,11 @@ export const pagina: Pagina = {
     'Short-form é o vídeo curto e vertical distribuído por recomendação. O que define o formato, onde ele vive e o que o diferencia de um vídeo curto qualquer.',
   h1: 'Short-form',
   resumo:
-    'Short-form é o nome em inglês do vídeo curto e vertical distribuído por recomendação — o que no Brasil se chama de Reels, TikTok ou Shorts, conforme a rede. A duração é a parte menos importante da definição.',
+    'No Brasil o mesmo formato é chamado de Reels, TikTok ou Shorts, conforme a rede — e a duração é a parte menos importante da definição.',
   intencao: 'informacional',
   palavrasChave: ['short form', 'vídeo short form', 'formato curto vertical'],
   hubs: ['/guias/videos-curtos'],
   relacionadas: [
-    '/guias/videos-curtos',
     '/solucoes/videos-curtos-para-empresas',
     '/glossario/watch-time',
   ],
@@ -33,7 +32,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'Short-form é o vídeo curto, vertical e distribuído por recomendação — aquele que aparece para quem não escolheu vê-lo. É o formato do TikTok, dos Reels do Instagram e do YouTube Shorts, e o nome em inglês pegou porque as três plataformas o adotaram quase ao mesmo tempo.',
+        'Short-form é o vídeo curto, vertical e distribuído por recomendação — aquele que aparece para quem não escolheu vê-lo. É o formato do TikTok, dos Reels do Instagram e do YouTube Shorts, e o nome em inglês pegou junto com a adoção do formato pelas três plataformas.',
     },
     {
       tipo: 'titulo',
@@ -44,7 +43,7 @@ export const pagina: Pagina = {
       tipo: 'lista',
       itens: [
         '**Vertical**, ocupando a tela inteira do celular. Vídeo horizontal com barras é outro formato.',
-        '**Distribuído por recomendação**, não por assinatura: a plataforma escolhe quem vê, e o histórico de quem assiste pesa mais do que a lista de seguidores.',
+        '**Distribuído por recomendação**, não por assinatura: a plataforma escolhe quem vê, e o histórico de quem assiste costuma pesar mais do que a lista de seguidores.',
         '**Curto**, o que hoje significa algo entre alguns segundos e poucos minutos — e a duração exata varia por plataforma e muda com o tempo.',
         '**Consumido em sequência**, um vídeo depois do outro, o que torna a saída para o próximo a alternativa mais fácil que existe.',
       ],

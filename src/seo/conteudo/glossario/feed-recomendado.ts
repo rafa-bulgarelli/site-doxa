@@ -19,7 +19,7 @@ export const pagina: Pagina = {
     'Feed recomendado é a aba que mostra conteúdo de perfis que você não segue. O que muda quando a distribuição deixa de depender da sua lista de seguidores.',
   h1: 'Feed recomendado',
   resumo:
-    'Feed recomendado é a tela em que a plataforma mostra conteúdo escolhido por ela, e não pela sua lista de quem você segue. É onde ficam o "Para você" do TikTok, a aba de Reels e a de Shorts — e é a superfície em que um perfil pequeno pode alcançar gente que nunca ouviu falar dele.',
+    'Onde ficam o "Para você" do TikTok, a aba de Reels e a de Shorts — a superfície em que um perfil pequeno pode alcançar gente que nunca ouviu falar dele.',
   intencao: 'informacional',
   palavrasChave: [
     'feed recomendado',
@@ -29,7 +29,6 @@ export const pagina: Pagina = {
   ],
   hubs: ['/guias/marketing-no-tiktok'],
   relacionadas: [
-    '/guias/marketing-no-tiktok',
     '/glossario/algoritmo-do-tiktok',
     '/glossario/alcance-organico',
     '/glossario/short-form',
@@ -62,7 +61,7 @@ export const pagina: Pagina = {
         'O tamanho da conta não é passaporte: a tela mistura perfis grandes e perfis que ninguém conhece, e o critério de quem entra é do sistema de recomendação, não seu.',
         'O contexto tem de estar dentro da peça: quem vê não sabe quem você é, não viu o vídeo anterior e não vai ler a bio antes.',
         'Seguidor deixa de ser a métrica que resume tudo — o que resume é quanta gente nova o conteúdo alcança, assunto de [alcance orgânico](/glossario/alcance-organico).',
-        'A ordem não é cronológica: publicar mais tarde não coloca ninguém no topo da tela de ninguém.',
+        'A ordem não é cronológica: publicar mais tarde não garante o topo da tela de ninguém.',
       ],
     },
     {

@@ -15,11 +15,14 @@ export const pagina: Pagina = {
     'Retenção é a proporção de pessoas que continua assistindo em cada instante do vídeo. Como ler a curva e o que cada formato de queda costuma indicar.',
   h1: 'Retenção',
   resumo:
-    'Retenção é a proporção de pessoas que ainda está assistindo em cada instante do vídeo. É a métrica que mostra onde você perdeu gente, e não apenas quantas ficaram — o que faz dela a mais útil para consertar um vídeo.',
+    'A métrica que mostra onde você perdeu gente, e não apenas quantas ficaram — o que faz dela a mais útil para consertar um vídeo.',
   intencao: 'informacional',
   palavrasChave: ['retenção de vídeo', 'taxa de retenção', 'curva de retenção'],
   hubs: ['/guias/videos-curtos'],
-  relacionadas: ['/guias/videos-curtos', '/glossario/watch-time', '/glossario/hook'],
+  relacionadas: [
+    '/glossario/watch-time',
+    '/glossario/hook',
+  ],
   atualizadoEm: '2026-08-18',
   corpo: [
     {
@@ -38,7 +41,7 @@ export const pagina: Pagina = {
         '**Queda violenta nos primeiros segundos:** o problema é a abertura. O assunto não ficou claro, ou não pareceu ser sobre quem estava assistindo. Trabalho de [hook](/glossario/hook).',
         '**Queda no meio, num ponto específico:** normalmente é uma transição, um trecho arrastado ou uma promessa que o vídeo não cumpriu. Vale assistir exatamente àquele segundo.',
         '**Descida suave e constante:** o vídeo é longo demais para o que tem a dizer. Cortar costuma resolver mais do que acrescentar.',
-        '**Subida no fim ou acima de 100% em algum ponto:** parte das pessoas reassistiu. É o sinal mais forte que existe de que o conteúdo funcionou.',
+        '**Subida no fim ou acima de 100% em algum ponto:** parte das pessoas reassistiu. É um dos sinais mais fortes de que o conteúdo funcionou.',
       ],
     },
     {

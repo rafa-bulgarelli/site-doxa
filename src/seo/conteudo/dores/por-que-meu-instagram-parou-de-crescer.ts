@@ -50,7 +50,6 @@ export const pagina: Pagina = {
   ],
   hubs: ['/guias/reels-no-instagram'],
   relacionadas: [
-    '/guias/reels-no-instagram',
     '/guias/como-crescer-no-instagram-organicamente',
     '/guias/como-aumentar-o-alcance-organico',
     '/guias/por-que-meus-videos-nao-tem-views',
@@ -100,7 +99,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        '**O teste:** abra o alcance dos últimos trinta dias e veja a fatia de contas que não seguem o perfil. Compare com a mesma fatia de três meses atrás. Se ela encolheu, é esta. **O que fazer:** o vídeo vertical é a superfície que o Instagram usa para mostrar conteúdo a quem não segue, e um perfil que passou a publicar mais foto e carrossel do que vídeo conversa quase só com a própria base. Formato, produção e cadência de Reels estão reunidos em [Reels no Instagram](/guias/reels-no-instagram).',
+        '**O teste:** abra o alcance dos últimos trinta dias e veja a fatia de contas que não seguem o perfil. Compare com a mesma fatia de três meses atrás. Se ela encolheu, é esta. **O que fazer:** o vídeo vertical costuma ser a superfície pela qual o Instagram mostra conteúdo a quem não segue, e um perfil que passou a publicar mais foto e carrossel do que vídeo conversa quase só com a própria base. Formato, produção e cadência de Reels estão reunidos em [Reels no Instagram](/guias/reels-no-instagram).',
     },
     {
       tipo: 'titulo',
@@ -149,7 +148,7 @@ export const pagina: Pagina = {
         [
           'A fatia de não seguidores encolheu',
           'Descoberta (causa 1)',
-          'Mexer na bio: ela não muda o que a rede entrega.',
+          'Mexer na bio: ela pesa na decisão de seguir, não no que a rede entrega.',
         ],
         [
           'Alcance alto, poucos seguidores novos',
@@ -177,7 +176,7 @@ export const pagina: Pagina = {
       tipo: 'destaque',
       variante: 'doxa',
       texto:
-        'O que a Doxa assume é a produção: os vídeos chegam prontos para postar — verticais, legendados, no formato do feed — e quem publica é a empresa, no perfil dela. O que a Doxa não faz, e diz em público, é prometer que um vídeo específico vai viralizar.',
+        'O que a Doxa assume é a produção: os vídeos chegam prontos para postar — verticais, legendados, no formato do feed — e quem publica é a empresa, no perfil dela. O que a operação não promete, e diz isso em público, é a viralização de uma peça específica.',
     },
     {
       tipo: 'titulo',

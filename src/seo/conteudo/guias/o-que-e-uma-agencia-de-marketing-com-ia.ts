@@ -53,7 +53,6 @@ export const pagina: Pagina = {
   ],
   hubs: ['/guias/ia-no-marketing'],
   relacionadas: [
-    '/guias/ia-no-marketing',
     '/comparativos/agencia-vs-equipe-interna',
     '/solucoes/marketing-com-ia',
     '/comparativos/ia-vs-producao-tradicional-de-video',
@@ -74,7 +73,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'Não existe categoria registrada, certificação nem exigência para usar o nome: qualquer empresa de serviço de marketing pode imprimir "com IA" na apresentação no dia em que passar a usar um modelo para escrever legenda. O que resta de estável na expressão é pouco, e é isto: uma empresa que planeja e/ou produz marketing para terceiros, com modelos generativos em algum ponto da cadeia.',
+        'Não há certificação reconhecida que restrinja o uso do nome: qualquer empresa de serviço de marketing pode imprimir "com IA" na apresentação no dia em que passar a usar um modelo para escrever legenda. O que resta de estável na expressão é pouco, e é isto: uma empresa que planeja e/ou produz marketing para terceiros, com modelos generativos em algum ponto da cadeia.',
     },
     {
       tipo: 'paragrafo',
@@ -161,7 +160,7 @@ export const pagina: Pagina = {
         '**O portfólio é o mesmo vídeo com marcas diferentes.** Se o formato, o enquadramento e o ritmo se repetem de cliente para cliente, o que está sendo vendido é o molde.',
         '**A apresentação fala de ferramentas, não de entregáveis.** Ferramenta não diferencia fornecedor — o porquê está em [IA no marketing](/guias/ia-no-marketing). Numa proposta, o que precisa aparecer é o que chega pronto no fim do mês.',
         '**Volume prometido sem cadência.** "Cem vídeos por mês" sem dizer como eles serão distribuídos ao longo do mês é um número para impressionar, não um plano.',
-        '**Garantia de viralizar.** Ninguém controla se um vídeo específico viraliza, e quem afirma o contrário está vendendo sorte com nome melhor.',
+        '**Garantia de viralizar.** Ninguém controla se um vídeo específico viraliza, e quem afirma o contrário está vendendo previsão de loteria.',
       ],
     },
     {
