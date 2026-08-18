@@ -161,7 +161,7 @@ export const pagina: Pagina = {
         '**Alcance de contas que não seguem**, na semana, comparado com a semana anterior. É o termômetro de descoberta.',
         '**Salvamentos e envios por publicação.** Dizem o que a audiência considerou útil o bastante para guardar ou repassar.',
         '**Retenção dos vídeos**, para separar o que prende do que só foi entregue. Um vídeo com alcance alto e retenção baixa foi mostrado, não assistido.',
-        '**Conversas iniciadas.** É a métrica que liga o perfil ao caixa, e a única que o time comercial reconhece.',
+        '**Conversas iniciadas.** É a métrica que liga o perfil ao caixa, e a que o time comercial costuma reconhecer.',
       ],
     },
     {

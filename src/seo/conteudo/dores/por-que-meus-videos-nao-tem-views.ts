@@ -112,7 +112,7 @@ export const pagina: Pagina = {
     {
       tipo: 'paragrafo',
       texto:
-        'Este é o erro que quase ninguém suspeita, e ele nasce de uma boa intenção: a semana ficou parada, então no sábado saem quatro vídeos de uma vez. O resultado é que os quatro disputam a mesma audiência ao mesmo tempo, e um atropela o alcance do outro. A regra que a Doxa aplica nos perfis dos clientes vai na mesma direção: no máximo um vídeo da operação por dia útil, com pelo menos 24 horas de relógio entre um e outro.',
+        'Este é o erro que costuma passar despercebido, e ele nasce de uma boa intenção: a semana ficou parada, então no sábado saem quatro vídeos de uma vez. O resultado é que os quatro disputam a mesma audiência ao mesmo tempo, e um atropela o alcance do outro. A regra que a Doxa aplica nos perfis dos clientes vai na mesma direção: no máximo um vídeo da operação por dia útil, com pelo menos 24 horas de relógio entre um e outro.',
     },
     {
       tipo: 'destaque',
