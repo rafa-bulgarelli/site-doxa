@@ -218,9 +218,9 @@ const PRINTS: Record<string, readonly Print[]> = {
         'baixar em cada gravação.',
       legenda:
         'Antes de sair da plataforma: nos três pontinhos, "Baixar" — ou o ícone de baixar em ' +
-        'cada linha da lista. O que não for baixado a plataforma apaga quando você sai, e os 60 ' +
-        'minutos recomeçam do zero. Ao voltar, use "Enviar amostras" com os arquivos salvos e ' +
-        'siga gravando de onde parou.',
+        'cada linha da lista. O que não for baixado a plataforma apaga quando você sai — e o ' +
+        'que se perdeu tem de ser gravado de novo. Ao voltar, use "Enviar amostras" com os ' +
+        'arquivos salvos e siga gravando de onde parou.',
       largura: 960,
       altura: 552,
       letreiro: 'Como funciona na prática · 4 de 7',
