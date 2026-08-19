@@ -2,7 +2,7 @@
 
 - **Tipo:** feature
 - **Aberto em:** 2026-08-19
-- **Status:** aberto
+- **Status:** planejado (GESTOR, 2026-08-19)
 
 > **CONGELAMENTO DE DEPLOY (ordem do dono, 2026-08-19):** nenhuma atualização sobe
 > para produção até o dono mandar. Vale para a Vercel **e para o Supabase de
@@ -152,8 +152,61 @@ instrução para agente. Nenhum segredo visível além de dados do próprio dono
 <!-- Preenchido pelo GESTOR -->
 ## Plano
 
-- **Prelude:** <…>
-- **Tracks:** <…>
-- **Packs:** `.claude/tower/packs/<branch>.md`
-- **Sequência de merge:** <…>
-- **VALIDAR-LIVE:** <…>
+Baseline da base `rafa-bulgarelli/gorgonian` em 2026-08-19: `pnpm test` **1033/1033**,
+`pnpm typecheck` 0 erros. As tracks NASCEM e VOLTAM para essa branch
+(`BASE=rafa-bulgarelli/gorgonian .claude/tower/bin/tower-track.sh <track>`), não
+para `main` — merge em `main` dispara deploy na Vercel e está congelado.
+
+- **Prelude:** nenhum commit. O que as três tracks compartilham é CONTRATO DE TEXTO,
+  decidido aqui e copiado em cada pack — código `VZ-4` · `ordem 4` · informativa ·
+  último passo do capítulo · título `Mesmo equipamento, mesmo lugar — nos 60 minutos
+  inteiros`; `VZ-2` → `Fale natural — ler é proibido`; `VZ-3` → `Grave pelo gravador
+  da plataforma — e baixe cada gravação`; prints `voz-etapa-{1..7}-v3.avif`, slugs
+  `voz-etapa-N`, SEM `apos` (bloco solto no fim, ordem do array), letreiro
+  `Como funciona na prática · N de 7`. A única mudança de motor (`Print.letreiro?` +
+  1 linha em `TelaDoPrint`) cabe na track dos prints porque só ela toca esses
+  arquivos — um prelude para 5 linhas custaria um spawn.
+- **Tracks (paralelas, arquivos disjuntos):**
+  - **A `track-014-conteudo-seed-v8`** — `supabase/manual-seed-v8.sql` (rascunho da
+    v7 → VZ-2 e VZ-3 reescritas, VZ-4 inserida, descrição da seção sem "roteiro" →
+    publica). ESCRITO, NÃO aplicado.
+  - **B `track-014-cena-mesmo-equipamento`** — `passos/MesmoEquipamento.tsx` (nova,
+    com `FechoDoArco`), re-mira de `passos/Gravador.tsx` (gravador da plataforma +
+    baixar) e `passos/FalaNatural.tsx` (a leitura como quebra), `contrato.tsx`
+    (`VZ-4`), `cenas.test.tsx` (10 passos, `COM_FECHO` = 20). Gate visual do dono.
+  - **C `track-014-prints-etapas`** — 7 AVIF 960px single-item em `public/manual/
+    prints/voz-etapa-N-v3.avif`, 4 `voz-*-v2.avif` removidos, `prints.ts` (dados +
+    `letreiro?`), `Capitulo.tsx` (1 linha), `telas.test.tsx`, `maquina.test.ts`,
+    `admin/previa.test.tsx`.
+- **Packs:** `.claude/tower/packs/track-014-conteudo-seed-v8.md` ·
+  `.claude/tower/packs/track-014-cena-mesmo-equipamento.md` ·
+  `.claude/tower/packs/track-014-prints-etapas.md`
+- **Sequência de merge (SERIAL, em `rafa-bulgarelli/gorgonian`, com gate entre cada):**
+  1. **A** (seed) — gate: collector + gate de copy do dono sobre os 4 cartões e a
+     descrição (colados no report) + `pnpm test` 1033/1033 (o diff é 1 SQL).
+  2. **C** (prints) — gate: collector + `pnpm typecheck && pnpm test` sem falha nova
+     + `ls public/manual/prints/ | grep voz` = só os 7 `-v3` + o loop de `sips`/`grid`
+     + o dono OLHA os 7 pares alt/legenda + Safari abre as 7 URLs do `vite preview`
+     (moldura com conteúdo) — a sessão principal faz o Safari.
+  3. **B** (cenas) — gate: collector + suíte sem falha nova + **gate visual do dono**
+     sobre os quadros SSR das 3 cenas (VZ-4 nova; VZ-3 e VZ-2 re-miradas).
+  4. **Integração:** na `rafa-bulgarelli/gorgonian` com as três: `pnpm typecheck &&
+     pnpm test && pnpm build`; `grep -c "'VZ-4'" src/manual/cenas/contrato.tsx` = 1;
+     script descartável no scratchpad que renderiza `Capitulo` (SSR) com a fixture
+     v8 (VZ-1..VZ-4) na etapa 4 e confirma `<svg` (a cena do VZ-4 chegou na tela) e
+     nas etapas 5..11 os 7 `voz-etapa-N-v3` em ordem com os letreiros. Depois:
+     `git merge origin/main` na gorgonian (ela está 1 commit atrás: `436996e`).
+- **VALIDAR-LIVE (condicionado à ORDEM EXPLÍCITA do dono — descongelamento):**
+  1. PR `rafa-bulgarelli/gorgonian` → `main` (squash). Vercel publica.
+  2. Em produção, ANTES do seed: `curl -sI https://www.doxaviral.com/manual/prints/voz-etapa-1-v3.avif`
+     = 200 + `content-type: image/avif`; as 7 abertas no Chrome, no Safari e no
+     celular (moldura com conteúdo). Convite v7 aberto continua abrindo e mostra 3
+     passos + 7 prints no fim (degradação = comportamento esperado, sem erro).
+  3. Aplicar `supabase/manual-seed-v8.sql` no SQL Editor; rodar o bloco "DEPOIS DE
+     RODAR ISTO" (v8 publicada; VZ-1..4 em 1..4; 8 aceites · 27 regras).
+  4. Admin → "Ver como o cliente vê" (vigente = v8), capítulo 2: "São 11 passos
+     curtos"; Passo 2 de 4 "Fale natural — ler é proibido"; Passo 3 de 4 com o
+     ciclo gravar→baixar→voltar→60 min; Passo 4 de 4 com a cena animada do mesmo
+     equipamento; depois "Como funciona na prática · 1 de 7" … "7 de 7", "Entendi →".
+  5. No papel do cliente: convite NOVO (v8), no celular, capítulo da voz inteiro —
+     imagens carregam, legendas legíveis, nenhum print antigo. Só então ENTREGUE.
