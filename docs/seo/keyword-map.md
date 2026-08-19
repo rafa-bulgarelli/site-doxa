@@ -1,14 +1,11 @@
 # keyword-map — Topic → Cluster → Intent → Page
 
-> `BLOCKED_EXTERNAL_CREDENTIAL` — **sem Google Search Console, sem Google
-> Analytics e sem ferramenta de volume de busca** neste ambiente, e sem acesso a
-> SERP ao vivo durante a escrita deste mapa. Consequência assumida, conforme §49
-> e §70 do brief: **nenhum número de volume aparece aqui.** "Search Opportunity"
-> é qualitativa (alta / média / baixa) com a justificativa em uma linha, e
-> "ranking" não é prometido em lugar nenhum — ranking é resultado posterior.
-> Quando a credencial existir, a primeira tarefa é registrar o baseline
-> (indexação, queries, impressões, cliques, CTR, posição, erros) e **recalibrar a
-> coluna de prioridade** deste arquivo com dado real.
+> **Search Console ligado em 2026-08-19** (card 012): propriedade de Domínio
+> (`sc-domain:doxaviral.com`); o baseline se gera com `pnpm gsc:baseline` e mora em
+> `docs/seo/baseline-<data>.md` — a régua está em [Dados reais (GSC)](#dados-reais-gsc).
+> Até haver **≥ 28 dias de dado** (site no ar desde 2026-08-18; o GSC atrasa ~2 dias), a
+> coluna "Search Opportunity" continua **qualitativa** (alta / média / baixa) com a
+> justificativa em uma linha, e **"ranking" não é prometido** — é resultado posterior.
 >
 > **Contrato de conteúdo.** Nenhum fato entra numa página sem estar em
 > [`docs/seo/source-of-truth.md`](./source-of-truth.md) com `fonte:`. Antes de
@@ -172,6 +169,74 @@ para-empresas` (colide com orgânico/escala), `/comparativos/heygen-vs-gravacao-
 |---|---|---|
 | `track-seo-rodada-3` | video-vertical-no-linkedin · o-que-faz-um-social-media | as duas adjacências §47 do backlog sem risco de canibalização. Puladas: `como-viralizar-no-instagram` (colide com `como-crescer-no-instagram-organicamente`), `calendario-de-conteudo` (4ª página de planejamento — estratégia/rotina/arco já existem), `melhor-horario-para-postar` (isca de SERP; a biblioteca já diz que horário pesa pouco), `reels-vs-tiktok-vs-shorts` (colide com `tiktok-vs-instagram` + `mesmo-video-nas-tres-redes`), `heygen-vs-gravacao` (ferramenta no title × tools.ts), `avatar-de-ia-para-empresas` e `conteudo-recorrente` (colidem). |
 
+## Dados reais (GSC)
+
+Search Console ligado em 2026-08-19 (card 012). Esta seção é a régua do dado: como ele
+se mede, quando ele dispara a rodada 4 e como ele vai recalibrar a coluna Search
+Opportunity. **Nenhum número mora aqui** — número copiado à mão envelhece; a fonte é
+sempre o arquivo de baseline mais recente.
+
+### Como se mede
+
+- `pnpm gsc:baseline` gera `docs/seo/baseline-<data>.md` (data UTC do dia em que rodou).
+  **O mais recente é o válido**; rodar de novo no mesmo dia sobrescreve, e os anteriores
+  ficam como histórico da série.
+- O relatório tem sempre 8 seções, mesmo vazias: `1. Propriedade e janela` ·
+  `2. Sitemap (API × ar × índice local)` · `3. Cobertura por URL (URL Inspection)` ·
+  `4. Queries com impressões (últimos N dias)` · `5. Desempenho por página` ·
+  `6. Posição média por tipo e por hub` · `7. Gatilho da rodada 4` ·
+  `8. Leitura honesta do dia zero`.
+- Flags: `--dias N` (28) · `--sem-inspecao` (pula a URL Inspection) ·
+  `--min-impressoes N` (30) · `--saida <dir>`.
+- A URL Inspection tem quota de 2000 chamadas/dia/propriedade e o baseline gasta ~69 —
+  não rode em loop; e o GSC atrasa ~2 dias, então o relatório de hoje nunca fala de
+  ontem.
+- `pnpm gsc:prova` é outra coisa: responde só "a torre enxerga a propriedade e o
+  sitemap?". É diagnóstico de acesso, não baseline.
+
+### Gatilho da rodada 4
+
+A rodada 4 não dispara por palpite. Dispara por página, com uma regra escrita:
+
+> **página com posição média entre 8 e 20 (inclusive) E impressões ≥ 30 nos últimos 28
+> dias**, com ≥ 28 dias de coleta.
+
+A seção 7 do baseline lista quem está no gatilho — ordenada por impressões, com as 3
+queries de maior impressão de cada página — ou diz "nenhuma página no gatilho ainda".
+Com uma página no gatilho, o trabalho é nesta ordem:
+
+1. reescrever title/description/H1 para a query que mais imprime (o ganho aqui é CTR);
+2. reforçar os links internos do hub e das irmãs para ela;
+3. ampliar o corpo **só** se a query pedir algo que a página não responde.
+
+**Página nova só se a query não tiver dona** — quando a seção 4 mostra a query com a
+página `/` ou sem nenhuma página do cluster. Query com dona vira reforço da dona, nunca
+página nova (§14: mesma intenção, mesma página).
+
+### Recalibrar Search Opportunity
+
+Com 28 dias de dado, SO deixa de ser palpite e vira leitura das impressões da
+página-dona (ou do cluster inteiro, nas linhas de backlog) na janela de 28 dias:
+
+| Impressões em 28 dias | SO |
+|---|---|
+| ≥ 500 | 5 |
+| 100–499 | 4 |
+| 20–99 | 3 |
+| 1–19 | 2 |
+| 0 | 1 |
+
+**Provisória e não aplicada ainda**: nenhuma nota da tabela principal ou do backlog foi
+mexida com esta régua. O dono recalibra quando houver dado; até lá a coluna continua
+qualitativa.
+
+### Dia zero
+
+O baseline de 2026-08-19 está em
+[`docs/seo/baseline-2026-08-19.md`](./baseline-2026-08-19.md); a leitura honesta dele é
+a seção 8 do próprio arquivo. Baseline útil pede ~4 semanas de coleta — este é o dia
+zero, e comparar com ele só faz sentido a partir de meados de setembro.
+
 ## Estado ao fim da noite (2026-08-18, ~04:00)
 
 **63 páginas + 5 índices = 68 rotas** em `feat/seo-organico` (PRs #48–#63): soluções 8 ·
@@ -183,9 +248,9 @@ ou é isca de SERP (motivos na seção da rodada 3 e no "Não fazer"). Próximas
 com insumo novo do dono (respostas às PENDENTES do FAQ; casos com material; en-US
 com motivo comercial) ou com dado do Search Console para reordenar a prioridade.
 
-Sem GSC/GA (`BLOCKED_EXTERNAL_CREDENTIAL`), a coluna Search Opportunity continua
-qualitativa. Primeira tarefa quando houver acesso: baseline (indexação, queries,
-impressões, cliques, CTR, posição) e recalibrar esta tabela.
+A coluna Search Opportunity continua qualitativa até haver ≥ 28 dias de dado do Search
+Console. Como se mede, quando a rodada 4 dispara e como a coluna se recalibra: seção
+[Dados reais (GSC)](#dados-reais-gsc), logo acima.
 
 
 | Cogitado | Motivo |
