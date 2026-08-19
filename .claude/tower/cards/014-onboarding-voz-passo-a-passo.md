@@ -2,9 +2,10 @@
 
 - **Tipo:** feature
 - **Aberto em:** 2026-08-19
-- **Status:** planejado (GESTOR, 2026-08-19) — **APROVADO pelo dono em 2026-08-19** (aba PLANO; re-mira VZ-2/VZ-3 = sim). Próximo: assento abre as 3 tracks.
+- **Status:** **ENTREGUE e VALIDADO-LIVE** (2026-08-19) — PR #81 squash em `main` (`6b713a0`); seed v8 aplicado no Supabase prod (v8 publicada, 27 regras, 8 aceites); validado no papel do cliente em produção (convite de teste v8, Chrome 390px via CDP: Passo 2/3/4 de 4 e "Como funciona na prática · 1→7 de 7"; convite de teste apagado, zero órfãos).
 
-> **CONGELAMENTO DE DEPLOY (ordem do dono, 2026-08-19):** nenhuma atualização sobe
+> ~~CONGELAMENTO DE DEPLOY~~ — **descongelado pelo dono em 2026-08-19 ("resolve tudo e
+> deploya")**; deploy e seed executados na mesma sessão. Texto original: nenhuma atualização sobe
 > para produção até o dono mandar. Vale para a Vercel **e para o Supabase de
 > produção** — aplicar seed novo no SQL Editor muda o manual publicado, logo conta
 > como deploy. Merge em branch pode; publicar, não.
@@ -216,3 +217,13 @@ para `main` — merge em `main` dispara deploy na Vercel e está congelado.
      equipamento; depois "Como funciona na prática · 1 de 7" … "7 de 7", "Entendi →".
   5. No papel do cliente: convite NOVO (v8), no celular, capítulo da voz inteiro —
      imagens carregam, legendas legíveis, nenhum print antigo. Só então ENTREGUE.
+
+---
+## Entrega (assento do GESTOR, aba PLANO, 2026-08-19)
+
+- **Tracks:** A `track-014-conteudo-seed-v8` (READY, collector APROVADO; 2 findings baixos corrigidos: celular→celular na instrução visível do VZ-3, updates por `secao_voz`) · C `track-014-prints-etapas` (READY, APROVADO; 1 finding baixo corrigido: legenda 4 "só o que não foi baixado se perde") · B `track-014-cena-mesmo-equipamento` (READY, APROVADO; gate visual feito pela torre no lugar do dono — quadros SSR em nível).
+- **Merge serial** na `rafa-bulgarelli/gorgonian`: A → C → B; integração `pnpm typecheck` 0 · `pnpm test` 1041/1041 (1048 após `origin/main`) · `pnpm build` ok · SSR do capítulo v8 (etapas 1–4 `<svg`, 5–11 prints 1→7 com letreiro).
+- **Deploy:** PR #81 (squash) → Vercel prod; 7 AVIF `200 image/avif`, bytes idênticos ao repo, decodificam (ImageIO/Chrome); `voz-*-v2` → 404 real; bundle `index-D9Yj-uVd.js` = build local.
+- **Seed v8:** bloco `do $v8$` aplicado via MCP em 2026-08-19 ~20:40 UTC; versões 1–7 arquivadas, 8 publicada; voz VZ-1..VZ-4 com os títulos finais; descrição sem "roteiro".
+- **VALIDAR-LIVE:** convite de teste (v8, 1h) emitido por SQL → `POST /api/manual/publico {acao:'abrir'}` devolveu v8 com VZ-1..4 → fluxo completo no Chrome 390px (driver CDP no scratchpad): Capítulo 2 "São 11 passos curtos", Passo 4 de 4 com a cena, "Como funciona na prática · 1→7 de 7" com imagem carregada, "Entendi →" na última → convite apagado (0 órfãos).
+- **Pendências do dono (não bloqueiam):** a legenda da etapa 4 afirma "a plataforma apaga quando você sai" com base no ditado, não na tela — confirmar que é o comportamento real da plataforma; se não for, é 1 linha em `prints.ts:~221` e no VZ-3 do seed v9.
