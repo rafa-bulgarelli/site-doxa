@@ -228,4 +228,42 @@ ninguém. Overlap entre A e B: **zero**.
   `principal()` 63 linhas em `prova.mjs`; `erro.code` na mensagem de `lerChave`; `iat`
   sem folga de relógio (só se `invalid_grant` aparecer).
 - A (`track-gsc-baseline`) ∥ B (`track-gsc-docs`) abertas; merge A → B.
+- **A `track-gsc-baseline` → PR #72 (`5a8aca7`)**: `relatorio.mjs` (puro, 25 testes) +
+  `baseline.mjs` (escrita atômica) + `api.mjs` (`AbortSignal.timeout`; `languageCode:
+  en-US` — a execução real pegou que o `coverageState` localizado nunca casava com a
+  regra e a 1ª rodada teria dito "69 conhecidas" quando 14 eram desconhecidas; teste de
+  regressão) + `docs/seo/baseline-2026-08-19.md`. Collector **APROVADO** (NITs: texto
+  "28 dias" com `--dias` ≠ 28; "10 erros seguidos" hard-coded; título "dia zero" fixo;
+  `coverageState` ausente contado como conhecida; `.parcial` fora do `.gitignore`).
+  **Dia zero**: sitemap no ar 69 = índice local 69, 0 divergências; 69 inspecionadas —
+  1 indexada (home), 53 "Discovered – currently not indexed", 15 "URL is unknown";
+  0 dias com dado de busca; gatilho 0. Sessão principal rodou `pnpm gsc:baseline` de
+  novo: mesmos totais; só os `coverageState` oscilam entre execuções (índice do Google
+  se movendo — 53/15 → 44/24 em minutos), o resto é determinístico.
+- **B `track-gsc-docs` → PR #73 (`a7affe7`)**: keyword-map sem
+  `BLOCKED_EXTERNAL_CREDENTIAL`, seção "Dados reais (GSC)" apontando para o baseline,
+  gatilho da rodada 4 com as palavras exatas do código, recalibração provisória de SO;
+  COMO-ADICIONAR "medir antes de escrever"; CLAUDE.md (9 linhas). Gate leve pela
+  sessão principal (link resolve em `main`, regra = código, diff lido).
+
+### VALIDADO-LIVE (2026-08-19)
+- Chave: `~/.config/doxa/` 700, `gsc-service-account.json` 600, Downloads vazio de
+  `doxa-506016-*`; deny `Read(~/.config/doxa/**)` no harness (#69).
+- `pnpm gsc:prova` (sessão principal): `sc-domain:doxaviral.com` · Domínio ·
+  `siteFullUser` · sitemap submetido 2026-08-19T16:37Z, 69 URLs, 0 erros/avisos.
+- Histórico inteiro do repo (`git log -p --all`): **0** chaves PEM, **0** tokens
+  `ya29.…`, **0** `private_key_id` com valor (os 12 "matches" do grep largo são os
+  próprios padrões escritos como texto nos packs/card/teste).
+- Clone limpo no scratchpad: `pnpm install --frozen-lockfile` + `pnpm gsc:prova` ok;
+  `pnpm gsc:baseline` — resultado na linha seguinte (o primeiro run estourou o limite
+  de 10 min do comando porque a URL Inspection é sequencial; re-rodado à parte).
+- Site sem regressão: `<title>` da home inalterado, sitemap 69 `<loc>`, build 68 rotas.
+- Quota de URL Inspection gasta hoje: ~350 de 2000 (3 rodadas do executor + 2 da
+  sessão principal) — não rodar em loop.
+
+### Próximo passo
+Rodar `pnpm gsc:baseline` de novo em **~2026-09-16** (28 dias de coleta) → se houver
+páginas no gatilho (posição 8–20, ≥30 impressões), abrir a rodada 4 do card 011 por
+`/intake`. Least-privilege (Total → Restrita) fica como ajuste opcional; perde só o
+`--submeter`.
 
