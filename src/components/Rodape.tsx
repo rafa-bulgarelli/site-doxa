@@ -409,25 +409,39 @@ export function Rodape() {
          * campo acima é que se ajusta ao que sobra da tela.
          */}
         <div className="shrink-0 border-t border-white/[0.08] px-5 py-8 md:px-10">
-          {/* Uma linha só, em qualquer largura — pedido do dono.
- 
-              Ela empilhava até 640px, e empilhada ocupava 107 pixels de altura
-              num rodapé que já divide a tela com o campo de peças. Em fila, os
-              quatro pedaços somam mais do que os 280 úteis de um telefone de
-              320 no corpo em que estavam: 13px de texto e um logo de 20 de
-              altura dão cerca de 315 pixels de conteúdo, e o que não cabe
-              quebra.
- 
-              Daí a medida fluida com TETO, e não um degrau por breakpoint. Até
-              cerca de 420px de tela o corpo acompanha a largura — 9,9px num
-              320, onde é isto ou a quebra —, e a partir dali trava nos 13px do
-              projeto e nunca mais cresce. `sm:` devolve os valores fixos de
-              640 para cima, então nada disto existe no desktop.
- 
-              `whitespace-nowrap` e `flex-nowrap` são o cinto: sem eles, a
-              primeira coisa que o flex faz quando aperta é quebrar "Falar com a
-              gente" no meio — que é exatamente a quebra que o dono não quer. */}
-          <div className="mx-auto flex w-full max-w-screen-2xl flex-row items-center justify-between gap-x-2 sm:gap-6">
+          {/* Uma linha só de 640px para cima; DUAS abaixo disso.
+
+              O desktop é o que sempre foi — wordmark, os atalhos e o copyright
+              na mesma linha — e nada aqui muda de `sm:` para cima.
+
+              No telefone, o que existia era uma linha com folga ZERO: medidos,
+              os quatro pedaços davam 280 pixels dentro dos 280 úteis de uma
+              tela de 320. Estava fechado no limite, e o terceiro atalho
+              ("Guias", a porta da biblioteca) não cabe em folga nenhuma. A
+              alternativa seria encolher a fonte outra vez, e ela já está em
+              9,9px num 320 — abaixo disso o rodapé deixa de ser legível para
+              caber, que é trocar o problema de lugar.
+
+              Então a linha vira duas linhas INTEIRAS: `flex-wrap` no
+              contêiner e a `nav` em `basis-full order-last`, que a joga
+              sozinha para a segunda linha e deixa em cima o par que já se
+              equilibrava (wordmark à esquerda, © à direita, `justify-between`
+              como antes). A nav fica alinhada à esquerda, sob o wordmark: os
+              três atalhos são um bloco de leitura, e esparramá-los de ponta a
+              ponta com `justify-between` inventaria vãos que o resto do rodapé
+              não tem.
+
+              Isto NÃO é a quebra que o dono recusou. O que ele não quer é
+              "Falar com a gente" partido no meio de si mesmo — e cada `<a>`
+              continua `whitespace-nowrap`, o `flex-nowrap` continua na nav, e
+              nenhum rótulo se parte. Empilhar quatro pedaços um por linha (os
+              107 pixels de altura que este bloco já teve) também continua
+              descartado: são duas linhas, não quatro.
+
+              A medida fluida com TETO fica, e pela mesma razão de antes: até
+              cerca de 420px o corpo acompanha a largura, e a partir dali trava
+              nos 13px do projeto e nunca mais cresce. */}
+          <div className="mx-auto flex w-full max-w-screen-2xl flex-row flex-wrap items-center justify-between gap-x-2 gap-y-4 sm:flex-nowrap sm:gap-6">
             <img
               src={wordmarkUrl}
               alt="Doxa"
@@ -436,7 +450,13 @@ export function Rodape() {
               height={96}
             />
 
-            <nav className="flex flex-nowrap items-center gap-x-[min(3.5vw,1.75rem)] sm:gap-x-7">
+            {/* `basis-full order-last` é o que faz as duas linhas: a nav pede a
+                largura inteira, então não cabe ao lado de ninguém e desce; e
+                `order-last` a coloca DEPOIS do copyright, para que a linha de
+                cima fique com o par que já se equilibrava. De `sm:` para cima
+                as duas classes são desfeitas e a nav volta para o meio da linha
+                única, exatamente onde sempre esteve. */}
+            <nav className="order-last flex basis-full flex-nowrap items-center gap-x-[min(3.5vw,1.75rem)] sm:order-none sm:basis-auto sm:gap-x-7">
               {atalhos.map((atalho) => (
                 <a
                   key={atalho.destino}
