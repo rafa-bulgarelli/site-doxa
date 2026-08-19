@@ -30,23 +30,25 @@ import './index.css';
  * formulário. Isso valia enquanto o link profundo vindo de fora não existia —
  * agora existe. Cada página de `/solucoes` e `/guias` fecha num botão "Falar com
  * a Doxa" que aponta para `/#forms`, e apagar o fragmento dele jogava no topo da
- * home justamente quem tinha acabado de pedir o formulário.
+ * home justamente quem tinha acabado de pedir o formulário. O rodapé das mesmas
+ * páginas leva "Perguntas" para `/#faq`, e o caso é idêntico.
  *
- * A regra é estreita de propósito: **só `#forms` sobrevive, e só numa navegação
- * nova.** Não é "mantém quando é intenção" — é "mantém a única intenção que
- * esta página sabe honrar". O seguro que espera a seção `lazy` montar e rola
- * até ela existe para `#forms` e para mais nada (logo abaixo, no `App`);
- * preservar `#faq` — que o rodapé das páginas SEO aponta — deixaria o salto na
- * mão da rede, acontecendo numa visita e não na outra. Reload, voltar/avançar e
- * navegador que não sabe dizer continuam limpando, como sempre. Quem decide é
+ * A regra é estreita de propósito: **sobrevivem `#forms` e `#faq`, e só numa
+ * navegação nova.** Não é "mantém quando é intenção" — é "mantém as intenções
+ * que esta página sabe honrar". O seguro que espera a seção `lazy` montar e
+ * rola até ela existe para esses dois alvos e para mais nada (logo abaixo, no
+ * `App`); âncora sem esse par do outro lado — `#pedido`, por exemplo —
+ * continua sendo apagada, porque preservá-la deixaria o salto na mão da rede,
+ * acontecendo numa visita e não na outra. Reload, voltar/avançar e navegador
+ * que não sabe dizer continuam limpando, como sempre. Quem decide é
  * `fragmento.ts`, que é puro e testado combinação por combinação; aqui em cima
  * só se pergunta ao navegador como a página abriu.
  *
  * `window.scrollTo(0, 0)` continua INCONDICIONAL. Mantido o fragmento, o alvo
- * (`#forms`, na comparação `lazy`) ainda não existe no documento, então não há
- * salto do navegador para respeitar — quem rola é o `App`, com animação, quando
- * a seção monta. Começar do topo e descer é o que se vê; começar no meio seria
- * o defeito que este bloco existe para impedir.
+ * (a comparação ou o FAQ, os dois `lazy`) ainda não existe no documento, então
+ * não há salto do navegador para respeitar — quem rola é o `App`, com animação,
+ * quando a seção monta. Começar do topo e descer é o que se vê; começar no meio
+ * seria o defeito que este bloco existe para impedir.
  */
 if ('scrollRestoration' in history) {
   history.scrollRestoration = 'manual';

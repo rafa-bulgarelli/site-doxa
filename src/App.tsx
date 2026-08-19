@@ -1,5 +1,5 @@
 import { Suspense, lazy, useEffect, useState, type ReactNode } from 'react';
-import { ANCORA_FORMS, HREF_FORMS } from './ancoras';
+import { ANCORA_FAQ, ANCORA_FORMS, HREF_FAQ, HREF_FORMS } from './ancoras';
 import { ROTA_BASE } from './manual/config';
 // Apelidada porque o nome é o mesmo nos dois módulos, e é assim que deve ser:
 // cada um guarda o endereço dele em `config.ts`, e quem junta os dois é este
@@ -85,8 +85,9 @@ const Admin = lazy(() => import('./admin/Rota'));
  * página inteira; a navegação que existe de verdade é interna ao manual, e o
  * roteador dela vive lá dentro, do tamanho que ela precisa.
  *
- * A `vercel.json` já reescreve tudo para o `index.html`, então qualquer uma
- * delas chega aqui inteira depois de um recarregamento ou de um link colado.
+ * O `vercel.json` reescreve para o `index.html` só as rotas desta SPA (leads,
+ * admin, conversor, manual-doxa); caminho desconhecido é 404 servido pela
+ * Vercel, sem passar por aqui.
  */
 function ehCentralDeLeads() {
   return window.location.pathname.replace(/\/+$/, '') === '/leads';
@@ -280,7 +281,7 @@ export default function App() {
   }, []);
 
   /**
-   * ─── O SEGURO DA ÂNCORA `#forms` ─────────────────────────────────────────
+   * ─── O SEGURO DAS ÂNCORAS `#forms` E `#faq` ──────────────────────────────
    *
    * `#forms` marca o painel claro da comparação, e a comparação é `lazy`. Nos
    * primeiros segundos de visita ela ainda não montou — o que existe no lugar
@@ -304,37 +305,41 @@ export default function App() {
    * que teria acontecido sem este seguro.
    *
    * O MESMO seguro vale na MONTAGEM, e não só no clique. O `main.tsx` agora
-   * preserva `#forms` quando ele veio de uma navegação nova (`fragmento.ts`
+   * preserva `#forms` e `#faq` quando vieram de uma navegação nova (`fragmento.ts`
    * explica), e o botão "Falar com a Doxa" das páginas de `/solucoes` e
-   * `/guias` chega aqui exatamente assim. O navegador não salta sozinho: o
-   * alvo mora na comparação, que é `lazy` e ainda não montou. Sem estas
+   * `/guias` chega assim, e o "Perguntas" delas com `#faq`. O navegador não
+   * salta sozinho: o alvo mora numa seção `lazy` que ainda não montou. Sem estas
    * linhas, o link profundo abriria no topo da home — o defeito que ele
    * existe para corrigir.
    */
   useEffect(() => {
-    const rolarQuandoChegar = (quadrosRestantes: number) => {
-      const alvo = document.getElementById(ANCORA_FORMS);
+    const rolarQuandoChegar = (id: string, quadrosRestantes: number) => {
+      const alvo = document.getElementById(id);
       if (alvo) {
         alvo.scrollIntoView({ behavior: 'smooth', block: 'start' });
         return;
       }
       if (quadrosRestantes > 0) {
-        window.requestAnimationFrame(() => rolarQuandoChegar(quadrosRestantes - 1));
+        window.requestAnimationFrame(() => rolarQuandoChegar(id, quadrosRestantes - 1));
       }
     };
 
-    // O link profundo vindo de fora, na chegada. As TRÊS seções acima do alvo,
+    // O link profundo de fora, na chegada — os DOIS alvos. As seções acima do alvo,
     // e não só a dele: `Comparacao` pode pintar antes de `HowItWorks` e
-    // `ProofWall`, e aí o `#forms` está numa posição que ainda vai descer —
+    // `ProofWall`, e aí o alvo está numa posição que ainda vai descer —
     // o salto miraria o lugar velho. `allSettled` porque um pedaço que falha
     // não pode cancelar a rolagem: o alvo é o de baixo, e o retry por quadro
     // continua cobrindo o resto.
-    if (window.location.hash === HREF_FORMS) {
+    // O FAQ é a ÚLTIMA seção da página, então a lista dele inclui o PRÓPRIO
+    // pedaço: sem `Faq` montado não há elemento `#faq` para o poll encontrar.
+    const naChegadaFaq = window.location.hash === HREF_FAQ;
+    if (naChegadaFaq || window.location.hash === HREF_FORMS) {
       void Promise.allSettled([
         import('./components/HowItWorks'),
         import('./components/ProofWall'),
         import('./components/Comparacao'),
-      ]).then(() => rolarQuandoChegar(60));
+        ...(naChegadaFaq ? [import('./components/Faq')] : []),
+      ]).then(() => rolarQuandoChegar(naChegadaFaq ? ANCORA_FAQ : ANCORA_FORMS, 60));
     }
 
     const aoClicar = (evento: MouseEvent) => {
@@ -349,7 +354,7 @@ export default function App() {
       if (document.getElementById(ANCORA_FORMS)) return;
 
       evento.preventDefault();
-      void import('./components/Comparacao').then(() => rolarQuandoChegar(60));
+      void import('./components/Comparacao').then(() => rolarQuandoChegar(ANCORA_FORMS, 60));
     };
 
     document.addEventListener('click', aoClicar);

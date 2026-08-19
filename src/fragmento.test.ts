@@ -36,6 +36,19 @@ describe('deveManterFragmento', () => {
     expect(deveManterFragmento('navigate', '#forms')).toBe(true);
   });
 
+  // O segundo alvo honrado: o link "Perguntas" do rodapé de toda página SEO
+  // aponta para `/#faq`, e o `App.tsx` agora espera as seções acima do FAQ
+  // montarem antes de rolar até ele.
+  it('mantém `#faq` numa navegação nova', () => {
+    expect(deveManterFragmento('navigate', '#faq')).toBe(true);
+  });
+
+  // A mesma régua do `#forms` vale para ele: chegar é uma coisa, recarregar
+  // dentro da seção é outra.
+  it('apaga `#faq` no reload', () => {
+    expect(deveManterFragmento('reload', '#faq')).toBe(false);
+  });
+
   it('apaga quando o navegador não sabe dizer', () => {
     expect(deveManterFragmento(undefined, '#forms')).toBe(false);
   });
@@ -47,22 +60,24 @@ describe('deveManterFragmento', () => {
   /**
    * A âncora que NINGUÉM honra não sobrevive.
    *
-   * `#faq` chega aqui de verdade — é o link "Perguntas" do rodapé de toda
-   * página SEO. Só que o seguro de montagem do `App.tsx` existe para `#forms` e
-   * para mais nada, e o FAQ da landing é `lazy`: preservado, o fragmento
-   * dependeria de o navegador reencontrar a âncora antes do `load`, o que é uma
-   * corrida com a rede. Melhor o defeito determinístico (abre no topo) do que o
-   * que muda a cada visita.
+   * A lista de honrados é curta de propósito: só entra o fragmento para o qual
+   * o `App.tsx` tem o seguro que espera a seção `lazy` montar e rola até ela.
+   * `#pedido` é o exemplo vivo — ele EXISTE no documento (é o handle de medida
+   * do cartão do formulário), e mesmo assim não passa daqui, porque ninguém o
+   * honra na montagem. Preservado, ele dependeria de o navegador reencontrar a
+   * âncora antes do `load`, que é uma corrida com a rede: numa visita salta,
+   * na outra não. Melhor o defeito determinístico (abre no topo).
    */
   it('apaga qualquer âncora que a landing não saiba honrar', () => {
-    expect(deveManterFragmento('navigate', '#faq')).toBe(false);
     expect(deveManterFragmento('navigate', '#pedido')).toBe(false);
     expect(deveManterFragmento('navigate', '#qualquer-coisa')).toBe(false);
   });
 
   // `prerender` é uma página que o navegador abriu adiantado e depois ativou —
-  // do ponto de vista de quem clicou, é uma navegação nova.
+  // do ponto de vista de quem clicou, é uma navegação nova. Vale para os dois
+  // alvos honrados, e não só para o primeiro.
   it('trata prerender como navegação nova', () => {
     expect(deveManterFragmento('prerender', '#forms')).toBe(true);
+    expect(deveManterFragmento('prerender', '#faq')).toBe(true);
   });
 });

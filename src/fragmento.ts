@@ -17,23 +17,30 @@
  * que o fragmento é herança; `navigate` é alguém chegando agora, com o endereço
  * que escolheu.
  *
- * ─── E POR QUE SÓ `#forms`, E NÃO QUALQUER ÂNCORA ────────────────────────────
+ * ─── E POR QUE SÓ `#forms` E `#faq`, E NÃO QUALQUER ÂNCORA ───────────────────
  *
  * Porque preservar um fragmento não é a mesma coisa que HONRAR um fragmento, e
- * quem honra é o `App.tsx` — que tem um seguro de montagem para `#forms` e para
- * mais nada. O rodapé das páginas SEO leva "Perguntas" para `/#faq`, e o FAQ da
- * landing é `lazy` como todo o resto: no instante em que o documento carrega, o
- * elemento `#faq` não existe. O navegador tenta reencontrar a âncora enquanto o
- * documento não terminou de carregar e desiste no `load` — ou seja, o resultado
- * passa a depender da rede. Numa conexão rápida a seção monta a tempo e a
- * página salta; numa lenta, ela não monta, o salto não acontece e a pessoa fica
- * no topo com `#faq` na barra de endereço. Duas visitas idênticas, dois
- * comportamentos.
+ * quem honra é o `App.tsx` — que tem um seguro de montagem, e ele cobre estes
+ * dois alvos e mais nenhum.
  *
- * Preferir o defeito DETERMINÍSTICO: sem seguro que o honre, o fragmento é
- * apagado como sempre foi. O dia em que `#faq` ganhar o mesmo tratamento de
- * `#forms` no `App.tsx`, é uma linha aqui — e o teste ao lado cobra as duas
- * pontas juntas.
+ * `#faq` entrou agora, e a razão de ele ter ficado de fora antes vale a pena
+ * ficar escrita, porque é o que este arquivo protege. O rodapé das páginas SEO
+ * leva "Perguntas" para `/#faq`, e o FAQ da landing é `lazy` como todo o resto:
+ * no instante em que o documento carrega, o elemento `#faq` não existe. O
+ * navegador tenta reencontrar a âncora enquanto o documento não terminou de
+ * carregar e desiste no `load` — ou seja, o resultado passaria a depender da
+ * rede. Numa conexão rápida a seção monta a tempo e a página salta; numa lenta,
+ * ela não monta, o salto não acontece e a pessoa fica no topo com `#faq` na
+ * barra de endereço. Duas visitas idênticas, dois comportamentos — e um defeito
+ * DETERMINÍSTICO (abre sempre no topo) era melhor do que esse.
+ *
+ * O que mudou não foi a régua, foi o outro lado: o `App.tsx` passou a esperar
+ * as seções acima do FAQ montarem e a rolar até ele, exatamente como já fazia
+ * com `#forms`. Com o salto garantido, preservar o fragmento deixou de ser uma
+ * aposta na rede. A régua continua a mesma, e é ela que mantém a lista curta:
+ * **sobrevive o fragmento que a landing sabe honrar, e nenhum outro.** Qualquer
+ * âncora nova entra aqui no mesmo dia em que ganha o seguro lá, e o teste ao
+ * lado cobra as duas pontas juntas.
  *
  * Este arquivo é PURO de propósito — nada de `window`, nada de `history`. A
  * única importação é `ancoras.ts`, que é um punhado de `const` string e o dono
@@ -41,7 +48,15 @@
  * navegador nenhum, e é onde a regra fica legível: no `main.tsx` ela seria mais
  * um `if` no meio de um bloco que já roda antes do React existir.
  */
-import { HREF_FORMS } from './ancoras';
+import { HREF_FAQ, HREF_FORMS } from './ancoras';
+
+/**
+ * Os fragmentos que a landing sabe honrar — e por isso os únicos que sobrevivem
+ * ao boot. `App.tsx` tem, para cada um destes, o seguro que espera a seção
+ * `lazy` montar e rola até ela; um fragmento sem esse par do outro lado é uma
+ * aposta na rede (o cabeçalho explica).
+ */
+const HONRADOS: readonly string[] = [HREF_FORMS, HREF_FAQ];
 
 /**
  * O mínimo de uma entrada de `performance.getEntriesByType('navigation')`.
@@ -71,7 +86,8 @@ export function tipoDeNavegacao(entradas: readonly EntradaDeNavegacao[]): string
  *
  * DUAS condições, e as duas têm de valer:
  *
- *  1. o fragmento é `#forms` — o único que a landing sabe honrar (ver acima);
+ *  1. o fragmento é `#forms` ou `#faq` — os que a landing sabe honrar (ver
+ *     acima);
  *  2. a página foi aberta numa navegação NOVA.
  *
  * Fora disso a resposta é não, e o `main.tsx` limpa a barra como sempre fez.
@@ -89,7 +105,7 @@ export function tipoDeNavegacao(entradas: readonly EntradaDeNavegacao[]): string
  * duas situações em que o fragmento comprovadamente é herança.
  */
 export function deveManterFragmento(tipo: string | undefined, hash: string): boolean {
-  if (hash !== HREF_FORMS) return false;
+  if (!HONRADOS.includes(hash)) return false;
   if (tipo == null) return false;
   return tipo !== 'reload' && tipo !== 'back_forward';
 }
