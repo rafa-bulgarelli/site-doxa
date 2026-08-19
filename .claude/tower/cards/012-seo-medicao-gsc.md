@@ -255,8 +255,10 @@ ninguém. Overlap entre A e B: **zero**.
   `ya29.…`, **0** `private_key_id` com valor (os 12 "matches" do grep largo são os
   próprios padrões escritos como texto nos packs/card/teste).
 - Clone limpo no scratchpad: `pnpm install --frozen-lockfile` + `pnpm gsc:prova` ok;
-  `pnpm gsc:baseline` — resultado na linha seguinte (o primeiro run estourou o limite
-  de 10 min do comando porque a URL Inspection é sequencial; re-rodado à parte).
+  `pnpm gsc:baseline` **exit 0 em 529 s** (≈9 min — a URL Inspection de 69 URLs é
+  sequencial; o "≤ 3 min" do plano era otimista; com `--sem-inspecao` leva segundos),
+  arquivo sem token, mesmos totais (69/69; 1 indexada, 59 discovered, 8 unknown — o
+  Google está absorvendo o sitemap ao longo do dia).
 - Site sem regressão: `<title>` da home inalterado, sitemap 69 `<loc>`, build 68 rotas.
 - Quota de URL Inspection gasta hoje: ~350 de 2000 (3 rodadas do executor + 2 da
   sessão principal) — não rodar em loop.
