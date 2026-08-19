@@ -14,8 +14,11 @@ não de "resolve depois".
  * [ ]  2. Todo fato sobre a Doxa tem entrada em docs/seo/source-of-truth.md.
  *          Cliente, número, prazo, preço, garantia e depoimento: zero invenção.
  * [ ]  3. Nada da §9 (NÃO PUBLICÁVEL) apareceu — nem parafraseado, nem
- *          "suavizado": preço, mensalidade, fidelidade, direitos do vídeo,
- *          agência licenciada, os 1.500 clientes, "parceiros".
+ *          "suavizado": o VALOR da mensalidade, fidelidade, o NÚMERO de vídeos,
+ *          as CONDIÇÕES de direitos, agência licenciada, os 1.500, "parceiros".
+ *          Exceção explícita: a não-resposta que o FAQ já publica ("o
+ *          investimento varia", "depende do plano contratado", "estabelecidos
+ *          no contrato") é PERMITIDA verbatim — §9.1, itens 1, 4 e 10.
  * [ ]  4. Termos proibidos ausentes: "agência" como autodefinição, "parceiros"
  *          para as ferramentas, "assinatura", "curso", "tráfego pago" como
  *          serviço, "garantimos que vai viralizar".

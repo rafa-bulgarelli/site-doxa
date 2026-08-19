@@ -6,7 +6,7 @@ import { urlAbsoluta } from './head';
 import { linksInternosDe, paginas, resolverLink, secoes, urlDe, urlsPublicadas } from './indice';
 import { tokens } from './inline';
 import { BlocoDoCorpo } from './layout/Blocos';
-import { renderizar, rotas } from './prerender/entrada';
+import { renderizar, renderizar404, rotas } from './prerender/entrada';
 import { ROTAS_PLANEJADAS } from './rotas-planejadas';
 import { entradas } from './sitemap';
 import { HUBS, OG_IMAGEM, SECOES } from './site';
@@ -519,5 +519,52 @@ describe('o cartão social de cada rota', () => {
       expect(html).toContain('property="og:image:height" content="630"');
       expect(html).toContain('name="twitter:card" content="summary_large_image"');
     }
+  });
+});
+
+/**
+ * O DOCUMENTO DE 404 — `dist/404.html`.
+ *
+ * Ele não passa pelo `HTML` lá de cima porque não é uma rota: `rotas()` é a
+ * lista do que o site publica, e é dela que saem o `dist/<rota>/index.html` e o
+ * `sitemap.xml`. Uma página de erro não pertence a nenhum dos dois — daí o
+ * último caso deste bloco, que cobra a ausência em vez de confiar nela.
+ *
+ * O teste renderiza o componente em vez de ler `dist/404.html` porque o vitest
+ * roda ANTES do build: o arquivo ainda não existe quando este caso executa. O
+ * que ele garante é o que o `prerender.mjs` vai escrever.
+ */
+describe('a página de 404', () => {
+  const HTML_404 = renderizar404({ cssHref: CSS });
+
+  it('tem título próprio, um h1 só e pede noindex', () => {
+    expect(HTML_404).toContain('<title>Página não encontrada — Doxa</title>');
+    expect(contar(HTML_404, '<h1')).toBe(1);
+    expect(HTML_404).toContain('Página não encontrada</h1>');
+    expect(contar(HTML_404, 'name="robots" content="noindex"')).toBe(1);
+  });
+
+  it('não declara canonical', () => {
+    // O mesmo arquivo responde por TODO caminho morto. Um canonical apontaria
+    // `/guias/nao-existe` e `/xpto` para o mesmo endereço — e pediria ao
+    // buscador que indexasse o erro, que é o oposto do `noindex` acima.
+    expect(contar(HTML_404, 'rel="canonical"')).toBe(0);
+  });
+
+  it('leva a todas as seções publicadas e à home', () => {
+    for (const secao of secoes()) {
+      expect(HTML_404, `404 sem link para ${secao.url}`).toContain(`href="${secao.url}"`);
+    }
+    expect(HTML_404).toContain('href="/"');
+  });
+
+  it('não é rota publicada nem entra no sitemap', () => {
+    expect(rotas()).not.toContain('/404');
+    expect(entradas().some((entrada) => entrada.loc.includes('404'))).toBe(false);
+  });
+
+  it('carrega o CSS do build e nenhum JS', () => {
+    expect(HTML_404).toContain(`href="${CSS}"`);
+    expect(contar(HTML_404, '<script')).toBe(0);
   });
 });

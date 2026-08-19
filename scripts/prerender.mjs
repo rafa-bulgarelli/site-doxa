@@ -113,6 +113,14 @@ async function principal() {
     console.log(`[prerender] ${rota}  ->  dist${rota}/index.html`);
   }
 
+  // O 404 vem FORA do laço: ele não é uma rota do site, é o documento que a
+  // Vercel serve em todo caminho que não existe. Por isso vai para a raiz de
+  // `dist/` (é lá que ela o procura), não entra no sitemap e não vira
+  // `dist/404/index.html` — que seria um arquivo com endereço próprio, o
+  // contrário de uma página de erro.
+  await escrever(join(DIST, entrada.ARQUIVO_404), entrada.renderizar404({ cssHref }));
+  console.log(`[prerender] 404  ->  dist/${entrada.ARQUIVO_404}`);
+
   await escrever(join(DIST, 'sitemap.xml'), entrada.sitemap());
   console.log(`[prerender] sitemap.xml  ->  dist/sitemap.xml`);
   console.log(`[prerender] ${rotas.length} rota(s), CSS em ${cssHref}`);

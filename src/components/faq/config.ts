@@ -672,36 +672,36 @@ const ABERTURA_PT = {
 /**
  * ─── PENDENTE-DONO ───────────────────────────────────────────────────────────
  *
- * As perguntas que os visitantes VÃO fazer e que este arquivo ainda não pode
- * responder. Não são renderizadas: enquanto a resposta não vier do dono, quem
- * pergunta cai no consultor, que é o comportamento correto.
+ * As perguntas que os visitantes VÃO fazer e que este arquivo ainda não
+ * responde inteiras. Quem pergunta o que falta cai no consultor, e é correto.
  *
- * Cada uma delas vira uma entrada de `DUVIDAS` no dia em que a resposta existir.
- * A ordem abaixo é a de quanto elas custam em conversão, da mais cara para a
- * mais barata:
+ * TRÊS delas (1, 4 e 10) já estão PUBLICADAS em `DUVIDAS_PT` com a não-resposta
+ * contratual autorizada — "definido em contrato", "depende do plano". Não estão
+ * "sem resposta": têm texto publicado, citável verbatim em página SEO. Pendente
+ * do dono é a resposta COM VALOR. Ficam na lista e NA POSIÇÃO — `docs/seo/` e
+ * `src/seo/conteudo/` citam o índice e as linhas daqui, e renumerar mente lá.
  *
- *  1. Quanto custa a mensalidade, de verdade.
- *  2. POR QUE OS R$ 100, e o que eles são. Havia resposta escrita aqui e ela
- *     saiu com a troca das seis — não por falta de resposta, por escolha de
- *     quais seis aparecem. É a que mais custa da lista: a pessoa lê o preço no
- *     cartão do pedido, hesita, vem ao FAQ perguntar "por que cobrar cem reais",
- *     e hoje cai no "não sei responder" a um toque do botão de pagar. O texto
- *     existe em `FILTRO`, em `comparacao/config`.
- *  3. O que acontece DEPOIS de pagar. Mesma história: a resposta existe em
- *     `RETORNO` e não está mais aqui.
- *  4. Quantos vídeos por mês, e em quanto tempo o primeiro fica pronto.
+ * A ordem é a de quanto custam em conversão, da mais cara para a mais barata:
+ *
+ *  1. Quanto custa a mensalidade, de verdade. PUBLICADA (`preco`, 283-301):
+ *     "o investimento varia". O valor não está em lugar nenhum desta página.
+ *  2. POR QUE OS R$ 100, e o que eles são. Havia resposta aqui e ela saiu na
+ *     troca das seis — por escolha de quais seis aparecem. A pessoa lê o preço
+ *     no cartão, hesita, vem ao FAQ e cai no "não sei". Texto: `FILTRO`.
+ *  3. O que acontece DEPOIS de pagar. A resposta existe em `RETORNO`, não aqui.
+ *  4. Quantos vídeos por mês — PUBLICADA (`volume`, 409-426): "depende do
+ *     plano". Em quanto tempo sai o PRIMEIRO é que continua sem resposta.
  *  5. Tem fidelidade? Como cancela?
  *  6. A garantia por escrito: em quanto tempo, em quais plataformas, o que conta
  *     como view, e como o reembolso é pedido. A resposta nova fala em "condições
- *     previstas no contrato" — o que é mais prudente do que a manchete do topo,
- *     mas o contrato ainda não existe em lugar nenhum que a página possa citar.
+ *     previstas no contrato" — mas o contrato não existe onde a página cite.
  *  7. Formas de pagamento. Agora dá para responder: cartão, no checkout do
  *     Stripe, para onde o formulário leva.
- *  8. AGÊNCIA LICENCIADA. O primeiro passo do formulário abriu essa porta, e o
- *     FAQ não tem uma linha sobre ela — quem entra por ali e pergunta cai no
- *     "não sei responder".
+ *  8. AGÊNCIA LICENCIADA. O formulário abriu essa porta e o FAQ não tem uma
+ *     linha sobre ela — quem entra por ali e pergunta cai no "não sei responder".
  *  9. Preciso aparecer no vídeo? E se eu não quiser mostrar o rosto?
- * 10. De quem são os direitos do vídeo depois de pronto?
+ * 10. De quem são os direitos do vídeo. PUBLICADA (`direitos`, 499-515):
+ *     "estabelecidos no contrato de cada cliente".
  */
 export const PENDENTES: readonly string[] = [
   'Quanto custa a mensalidade?',

@@ -3,8 +3,8 @@
 - **Tipo:** feature + débito (3 tracks pequenas e disjuntas)
 - **Aberto em:** 2026-08-19 — ordem do dono: "faça tudo isso para deixar o SEO o mais
   limpo e rápido possível" (depois dos cards 011 e 012 entregues)
-- **Status:** planejado pela sessão principal (assento do gestor) — 3 tracks paralelas,
-  merge serial em `main` com collector + VALIDAR-LIVE
+- **Status:** **ENTREGUE e VALIDADO-LIVE em 2026-08-19** — PRs #77 (docs), #78 (404 real),
+  #79 (landing) em `main`; evidência abaixo.
 
 ## O que o dono quer ver funcionando
 1. A landing **aponta para a biblioteca** (hoje nenhum link sai da home para `/guias`):
@@ -47,3 +47,30 @@
 
 Sequência de merge: `track-docs-pendentes` → `track-landing-porta-faq` → `track-404-real`
 (o 404 por último porque é o que mais precisa de VALIDAR-LIVE em produção).
+
+---
+## Entrega e VALIDAR-LIVE (2026-08-19, 16:27–17:10)
+
+- **#77 docs** — `PENDENTES`/§9.1/régua reconciliados; o executor NÃO removeu as 3 do
+  array (10 arquivos citam índice e linha), marcou no lugar com contagem de linhas
+  idêntica. Observação: item 9 ("Preciso aparecer no vídeo?") também parece coberto por
+  `gravar`.
+- **#78 404 real** — dois rewrites (`/leads` e `/admin` são EXATOS no `App.tsx`; o pack
+  errava com `(/.*)?`), `Pagina404.tsx` prerenderizada (noindex, sem canonical, cards das
+  5 seções), sitemap 69. Collector APROVADO. **Produção**: `/guias/nao-existe`,
+  `/leads/xpto`, `/adminx` → **404** "Página não encontrada — Doxa" (noindex);
+  `/leads`, `/admin`, `/conversor`, `/manual-doxa`, `/manual-doxa/sub` → 200 landing;
+  `/solucoes/…` 200; `/api/lead` POST → 400 (função viva); `/qualquer.txt` 404.
+- **#79 landing** — `Guias` (PT) / `Guides` (EN) → `/guias` como 1º atalho; rodapé em
+  duas linhas abaixo de `sm` (nada partido), idêntico de `sm` para cima; `#faq` com o
+  seguro do `#forms` (`HONRADOS`, 12 testes; `App.tsx` 35 linhas, 0 `focus()`).
+  Collector APROVADO. **Produção (CDP 390px)**: `/#faq` → faqTop **0**; `/#forms` →
+  formsTop **0**; `/` → scrollY 0; rodapé publicado com `Guias · Perguntas · Falar com a
+  gente` e `href="/guias"` (o HTML estático não mostra — o rodapé é chunk `lazy`; a
+  prova é no DOM). 29/1040 testes; build 68 rotas + `404.html`.
+- Lição: `curl` na home NUNCA vai ter o link do rodapé — é React; medir no DOM.
+
+### Fica para o dono (opcional)
+Total → Restrita na service account (painel); `Guides` no EN aponta para página PT (1
+linha para esconder); prerender da primeira dobra da landing (card próprio, risco §68).
+

@@ -200,20 +200,45 @@ const fechoEm = (idioma: Idioma): Fecho => {
 export const FECHO: PorIdioma<Fecho> = { pt: fechoEm('pt'), en: fechoEm('en')};
 
 /**
- * Os links rápidos: âncoras que EXISTEM.
+ * Os links rápidos: destinos que EXISTEM.
  *
  * Um rodapé cheio de links que não levam a lugar nenhum é pior do que um rodapé
  * curto — e este repositório já perdeu tempo com exatamente isso: `#pedido` era
- * apontado por dois botões e não existia em elemento nenhum. Por isso os
- * destinos vêm de `ancoras.ts`, onde a string mora ao lado do elemento que a
- * carrega, em vez de serem escritos à mão aqui.
+ * apontado por dois botões e não existia em elemento nenhum. Por isso as
+ * ÂNCORAS vêm de `ancoras.ts`, onde a string mora ao lado do elemento que a
+ * carrega, em vez de serem escritas à mão aqui.
+ *
+ * ─── "GUIAS" É ROTA, e é a única string escrita à mão ────────────────────────
+ *
+ * A biblioteca não é uma seção desta página: é `/guias`, uma página própria,
+ * gerada no build junto com as outras do mapa de conteúdo. `ancoras.ts` é o
+ * dono dos ids da LANDING, e uma rota não é um id — não haveria onde guardá-la
+ * lá sem misturar duas coisas diferentes. A garantia de que ela existe é
+ * outra, e é do lado de lá: `/guias` sai prerenderizada no `pnpm build` e o
+ * `seo/seo.test.ts` reprova link interno que aponta para rota inexistente.
+ *
+ * Ela vem PRIMEIRO porque é a única que sai da página. As outras duas são
+ * saltos dentro da mesma tela; começar pela porta que leva a outro lugar é o
+ * que dá à home o caminho para a biblioteca que ela não tinha.
  */
 const ATALHOS_PT: readonly { rotulo: string; destino: string }[] = [
+  { rotulo: 'Guias', destino: '/guias' },
   { rotulo: 'Perguntas', destino: HREF_FAQ },
   { rotulo: 'Falar com a gente', destino: HREF_FORMS },
 ];
 
+/*
+ * O inglês aponta para a MESMA `/guias`, e o rótulo é o único traduzido.
+ *
+ * A biblioteca é só em português — traduzi-la é outra decisão, com custo de
+ * conteúdo, e não uma linha aqui. Ainda assim o link entra: quem lê o site em
+ * inglês continua achando a biblioteca (o conteúdo é o mesmo produto, e o
+ * navegador traduz uma página), enquanto esconder o item deixaria a versão
+ * inglesa sem porta nenhuma para ela. No dia em que houver `/en/guias`, muda-se
+ * o destino desta linha e mais nada.
+ */
 const ATALHOS_EN: readonly { rotulo: string; destino: string }[] = [
+  { rotulo: 'Guides', destino: '/guias' },
   { rotulo: 'FAQ', destino: HREF_FAQ },
   { rotulo: 'Talk to us', destino: HREF_FORMS },
 ];
