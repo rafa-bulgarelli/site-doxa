@@ -89,7 +89,12 @@ plataforma sem travar. Quatro coisas, nas palavras dele:
        from public.manual_regras r join public.manual_secoes s on s.id = r.secao_id
        join public.manual_versoes v on v.id = s.versao_id
       where v.numero = 7 and s.slug = 'voz' order by r.ordem;  -- leitura, via MCP -->
-<…vazio = assuma os seeds…>
+Lido via MCP em 2026-08-19 (v7 publicada em 2026-08-17 19:56 UTC) — **igual aos seeds**:
+- `secao.descricao` (voz): "A plataforma clona a sua voz a partir de uma gravação sua. Não precisa de estúdio — precisa de silêncio e naturalidade. Siga o roteiro e a duração que a plataforma pedir."
+- **VZ-1** (ordem 1) "Grave num lugar silencioso" · instrução "Nada de eco, música, rua, ventilador ou outras vozes no fundo." · porquê "O clone aprende com TUDO que estiver no áudio — ruído entra no aprendizado e suja a voz de todos os vídeos." · exemplo "Quarto fechado, longe da janela, ar-condicionado desligado. Um guarda-roupa aberto por perto mata o eco." — **não muda**.
+- **VZ-2** (ordem 2) "Fale natural" · instrução "Voz de conversa, ritmo normal, celular sempre à mesma distância. Nada de aplicativo de \"melhorar áudio\": a gravação vai do gravador direto para a plataforma." · porquê "O clone reproduz o que ouve — gravação forçada vira voz forçada, e qualquer processamento apaga justamente o que ele precisa aprender." · exemplo "Leia como se explicasse para um cliente na sua frente: sem voz de locutor, sem pressa." ← **o exemplo manda LER; sai**.
+- **VZ-3** (ordem 3) "Use o gravador do seu celular — e grave aos poucos" · instrução "O material todo fica entre 30 minutos e 2 horas de áudio — ninguém fala isso de uma vez. Abra o gravador nativo do seu celular, grave um trecho, pare, respire, grave de novo. Vários arquivos curtos servem perfeitamente." · porquê "Gravando em momentos diferentes, a sua voz chega com entonações e emoções variadas — e o clone aprende uma voz mais rica e natural. E para você é muito mais leve do que uma maratona." · exemplo "Grave 10 minutos hoje de manhã, mais 15 à tarde, mais um pouco amanhã. Junte os arquivos e envie todos — não precisa emendar nada." ← **reescreve inteiro** (gravador DA plataforma, baixar, sair/voltar/re-upload, 60 min).
+- Não existe VZ-4 na v7 (vaga `ordem 4` livre).
 
 ### Armadilhas
 - **SQL só — nenhum arquivo de código, nenhum teste, nenhum doc.** Se achar que algo
