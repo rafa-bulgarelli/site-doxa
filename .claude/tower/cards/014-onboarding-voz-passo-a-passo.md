@@ -2,7 +2,7 @@
 
 - **Tipo:** feature
 - **Aberto em:** 2026-08-19
-- **Status:** planejado (GESTOR, 2026-08-19)
+- **Status:** planejado (GESTOR, 2026-08-19) — **APROVADO pelo dono em 2026-08-19** (aba PLANO; re-mira VZ-2/VZ-3 = sim). Próximo: assento abre as 3 tracks.
 
 > **CONGELAMENTO DE DEPLOY (ordem do dono, 2026-08-19):** nenhuma atualização sobe
 > para produção até o dono mandar. Vale para a Vercel **e para o Supabase de
