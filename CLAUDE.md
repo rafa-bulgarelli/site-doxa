@@ -78,6 +78,15 @@ raciocínio). Detalhes e trade-off em `.claude/TOWER-ROLES.md`.
   `supabase/schema.sql` e é aplicado **à mão pelo SQL Editor** — `list_migrations` vem
   vazio de propósito, não há histórico de migration. Consequência: o arquivo e o banco
   podem divergir sem ninguém perceber; depois de mexer num, confira o outro.
+- **Search Console (card 012, desde 2026-08-19):** propriedade de **Domínio** —
+  `sc-domain:doxaviral.com` (com **L**); `siteUrl` de prefixo faz toda chamada falhar.
+  Service account `torre-seo@doxa-506016.iam.gserviceaccount.com`, permissão Total. A
+  **chave é segredo, fica em `~/.config/doxa/gsc-service-account.json` (600, fora do
+  repo) e não se lê** — há deny no harness; só os scripts a abrem em runtime, e se
+  vazar revoga-se em IAM → Contas de serviço → Chaves. Env: `GSC_KEY_PATH` (default
+  esse caminho) · `GSC_SITE_URL` (opcional). `pnpm gsc:prova` (acesso + sitemap) e
+  `pnpm gsc:baseline` (→ `docs/seo/baseline-<data>.md`); a URL Inspection tem quota de
+  2000/dia — não rodar em loop — e os dados do GSC atrasam ~2 dias.
 - **Armadilhas:**
   - **`tailwind.config.js` NÃO tem hot-reload.** O dev server (`vite --port 5199`) carrega
     o config uma vez, no boot, e o cache de `require` do Node o mantém: editar o config
