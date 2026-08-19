@@ -130,17 +130,15 @@ begin
         instrucao = 'Não leia. É proibido ler durante a gravação: nada de texto, roteiro ou anotação na sua frente. Fale de cabeça, com voz de conversa e ritmo normal, sempre à mesma distância do microfone. E nada de aplicativo de "melhorar áudio" — a gravação vai do gravador direto para a plataforma.',
         porque = 'O clone reproduz o que ouve: quem lê grava voz de leitura, e aí TODOS os seus vídeos saem com aquele tom de quem está lendo uma tela. E qualquer processamento apaga justamente o que o clone precisa aprender. A única leitura permitida é a frase curta da verificação, no fim — essa a própria plataforma pede na tela.',
         exemplo = 'Fale como se explicasse o seu negócio a um cliente na sua frente: conte um caso que você atendeu, do jeito que contaria no balcão — sem voz de locutor, sem pressa.'
-    from public.manual_secoes s
-    where r.secao_id = s.id and s.versao_id = nova.id and r.codigo = 'VZ-2';
+    where r.secao_id = secao_voz and r.codigo = 'VZ-2';
 
   -- ── 2. O GRAVADOR DA PLATAFORMA, E O CICLO DE SAIR E VOLTAR ───────────────
   update public.manual_regras r
     set titulo = 'Grave pelo gravador da plataforma — e baixe cada gravação',
-        instrucao = 'Grave pela própria plataforma, na aba "Grave-se": uns 3 minutos, pausa, grava de novo. Antes de sair, baixe cada gravação para o seu computador ou celular (menu ⋮ → Baixar) — o que você não baixar, a plataforma apaga. Ao voltar, envie as amostras salvas e continue gravando até somar pelo menos 60 minutos de áudio.',
+        instrucao = 'Grave pela própria plataforma, na aba "Grave-se": uns 3 minutos, pausa, grava de novo. Antes de sair, baixe cada gravação para o seu computador ou celular (menu ⋮ → Baixar) — o que você não baixar, a plataforma apaga. Ao voltar, refaça o mesmo caminho, envie as amostras salvas e continue gravando até somar pelo menos 60 minutos de áudio. Começou no celular? Siga no celular — e o mesmo vale para o computador.',
         porque = 'Fechar a plataforma sem baixar joga fora as horas de voz que você já gravou — e ninguém grava 60 minutos de uma sentada só. Com as amostras guardadas no seu aparelho, você para quando cansar e retoma de onde parou. De quebra, trechos gravados em momentos diferentes trazem entonações variadas, e o clone aprende uma voz mais rica.',
         exemplo = 'Um ciclo completo: 1. abra "Minha Voz Profissional" → "Criar clone de voz"; 2. grave uns 3 minutos e pause; 3. grave de novo, quantas vezes aguentar; 4. antes de fechar, baixe cada gravação no menu ⋮ → Baixar; 5. na volta, refaça esse mesmo caminho, mande os arquivos baixados em "Enviar amostras" e volte a gravar. Começou no celular? Todo o resto no celular — e o mesmo vale para quem começou no computador.'
-    from public.manual_secoes s
-    where r.secao_id = s.id and s.versao_id = nova.id and r.codigo = 'VZ-3';
+    where r.secao_id = secao_voz and r.codigo = 'VZ-3';
 
   -- ── 3. O PASSO NOVO: UM SÓ TIMBRE DO PRIMEIRO AO ÚLTIMO MINUTO ────────────
   insert into public.manual_regras
