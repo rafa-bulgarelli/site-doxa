@@ -6,6 +6,13 @@
 *.pem
 *.key
 
+# A chave da service account do Search Console (`torre-seo@doxa-506016`) mora fora do
+# repo, em ~/.config/doxa/ — estas linhas sao a rede embaixo: nomes ESPECIFICOS, porque
+# um `*.json` engoliria package.json e tsconfig*.json novos sem ninguem perceber.
+gsc-service-account*.json
+*-service-account*.json
+doxa-506016-*.json
+
 # Dependências e build (a stack ainda é "a definir" — cobre os casos comuns de node)
 node_modules/
 dist/
