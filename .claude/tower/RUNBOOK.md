@@ -31,6 +31,32 @@ então a base é `origin/main` e o executor termina com `git push -u origin <bra
 Rode `git fetch` antes do tick quando as tracks já estiverem no remote — o watchdog compara
 contra `origin/main`, e ref desatualizado dá alerta falso.
 
+Os três aceitam `BASE=<ref>` por env quando as tracks partem de (e voltam para) uma
+feature branch em vez de `main` — `BASE=rafa-bulgarelli/xyz bin/tower-track.sh <track>`.
+Sem isso o watch acusa como "fora do pack" tudo que já estava na feature branch, e o
+close recusa fechar uma track que já foi mergeada nela.
+
+## Operando de dentro de uma worktree (workspace do Orca)
+
+O assento do GESTOR pode ser uma worktree em `~/orca/workspaces/site-doxa/<nome>` em
+vez do checkout principal. A torre inteira vem pelo git (`.claude/`, cards, packs,
+scripts); o que **não** vem, e precisa ser trazido à mão do checkout principal, é o que
+está no `.gitignore`:
+
+| Arquivo | Por quê |
+|---|---|
+| `.claude/settings.local.json` | hooks do plin (Glass.aiff), allowlist, `additionalDirectories`, MCP do Supabase |
+| `.env` · `.env.local` | `VITE_SUPABASE_*`, `VITE_TURNSTILE_SITE_KEY` — o dev server e o build leem daqui |
+| `.vercel/project.json` (+ `README.txt`) | link do projeto pra `vercel` CLI |
+| `node_modules/` | `pnpm install --frozen-lockfile` |
+
+`cp` direto, sem abrir — `.env*` é deny de leitura no harness, e copiar não lê. Depois:
+`pnpm typecheck && pnpm test` prova que a worktree opera. Os scripts `tower-*.sh`
+resolvem o nome do repo pelo `.git` comum (`git rev-parse --git-common-dir`), então as
+tracks continuam nascendo em `~/orca/workspaces/site-doxa/<track>` de onde quer que a
+torre rode — antes usavam o `basename` do toplevel, que de dentro da worktree dava
+`<nome>` e mandava a track pra `~/orca/workspaces/<nome>/`.
+
 ## Merge: só por PR
 
 `main` é protegida com `enforce_admins` ligado — **push direto não passa pra ninguém,

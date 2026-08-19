@@ -11,8 +11,9 @@ if [ $# -ne 1 ]; then
 fi
 
 BRANCH="$1"
-REPO_ROOT="$(git rev-parse --show-toplevel)"
-REPO_NAME="$(basename "$REPO_ROOT")"
+# Nome do repo pelo .git COMUM (ver tower-track.sh): de dentro de uma worktree o
+# toplevel é a própria worktree, e o basename apontaria a pasta errada.
+REPO_NAME="$(basename "$(dirname "$(git rev-parse --path-format=absolute --git-common-dir)")")"
 WORKTREE="$HOME/orca/workspaces/$REPO_NAME/$BRANCH"
 
 # Base = onde a track foi mergeada. Sozinho, origin/main (ou main local). Track

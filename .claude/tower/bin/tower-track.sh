@@ -12,7 +12,12 @@ fi
 
 BRANCH="$1"
 REPO_ROOT="$(git rev-parse --show-toplevel)"
-REPO_NAME="$(basename "$REPO_ROOT")"
+# Nome do repo pelo .git COMUM, não pelo toplevel: rodando de dentro de uma worktree
+# (ex.: a workspace do Orca em ~/orca/workspaces/site-doxa/<nome>), o toplevel é a
+# própria worktree e o basename viraria "<nome>" — a track nasceria em
+# ~/orca/workspaces/<nome>/<track>, fora do lugar. O common-dir aponta sempre para
+# o checkout principal (…/site-doxa/.git).
+REPO_NAME="$(basename "$(dirname "$(git rev-parse --path-format=absolute --git-common-dir)")")"
 WORKTREE="$HOME/orca/workspaces/$REPO_NAME/$BRANCH"
 PACK="$REPO_ROOT/.claude/tower/packs/$BRANCH.md"
 
@@ -25,7 +30,16 @@ if [ -e "$WORKTREE" ]; then
   exit 1
 fi
 
-if git rev-parse --verify --quiet origin/main >/dev/null; then
+# Base = de onde a track parte. Sozinho, origin/main (ou main local). Tracks de uma
+# feature branch (noite de tracks seriais) passam a base por env, como o watch e o
+# close já aceitam:
+#   BASE=origin/feat/xyz .claude/tower/bin/tower-track.sh <track>
+if [ -n "${BASE:-}" ]; then
+  if ! git rev-parse --verify --quiet "$BASE" >/dev/null; then
+    echo "ERRO: base '$BASE' não existe." >&2
+    exit 1
+  fi
+elif git rev-parse --verify --quiet origin/main >/dev/null; then
   BASE="origin/main"
 else
   BASE="main"

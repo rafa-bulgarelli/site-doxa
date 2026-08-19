@@ -44,7 +44,7 @@ import {
   situacaoDe,
   termosDaVersao,
 } from './maquina';
-import type { EstadoDoAceite, Passo, Sessao } from './maquina';
+import type { Etapa, EstadoDoAceite, Passo, Sessao } from './maquina';
 import type { ConviteAberto, Regra, RespostaAbrir, Secao, Versao } from '../tipos';
 
 function regra(id: string, ordem: number, extra: Partial<Regra> = {}): Regra {
@@ -346,6 +346,11 @@ describe('os prints entram como etapa, na âncora deles', () => {
     );
   });
 
+  /** Os slugs dos prints daquelas etapas, na ordem em que a máquina os pôs. */
+  function printsDe(etapas: readonly Etapa[]): string[] {
+    return etapas.flatMap((etapa) => (etapa.tipo === 'print' ? [etapa.print.slug] : []));
+  }
+
   it('print sem âncora vai para o fim do capítulo, na ordem em que está no dado', () => {
     const voz = secao('voz', 2, [regra('vz-1', 1, { obrigatoria: false })]);
     const etapas = etapasDo(voz);
@@ -356,12 +361,58 @@ describe('os prints entram como etapa, na âncora deles', () => {
       'print',
       'print',
       'print',
+      'print',
+      'print',
+      'print',
     ]);
-    // A ordem é a do que ACONTECE: enviar as amostras, ver a verificação
-    // pendente, fazer a verificação — e só então o treinamento.
-    expect(
-      etapas.flatMap((etapa) => (etapa.tipo === 'print' ? [etapa.print.slug] : [])),
-    ).toEqual(['voz-minha-voz', 'voz-clone-de-voz', 'voz-pendente', 'voz-verificar']);
+    // A ordem é a do que ACONTECE na plataforma, do começo ao fim: entrar em
+    // Minha Voz, abrir o formulário, gravar, baixar o que gravou, preencher e
+    // avançar, verificar por voz — e pedir a verificação manual se não passar.
+    expect(printsDe(etapas)).toEqual([
+      'voz-etapa-1',
+      'voz-etapa-2',
+      'voz-etapa-3',
+      'voz-etapa-4',
+      'voz-etapa-5',
+      'voz-etapa-6',
+      'voz-etapa-7',
+    ]);
+  });
+
+  it('o bloco da voz fica DEPOIS do último cartão, também num capítulo de 4 passos', () => {
+    // A voz da v8: quatro passos informativos, nenhum deles âncora de print.
+    // O bloco "Como funciona na prática" continua inteiro e no fim — é o que
+    // garante que o cliente leia as regras antes de ver a plataforma.
+    const vozV8 = secao('voz', 2, [
+      regra('vz-1', 1, { obrigatoria: false }),
+      regra('vz-2', 2, { obrigatoria: false }),
+      regra('vz-3', 3, { obrigatoria: false }),
+      regra('vz-4', 4, { obrigatoria: false }),
+    ]);
+    const etapas = etapasDo(vozV8);
+    expect(etapas.map((etapa) => etapa.tipo)).toEqual([
+      'intro',
+      'cartao',
+      'cartao',
+      'cartao',
+      'cartao',
+      'print',
+      'print',
+      'print',
+      'print',
+      'print',
+      'print',
+      'print',
+    ]);
+    expect(printsDe(etapas)).toEqual([
+      'voz-etapa-1',
+      'voz-etapa-2',
+      'voz-etapa-3',
+      'voz-etapa-4',
+      'voz-etapa-5',
+      'voz-etapa-6',
+      'voz-etapa-7',
+    ]);
   });
 
   it('âncora de um código que a versão não tem cai no fim — nada se perde', () => {
