@@ -201,20 +201,22 @@ Estas regras podem virar **conteúdo educativo** — elas explicam a metodologia
 
 ## 9. NÃO PUBLICÁVEL
 
-### 9.1 As dez perguntas sem resposta autorizada (`PENDENTES`)
+### 9.1 As dez perguntas do dono (`PENDENTES`) — sete sem resposta, três já publicadas
 
-Nenhuma tem resposta no repositório. Página que as tocar responde **"o time responde na conversa"** e aponta para o formulário — nunca inventa. Lista completa e justificativa item a item — fonte: `src/components/faq/config.ts:672-717`:
+Sete não têm resposta no repositório: página que as tocar responde **"o time responde na conversa"** e aponta para o formulário — nunca inventa. **Três (1, 4 e 10) já estão publicadas em `DUVIDAS_PT` com a não-resposta contratual autorizada** e podem ser usadas **verbatim** em página SEO; o que continua pendente do dono é a resposta **com valor**. Lista completa e justificativa item a item — fonte: `src/components/faq/config.ts:672-717`:
 
-1. Quanto custa a mensalidade?
+1. Quanto custa a mensalidade? — **publicada** em `DUVIDAS_PT` com a não-resposta autorizada ("o investimento varia de acordo com o volume… nosso time apresenta o plano mais adequado") — fonte: `src/components/faq/config.ts:283-301`. Usável verbatim. **O valor continua pendente do dono** e não pode ser inventado.
 2. Os R$ 100 do passo de pagamento: o que são? — fonte: `src/components/faq/config.ts:708`.
 3. O que acontece depois que eu pago?
-4. Quantos vídeos por mês? Em quanto tempo sai o primeiro?
+4. Quantos vídeos por mês? — **publicada** em `DUVIDAS_PT` com a não-resposta autorizada ("o volume depende do plano contratado… definido de acordo com a estratégia e a meta de performance de cada cliente") — fonte: `src/components/faq/config.ts:409-426`. Usável verbatim. **O número continua pendente do dono.** Já *"em quanto tempo sai o primeiro"* segue **sem resposta**: `prazo` fala de quando aparecem resultados, não de quando o primeiro vídeo é entregue — fonte: `src/components/faq/config.ts:214-243`.
 5. Tem fidelidade? Como cancela?
 6. A garantia por escrito: prazo, plataformas, o que conta como view.
 7. Quais formas de pagamento?
 8. Como funciona ser uma agência licenciada?
 9. Preciso aparecer no vídeo?
-10. De quem são os direitos do vídeo?
+10. De quem são os direitos do vídeo? — **publicada** em `DUVIDAS_PT` com a não-resposta autorizada ("os direitos de utilização, propriedade e demais condições são estabelecidos no contrato de cada cliente") — fonte: `src/components/faq/config.ts:499-515`. Usável verbatim. **As condições em si continuam pendentes do dono**; nenhuma página descreve o que o contrato diz.
+
+> **A numeração de `PENDENTES` é contrato.** `src/seo/conteudo/` cita "pergunta 9", "pergunta 10" e "as outras nove", e este documento e o `keyword-map.md` citam `faq/config.ts:714`. Item publicado **não sai da lista nem muda de posição** — ganha marcação. Tirar um renumera os outros e transforma cada citação dessas em mentira.
 
 ### 9.2 Números e afirmações sem fonte suficiente
 
