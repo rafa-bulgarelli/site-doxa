@@ -85,8 +85,9 @@ const Admin = lazy(() => import('./admin/Rota'));
  * página inteira; a navegação que existe de verdade é interna ao manual, e o
  * roteador dela vive lá dentro, do tamanho que ela precisa.
  *
- * A `vercel.json` já reescreve tudo para o `index.html`, então qualquer uma
- * delas chega aqui inteira depois de um recarregamento ou de um link colado.
+ * O `vercel.json` reescreve para o `index.html` só as rotas desta SPA (leads,
+ * admin, conversor, manual-doxa); caminho desconhecido é 404 servido pela
+ * Vercel, sem passar por aqui.
  */
 function ehCentralDeLeads() {
   return window.location.pathname.replace(/\/+$/, '') === '/leads';
@@ -304,12 +305,12 @@ export default function App() {
    * que teria acontecido sem este seguro.
    *
    * O MESMO seguro vale na MONTAGEM, e não só no clique. O `main.tsx` agora
-   * preserva `#forms` e `#faq` quando vieram de uma navegação nova
-   * (`fragmento.ts` explica): o botão "Falar com a Doxa" das páginas de
-   * `/solucoes` e `/guias` chega aqui com o primeiro, e o "Perguntas" do
-   * rodapé delas, com o segundo. O navegador não salta sozinho — o alvo mora
-   * numa seção `lazy` que ainda não montou. Sem estas linhas, o link profundo
-   * abriria no topo da home, o defeito que ele existe para corrigir.
+   * preserva `#forms` e `#faq` quando vieram de uma navegação nova (`fragmento.ts`
+   * explica), e o botão "Falar com a Doxa" das páginas de `/solucoes` e
+   * `/guias` chega assim, e o "Perguntas" delas com `#faq`. O navegador não
+   * salta sozinho: o alvo mora numa seção `lazy` que ainda não montou. Sem estas
+   * linhas, o link profundo abriria no topo da home — o defeito que ele
+   * existe para corrigir.
    */
   useEffect(() => {
     const rolarQuandoChegar = (id: string, quadrosRestantes: number) => {
