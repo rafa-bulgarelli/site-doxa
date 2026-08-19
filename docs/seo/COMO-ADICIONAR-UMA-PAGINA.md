@@ -6,6 +6,11 @@ ordem, e o motivo de cada passo está no parêntese.
 
 ## 0. Antes de escrever: a página merece existir?
 
+- **Medir antes de escrever**: rode `pnpm gsc:baseline` e olhe posição e impressões do
+  cluster no relatório. Se alguma página já imprime para a query, a resposta é reforçar
+  a dona (title/description/H1 e links internos), não abrir página nova. Confira a seção
+  7 (gatilho da rodada 4) e a 4 (queries sem dona) ANTES de propor slug — página nova
+  para query que já tem dona é canibalização com um passo a mais.
 - Está no `keyword-map.md` com intenção, cluster e o que a diferencia das vizinhas?
   Se não está, entra lá primeiro (nota = CI × R × SO × AW; "não fazer" com motivo).
 - Passa no §45 do brief: **"eu publicaria isso se o Google não existisse?"** Página
@@ -83,5 +88,7 @@ pnpm typecheck && pnpm test && pnpm build && pnpm seo:audit
 
 - `docs/seo/keyword-map.md`: status `existe`. Se a página nasceu de uma pergunta do
   dono respondida (PENDENTES), o `source-of-truth.md` ganha o fato com fonte ANTES.
+- Na rodada seguinte, `pnpm gsc:baseline` mostra se a página entrou no gatilho (posição
+  média 8–20 com impressão real) — é lá que se decide reforçar em vez de escrever outra.
 - Deploy segue o rito da casa (VALIDAR-LIVE no papel do usuário; `curl` sem JS pelo
   `<title>`, domínio com L).
