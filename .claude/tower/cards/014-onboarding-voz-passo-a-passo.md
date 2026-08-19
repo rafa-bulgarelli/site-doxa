@@ -186,16 +186,22 @@ para `main` — merge em `main` dispara deploy na Vercel e está congelado.
      descrição (colados no report) + `pnpm test` 1033/1033 (o diff é 1 SQL).
   2. **C** (prints) — gate: collector + `pnpm typecheck && pnpm test` sem falha nova
      + `ls public/manual/prints/ | grep voz` = só os 7 `-v3` + o loop de `sips`/`grid`
-     + o dono OLHA os 7 pares alt/legenda + Safari abre as 7 URLs do `vite preview`
-     (moldura com conteúdo) — a sessão principal faz o Safari.
+     + a sessão principal OLHA os 7 pares alt/legenda e abre as 7 URLs do `vite
+     preview` no Chrome (mobile-shot) E no Safari (moldura com conteúdo) — **a
+     conferência das imagens é da TORRE, não do dono** (resposta do dono, 2026-08-19).
   3. **B** (cenas) — gate: collector + suíte sem falha nova + **gate visual do dono**
-     sobre os quadros SSR das 3 cenas (VZ-4 nova; VZ-3 e VZ-2 re-miradas).
+     sobre os quadros SSR das 3 cenas (VZ-4 nova; VZ-3 e VZ-2 re-miradas — re-mira
+     confirmada pelo dono em 2026-08-19).
   4. **Integração:** na `rafa-bulgarelli/gorgonian` com as três: `pnpm typecheck &&
      pnpm test && pnpm build`; `grep -c "'VZ-4'" src/manual/cenas/contrato.tsx` = 1;
      script descartável no scratchpad que renderiza `Capitulo` (SSR) com a fixture
      v8 (VZ-1..VZ-4) na etapa 4 e confirma `<svg` (a cena do VZ-4 chegou na tela) e
      nas etapas 5..11 os 7 `voz-etapa-N-v3` em ordem com os letreiros. Depois:
      `git merge origin/main` na gorgonian (ela está 1 commit atrás: `436996e`).
+- **Respostas do dono (2026-08-19, aba PLANO):** os 3 títulos fixos dos packs
+  (VZ-2/VZ-3/VZ-4) são **copy final**; **não há convite v7 aberto** (o transitório
+  código-antes-do-seed não atinge ninguém); a verificação das imagens convertidas
+  (AVIF decodifica em Chrome + Safari + celular) é **da torre**.
 - **VALIDAR-LIVE (condicionado à ORDEM EXPLÍCITA do dono — descongelamento):**
   1. PR `rafa-bulgarelli/gorgonian` → `main` (squash). Vercel publica.
   2. Em produção, ANTES do seed: `curl -sI https://www.doxaviral.com/manual/prints/voz-etapa-1-v3.avif`

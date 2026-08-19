@@ -140,7 +140,8 @@ outras tracks.
    para N=1..7 — imagem com conteúdo (não moldura vazia); tire um print com
    `node .claude/tower/bin/mobile-shot.mjs http://localhost:5210/manual/prints/voz-etapa-1-v3.avif 390 <scratchpad>/etapa-1-chrome.png`
    e OLHE. Safari você não consegue automatizar: liste as 7 URLs no report para a
-   sessão principal abrir (`open -a Safari <url>`). Confira também que o `dist/` NÃO
+   sessão principal abrir (`open -a Safari <url>`) — é a SESSÃO PRINCIPAL (torre) quem
+   confere as imagens, não o dono; deixe o `vite preview` rodando e a porta no report. Confira também que o `dist/` NÃO
    contém `voz-*-v2.avif` (`ls dist/manual/prints/`).
 
 ## SCOPE
