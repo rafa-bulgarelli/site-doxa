@@ -3,6 +3,7 @@ import { renderToStaticMarkup } from 'react-dom/server';
 import { cabeca, tipoOg } from '../head';
 import { porUrl, resolverLink, secoes, urlDe, urlsPublicadas } from '../indice';
 import { Casca } from '../layout/Casca';
+import { Pagina404 } from '../layout/Pagina404';
 import { PaginaArtigo } from '../layout/PaginaArtigo';
 import { PaginaHub } from '../layout/PaginaHub';
 import { PaginaSecao } from '../layout/PaginaSecao';
@@ -167,6 +168,28 @@ function documentoDeSecao(secao: Secao, cssHref: string): ReactElement {
 export interface OpcoesDeRender {
   /** O `href` do CSS do build cliente, lido de `dist/index.html`. */
   cssHref: string;
+}
+
+/**
+ * O nome do arquivo de 404, dentro de `dist/`.
+ *
+ * Na RAIZ, e não em `dist/404/index.html`: a Vercel procura `404.html` no topo
+ * do diretório publicado para responder a rota de erro do Build Output. Em
+ * qualquer outro lugar, o arquivo existe e ninguém o serve.
+ */
+export const ARQUIVO_404 = '404.html';
+
+/**
+ * O HTML do documento de 404.
+ *
+ * Fora de `rotas()` de propósito. Aquela lista é "o que este build publica como
+ * página" — ela alimenta o `dist/<rota>/index.html` e o `sitemap.xml`, e uma
+ * página de erro não pertence a nenhum dos dois: não tem endereço próprio (é
+ * servida em todo caminho morto) e pede `noindex`. O `prerender.mjs` a escreve
+ * num passo separado, pela mesma razão.
+ */
+export function renderizar404(opcoes: OpcoesDeRender): string {
+  return `<!doctype html>\n${renderToStaticMarkup(<Pagina404 cssHref={opcoes.cssHref} />)}\n`;
 }
 
 /** O HTML completo de uma rota, pronto para virar `dist<rota>/index.html`. */

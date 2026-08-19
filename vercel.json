@@ -3,7 +3,8 @@
   "buildCommand": "pnpm build",
   "trailingSlash": false,
   "rewrites": [
-    { "source": "/((?!api/)(?!.*\\.[a-zA-Z0-9]{1,8}$).*)", "destination": "/index.html" }
+    { "source": "/(leads|admin|conversor|manual-doxa)", "destination": "/index.html" },
+    { "source": "/(conversor|manual-doxa)/(.*)", "destination": "/index.html" }
   ],
   "headers": [
     {
