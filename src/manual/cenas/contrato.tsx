@@ -33,6 +33,7 @@ import UmCanal from './passos/UmCanal';
 import Silencio from './passos/Silencio';
 import FalaNatural from './passos/FalaNatural';
 import Gravador from './passos/Gravador';
+import MesmoEquipamento from './passos/MesmoEquipamento';
 import FotoNitida from './passos/FotoNitida';
 import SemFiltro from './passos/SemFiltro';
 import Aproximacao from './passos/Aproximacao';
@@ -76,7 +77,8 @@ export function cenaDoItem(codigo: string): Cena | null {
  * A mini-cena de cada PASSO dos capítulos 1–3 — o mesmo desenho dos itens da
  * garantia, estendido: a regra informativa que vira "Passo X de Y" abre com a
  * animação que conta AQUELE passo. Código sem cena → passo sem ilustração,
- * sem erro. `ON-0` é a regra nova do seed v7 (redes sociais primeiro).
+ * sem erro. `ON-0` é a regra nova do seed v7 (redes sociais primeiro) e `VZ-4`
+ * é a regra nova do seed v8 (mesmo equipamento, mesmo lugar).
  */
 const CENAS_DOS_PASSOS: Record<string, Cena> = {
   'ON-0': Redes,
@@ -85,6 +87,7 @@ const CENAS_DOS_PASSOS: Record<string, Cena> = {
   'VZ-1': Silencio,
   'VZ-2': FalaNatural,
   'VZ-3': Gravador,
+  'VZ-4': MesmoEquipamento,
   'CL-1': FotoNitida,
   'CL-2': SemFiltro,
   'CL-3': Aproximacao,

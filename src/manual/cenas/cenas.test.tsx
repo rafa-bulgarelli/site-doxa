@@ -52,6 +52,7 @@ import UmCanal from './passos/UmCanal';
 import Silencio from './passos/Silencio';
 import FalaNatural from './passos/FalaNatural';
 import Gravador from './passos/Gravador';
+import MesmoEquipamento from './passos/MesmoEquipamento';
 import FotoNitida from './passos/FotoNitida';
 import SemFiltro from './passos/SemFiltro';
 import Aproximacao from './passos/Aproximacao';
@@ -86,7 +87,7 @@ const ITENS: readonly CenaDoTeste[] = [
 /**
  * As mini-cenas dos PASSOS dos capítulos 1–3.
  *
- * A chave é o `codigo` da regra no seed (v2/v3/v7), que é o mesmo vocabulário
+ * A chave é o `codigo` da regra no seed (v2/v3/v7/v8), que é o mesmo vocabulário
  * do contrato: se uma cena for parar no código errado, o passo abre com a
  * animação de outro passo — e isso não aparece em erro nenhum, só em quem lê.
  */
@@ -97,6 +98,7 @@ const PASSOS: readonly CenaDoTeste[] = [
   { chave: 'VZ-1', Cena: Silencio },
   { chave: 'VZ-2', Cena: FalaNatural },
   { chave: 'VZ-3', Cena: Gravador },
+  { chave: 'VZ-4', Cena: MesmoEquipamento },
   { chave: 'CL-1', Cena: FotoNitida },
   { chave: 'CL-2', Cena: SemFiltro },
   { chave: 'CL-3', Cena: Aproximacao },
@@ -179,7 +181,7 @@ describe('as cenas do manual', () => {
     expect(cenaDoItem('GA-99')).toBeNull();
   });
 
-  it('o contrato entrega uma mini-cena para cada um dos nove passos', () => {
+  it('o contrato entrega uma mini-cena para cada um dos dez passos', () => {
     for (const { chave, Cena } of PASSOS) {
       expect(cenaDoPasso(chave)).toBe(Cena);
     }
@@ -191,8 +193,8 @@ describe('as cenas do manual', () => {
   });
 
   it('nenhum passo ficou com o esqueleto do prelude', () => {
-    // Os nove nasceram como um `<svg>` vazio, para a track do fluxo provar que
-    // o slot estava ligado antes de a cena existir. Um esqueleto esquecido é
+    // Os nove primeiros nasceram como um `<svg>` vazio, para a track do fluxo
+    // provar que o slot estava ligado antes de a cena existir. Um esqueleto esquecido é
     // uma moldura vazia no ar: sem erro, sem console, sem desenho. Cena de
     // verdade desenha dezenas de formas e escreve a fase na moldura.
     for (const { chave, Cena } of PASSOS) {
@@ -265,7 +267,7 @@ describe('o fecho do arco no quadro que ensina', () => {
     // A conta é a trava: cena nova entra na lista de TODAS e cai aqui sem
     // fecho, e este número é o que denuncia o esquecimento.
     expect(COM_FECHO.length).toBe(TODAS.length - 2);
-    expect(COM_FECHO.length).toBe(19);
+    expect(COM_FECHO.length).toBe(20);
   });
 
   for (const { chave, Cena } of COM_FECHO) {
