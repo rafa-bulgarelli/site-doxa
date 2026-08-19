@@ -50,14 +50,24 @@ export function codificarSiteUrl(siteUrl) {
 }
 
 /**
+ * Teto de espera de UMA chamada.
+ *
+ * O `fetch` do Node não tem timeout por padrão: uma conexão que abre e nunca
+ * responde trava o processo para sempre. Num comando que faz 69 chamadas
+ * seguidas (o baseline), isso é a diferença entre "falhou na URL 12" e um job
+ * pendurado a noite inteira sem escrever nada.
+ */
+export const TIMEOUT_EM_MS = 30_000;
+
+/**
  * Executa a chamada e devolve o JSON — ou lança com status + trecho do corpo.
  *
  * @param {string} url
  * @param {string} token
- * @param {{metodo?: string, corpo?: unknown}} [opcoes]
+ * @param {{metodo?: string, corpo?: unknown, timeoutEmMs?: number}} [opcoes]
  * @return {Promise<unknown>} JSON da resposta, ou `{}` quando ela vem sem corpo.
  */
-async function chamar(url, token, { metodo = 'GET', corpo } = {}) {
+async function chamar(url, token, { metodo = 'GET', corpo, timeoutEmMs = TIMEOUT_EM_MS } = {}) {
   const cabecalhos = { authorization: `Bearer ${token}` };
   if (corpo !== undefined) {
     cabecalhos['content-type'] = 'application/json';
@@ -67,6 +77,7 @@ async function chamar(url, token, { metodo = 'GET', corpo } = {}) {
     method: metodo,
     headers: cabecalhos,
     body: corpo === undefined ? undefined : JSON.stringify(corpo),
+    signal: AbortSignal.timeout(timeoutEmMs),
   });
 
   if (!resposta.ok) {
@@ -155,17 +166,31 @@ export async function consultarBusca(token, siteUrl, corpo) {
 }
 
 /**
+ * O idioma em que se PEDE o resultado da inspeção — e por que não é pt-BR.
+ *
+ * `coverageState` não é frase para humano: é a CHAVE que classifica a URL
+ * ("Submitted and indexed", "Discovered - currently not indexed", "URL is
+ * unknown to Google"), e é nela que a regra do relatório decide quantas URLs o
+ * Google já conhece. Pedindo `pt-BR`, a mesma resposta volta como "O Google não
+ * reconhece o URL", a comparação por texto falha EM SILÊNCIO e o baseline
+ * afirma que o Google conhece 69 de 69 quando conhece 49. O texto para o dono é
+ * o relatório; este campo fica na língua canônica da API.
+ */
+export const IDIOMA_DA_INSPECAO = 'en-US';
+
+/**
  * `urlInspection.index.inspect` — o que o Google sabe de UMA URL.
  *
  * @param {string} token
  * @param {string} siteUrl propriedade dona da URL.
  * @param {string} url URL absoluta a inspecionar.
+ * @param {string} [languageCode] idioma dos rótulos; ver `IDIOMA_DA_INSPECAO`.
  * @return {Promise<object>}
  */
-export async function inspecionarUrl(token, siteUrl, url) {
+export async function inspecionarUrl(token, siteUrl, url, languageCode = IDIOMA_DA_INSPECAO) {
   return chamar(`${BASE_SEARCHCONSOLE}/urlInspection/index:inspect`, token, {
     metodo: 'POST',
-    corpo: { inspectionUrl: url, siteUrl, languageCode: 'pt-BR' },
+    corpo: { inspectionUrl: url, siteUrl, languageCode },
   });
 }
 

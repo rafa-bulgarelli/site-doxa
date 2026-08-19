@@ -16,7 +16,8 @@
     "test:watch": "vitest",
     "seo:audit": "node scripts/seo-audit.mjs",
     "og:imagem": "node scripts/og-imagem.mjs",
-    "gsc:prova": "node scripts/gsc/prova.mjs"
+    "gsc:prova": "node scripts/gsc/prova.mjs",
+    "gsc:baseline": "node scripts/gsc/baseline.mjs"
   },
   "dependencies": {
     "framer-motion": "^11.11.17",
