@@ -5,6 +5,7 @@
       "Read(~/.ssh/**)",
       "Read(~/.aws/**)",
       "Read(**/.env*)",
+      "Read(~/.config/doxa/**)",
       "Bash(curl * | bash)"
     ]
   }
