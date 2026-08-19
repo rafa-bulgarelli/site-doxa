@@ -51,6 +51,56 @@ const LEITURA: Secao = {
   ],
 };
 
+/**
+ * A voz como o seed a entrega hoje: quatro passos informativos, todos com o
+ * código de verdade (`VZ-1`..`VZ-4`).
+ *
+ * Fica FORA da `VERSAO` pelo mesmo motivo do clone e do onboarding: aqui ela
+ * existe para provar que o bloco "Como funciona na prática" continua inteiro e
+ * no FIM mesmo quando o capítulo cresce — e dentro da versão mudaria a
+ * contagem que a abertura promete.
+ */
+const VOZ_V8: Secao = {
+  ...LEITURA,
+  id: 's-voz-v8',
+  regras: [
+    ...LEITURA.regras,
+    {
+      id: 'vz2',
+      codigo: 'VZ-2',
+      titulo: 'Fale como você fala',
+      instrucao: 'Nada de decorar texto: conte histórias do seu dia.',
+      porque: 'O clone aprende o seu jeito, não o de um locutor.',
+      exemplo: 'Conte como foi o atendimento de ontem.',
+      severidade: 'normal',
+      obrigatoria: false,
+      ordem: 2,
+    },
+    {
+      id: 'vz3',
+      codigo: 'VZ-3',
+      titulo: 'Baixe cada gravação antes de sair',
+      instrucao: 'O que não for baixado se perde ao fechar a plataforma.',
+      porque: 'Recomeçar a captura custa uma tarde inteira.',
+      exemplo: 'Nos três pontinhos, "Baixar", em cada amostra.',
+      severidade: 'normal',
+      obrigatoria: false,
+      ordem: 3,
+    },
+    {
+      id: 'vz4',
+      codigo: 'VZ-4',
+      titulo: 'Mesmo equipamento, mesmo lugar — nos 60 minutos inteiros',
+      instrucao: 'Comece e termine no mesmo aparelho e no mesmo cômodo.',
+      porque: 'Trocar de microfone no meio faz o clone soar de duas pessoas.',
+      exemplo: 'Começou no celular? Vá até o fim no celular.',
+      severidade: 'normal',
+      obrigatoria: false,
+      ordem: 4,
+    },
+  ],
+};
+
 const GARANTIA: Secao = {
   id: 's-garantia',
   slug: 'garantia',
@@ -325,8 +375,8 @@ describe('as telas do caminho', () => {
     const html = capitulo(0);
     expect(html).toContain('A sua voz');
     expect(html).toContain('Capítulo 1 de 2');
-    // A voz tem 1 cartão + os 4 prints da plataforma = 5 telas depois da intro.
-    expect(html).toContain('São 5 passos curtos — um por tela.');
+    // A voz tem 1 cartão + os 7 prints da plataforma = 8 telas depois da intro.
+    expect(html).toContain('São 8 passos curtos — um por tela.');
     expect(html).toContain('Começar →');
     // A parede morreu: o conteúdo do capítulo NÃO está todo nesta tela.
     expect(html).not.toContain('Grave num lugar silencioso');
@@ -347,8 +397,8 @@ describe('as telas do caminho', () => {
   });
 
   it('a última tela do capítulo informativo fecha no "Entendi"', () => {
-    // A etapa 5 é o quarto print da voz — a última do capítulo.
-    const html = capitulo(0, 5);
+    // A etapa 8 é o sétimo print da voz — a última do capítulo.
+    const html = capitulo(0, 8);
     expect(html).toContain('Entendi →');
     expect(html).not.toContain('Ir para a revisão final');
   });
@@ -618,36 +668,98 @@ describe('os prints reais da plataforma', () => {
     expect(altDe(tag)).not.toContain('fim do onboarding');
   });
 
-  it('a série da voz fecha o capítulo na ordem real: enviar, pendente, verificar', () => {
-    const caminho = [2, 3, 4, 5].map((etapa) => {
+  /** As sete etapas de print da voz na `LEITURA` (1 cartão antes delas). */
+  const ETAPAS_DA_VOZ = [2, 3, 4, 5, 6, 7, 8];
+
+  it('a série da voz fecha o capítulo na ordem real da plataforma, 1 a 7', () => {
+    const caminho = ETAPAS_DA_VOZ.map((etapa) => {
       const [tag] = imagensDePrint(capitulo(0, etapa));
       return /src="([^"]*)"/.exec(tag ?? '')?.[1] ?? '';
     });
     expect(caminho).toEqual([
-      '/manual/prints/voz-minha-voz-v2.avif',
-      '/manual/prints/voz-clone-de-voz-v2.avif',
-      '/manual/prints/voz-pendente-v2.avif',
-      '/manual/prints/voz-verificar-v2.avif',
+      '/manual/prints/voz-etapa-1-v3.avif',
+      '/manual/prints/voz-etapa-2-v3.avif',
+      '/manual/prints/voz-etapa-3-v3.avif',
+      '/manual/prints/voz-etapa-4-v3.avif',
+      '/manual/prints/voz-etapa-5-v3.avif',
+      '/manual/prints/voz-etapa-6-v3.avif',
+      '/manual/prints/voz-etapa-7-v3.avif',
     ]);
   });
 
-  it('todo print carrega alt de verdade, é `-v2` e reserva o próprio espaço', () => {
+  it('o bloco da voz tem letreiro próprio e numerado; o onboarding, o padrão', () => {
+    // O dono batizou a série: "essas sete etapas entram como funciona na
+    // prática". O número na tela é o que diz ao cliente que ele está num
+    // caminho de sete e não numa imagem solta.
+    ETAPAS_DA_VOZ.forEach((etapa, indice) => {
+      const html = capitulo(0, etapa);
+      expect(html).toContain(`Como funciona na prática · ${indice + 1} de 7`);
+      expect(html).not.toContain('Na plataforma, é assim');
+    });
+    // Os prints do onboarding não têm letreiro no dado, e ficam com o padrão.
+    for (const etapa of [2, 4, 5, 6]) {
+      const html = capituloAvulso(ONBOARDING, etapa);
+      expect(html).toContain('Na plataforma, é assim');
+      expect(html).not.toContain('Como funciona na prática');
+    }
+  });
+
+  it('todo print carrega alt de verdade, é `-v2`/`-v3` e reserva o próprio espaço', () => {
     const doOnboarding = [2, 4, 5, 6].map((etapa) => capituloAvulso(ONBOARDING, etapa));
-    const daVoz = [2, 3, 4, 5].map((etapa) => capitulo(0, etapa));
+    const daVoz = ETAPAS_DA_VOZ.map((etapa) => capitulo(0, etapa));
     const tags = [...doOnboarding, ...daVoz].flatMap(imagensDePrint);
-    // Os OITO prints da plataforma, um por tela.
-    expect(tags).toHaveLength(8);
+    // Os ONZE prints da plataforma (4 do onboarding + 7 da voz), um por tela.
+    expect(tags).toHaveLength(11);
     for (const tag of tags) {
       // `alt` descritivo: a imagem carrega informação que não está escrita.
       expect(altDe(tag).length).toBeGreaterThan(40);
-      // 960px é a largura dos arquivos `-v2`, os únicos que o navegador do
+      // 960px é a largura de TODOS os arquivos, e é a única que o navegador do
       // cliente decodifica: acima disso o `sips` grava AVIF em grade, e a
       // moldura chega VAZIA na tela dele.
       expect(tag).toContain('width="960"');
-      expect(tag).toMatch(/src="\/manual\/prints\/[a-z-]+-v2\.avif"/);
+      expect(tag).toMatch(/src="\/manual\/prints\/[a-z0-9-]+-v[23]\.avif"/);
       expect(tag).toMatch(/height="\d+"/);
       expect(tag).toContain('loading="lazy"');
     }
+  });
+
+  it('com quatro passos, o bloco da voz continua inteiro e fecha o capítulo', () => {
+    // `total={2}` para que este NÃO seja o último capítulo do manual: assim a
+    // última tela fecha em "Entendi →" e não na revisão final.
+    const tela = (etapa: number): string =>
+      desenhar(
+        <Capitulo
+          capitulo={VOZ_V8}
+          posicao={1}
+          total={2}
+          etapa={etapa}
+          marcadas={[]}
+          aoAlternar={nada}
+          aoAvancar={nada}
+          aoVoltar={nada}
+        />,
+      );
+    // 4 cartões + 7 prints = 11 telas depois da intro.
+    expect(tela(0)).toContain('São 11 passos curtos — um por tela.');
+    const quarto = tela(4);
+    expect(quarto).toContain('Passo 4 de 4');
+    expect(quarto).toContain('Mesmo equipamento, mesmo lugar — nos 60 minutos inteiros');
+    expect(imagensDePrint(quarto)).toHaveLength(0);
+    // As etapas 5 a 11 são os sete prints, na ordem — nenhum se perde no meio.
+    const caminho = [5, 6, 7, 8, 9, 10, 11].map((etapa) => {
+      const [tag] = imagensDePrint(tela(etapa));
+      return /src="([^"]*)"/.exec(tag ?? '')?.[1] ?? '';
+    });
+    expect(caminho).toEqual([
+      '/manual/prints/voz-etapa-1-v3.avif',
+      '/manual/prints/voz-etapa-2-v3.avif',
+      '/manual/prints/voz-etapa-3-v3.avif',
+      '/manual/prints/voz-etapa-4-v3.avif',
+      '/manual/prints/voz-etapa-5-v3.avif',
+      '/manual/prints/voz-etapa-6-v3.avif',
+      '/manual/prints/voz-etapa-7-v3.avif',
+    ]);
+    expect(tela(11)).toContain('Entendi →');
   });
 
   it('capítulo sem print não ganha etapa de print em lugar nenhum', () => {

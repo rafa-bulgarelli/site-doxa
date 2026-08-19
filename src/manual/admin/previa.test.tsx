@@ -233,7 +233,9 @@ describe('a prévia no lugar do cliente', () => {
 
   it('a prévia mostra os prints reais da plataforma, um por tela', () => {
     const html = emPasso({ tipo: 'capitulo', indice: 0, etapa: 2 });
-    expect(html).toContain('Na plataforma, é assim');
+    // O capítulo da voz abre o bloco "Como funciona na prática", numerado: é o
+    // letreiro que o dado traz, e a prévia mostra o mesmo que o cliente vê.
+    expect(html).toContain('Como funciona na prática · 1 de 7');
     expect(html.match(/src="\/manual\/prints\//g)?.length).toBe(1);
   });
 

@@ -179,8 +179,13 @@ function TelaDoPrint({ print }: { print: Print }) {
     <Entrada>
       {/* A mesma roupa do `Rotulo` — serifa, caixa de frase — porque é o mesmo
           tipo de letreiro; o que muda é ser `<h2>`, para quem navega por
-          cabeçalho achar a imagem. */}
-      <h2 className="font-serif text-[16px] text-doxa-muted">Na plataforma, é assim</h2>
+          cabeçalho achar a imagem.
+          O texto vem do DADO quando existe: a série da voz é um bloco com nome
+          próprio e numerado ("Como funciona na prática · 3 de 7"), e sem isso o
+          cliente não saberia que está no meio de um caminho de sete telas. */}
+      <h2 className="font-serif text-[16px] text-doxa-muted">
+        {print.letreiro ?? 'Na plataforma, é assim'}
+      </h2>
       {/* Uma coluna só: são prints largos de tela cheia, e duas colunas num
           celular deixariam a letra da plataforma ilegível. */}
       <figure className="mt-4 overflow-hidden rounded-3xl border border-doxa-line bg-doxa-surface">
