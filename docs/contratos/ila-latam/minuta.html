@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<title>Minuta — Contrato de Desenvolvimento Digital InCraft | ILA LATAM BV</title>
+<style>
+  /* Documento para impressão em A4. Tipografia sóbria de contrato: serif no corpo,
+     porque isto é peça contratual impressa, não interface do site. */
+  @page {
+    size: A4;
+    margin: 2cm 2cm 2cm 2cm;
+  }
+
+  html {
+    font-size: 11pt;
+  }
+
+  body {
+    margin: 0;
+    font-family: "Times New Roman", Georgia, "Liberation Serif", serif;
+    color: #000;
+    line-height: 1.45;
+    text-align: justify;
+    hyphens: none;
+  }
+
+  /* Capa da MINUTA. Existe só enquanto o documento não é a versão final:
+     na versão final o bloco #capa-minuta inteiro é apagado num delete só. */
+  #capa-minuta {
+    break-after: page;
+    page-break-after: always;
+    border: 3pt solid #b00000;
+    padding: 1.2cm 1cm;
+    text-align: left;
+  }
+
+  #capa-minuta .selo {
+    display: block;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 30pt;
+    font-weight: bold;
+    color: #b00000;
+    text-align: center;
+    margin: 0 0 0.6cm 0;
+    background-color: #ffe08a;
+    padding: 0.35cm 0.2cm;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  #capa-minuta h1 {
+    font-size: 15pt;
+    text-align: center;
+    margin: 0 0 0.8cm 0;
+  }
+
+  #capa-minuta h2 {
+    font-size: 12pt;
+    margin: 0.7cm 0 0.2cm 0;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+  }
+
+  #capa-minuta ul {
+    margin: 0.2cm 0 0.2cm 0;
+    padding-left: 1.1cm;
+  }
+
+  #capa-minuta li {
+    margin-bottom: 0.15cm;
+  }
+
+  .capa-pendencia {
+    background-color: #ffe08a;
+    border: 1pt solid #8a6100;
+    padding: 0 3pt;
+    font-weight: bold;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  .capa-nota {
+    font-size: 10pt;
+    line-height: 1.4;
+  }
+
+  /* Placeholder de dado que AINDA NÃO EXISTE. Fundo e borda com
+     print-color-adjust: exact — sem isso o Chrome descarta a cor de fundo ao
+     imprimir e o destaque some em silêncio no PDF. */
+  .pendente {
+    background-color: #ffe08a;
+    border: 1.5pt solid #b00000;
+    color: #7a0000;
+    font-weight: bold;
+    padding: 0 3pt;
+    white-space: nowrap;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  h1.titulo-contrato {
+    font-size: 15pt;
+    text-align: center;
+    margin: 0 0 0.8cm 0;
+  }
+
+  h2.clausula,
+  h2.anexo {
+    font-size: 11.5pt;
+    font-weight: bold;
+    text-transform: none;
+    text-align: left;
+    margin: 0.75cm 0 0.25cm 0;
+    break-after: avoid;
+    page-break-after: avoid;
+    break-inside: avoid;
+  }
+
+  h3.subtitulo {
+    font-size: 11pt;
+    font-weight: bold;
+    margin: 0.45cm 0 0.15cm 0;
+    text-align: left;
+    break-after: avoid;
+    page-break-after: avoid;
+  }
+
+  p {
+    margin: 0 0 0.28cm 0;
+    orphans: 3;
+    widows: 3;
+  }
+
+  p.item {
+    text-indent: 0;
+  }
+
+  ul.alineas {
+    margin: 0.1cm 0 0.28cm 0;
+    padding-left: 1.1cm;
+    list-style: none;
+  }
+
+  ul.alineas li {
+    margin-bottom: 0.12cm;
+    text-indent: -0.6cm;
+    padding-left: 0.6cm;
+  }
+
+  .partes p {
+    margin-bottom: 0.35cm;
+  }
+
+  table.sla {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0.3cm 0 0.35cm 0;
+    font-size: 10pt;
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  table.sla th,
+  table.sla td {
+    border: 0.75pt solid #000;
+    padding: 4pt 6pt;
+    text-align: left;
+    vertical-align: top;
+  }
+
+  table.sla th {
+    background-color: #e8e8e8;
+    font-weight: bold;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  p.nota-tabela {
+    font-size: 9.5pt;
+    margin-top: -0.15cm;
+  }
+
+  section.assinaturas {
+    margin-top: 1cm;
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  .local-data {
+    margin: 0.8cm 0 1cm 0;
+  }
+
+  .bloco-assinatura {
+    margin-bottom: 1.1cm;
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  .linha-assinatura {
+    border-bottom: 0.75pt solid #000;
+    height: 1.1cm;
+    margin-bottom: 0.15cm;
+    width: 70%;
+  }
+
+  .bloco-assinatura p {
+    margin: 0;
+    text-align: left;
+    font-size: 10.5pt;
+  }
+
+  .testemunhas {
+    margin-top: 0.6cm;
+  }
+</style>
+</head>
+<body>
+
+<header id="capa-minuta">
+  <span class="selo">MINUTA — NÃO ENVIAR</span>
+  <h1>Contrato de Desenvolvimento Digital InCraft™<br />INCRAFT SERVIÇOS DIGITAIS LTDA &times; ILA LATAM BV</h1>
+
+  <h2>Campos pendentes nesta minuta</h2>
+  <ul>
+    <li><span class="capa-pendencia">SOBRENOME DO REPRESENTANTE DA CONTRATANTE</span> — consta apenas o primeiro nome, Vladimir.</li>
+    <li><span class="capa-pendencia">DOCUMENTO DO REPRESENTANTE DA CONTRATANTE</span> — CPF ou passaporte, não informado.</li>
+  </ul>
+
+  <h2>Antes de enviar ao cliente</h2>
+  <p class="capa-nota">Este documento é uma <strong>minuta para revisão interna</strong>. Nenhuma versão
+  contendo campos pendentes destacados deve ser enviada à outra Parte ou submetida a assinatura.
+  A versão final exige: (i) preenchimento do sobrenome e do documento do representante da
+  CONTRATANTE; (ii) remoção deste bloco de capa; e (iii) aprovação expressa do responsável pela
+  CONTRATADA.</p>
+
+  <h2>Ressalva</h2>
+  <p class="capa-nota">Esta minuta foi redigida a partir de contrato-base já utilizado pela CONTRATADA,
+  adaptado ao escopo comercial acordado com a ILA LATAM BV. <strong>Não constitui consultoria
+  jurídica.</strong> Recomenda-se revisão pelo responsável da CONTRATADA e, idealmente, por advogado —
+  em especial quanto ao ponto de a CONTRATANTE figurar com CNPJ brasileiro e sede declarada no
+  exterior (Países Baixos), o que pode ter reflexos tributários, cambiais e de foro não avaliados
+  neste documento.</p>
+</header>
+
+<main>
+
+<h1 class="titulo-contrato">Contrato de Desenvolvimento Digital InCraft™</h1>
+
+<section class="partes">
+  <p><strong>CONTRATANTE:</strong> ILA LATAM BV, pessoa jurídica inscrita no CNPJ sob nº
+  63.903.948/0001-77, com sede em Kenaupark 17, 2011 MR Haarlem, Países Baixos (The Netherlands),
+  registrada sob o VAT nº 868733477B01 e o KvK nº 98985043, com endereço eletrônico
+  michiel@ilacorporate.com, neste ato representada por Vladimir
+  <span class="pendente">[SOBRENOME DO REPRESENTANTE — PENDENTE]</span>,
+  portador de <span class="pendente">[documento — CPF ou passaporte]</span>,
+  doravante denominada CONTRATANTE.</p>
+
+  <p><strong>CONTRATADA:</strong> INCRAFT SERVIÇOS DIGITAIS LTDA, pessoa jurídica de direito privado,
+  inscrita no CNPJ sob nº 62.542.115/0001-65, com sede na Rua Comendador Miguel Calfat, nº 59,
+  Conjunto 63, Vila Olímpia, São Paulo/SP, CEP 04537-082, doravante denominada CONTRATADA.</p>
+
+  <p>A CONTRATANTE e a CONTRATADA, quando mencionadas em conjunto, serão simplesmente denominadas
+  Partes, e, isoladamente, Parte.</p>
+
+  <p>As Partes têm entre si justo e contratado o presente Contrato de Prestação de Serviços de
+  Desenvolvimento de Website e Soluções Digitais, que se regerá pelas cláusulas e condições a seguir,
+  bem como pela legislação aplicável vigente.</p>
+</section>
+
+<h2 class="clausula">CLÁUSULA PRIMEIRA – OBJETO DO CONTRATO</h2>
+
+<h2 class="clausula">CLÁUSULA SEGUNDA – OBRIGAÇÕES DA CONTRATADA</h2>
+
+<h2 class="clausula">CLÁUSULA TERCEIRA – OBRIGAÇÕES DA CONTRATANTE</h2>
+
+<h2 class="clausula">CLÁUSULA QUARTA – TECNOLOGIAS E SERVIÇOS DE TERCEIROS</h2>
+
+<h2 class="clausula">CLÁUSULA QUINTA – SUPORTE, MANUTENÇÃO E GARANTIA</h2>
+
+<h2 class="clausula">CLÁUSULA SEXTA – HOSPEDAGEM E INFRAESTRUTURA TECNOLÓGICA</h2>
+
+<h2 class="clausula">CLÁUSULA SÉTIMA – DESIGN FORNECIDO E IMPLEMENTAÇÃO</h2>
+
+<h2 class="clausula">CLÁUSULA OITAVA – HOMOLOGAÇÃO E ACEITE POR ETAPAS</h2>
+
+<h2 class="clausula">CLÁUSULA NONA – PRAZO DE EXECUÇÃO E CRONOGRAMA</h2>
+
+<h2 class="clausula">CLÁUSULA DÉCIMA – PROPRIEDADE INTELECTUAL E DIREITOS AUTORAIS</h2>
+
+<h2 class="clausula">CLÁUSULA DÉCIMA PRIMEIRA – CONFIDENCIALIDADE E PROTEÇÃO DE DADOS</h2>
+
+<h2 class="clausula">CLÁUSULA DÉCIMA SEGUNDA – RESCISÃO</h2>
+
+<h2 class="clausula">CLÁUSULA DÉCIMA TERCEIRA – PENALIDADES E NÃO CONFORMIDADES</h2>
+
+<h2 class="clausula">CLÁUSULA DÉCIMA QUARTA – GESTÃO DE MUDANÇAS (CHANGE REQUEST)</h2>
+
+<h2 class="clausula">CLÁUSULA DÉCIMA QUINTA – VALOR E CONDIÇÕES DE PAGAMENTO</h2>
+
+<h2 class="clausula">CLÁUSULA DÉCIMA SEXTA – DISPOSIÇÕES FINAIS</h2>
+
+<h2 class="anexo">ANEXO I — ESCOPO E CONDIÇÕES COMERCIAIS</h2>
+
+<h2 class="clausula">CLÁUSULA – ASSINATURA ELETRÔNICA</h2>
+
+</main>
+</body>
+</html>
