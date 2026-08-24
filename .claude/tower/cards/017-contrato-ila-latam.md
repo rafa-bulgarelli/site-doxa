@@ -6,9 +6,28 @@
 
 - **Tipo:** feature (documento comercial — fora do código do site)
 - **Aberto em:** 2026-08-24
-- **Status:** aberto — **LIBERADO PARA REDAÇÃO com dados provisórios do
-  representante** (ordem do dono, 2026-08-24); dados definitivos do Vlad entram
-  antes do PDF final ir ao cliente
+- **Status:** **MINUTA ENTREGUE (2026-08-24)** — PR #87 (`5140881`); PDF em
+  `~/Downloads/contrato-ila-latam-MINUTA.pdf` (14 págs). Collector APROVOU (herança
+  HRD = 0; 9 decisões conferidas; 30+ referências cruzadas validadas). **Aguardando
+  do dono:** (a) as 4 decisões abaixo; (b) sobrenome + documento do Vladimir; (c)
+  aprovação da minuta → só então versão final (remove capa/destaques) e envio.
+
+## Decisões pendentes do dono (do gate adversarial, 2026-08-24)
+
+1. **Cláusula 6.3 (inferida, o card não pedia):** sem manifestação do cliente ao fim
+   do mês de cortesia, a contratada pode descontinuar a hospedagem com aviso prévio
+   por escrito. Collector recomenda MANTER (sem ela: hospedagem grátis eterna ou
+   derrubada sem base). Manter ou cortar?
+2. **Nota do SLA — horas ÚTEIS:** a nota converte os prazos da tabela para horas
+   úteis (9h–18h seg–sex): "Crítica até 12h" vira ~terça meio-dia se cair sexta à
+   noite. É isso que o plano de R$ 2.800 vende, ou os prazos são corridos? (E a nota
+   precisa dizer o mesmo para resposta E solução — hoje só cita solução.)
+3. **Rescisão × pagamento 100% à vista (12.2/12.6):** rescisão no início mantém os
+   R$ 7.500 retidos "por etapas já executadas" e não há previsão de devolução se a
+   culpa for da contratada. Herdado do base; interação nova com o à vista — ponto
+   para o advogado.
+4. **Testemunhas (2) no bloco de assinaturas:** o base não tem; ajuda a
+   executividade. Confirmar que fica.
 
 ## O que o dono quer ver funcionando
 
