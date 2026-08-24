@@ -31,6 +31,7 @@ Dois campos ainda não têm dado real e estão marcados com `class="pendente"`
 sobreviver à impressão):
 
 1. sobrenome do representante da CONTRATANTE (consta apenas "Vladimir");
+   (preencher também no **bloco de assinaturas** no fim do documento — lá o campo é linha em branco, não destaque amarelo)
 2. documento do representante da CONTRATANTE (CPF ou passaporte).
 
 **Regra dura: PDF com placeholder nunca vai ao cliente.** Enquanto houver
