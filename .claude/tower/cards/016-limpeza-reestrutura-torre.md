@@ -17,7 +17,9 @@
 > escrita: card **014 está ENTREGUE e VALIDADO-LIVE** (PR #81; congelamento de deploy
 > descongelado pelo dono em 2026-08-19); os packs `track-014-*` estão consumidos; a
 > colisão 013 já foi meio-resolvida (o og-preview virou 015) — a pergunta 2 ao gestor
-> vira: confirmar 015-og como está e registrar a regra. Vivos hoje: **012 (planejado,
+> vira: confirmar 015-og como está e registrar a regra.
+> **2026-08-24:** TERCEIRA colisão — nasceu um `016-contrato-ila-latam` de outra
+> sessão; renumerado para 017 pela sessão principal no ato do commit deste plano. Vivos hoje: **012 (planejado,
 > 3 packs)** — NOTA: o prelude do 012 JÁ FOI EXECUTADO (#70, #72, #73: gsc:prova e
 > baseline entregues; conferir se o card 012 está ENTREGUE antes de contar seus packs
 > como "na rampa") — e **015-og (aberto)**.
@@ -144,8 +146,63 @@ Nenhum.
 <!-- Preenchido pelo GESTOR -->
 ## Plano
 
-- **Prelude:** <…>
-- **Tracks:** <…>
-- **Packs:** `.claude/tower/packs/<branch>.md`
-- **Sequência de merge:** <…>
-- **VALIDAR-LIVE:** <…>
+*(GESTOR, 2026-08-22)*
+
+- **Prelude:** nenhum — as decisões estruturais (arquivar vs deletar, estrutura do
+  arquivo, regra de numeração) estão fechadas NESTE plano; não há código que as tracks
+  compartilhem. O plano é o prelude.
+- **Decisões:**
+  1. **ARQUIVAR, não deletar.** Packs consumidos → `git mv` para
+     `packs/_entregues/<NNN>-<slug>/` (13 pastas, 53 packs; mapa fechado no pack da
+     track 1). `ls` fica limpo igual, o precedente `_obsoleto-card-001/` se mantém e
+     `ls _entregues/` bate `git log --diff-filter=D` em achabilidade.
+  2. **Cards NÃO se movem.** Memórias e docs apontam para `cards/<nome>.md`
+     (doutrina-animacao → 010; card-011-seo-estado → 011); o critério de aceite
+     aceita card entregue presente com status verdadeiro. Higiene de card = corrigir
+     status (002–010 → ENTREGUE com PR/SHA real; 004 ganha cabeçalho). 015-og fica
+     como está (renumeração já feita); a regra previne o próximo.
+  3. **Numeração por reserva de tag** (RUNBOOK → "Numeração de card"): próximo =
+     1 + max(números em `git ls-tree origin/main -- cards/`, tags `card-NNN` no
+     remote); reserva atômica com `git tag card-NNN && git push origin card-NNN`
+     ANTES de o card existir — push rejeitado = outra sessão reservou, recalcula.
+     Número queimado não se reusa. Quem roda é a sessão principal (o intake não tem
+     Bash, de propósito); o intake recebe o número reservado no prompt.
+  4. **Agentes em UMA track**, edição direto na BRANCH (nada vale antes do merge),
+     **1 commit por agente** com o antes→depois justificado no corpo — o dono aprova
+     agente por agente via `git show`; reprovado = commit refeito antes do PR. Sem
+     arquivos de proposta (seria lixo novo logo após a limpeza; o diff real é a
+     proposta). Frontmatter congelado (alocação Fable/Opus/haiku registrada; intake
+     sem Bash). Teto: 5 arquivos ≤ 400 linhas no total.
+  5. **Ordem: higiene ∥ agentes → coerência → fumaça.** Higiene primeiro confirmada
+     (terreno limpo), mas agentes não depende dela — arquivos disjuntos, correm em
+     paralelo. Coerência (RUNBOOK/TOWER-ROLES/commands/CLAUDE.md) só depois das duas.
+  - Nada de `.claude/` entra no build do site: vitest exclui `.claude/**`
+    (`vite.config.ts`) e `pnpm build` (tsc + vite + prerender) não lê `.claude/` —
+    os merges deployam um site idêntico.
+- **Tracks:**
+  | # | branch | arquivos | VERIFY (resumo) | depende de |
+  |---|---|---|---|---|
+  | 1 | `chore-torre-higiene` | cards 002–010 (status) · `packs/**` (mv) · RUNBOOK (2 seções novas) · `commands/intake.md` | ls/grep/rename-count + typecheck/test | — |
+  | 2 | `chore-torre-agentes` | os 5 `.claude/agents/*.md` | greps de limite duro + model lines + ≤400 linhas + typecheck/test | — |
+  | 3 | `chore-torre-coerencia` | RUNBOOK · TOWER-ROLES · TRACK-TEMPLATE · `commands/**` · CLAUDE.md | grep "a definir"=0 + loop de caminhos do CLAUDE.md + typecheck/test | 1 e 2 mergeadas |
+- **Packs:** `.claude/tower/packs/chore-torre-higiene.md` ·
+  `.claude/tower/packs/chore-torre-agentes.md` ·
+  `.claude/tower/packs/chore-torre-coerencia.md`
+- **Sequência de merge (SERIAL, PR + gate cada):**
+  1. `chore-torre-higiene` — gate: `/review` + OK do dono no critério de higiene
+     (ls/grep do VERIFY reproduzidos pela sessão principal).
+  2. `chore-torre-agentes` — gate: `/review` + **aprovação do dono AGENTE POR
+     AGENTE** (`git show` de cada um dos 5 commits); reprovou um → refaz o commit
+     antes do merge.
+  3. `chore-torre-coerencia` — gate: `/review` + OK do dono.
+- **VALIDAR-LIVE (fumaça, sessão principal + dono, após o merge 3):**
+  1. Rodar o procedimento novo do RUNBOOK: deve calcular **017** e reservar
+     (`git tag card-017 && git push origin card-017` → sucesso).
+  2. Provar a trava: numa segunda cópia, `card-017` apontando para outro commit →
+     push rejeitado ("already exists").
+  3. `/intake` com demanda de teste (ou a próxima demanda real, se houver) passando o
+     número reservado → card `017-*.md` nasce com número certo, template certo, sem
+     número inventado, sem contradição prompt↔RUNBOOK no caminho.
+  4. Card de teste: descartado em commit próprio (a tag fica — número queimado);
+     demanda real: o card fica. Só então: card 016 → ENTREGUE, packs das 3 tracks →
+     `_entregues/016-limpeza-torre/`, `tower-close.sh` nas 3 branches.
