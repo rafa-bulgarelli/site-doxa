@@ -115,8 +115,34 @@ Nenhum.
 <!-- Preenchido pelo GESTOR -->
 ## Plano
 
-- **Prelude:** <…>
-- **Tracks:** <…>
-- **Packs:** `.claude/tower/packs/<branch>.md`
-- **Sequência de merge:** <…>
-- **VALIDAR-LIVE:** <…> (aqui = dono aprova a minuta antes do envio ao cliente)
+- **Prelude:** nenhum — documento único, nada compartilhado a contratar.
+- **Tracks:** UMA só, `feat-contrato-ila-latam` (executor Opus): minuta HTML completa
+  em `docs/contratos/ila-latam/` (minuta.html + README.md), 3 commits (estrutura/CSS ·
+  cláusulas · anexo+assinaturas+README). Fatiar em 2 seria fake parallelism: tudo mora
+  no mesmo arquivo sequencial.
+- **Decisões do GESTOR:** fonte HTML único versionado (repo privado, diff auditável;
+  valores já estão neste card commitado) · PDF via `chrome --headless --print-to-pdf`
+  (Chrome confirmado na máquina; zero dependência nova; comando de 1 linha no README
+  do diretório — nada em `scripts/`) · **PDF nunca commitado** (artefato local; o
+  final depende dos dados do Vladimir) · placeholders com `.pendente`
+  (amarelo+borda+`print-color-adjust: exact`, sobrevive ao PDF) · capa
+  `id="capa-minuta"` "MINUTA — NÃO ENVIAR" + disclaimer (não é consultoria jurídica),
+  em página própria, removida só na final · estrutura: 16 cláusulas (pagamento vira
+  DÉCIMA QUINTA — corrige o bug de numeração do próprio base, que tem duas "DÉCIMA
+  SEXTA") + Anexo I — Escopo e Condições Comerciais (substitui as referências à
+  "Proposta Comercial") + cláusula de assinatura eletrônica; anexo de plugins morre
+  sem substituto.
+- **Packs:** `.claude/tower/packs/feat-contrato-ila-latam.md`
+- **Sequência de merge:** 1 branch. Gate do collector ANTES do merge (adversarial:
+  greps negativos WordPress/plugin/tema/Elementor/CMS e datas HRD = 0 no HTML **e** no
+  texto extraído do PDF; presenças — R$ 7.500 à vista Pix/transferência, 15 ±5, 30
+  dias, R$ 2.800/mês tudo incluso, hospedagem 1 mês, 8 páginas, CNPJs/endereços das
+  partes, foro SP, crédito 12 meses, tabela SLA com os 8 valores; caça a QUALQUER
+  herança do HRD relendo o PDF base; renumeração sem buraco + referências cruzadas
+  válidas; lupa nas cláusulas marcadas como texto novo pelo executor) → dono aprova →
+  merge squash em main → sessão principal gera
+  `~/Downloads/contrato-ila-latam-MINUTA.pdf`.
+- **VALIDAR-LIVE:** o dono lê o PDF da MINUTA e aprova/ajusta. Versão FINAL só com
+  sobrenome + documento do Vladimir preenchidos E aprovação explícita do dono (commit
+  próprio: remove capa e `.pendente`, PDF sem "MINUTA" no nome). O envio ao cliente é
+  do dono — fora do plano.
