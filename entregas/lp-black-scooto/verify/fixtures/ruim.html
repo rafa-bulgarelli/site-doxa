@@ -1,7 +1,17 @@
-<!-- Fixture do gate: viola de proposito 7 regras do § 9 do contrato.md.
+<!-- Fixture do gate: viola de proposito as regras do § 9 do contrato.md.
      Se algum dia este arquivo PASSAR, o checar-bloco.mjs e que esta quebrado. -->
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;700&display=swap');
+
+/* A excecao do html{} vale so para scroll-behavior:smooth e so no bloco-a-topo.html.
+   Aqui ela e violada nas duas pontas: declaracao extra (o font-size vazaria para o
+   tema inteiro do WordPress) e arquivo errado.
+   Este comentario tem varias linhas de proposito: o gate precisa reportar a linha
+   certa mesmo depois de remover comentarios. */
+html {
+  scroll-behavior: smooth;
+  font-size: 20px;
+}
 
 .card {
   background: #fff;

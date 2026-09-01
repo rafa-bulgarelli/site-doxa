@@ -76,8 +76,11 @@ function lerPorta(argv) {
 }
 
 /**
- * Devolve o fragmento com o RAW_PREFIX trocado pelo preview, ou null se ainda não
- * existe (as tracks rodam em paralelo — faltar arquivo é estado normal).
+ * Devolve o fragmento com o RAW_PREFIX trocado pelo preview.
+ *
+ * Nome desconhecido devolve `null`. Arquivo que ainda não existe NÃO é erro (as tracks
+ * rodam em paralelo): avisa no console e devolve um marcador `.lpbprev-falta`, para a
+ * página continuar montando e o buraco ficar visível.
  * @param {string} nome
  * @return {Promise<string|null>}
  */

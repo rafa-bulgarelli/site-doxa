@@ -390,7 +390,9 @@ passar. As regras:
 4. `<style>` presente no bloco e **todo seletor começa com `.lpb-`**. Ignorados:
    `@import`, `@media`, `@supports`, `@font-face`, `@keyframes`. Única exceção global
    permitida: **`html { scroll-behavior: smooth }` e só em `bloco-a-topo.html`** (é o
-   que faz o CTA descer suave até `#lpb-form`, sem uma linha de JS).
+   que faz o CTA descer suave até `#lpb-form`, sem uma linha de JS). **Essa regra não
+   aceita mais nenhuma declaração**: um `font-size` ali dentro não fica na LP, reescala
+   o tema inteiro do WordPress — o gate compara o corpo da regra, não só o seletor.
 5. `@import` do Google Fonts `css2` cobrindo `family=Sora` **e** `family=Roboto`.
 6. Todo `href` de `<a>` está na lista fechada do § 7.
 7. Nenhuma ocorrência de palavra de segredo no arquivo.
