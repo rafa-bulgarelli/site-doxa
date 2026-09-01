@@ -51,9 +51,13 @@ export const COPY = {
     'abrir mão do padrão que trouxe você até aqui.',
   /** A linha para quem já está na fila — a ansiedade que o aviso existe para desarmar. */
   garantia: 'Já preencheu? Seu lugar está guardado. Não precisa enviar de novo.',
+  /**
+   * Os dois botões, em linha — um por leitor (pedido do dono, 2026-09-01):
+   * quem JÁ preencheu fecha no transparente; quem AINDA NÃO preencheu vai ao
+   * formulário pelo preto de flecha — o único aceso, porque é a ação que o
+   * cartão existe para provocar. Nada de link apagado embaixo.
+   */
   botao: 'Entendi',
-  /** O convite para quem ainda não entrou — leva à âncora do formulário. */
-  conviteAntes: 'Ainda não preencheu?',
-  conviteLink: 'Garanta seu lugar na fila',
+  botaoFila: 'Garanta seu lugar na fila',
   fechar: 'Fechar aviso',
 } as const;
