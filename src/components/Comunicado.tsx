@@ -3,7 +3,7 @@ import { X } from 'lucide-react';
 import { animate, motion, useMotionValue, useReducedMotion, useTransform } from 'framer-motion';
 import { HREF_FORMS } from '../ancoras';
 import { MotionButton } from './ui/MotionButton';
-import { CHAVE_COMUNICADO, COPY, TOTAL_DE_PEDIDOS } from './comunicado/config';
+import { COPY, TOTAL_DE_PEDIDOS } from './comunicado/config';
 
 /**
  * ─── O COMUNICADO ────────────────────────────────────────────────────────────
@@ -20,10 +20,11 @@ import { CHAVE_COMUNICADO, COPY, TOTAL_DE_PEDIDOS } from './comunicado/config';
  *
  *  - Não abre no primeiro pixel. Quem chega vê o hero — a promessa é o site, o
  *    aviso é um recado. A espera mora no `App`, que só baixa este chunk quando
- *    for a hora (`ESPERA_MS`), e nunca para quem já o dispensou.
- *  - Não volta. Fechou — em qualquer uma das quatro saídas: botão, ×, véu,
- *    Esc —, a marca fica no `localStorage` e o aviso não existe mais para
- *    aquele navegador. Recado dado duas vezes é propaganda.
+ *    for a hora (`ESPERA_MS`).
+ *  - Não lembra de nada. Fechou — botão, ×, véu ou Esc — e o aviso morre até
+ *    o PRÓXIMO load, quando estoura de novo: decisão do dono (2026-09-01),
+ *    que trocou o "recado dado uma vez" pela presença em toda visita. A marca
+ *    de `localStorage` que existia aqui saiu junto com a decisão.
  *  - Não prende o visitante. O véu fecha no clique, Esc fecha, e o único foco
  *    tomado é com `preventScroll` — um `focus()` cru na montagem rola a página
  *    sozinha, e este repositório já pagou caro por isso (ver CLAUDE.md).
@@ -32,22 +33,12 @@ export function Comunicado({ aoFechar }: { aoFechar: () => void }) {
   const parado = useReducedMotion() === true;
   const cartaoRef = useRef<HTMLDivElement>(null);
 
-  const marcar = () => {
-    try {
-      localStorage.setItem(CHAVE_COMUNICADO, new Date().toISOString());
-    } catch {
-      // Navegação privada com storage bloqueado: o aviso volta na próxima
-      // visita, que é o comportamento certo quando não há onde lembrar.
-    }
-  };
-
   const fechar = () => {
-    marcar();
     aoFechar();
   };
 
   /**
-   * O caminho do botão preto: marca já, desmonta só no quadro seguinte.
+   * O caminho do botão preto: desmonta só no quadro seguinte.
    *
    * O scroll é destravado AQUI, sincronamente, e não no cleanup: o pulo da
    * âncora é a ação default do clique e roda antes do próximo quadro — com o
@@ -55,8 +46,7 @@ export function Comunicado({ aoFechar }: { aoFechar: () => void }) {
    * que não rola, falharia em silêncio, e o destravamento do cleanup chegaria
    * tarde demais para repetir o pulo.
    */
-  const marcarEDeixarNavegar = () => {
-    marcar();
+  const deixarNavegar = () => {
     document.body.style.overflow = '';
     requestAnimationFrame(() => aoFechar());
   };
@@ -189,12 +179,11 @@ export function Comunicado({ aoFechar }: { aoFechar: () => void }) {
             {COPY.botao}
           </button>
           {/* Âncora de verdade por baixo do estilo, não botão: quem clica está
-              navegando para o formulário. A marca de "já vi" é gravada no
-              clique, mas o diálogo só desmonta no quadro SEGUINTE
-              (`requestAnimationFrame`) — desmontar o `<a>` no meio do próprio
-              clique é apostar que o navegador completa a navegação de um
-              elemento que já saiu do documento. */}
-          <div className="sm:flex-1" onClick={marcarEDeixarNavegar}>
+              navegando para o formulário. O diálogo só desmonta no quadro
+              SEGUINTE (`requestAnimationFrame`) — desmontar o `<a>` no meio do
+              próprio clique é apostar que o navegador completa a navegação de
+              um elemento que já saiu do documento. */}
+          <div className="sm:flex-1" onClick={deixarNavegar}>
             <MotionButton label={COPY.botaoFila} href={HREF_FORMS} variant="ink" fullWidth />
           </div>
         </div>
