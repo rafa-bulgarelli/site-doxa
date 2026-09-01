@@ -2,8 +2,14 @@
 
 - **Tipo:** feature (aviso temporário na landing)
 - **Aberto em:** 2026-09-01
-- **Status:** **EXECUTADO — aguardando gate + OK do dono** (urgência "pra ontem";
-  o assento executou direto, sem fatiamento — 1 componente, escopo de 3 arquivos)
+- **Status:** **ENTREGUE — VALIDADO-LIVE** (2026-09-01). PR #89 (squash `1be3ccc`);
+  gate do collector: APROVA com 3 findings — 2 e 3 corrigidos por ordem do dono
+  (URLSearchParams.has; prisão do Tab), 1 (i18n) decidido pt-only pela urgência.
+  VALIDADO-LIVE: `www.doxaviral.com/?comunicado` screenshotado a 390 e 1440 —
+  cartão creme, contador subindo, sem rolagem horizontal; entry HTML com zero
+  referência ao chunk (lazy). Persistência do "já vi" e ausência em /leads
+  verificadas em código e preview local, não interativamente em produção.
+  (Nasceu como card 018; renumerado — o 018 é da LP Black Scooto, #90.)
 
 ## O que o dono quer ver funcionando
 
