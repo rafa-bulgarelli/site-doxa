@@ -1,0 +1,798 @@
+<!-- LP Black Scooto - bloco B (meio): faixa de 4 selos do fim do hero + secoes 02 a 08
+     do Figma (identificacao, oferta, urgencia, contratacao, autoridade, prova social,
+     como funciona). Widget HTML do Elementor: autocontido (markup + <style> proprio),
+     zero JS, alvo de fidelidade desktop 1440px.
+     Todo seletor leva o prefixo .lpb- porque este CSS convive com o tema da Scooto e
+     com o do Elementor - tag nua aqui vaza estilo para a pagina inteira. -->
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,600;0,700;1,400&family=Sora:wght@400;600;700&display=swap');
+
+/* ---------------- base ---------------- */
+.lpb-b {
+  font-family: 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+  font-size: 16px;
+  line-height: 24px;
+  color: #3b3c48;
+  text-align: left;
+  -webkit-font-smoothing: antialiased;
+}
+.lpb-b *, .lpb-b *::before, .lpb-b *::after { box-sizing: border-box; }
+/* O reset entra em :where() de proposito: assim ele tem especificidade ZERO e nao
+   vence os modificadores .lpb-* que vem depois (".lpb-b p" = 0,1,1 ganharia de
+   ".lpb-oferta__destaque" = 0,1,0 e comeria margem por margem). Uma regra por tag
+   porque o gate le o seletor cru e virgula dentro do :where() o quebraria. */
+.lpb-b :where(h2) { margin: 0; padding: 0; }
+.lpb-b :where(h3) { margin: 0; padding: 0; }
+.lpb-b :where(p) { margin: 0; padding: 0; }
+.lpb-b :where(ul) { margin: 0; padding: 0; list-style: none; }
+.lpb-b :where(li) { margin: 0; padding: 0; }
+.lpb-b :where(img) { display: block; max-width: 100%; }
+.lpb-b :where(a) { text-decoration: none; }
+.lpb-b :where(svg) { display: block; flex: none; }
+
+/* Sprite de icones: os SVGs do Figma entram uma vez e sao reusados com <use>.
+   Fora do fluxo (nao "display:none", que ja quebrou <use> em navegador antigo). */
+.lpb-sprite { position: absolute; width: 0; height: 0; overflow: hidden; }
+
+.lpb-sec { padding: 96px 0; }
+.lpb-cont { margin: 0 auto; padding: 0 24px; }
+.lpb-cont--estreito { max-width: 896px; }
+.lpb-cont--medio { max-width: 1024px; }
+.lpb-cont--largo { max-width: 1152px; }
+
+.lpb-h2 {
+  font-family: 'Sora', 'Segoe UI', system-ui, sans-serif;
+  font-weight: 700;
+  font-size: 36px;
+  line-height: 40px;
+  color: #030304;
+  text-align: center;
+}
+.lpb-h2--claro { color: #ffffff; }
+.lpb-prosa { max-width: 768px; margin: 0 auto; }
+.lpb-prosa p + p { margin-top: 16px; }
+
+.lpb-cta-linha { display: flex; justify-content: center; }
+.lpb-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 44px;
+  padding: 0 32px;
+  border-radius: 9999px;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 20px;
+  text-align: center;
+}
+.lpb-cta--branco { background: #ffffff; color: #4013cc; }
+.lpb-cta--roxo { background: #4a1be8; color: #ffffff; }
+
+/* ---------------- faixa de 4 selos (fim do hero, DIV-90) ---------------- */
+.lpb-selos {
+  /* Full-bleed 1440x91 com a mesma transicao de cor do frame: lavanda -> creme -> pessego. */
+  background-image: linear-gradient(90deg, #f2f4ff 0%, #f1f1e8 50%, #fef1ea 100%);
+  border-top: 1px solid #dfdfd4;
+  padding: 0 80px;
+}
+.lpb-selos__caixa { max-width: 1280px; margin: 0 auto; padding: 20px 24px; }
+.lpb-selos__lista {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+.lpb-selo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 50px;
+  padding: 11px 17px;
+  background: #ffffff;
+  border: 1px solid #dfdfd4;
+  border-radius: 9999px;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 20px;
+  color: #22232b;
+}
+.lpb-selo__disco {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 9999px;
+}
+.lpb-selo__disco--indigo { background: #e5e9ff; color: #4013cc; }
+.lpb-selo__disco--pessego { background: #ffe1d2; color: #df5200; }
+.lpb-selo__disco--rosa { background: #ffdee2; color: #d21d53; }
+
+/* ---------------- 02 identificacao ---------------- */
+.lpb-ident { background: #ffffff; }
+.lpb-ident__topo { padding-bottom: 48px; }
+.lpb-ident__sub {
+  margin-top: 16px;
+  font-size: 16px;
+  line-height: 24px;
+  color: #555766;
+  text-align: center;
+}
+.lpb-ident__lista { display: flex; flex-direction: column; gap: 16px; }
+.lpb-cenario {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 21px;
+  background: #f2f2e8;
+  border: 1px solid #dfdfd4;
+  border-radius: 12px;
+  font-size: 16px;
+  line-height: 24px;
+  color: #3b3c48;
+}
+.lpb-cenario__disco {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 32px;
+  height: 32px;
+  margin-top: 2px;
+  background: #4a1be8;
+  border-radius: 9999px;
+  color: #ffffff;
+}
+
+/* ---------------- 03 oferta ---------------- */
+.lpb-oferta { background: #4a1be8; }
+.lpb-oferta__corpo { margin-top: 24px; color: rgba(255, 255, 255, 0.9); }
+.lpb-oferta__destaque {
+  margin: 16px 0;
+  padding: 25px;
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 28px;
+  color: #ffffff;
+}
+.lpb-oferta__cta { margin-top: 40px; }
+
+/* ---------------- 04 urgencia ---------------- */
+.lpb-urgencia { background: #ffffff; }
+.lpb-urgencia__corpo { margin-top: 24px; color: #555766; }
+.lpb-urgencia__reforco { font-weight: 600; color: #22232b; }
+.lpb-urgencia__h3 {
+  margin-top: 40px;
+  font-family: 'Sora', 'Segoe UI', system-ui, sans-serif;
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 28px;
+  color: #22232b;
+  text-align: center;
+}
+.lpb-urgencia__grade {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  gap: 16px;
+  margin-top: 36px;
+}
+.lpb-mes {
+  position: relative;
+  flex: 1 1 200px;
+  padding: 33px 21px 21px;
+  background: #f2f2e8;
+  border: 1px solid #dfdfd4;
+  border-radius: 12px;
+  font-size: 14px;
+  line-height: 22.75px;
+  color: #3b3c48;
+}
+.lpb-mes__selo {
+  position: absolute;
+  top: -12px;
+  left: 20px;
+  display: flex;
+  align-items: center;
+  height: 24px;
+  padding: 0 12px;
+  background: #4a1be8;
+  border-radius: 9999px;
+  font-weight: 700;
+  font-size: 12px;
+  line-height: 16px;
+  color: #ffffff;
+}
+.lpb-urgencia__fecho {
+  max-width: 672px;
+  margin: 40px auto 0;
+  font-style: italic;
+  font-size: 14px;
+  line-height: 20px;
+  color: #717386;
+  text-align: center;
+}
+
+/* ---------------- 05 contratacao ---------------- */
+.lpb-frentes { background: #f2f2e8; }
+.lpb-frentes__cards {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  gap: 24px;
+  margin-top: 48px;
+}
+.lpb-frente {
+  flex: 1 1 400px;
+  padding: 33px;
+  background: #ffffff;
+  border: 1px solid #c6cfff;
+  border-radius: 16px;
+}
+.lpb-frente--suporte { border-color: #ffc8ac; }
+.lpb-frente__selo {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 32px;
+  padding: 0 16px;
+  background: #ff6000;
+  border-radius: 9999px;
+  font-weight: 700;
+  font-size: 12px;
+  line-height: 16px;
+  color: #ffffff;
+}
+.lpb-frente__sub {
+  padding: 16px 0;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 20px;
+  color: #4013cc;
+}
+.lpb-frente--suporte .lpb-frente__sub { color: #df5200; }
+.lpb-frente__lista { display: flex; flex-direction: column; gap: 16px; }
+.lpb-frente__item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  font-size: 14px;
+  line-height: 20px;
+  color: #3b3c48;
+}
+.lpb-frente__disco {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 24px;
+  height: 24px;
+  background: #4a1be8;
+  border-radius: 9999px;
+  color: #ffffff;
+}
+.lpb-frente--suporte .lpb-frente__disco { background: #ff6000; }
+.lpb-frente__nota {
+  margin-top: 16px;
+  padding: 13px;
+  background: #fff1eb;
+  border: 1px solid #ffdee2;
+  border-radius: 8px;
+  font-style: italic;
+  font-size: 12px;
+  line-height: 16px;
+  color: #b74508;
+}
+.lpb-frentes__cta { margin-top: 40px; }
+
+/* ---------------- 06 autoridade ---------------- */
+.lpb-autoridade { background: #ffffff; }
+.lpb-autoridade__linha {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 32px;
+  margin-top: 40px;
+}
+.lpb-autoridade__texto { flex: 1 1 400px; }
+.lpb-autoridade__texto p + p { margin-top: 16px; }
+.lpb-autoridade__marcas { font-weight: 600; }
+.lpb-autoridade__foto {
+  flex: 0 0 472px;
+  max-width: 100%;
+  height: 320px;
+  border-radius: 16px;
+  overflow: hidden;
+}
+.lpb-autoridade__foto img { width: 100%; height: 100%; object-fit: cover; }
+.lpb-metricas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  margin-top: 40px;
+}
+.lpb-metrica {
+  flex: 1 1 200px;
+  height: 108px;
+  padding: 24px;
+  border-radius: 16px;
+  text-align: center;
+  color: #ffffff;
+}
+.lpb-metrica--roxo { background: #6b5cff; filter: drop-shadow(8px 8px 0 #4a3fdb); }
+.lpb-metrica--laranja { background: #ff7a1a; filter: drop-shadow(8px 8px 0 #6b5cff); }
+.lpb-metrica--rosa { background: #f12d64; filter: drop-shadow(8px 8px 0 #6b5cff); }
+.lpb-metrica--marinho { background: #1e1b4b; filter: drop-shadow(8px 8px 0 #f12d64); }
+.lpb-metrica__numero {
+  font-family: 'Sora', 'Segoe UI', system-ui, sans-serif;
+  font-weight: 700;
+  font-size: 30px;
+  line-height: 36px;
+}
+.lpb-metrica__rotulo { font-size: 14px; line-height: 20px; opacity: 0.9; }
+
+/* ---------------- 07 prova social ---------------- */
+.lpb-prova { background: #f2f2e8; }
+.lpb-prova__cards {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  gap: 24px;
+  margin-top: 48px;
+}
+.lpb-depo {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  flex: 1 1 300px;
+  min-height: 237px;
+  padding: 25px;
+  background: #ffffff;
+  border: 1px solid #dfdfd4;
+  border-radius: 12px;
+}
+.lpb-depo__estrelas { display: flex; gap: 4px; color: #ff6000; }
+.lpb-depo__texto { font-size: 14px; line-height: 22.75px; color: #3b3c48; }
+.lpb-depo__pe { display: flex; align-items: center; gap: 12px; margin-top: auto; }
+.lpb-depo__avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 9999px;
+}
+.lpb-depo__avatar--indigo { background: #e5e9ff; color: #4013cc; }
+.lpb-depo__avatar--pessego { background: #ffe1d2; color: #df5200; }
+.lpb-depo__avatar--rosa { background: #ffdee2; color: #d21d53; }
+.lpb-depo__nome { display: block; font-weight: 600; font-size: 14px; line-height: 20px; color: #111116; }
+.lpb-depo__cargo { display: block; font-size: 12px; line-height: 16px; color: #717386; }
+.lpb-logos {
+  /* Sangra os 24px de padding do container: no frame a faixa tem 1152px de largura. */
+  margin: 48px -24px 0;
+  height: 116px;
+  padding: 0 24px;
+  background: #c8c8c8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 64px;
+}
+.lpb-logos__xp { width: 165px; height: 36px; }
+.lpb-logos__cora { flex: none; width: 139px; height: 36px; }
+.lpb-logos__boca { width: 165px; height: 78px; object-fit: cover; }
+.lpb-logos__texto {
+  font-family: 'Sora', 'Segoe UI', system-ui, sans-serif;
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 28px;
+  letter-spacing: 1.8px;
+  color: #ffffff;
+  white-space: nowrap;
+}
+
+/* ---------------- 08 como funciona ---------------- */
+.lpb-passos { background: #ffffff; }
+.lpb-passos__linha {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  gap: 24px;
+  margin-top: 48px;
+}
+.lpb-passo {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  flex: 1 1 260px;
+  min-height: 309.75px;
+  padding: 32px;
+  border-radius: 12px;
+  color: #ffffff;
+}
+.lpb-passo--um { background: #6b5cff; filter: drop-shadow(8px 8px 0 #4a3fdb); }
+.lpb-passo--dois { background: #ff7a1a; filter: drop-shadow(8px 8px 0 #6b5cff); }
+.lpb-passo--tres { background: #f12d64; filter: drop-shadow(8px 8px 0 #ff7a1a); }
+.lpb-passo__numero {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  background: #ffffff;
+  border-radius: 9999px;
+  font-family: 'Sora', 'Segoe UI', system-ui, sans-serif;
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 28px;
+}
+.lpb-passo--um .lpb-passo__numero { color: #4a3fdb; }
+.lpb-passo--dois .lpb-passo__numero { color: #6b5cff; }
+.lpb-passo--tres .lpb-passo__numero { color: #ff7a1a; }
+.lpb-passo__titulo {
+  font-family: 'Sora', 'Segoe UI', system-ui, sans-serif;
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 28px;
+  color: #ffffff;
+}
+.lpb-passo__texto { font-size: 14px; line-height: 22.75px; color: rgba(255, 255, 255, 0.9); }
+.lpb-passos__seta { display: none; }
+
+/* ---------------- desktop >= 1024: as setas entre os passos ---------------- */
+@media (min-width: 1024px) {
+  /* Posicao do frame: 296.33px da borda esquerda de cada card, 154.88px do topo. */
+  .lpb-passos__seta {
+    position: absolute;
+    top: 154.88px;
+    display: block;
+    color: #111116;
+  }
+  .lpb-passos__seta--um { left: 300px; }
+  .lpb-passos__seta--dois { left: 633px; }
+}
+
+/* ---------------- mobile ---------------- */
+@media (max-width: 900px) {
+  .lpb-sec { padding: 64px 0; }
+  .lpb-h2 { font-size: 28px; line-height: 34px; }
+  .lpb-selos { padding: 0 16px; }
+  .lpb-selos__caixa { padding: 16px 0; }
+  .lpb-selos__lista { justify-content: flex-start; }
+  .lpb-selo { height: auto; min-height: 50px; }
+  .lpb-urgencia__h3 { font-size: 18px; line-height: 26px; }
+  .lpb-mes { flex-basis: calc(50% - 8px); }
+  .lpb-frente { padding: 24px; }
+  .lpb-autoridade__foto { flex: 1 1 100%; height: 240px; }
+  .lpb-metrica { flex-basis: calc(50% - 12px); }
+  .lpb-logos {
+    height: auto;
+    padding: 32px 24px;
+    flex-wrap: wrap;
+    gap: 32px;
+  }
+}
+
+@media (max-width: 480px) {
+  .lpb-cont { padding: 0 16px; }
+  .lpb-h2 { font-size: 26px; line-height: 32px; }
+  .lpb-selo { font-size: 13px; }
+  .lpb-cenario { padding: 16px; }
+  .lpb-oferta__destaque { padding: 20px; font-size: 16px; line-height: 26px; }
+  .lpb-mes { flex-basis: 100%; }
+  .lpb-cta { padding: 0 20px; }
+  .lpb-logos { margin: 48px -16px 0; gap: 24px; }
+  .lpb-passo { min-height: 0; }
+}
+</style>
+
+<svg class="lpb-sprite" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
+<symbol id="lpb-i-relogio" viewBox="0 0 11.6625 11.6667"><g transform="translate(0 11.6667) scale(1 -1)"><path d="M5.83125 0C5.0382 0 4.28014 0.151667 3.55706 0.455C2.86509 0.750556 2.24892 1.16861 1.70856 1.70917C1.16819 2.24972 0.750288 2.86611 0.454837 3.55833C0.151612 4.28167 0 5.04 0 5.83333C0 6.62667 0.151612 7.385 0.454837 8.10833C0.750288 8.80056 1.16819 9.41694 1.70856 9.9575C2.24892 10.4981 2.86509 10.9161 3.55706 11.2117C4.28014 11.515 5.0382 11.6667 5.83125 11.6667C6.6243 11.6667 7.38236 11.515 8.10544 11.2117C8.79741 10.9161 9.41358 10.4981 9.95394 9.9575C10.4943 9.41694 10.9122 8.80056 11.2077 8.10833C11.5109 7.385 11.6625 6.62667 11.6625 5.83333C11.6625 5.04 11.5109 4.28167 11.2077 3.55833C10.9122 2.86611 10.4943 2.24972 9.95394 1.70917C9.41358 1.16861 8.79741 0.750556 8.10544 0.455C7.38236 0.151667 6.6243 0 5.83125 0ZM5.83125 1.16667C6.67872 1.16667 7.464 1.38056 8.18707 1.80833C8.88682 2.22056 9.44274 2.77667 9.85481 3.47667C10.2824 4.2 10.4962 4.98556 10.4962 5.83333C10.4962 6.68111 10.2824 7.46667 9.85481 8.19C9.44274 8.89 8.88682 9.44611 8.18707 9.85833C7.464 10.2861 6.67872 10.5 5.83125 10.5C4.98378 10.5 4.1985 10.2861 3.47542 9.85833C2.77567 9.44611 2.21976 8.89 1.80769 8.19C1.38006 7.46667 1.16625 6.68111 1.16625 5.83333C1.16625 4.98556 1.38006 4.2 1.80769 3.47667C2.21976 2.77667 2.77567 2.22056 3.47542 1.80833C4.1985 1.38056 4.98378 1.16667 5.83125 1.16667ZM6.41437 5.83333H8.74687V4.66667H5.24812V8.75H6.41437V5.83333Z" fill="currentColor"/></g></symbol>
+<symbol id="lpb-i-cadeado" viewBox="0 0 10.4963 12.25"><g transform="translate(0 12.25) scale(1 -1)"><path d="M1.74937 8.16667V8.75C1.74937 9.38 1.90876 9.96722 2.22754 10.5117C2.53854 11.0406 2.95839 11.4606 3.48709 11.7717C4.03134 12.0906 4.61835 12.25 5.24812 12.25C5.8779 12.25 6.46491 12.0906 7.00916 11.7717C7.53786 11.4606 7.95771 11.0406 8.26871 10.5117C8.58749 9.96722 8.74687 9.38 8.74687 8.75V8.16667H9.91312C10.0764 8.16667 10.2144 8.11028 10.3271 7.9975C10.4399 7.88472 10.4962 7.74667 10.4962 7.58333V0.583333C10.4962 0.42 10.4399 0.281944 10.3271 0.169167C10.2144 0.0563889 10.0764 0 9.91312 0H0.583125C0.41985 0 0.281844 0.0563889 0.169106 0.169167C0.0563687 0.281944 0 0.42 0 0.583333V7.58333C0 7.74667 0.0563687 7.88472 0.169106 7.9975C0.281844 8.11028 0.41985 8.16667 0.583125 8.16667H1.74937ZM9.33 7H1.16625V1.16667H9.33V7ZM4.665 3.65167C4.48617 3.76056 4.34428 3.90444 4.23932 4.08333C4.13436 4.26222 4.08187 4.45667 4.08187 4.66667C4.08187 4.87667 4.13436 5.07111 4.23932 5.25C4.34428 5.42889 4.48617 5.57083 4.665 5.67583C4.84382 5.78083 5.0382 5.83333 5.24812 5.83333C5.45805 5.83333 5.65242 5.78083 5.83125 5.67583C6.01007 5.57083 6.15197 5.42889 6.25693 5.25C6.36189 5.07111 6.41437 4.87667 6.41437 4.66667C6.41437 4.45667 6.36189 4.26222 6.25693 4.08333C6.15197 3.90444 6.01007 3.76056 5.83125 3.65167V2.33333H4.665V3.65167ZM2.91562 8.16667H7.58062V8.75C7.58062 9.17 7.47566 9.55889 7.26574 9.91667C7.05581 10.2744 6.77202 10.5583 6.41437 10.7683C6.05672 10.9783 5.66797 11.0833 5.24812 11.0833C4.82827 11.0833 4.43952 10.9783 4.08187 10.7683C3.72423 10.5583 3.44044 10.2744 3.23051 9.91667C3.02059 9.55889 2.91562 9.17 2.91562 8.75V8.16667Z" fill="currentColor"/></g></symbol>
+<symbol id="lpb-i-diamante" viewBox="0 0 13.8211 10.9433"><g transform="translate(0 10.9433) scale(1 -1)"><path d="M2.75871 10.9433H11.0624C11.1557 10.9433 11.2451 10.9219 11.3306 10.8792C11.4162 10.8364 11.4861 10.7761 11.5406 10.6983L13.7681 7.64167C13.807 7.57944 13.8245 7.51528 13.8206 7.44917C13.8167 7.38306 13.7914 7.32278 13.7448 7.26833L7.12049 0.0933333C7.06606 0.0311111 6.99997 0 6.92222 0C6.84447 0 6.7745 0.0272222 6.7123 0.0816667L0.0763364 7.26833C0.0296864 7.32278 0.00441761 7.38306 0.000530114 7.44917C-0.00335739 7.51528 0.0141364 7.57944 0.0530114 7.64167L2.28055 10.6983C2.33497 10.7761 2.40495 10.8364 2.49047 10.8792C2.576 10.9219 2.66541 10.9433 2.75871 10.9433ZM3.05027 9.77667L1.41752 7.53667L6.91056 1.58667L12.4036 7.53667L10.7708 9.77667H3.05027Z" fill="currentColor"/></g></symbol>
+<symbol id="lpb-i-pessoa-mais" viewBox="0 0 11.0794 12.25"><g transform="translate(0 12.25) scale(1 -1)"><path d="M5.83125 4.515V3.30167C5.45805 3.43389 5.0693 3.5 4.665 3.5C4.03522 3.5 3.44821 3.34056 2.90396 3.02167C2.37526 2.71056 1.95541 2.29056 1.64441 1.76167C1.32564 1.21722 1.16625 0.63 1.16625 0H0C0 0.847778 0.213812 1.63333 0.641437 2.35667C1.05351 3.05667 1.60942 3.61278 2.30917 4.025C3.03225 4.45278 3.81753 4.66667 4.665 4.66667C5.06152 4.66667 5.45027 4.61611 5.83125 4.515ZM4.665 5.25C4.02745 5.25 3.44044 5.40944 2.90396 5.72833C2.37526 6.03944 1.95541 6.45944 1.64441 6.98833C1.32564 7.525 1.16625 8.11222 1.16625 8.75C1.16625 9.38778 1.32564 9.975 1.64441 10.5117C1.95541 11.0406 2.37526 11.4606 2.90396 11.7717C3.44044 12.0906 4.02745 12.25 4.665 12.25C5.30255 12.25 5.88956 12.0906 6.42604 11.7717C6.95474 11.4606 7.37459 11.0406 7.68559 10.5117C8.00436 9.975 8.16375 9.38778 8.16375 8.75C8.16375 8.11222 8.00436 7.525 7.68559 6.98833C7.37459 6.45944 6.95474 6.03944 6.42604 5.72833C5.88956 5.40944 5.30255 5.25 4.665 5.25ZM4.665 6.41667C5.08485 6.41667 5.4736 6.52167 5.83125 6.73167C6.1889 6.94167 6.47269 7.22556 6.68261 7.58333C6.89254 7.94111 6.9975 8.33 6.9975 8.75C6.9975 9.17 6.89254 9.55889 6.68261 9.91667C6.47269 10.2744 6.1889 10.5583 5.83125 10.7683C5.4736 10.9783 5.08485 11.0833 4.665 11.0833C4.24515 11.0833 3.8564 10.9783 3.49875 10.7683C3.1411 10.5583 2.85731 10.2744 2.64739 9.91667C2.43746 9.55889 2.3325 9.17 2.3325 8.75C2.3325 8.33 2.43746 7.94111 2.64739 7.58333C2.85731 7.22556 3.1411 6.94167 3.49875 6.73167C3.8564 6.52167 4.24515 6.41667 4.665 6.41667ZM8.16375 2.91667V4.66667H9.33V2.91667H11.0794V1.75H9.33V0H8.16375V1.75H6.41437V2.91667H8.16375Z" fill="currentColor"/></g></symbol>
+<symbol id="lpb-i-check" viewBox="0 0 9.8898 7.02333"><g transform="translate(0 7.02333) scale(1 -1)"><path d="M3.70867 1.65667L9.07342 7.02333L9.8898 6.195L3.70867 0L0 3.72167L0.816375 4.53833L3.70867 1.65667Z" fill="currentColor"/></g></symbol>
+<symbol id="lpb-i-check-lista" viewBox="0 0 8.48 6.02"><g transform="translate(0 6.02) scale(1 -1)"><path d="M3.18 1.42L7.78 6.02L8.48 5.31L3.18 0L0 3.19L0.7 3.89L3.18 1.42Z" fill="currentColor"/></g></symbol>
+<symbol id="lpb-i-seta-baixo" viewBox="0 0 9.07343 9.33333"><g transform="translate(0 9.33333) scale(1 -1)"><path d="M5.11984 2.22833L8.24539 5.36667L9.07342 4.53833L4.53671 0L0 4.53833L0.828037 5.36667L3.95359 2.22833V9.33333H5.11984V2.22833Z" fill="currentColor"/></g></symbol>
+<symbol id="lpb-i-balao" viewBox="0 0 10 10"><g transform="translate(0 10) scale(1 -1)"><path d="M2.65 0.59L0 0L0.59 2.65C0.196667 3.37667 0 4.16 0 5C0 5.68 0.13 6.33 0.39 6.95C0.643333 7.54333 1.00167 8.07167 1.465 8.535C1.92833 8.99833 2.45667 9.35667 3.05 9.61C3.67 9.87 4.32 10 5 10C5.68 10 6.33 9.87 6.95 9.61C7.54333 9.35667 8.07167 8.99833 8.535 8.535C8.99833 8.07167 9.35667 7.54333 9.61 6.95C9.87 6.33 10 5.68 10 5C10 4.32 9.87 3.67 9.61 3.05C9.35667 2.45667 8.99833 1.92833 8.535 1.465C8.07167 1.00167 7.54333 0.643333 6.95 0.39C6.33 0.13 5.68 0 5 0C4.16 0 3.37667 0.196667 2.65 0.59ZM2.79 1.64L3.12 1.47C3.70667 1.15667 4.33333 1 5 1C5.72667 1 6.4 1.18333 7.02 1.55C7.62 1.90333 8.09667 2.38 8.45 2.98C8.81667 3.6 9 4.27333 9 5C9 5.72667 8.81667 6.4 8.45 7.02C8.09667 7.62 7.62 8.09667 7.02 8.45C6.4 8.81667 5.72667 9 5 9C4.27333 9 3.6 8.81667 2.98 8.45C2.38 8.09667 1.90333 7.62 1.55 7.02C1.18333 6.4 1 5.72667 1 5C1 4.33333 1.15667 3.70667 1.47 3.12L1.64 2.79L1.32 1.32L2.79 1.64Z" fill="currentColor"/></g></symbol>
+<symbol id="lpb-i-estrela" viewBox="0 0 13.3186 12.67"><g transform="translate(0 12.67) scale(1 -1)"><path d="M6.65929 2.31L2.54242 0L3.46376 4.63167L0 7.82833L4.68832 8.38833L6.65929 12.67L8.63025 8.38833L13.3186 7.82833L9.85481 4.63167L10.7761 0L6.65929 2.31Z" fill="currentColor"/></g></symbol>
+<symbol id="lpb-i-pessoa" viewBox="0 0 12 15.75"><g transform="translate(0 15.75) scale(1 -1)"><path d="M0 0C0 1.09 0.275 2.1 0.825 3.03C1.355 3.93 2.07 4.645 2.97 5.175C3.9 5.725 4.91 6 6 6C7.09 6 8.1 5.725 9.03 5.175C9.93 4.645 10.645 3.93 11.175 3.03C11.725 2.1 12 1.09 12 0H10.5C10.5 0.81 10.295 1.565 9.885 2.265C9.485 2.945 8.945 3.485 8.265 3.885C7.565 4.295 6.81 4.5 6 4.5C5.19 4.5 4.435 4.295 3.735 3.885C3.055 3.485 2.515 2.945 2.115 2.265C1.705 1.565 1.5 0.81 1.5 0H0ZM6 6.75C5.18 6.75 4.425 6.955 3.735 7.365C3.055 7.765 2.515 8.305 2.115 8.985C1.705 9.675 1.5 10.43 1.5 11.25C1.5 12.07 1.705 12.825 2.115 13.515C2.515 14.195 3.055 14.735 3.735 15.135C4.425 15.545 5.18 15.75 6 15.75C6.82 15.75 7.575 15.545 8.265 15.135C8.945 14.735 9.485 14.195 9.885 13.515C10.295 12.825 10.5 12.07 10.5 11.25C10.5 10.43 10.295 9.675 9.885 8.985C9.485 8.305 8.945 7.765 8.265 7.365C7.575 6.955 6.82 6.75 6 6.75ZM6 8.25C6.54 8.25 7.04 8.385 7.5 8.655C7.96 8.925 8.325 9.29 8.595 9.75C8.865 10.21 9 10.71 9 11.25C9 11.79 8.865 12.29 8.595 12.75C8.325 13.21 7.96 13.575 7.5 13.845C7.04 14.115 6.54 14.25 6 14.25C5.46 14.25 4.96 14.115 4.5 13.845C4.04 13.575 3.675 13.21 3.405 12.75C3.135 12.29 3 11.79 3 11.25C3 10.71 3.135 10.21 3.405 9.75C3.675 9.29 4.04 8.925 4.5 8.655C4.96 8.385 5.46 8.25 6 8.25Z" fill="currentColor"/></g></symbol>
+<symbol id="lpb-i-seta-direita" viewBox="0 0 16 15.56"><g transform="translate(0 15.56) scale(1 -1)"><path d="M12.18 8.78L6.8 14.14L8.22 15.56L16 7.78L8.22 0L6.8 1.42L12.18 6.78H0V8.78H12.18Z" fill="currentColor"/></g></symbol>
+</svg>
+
+<div class="lpb-b">
+
+  <!-- Faixa de 4 selos: fecha o hero (DIV-90 do frame), mas mora aqui porque e
+       full-bleed 1440px e nao cabe na coluna de 584px da track A. -->
+  <div class="lpb-selos">
+    <div class="lpb-selos__caixa">
+      <ul class="lpb-selos__lista">
+        <li class="lpb-selo">
+          <span class="lpb-selo__disco lpb-selo__disco--indigo">
+            <svg width="11.66" height="11.67" aria-hidden="true"><use href="#lpb-i-relogio"></use></svg>
+          </span>Operação no ar em 24h
+        </li>
+        <li class="lpb-selo">
+          <span class="lpb-selo__disco lpb-selo__disco--pessego">
+            <svg width="11.08" height="12.25" aria-hidden="true"><use href="#lpb-i-pessoa-mais"></use></svg>
+          </span>De 1 a 50 posições em 48h
+        </li>
+        <li class="lpb-selo">
+          <span class="lpb-selo__disco lpb-selo__disco--rosa">
+            <svg width="13.82" height="10.94" aria-hidden="true"><use href="#lpb-i-diamante"></use></svg>
+          </span>Gestão dedicada, não ticket
+        </li>
+        <li class="lpb-selo">
+          <span class="lpb-selo__disco lpb-selo__disco--indigo">
+            <svg width="10.5" height="12.25" aria-hidden="true"><use href="#lpb-i-cadeado"></use></svg>
+          </span>LGPD e processos auditáveis
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- 02 identificacao -->
+  <section class="lpb-sec lpb-ident">
+    <div class="lpb-cont lpb-cont--estreito">
+      <div class="lpb-ident__topo">
+        <h2 class="lpb-h2">Essa conversa é para você que já sabe o que vem por aí</h2>
+        <p class="lpb-ident__sub">Se você reconhece três dos cenários abaixo, a gente provavelmente tem o que conversar.</p>
+      </div>
+      <ul class="lpb-ident__lista">
+        <li class="lpb-cenario">
+          <span class="lpb-cenario__disco"><svg width="9.89" height="7.02" aria-hidden="true"><use href="#lpb-i-check"></use></svg></span><span>Sua campanha de Black Friday já está desenhada, e seu time comercial é o mesmo de julho. O tráfego vai dobrar. A capacidade de falar com quem chega, não.</span>
+        </li>
+        <li class="lpb-cenario">
+          <span class="lpb-cenario__disco"><svg width="9.89" height="7.02" aria-hidden="true"><use href="#lpb-i-check"></use></svg></span><span>Você sabe que uma parte do que entrar vai esfriar sem ninguém tocar. Não por falta de interesse do lead. Por falta de quem faça o segundo contato no mesmo dia.</span>
+        </li>
+        <li class="lpb-cenario">
+          <span class="lpb-cenario__disco"><svg width="9.89" height="7.02" aria-hidden="true"><use href="#lpb-i-check"></use></svg></span><span>Contratar CLT para três meses de pico não fecha a conta. E contratar freela avulso sempre saiu mais caro por hora do que deveria.</span>
+        </li>
+        <li class="lpb-cenario">
+          <span class="lpb-cenario__disco"><svg width="9.89" height="7.02" aria-hidden="true"><use href="#lpb-i-check"></use></svg></span><span>Você já viu o que acontece em dezembro. A venda foi boa, e aí chega troca, devolução, "cadê meu pedido", e o time de vendas vira suporte no improviso.</span>
+        </li>
+        <li class="lpb-cenario">
+          <span class="lpb-cenario__disco"><svg width="9.89" height="7.02" aria-hidden="true"><use href="#lpb-i-check"></use></svg></span><span>Seu SDR atual não passa do decisor. Abordagem que parece spam, script decorado, follow-up que morre no terceiro dia.</span>
+        </li>
+        <li class="lpb-cenario">
+          <span class="lpb-cenario__disco"><svg width="9.89" height="7.02" aria-hidden="true"><use href="#lpb-i-check"></use></svg></span><span>Você não quer terceirizar para receber operador que lê roteiro. Já testou isso. Não funcionou.</span>
+        </li>
+        <li class="lpb-cenario">
+          <span class="lpb-cenario__disco"><svg width="9.89" height="7.02" aria-hidden="true"><use href="#lpb-i-check"></use></svg></span><span>Você quer resolver isso agora, em agosto, e não descobrir em novembro que não dava tempo.</span>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 03 oferta -->
+  <section class="lpb-sec lpb-oferta">
+    <div class="lpb-cont lpb-cont--estreito">
+      <h2 class="lpb-h2 lpb-h2--claro">A gente não vai te dar desconto de Black Friday</h2>
+      <div class="lpb-prosa lpb-oferta__corpo">
+        <p>Desconto percentual é o que todo mundo faz em novembro. E normalmente é só o preço de tabela inflado voltando ao normal.</p>
+        <p>A nossa condição é outra, e é mais útil para você:</p>
+        <p class="lpb-oferta__destaque">Quem fecha para a Black Friday paga o mesmo valor/hora de quem assina contrato recorrente. Sem o contrato recorrente.</p>
+        <p>Traduzindo: você monta o time só para a temporada, pré-vendas, atendimento ou os dois, e não paga o adicional que normalmente se cobra por operação temporária. Sem fidelidade longa. Sem multa para reduzir depois do pico.</p>
+        <p>Por que a gente faz isso: porque na maioria das vezes o time que entrou para a Black Friday continua depois. Não porque tem cláusula prendendo, mas porque a operação passou a funcionar melhor com ele. A gente prefere apostar nisso a te prender em papel.</p>
+      </div>
+      <div class="lpb-cta-linha lpb-oferta__cta">
+        <a class="lpb-cta lpb-cta--branco" href="#lpb-form">Quero entender essa condição<svg width="9.07" height="9.33" aria-hidden="true"><use href="#lpb-i-seta-baixo"></use></svg></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 04 urgencia -->
+  <section class="lpb-sec lpb-urgencia">
+    <div class="lpb-cont lpb-cont--medio">
+      <h2 class="lpb-h2">A gente sobe sua operação em 24 horas. O que não cabe em 24 horas é o resto.</h2>
+      <div class="lpb-prosa lpb-urgencia__corpo">
+        <p>Isso não é modéstia falsa. A Scooto realmente coloca um time em campo em um dia útil, ferramentas conectadas, pessoas alocadas, primeiro contato saindo.</p>
+        <p>O que não se comprime é o que vem depois: seu catálogo, sua política de frete, suas exceções, as três objeções que só aparecem quando o cliente já ouviu o preço. Isso é curva de contexto, e ela leva algumas semanas, não algumas horas.</p>
+        <p>Quem começa em agosto chega em novembro com o time já calejado. Quem começa em novembro está treinando durante o pico.</p>
+        <p class="lpb-urgencia__reforco">E o pico é a única parte disso que não negocia data.</p>
+      </div>
+      <h3 class="lpb-urgencia__h3">Quando você começa → O que acontece na Black Friday</h3>
+      <ul class="lpb-urgencia__grade">
+        <li class="lpb-mes">
+          <span class="lpb-mes__selo">Agosto</span>
+          Time com 3 meses de operação real. Conhece seu produto, suas objeções, seu cliente. Entra no pico no ritmo.
+        </li>
+        <li class="lpb-mes">
+          <span class="lpb-mes__selo">Setembro</span>
+          Time integrado e testado. Chega maduro, com margem para ajuste fino em outubro.
+        </li>
+        <li class="lpb-mes">
+          <span class="lpb-mes__selo">Outubro</span>
+          Dá para fazer. Time treinado, contexto ainda em construção. Exige mais do seu lado.
+        </li>
+        <li class="lpb-mes">
+          <span class="lpb-mes__selo">Novembro</span>
+          A operação sobe. O aprendizado acontece ao vivo, no dia de maior volume do ano.
+        </li>
+      </ul>
+      <p class="lpb-urgencia__fecho">Não tem prazo para fechar essa condição. Tem prazo para o time estar pronto, e quem define esse prazo é o calendário, não a gente.</p>
+    </div>
+  </section>
+
+  <!-- 05 contratacao -->
+  <section class="lpb-sec lpb-frentes">
+    <div class="lpb-cont lpb-cont--largo">
+      <h2 class="lpb-h2">Duas frentes. Você escolhe uma ou as duas.</h2>
+      <div class="lpb-frentes__cards">
+        <div class="lpb-frente">
+          <p class="lpb-frente__sub">Para capturar o volume que a Black Friday gera.</p>
+          <ul class="lpb-frente__lista">
+            <li class="lpb-frente__item">
+              <span class="lpb-frente__disco"><svg width="8.48" height="6.02" aria-hidden="true"><use href="#lpb-i-check-lista"></use></svg></span>
+              <span>Scooteiras treinadas em conversa, não em script. Elas estudam seu produto, sua concorrência e suas objeções antes do primeiro contato. Quem atende sabe do que está falando, e o decisor percebe isso nos primeiros trinta segundos.</span>
+            </li>
+            <li class="lpb-frente__item">
+              <span class="lpb-frente__disco"><svg width="8.48" height="6.02" aria-hidden="true"><use href="#lpb-i-check-lista"></use></svg></span>
+              <span>Follow-up que não morre no segundo dia. Cadência definida, registrada no seu CRM, com quem ficou parado sendo retomado. O lead que esfria por esquecimento é o mais caro que existe: você já pagou por ele.</span>
+            </li>
+            <li class="lpb-frente__item">
+              <span class="lpb-frente__disco"><svg width="8.48" height="6.02" aria-hidden="true"><use href="#lpb-i-check-lista"></use></svg></span>
+              <span>Diagnóstico do não, não só o número do não. Cada interação vira informação. Você não recebe só a taxa de conversão, recebe por que o lead não avançou, o que travou, o que se repetiu.</span>
+            </li>
+            <li class="lpb-frente__item">
+              <span class="lpb-frente__disco"><svg width="8.48" height="6.02" aria-hidden="true"><use href="#lpb-i-check-lista"></use></svg></span>
+              <span>Ajuste durante a operação. Se a abordagem não estiver funcionando, a gente avisa e muda. Não espera o fechamento do mês para reportar o que já dava para ver na segunda semana.</span>
+            </li>
+          </ul>
+        </div>
+        <div class="lpb-frente lpb-frente--suporte">
+          <p class="lpb-frente__selo"><svg width="10" height="10" aria-hidden="true"><use href="#lpb-i-balao"></use></svg>FRENTE 2, ATENDIMENTO E SUPORTE</p>
+          <p class="lpb-frente__sub">Para segurar o que a venda gera.</p>
+          <ul class="lpb-frente__lista">
+            <li class="lpb-frente__item">
+              <span class="lpb-frente__disco"><svg width="8.48" height="6.02" aria-hidden="true"><use href="#lpb-i-check-lista"></use></svg></span>
+              <span>Pico de venda vira pico de dúvida antes, e pico de troca, devolução e rastreio depois. É a mesma onda, atrasada em algumas semanas.</span>
+            </li>
+            <li class="lpb-frente__item">
+              <span class="lpb-frente__disco"><svg width="8.48" height="6.02" aria-hidden="true"><use href="#lpb-i-check-lista"></use></svg></span>
+              <span>Atendimento humano nos seus canais, WhatsApp, e-mail, chat, redes</span>
+            </li>
+            <li class="lpb-frente__item">
+              <span class="lpb-frente__disco"><svg width="8.48" height="6.02" aria-hidden="true"><use href="#lpb-i-check-lista"></use></svg></span>
+              <span>Time que resolve, não que encaminha</span>
+            </li>
+            <li class="lpb-frente__item">
+              <span class="lpb-frente__disco"><svg width="8.48" height="6.02" aria-hidden="true"><use href="#lpb-i-check-lista"></use></svg></span>
+              <span>Escala de 5 a 50 posições conforme o volume real</span>
+            </li>
+            <li class="lpb-frente__item">
+              <span class="lpb-frente__disco"><svg width="8.48" height="6.02" aria-hidden="true"><use href="#lpb-i-check-lista"></use></svg></span>
+              <span>Cobertura estendida nos dias críticos</span>
+            </li>
+            <li class="lpb-frente__item">
+              <span class="lpb-frente__disco"><svg width="8.48" height="6.02" aria-hidden="true"><use href="#lpb-i-check-lista"></use></svg></span>
+              <span>Relatório diário de CSAT, NPS e volume</span>
+            </li>
+          </ul>
+          <p class="lpb-frente__nota">Uma observação honesta: a maioria das empresas contrata a frente de vendas primeiro e descobre a de atendimento em dezembro, no susto. Se você já viu esse filme, vale conversar sobre as duas agora.</p>
+        </div>
+      </div>
+      <div class="lpb-cta-linha lpb-frentes__cta">
+        <a class="lpb-cta lpb-cta--roxo" href="#lpb-form">Quero avaliar as duas frentes</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 06 autoridade -->
+  <section class="lpb-sec lpb-autoridade">
+    <div class="lpb-cont lpb-cont--medio">
+      <h2 class="lpb-h2">Quem está do outro lado</h2>
+      <div class="lpb-autoridade__linha">
+        <div class="lpb-autoridade__texto">
+          <p>A Scooto é uma central de atendimento e pré-vendas 100% remota e 100% feminina. Não é call center, não tem cronômetro de banheiro, não tem parede de script, não tem operador medido por tempo de chamada.</p>
+          <p>O modelo é o inverso: gente qualificada, com autonomia para resolver, apoiada por tecnologia que serve à conversa em vez de substituí-la.</p>
+          <p class="lpb-autoridade__marcas">Mais de 150 empresas operam com a gente. Entre elas XP, Cora, Boca Rosa e Indústria da Beleza.</p>
+        </div>
+        <div class="lpb-autoridade__foto">
+          <img src="https://raw.githubusercontent.com/rafa-bulgarelli/lp-black-scooto-assets/main/autoridade-foto-time.jpg" alt="Quatro Scooteiras sentadas lado a lado, sorrindo" width="472" height="320">
+        </div>
+      </div>
+      <ul class="lpb-metricas">
+        <li class="lpb-metrica lpb-metrica--roxo">
+          <p class="lpb-metrica__numero">100%</p>
+          <p class="lpb-metrica__rotulo">Remoto</p>
+        </li>
+        <li class="lpb-metrica lpb-metrica--laranja">
+          <p class="lpb-metrica__numero">100%</p>
+          <p class="lpb-metrica__rotulo">Impacto social</p>
+        </li>
+        <li class="lpb-metrica lpb-metrica--rosa">
+          <p class="lpb-metrica__numero">150+</p>
+          <p class="lpb-metrica__rotulo">Scooteiras</p>
+        </li>
+        <li class="lpb-metrica lpb-metrica--marinho">
+          <p class="lpb-metrica__numero">300+</p>
+          <p class="lpb-metrica__rotulo">Operações</p>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- 07 prova social -->
+  <section class="lpb-sec lpb-prova">
+    <div class="lpb-cont lpb-cont--largo">
+      <h2 class="lpb-h2">Depoimentos Scooto</h2>
+      <ul class="lpb-prova__cards">
+        <li class="lpb-depo">
+          <span class="lpb-depo__estrelas"><svg width="13.32" height="12.67" aria-hidden="true"><use href="#lpb-i-estrela"></use></svg><svg width="13.32" height="12.67" aria-hidden="true"><use href="#lpb-i-estrela"></use></svg><svg width="13.32" height="12.67" aria-hidden="true"><use href="#lpb-i-estrela"></use></svg><svg width="13.32" height="12.67" aria-hidden="true"><use href="#lpb-i-estrela"></use></svg><svg width="13.32" height="12.67" aria-hidden="true"><use href="#lpb-i-estrela"></use></svg></span>
+          <p class="lpb-depo__texto">Na Black Friday, escalamos de 5 para 50 atendentes em 48 horas. Sem caos, sem qualidade ruim. A Scooto entregou exatamente o que promete: profissionalismo em escala.</p>
+          <div class="lpb-depo__pe">
+            <span class="lpb-depo__avatar lpb-depo__avatar--indigo"><svg width="12" height="15.75" aria-hidden="true"><use href="#lpb-i-pessoa"></use></svg></span>
+            <span>
+              <span class="lpb-depo__nome">C. M.</span>
+              <span class="lpb-depo__cargo">Head de Operações | Banco XP</span>
+            </span>
+          </div>
+        </li>
+        <li class="lpb-depo">
+          <span class="lpb-depo__estrelas"><svg width="13.32" height="12.67" aria-hidden="true"><use href="#lpb-i-estrela"></use></svg><svg width="13.32" height="12.67" aria-hidden="true"><use href="#lpb-i-estrela"></use></svg><svg width="13.32" height="12.67" aria-hidden="true"><use href="#lpb-i-estrela"></use></svg><svg width="13.32" height="12.67" aria-hidden="true"><use href="#lpb-i-estrela"></use></svg><svg width="13.32" height="12.67" aria-hidden="true"><use href="#lpb-i-estrela"></use></svg></span>
+          <p class="lpb-depo__texto">Antes da Scooto, meu suporte era um gargalo. Agora é um ativo. O time não apenas resolve problemas, traz ideias. É consultoria, não call center.</p>
+          <div class="lpb-depo__pe">
+            <span class="lpb-depo__avatar lpb-depo__avatar--pessego"><svg width="12" height="15.75" aria-hidden="true"><use href="#lpb-i-pessoa"></use></svg></span>
+            <span>
+              <span class="lpb-depo__nome">M. S.</span>
+              <span class="lpb-depo__cargo">Diretora de CX | Boca Rosa</span>
+            </span>
+          </div>
+        </li>
+        <li class="lpb-depo">
+          <span class="lpb-depo__estrelas"><svg width="13.32" height="12.67" aria-hidden="true"><use href="#lpb-i-estrela"></use></svg><svg width="13.32" height="12.67" aria-hidden="true"><use href="#lpb-i-estrela"></use></svg><svg width="13.32" height="12.67" aria-hidden="true"><use href="#lpb-i-estrela"></use></svg><svg width="13.32" height="12.67" aria-hidden="true"><use href="#lpb-i-estrela"></use></svg><svg width="13.32" height="12.67" aria-hidden="true"><use href="#lpb-i-estrela"></use></svg></span>
+          <p class="lpb-depo__texto">O que diferencia a Scooto é que eles entendem meu negócio. Não é um fornecedor que segue script. É um parceiro que conhece meu produto, meus clientes, meus desafios.</p>
+          <div class="lpb-depo__pe">
+            <span class="lpb-depo__avatar lpb-depo__avatar--rosa"><svg width="12" height="15.75" aria-hidden="true"><use href="#lpb-i-pessoa"></use></svg></span>
+            <span>
+              <span class="lpb-depo__nome">J. C.</span>
+              <span class="lpb-depo__cargo">VP de Vendas</span>
+            </span>
+          </div>
+        </li>
+      </ul>
+      <div class="lpb-logos">
+        <img class="lpb-logos__xp" src="https://raw.githubusercontent.com/rafa-bulgarelli/lp-black-scooto-assets/main/logo-xp.png" alt="XP Investimentos" width="165" height="36">
+        <svg class="lpb-logos__cora" viewBox="0 0 139 36" role="img" aria-label="Cora" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#lpb-clip-cora)"> <path fill-rule="evenodd" clip-rule="evenodd" d="M138.973 18.7646V30.5383C138.973 31.0539 138.568 31.4718 138.07 31.4718H134.674C134.176 31.4718 133.771 31.0539 133.771 30.5383V28.6863C131.656 30.3102 129.046 31.2692 126.221 31.2692C119.165 31.2692 113.444 25.283 113.444 17.8986C113.444 10.5142 119.165 4.52792 126.221 4.52792C129.046 4.52792 131.656 5.48696 133.771 7.11084V5.46145C133.771 4.94587 134.176 4.52792 134.674 4.52792H138.07C138.568 4.52792 138.973 4.94587 138.973 5.46145V17.0418C138.99 17.3251 138.998 17.6108 138.998 17.8986C138.998 18.1866 138.99 18.4725 138.973 18.756V18.7646ZM104.279 30.2649C104.279 30.6332 103.991 30.9318 103.635 30.9318H99.6329C99.2765 30.9318 98.9879 30.6332 98.9879 30.2649V5.66758C98.9879 5.29931 99.2765 5.00077 99.6329 5.00077H103.635C103.991 5.00077 104.279 5.29931 104.279 5.66758V7.0618C106.246 5.57193 108.633 4.65369 111.22 4.54003C111.227 4.53971 111.235 4.53955 111.242 4.53955C111.531 4.53955 111.765 4.78169 111.765 5.0804V9.63993C111.765 9.87231 111.589 10.064 111.365 10.0764C107.417 10.2941 104.279 13.713 104.279 17.8988V30.2649ZM67.3875 7.71363C67.3904 7.71614 67.3933 7.71865 67.3962 7.72122C67.5836 7.89692 67.5981 8.19664 67.428 8.39075L64.6295 11.5881C64.3767 11.8765 63.9521 11.9143 63.6554 11.6748C63.649 11.6693 63.6421 11.6639 63.6357 11.6587C62.3481 10.6333 60.7736 10.0653 59.1094 10.0653C54.9749 10.0653 51.6235 13.5724 51.6235 17.8986C51.6235 22.2248 54.9749 25.7319 59.1094 25.7319C60.5925 25.7319 62.0057 25.2814 63.2106 24.4531L63.2164 24.4491C63.5183 24.2406 63.925 24.3086 64.1482 24.605L66.6425 27.9189C66.6465 27.9247 66.6506 27.9306 66.6552 27.9365C66.8461 28.2103 66.7865 28.5926 66.5216 28.7903C64.3785 30.3903 61.805 31.2692 59.1094 31.2692C52.0525 31.2692 46.332 25.283 46.332 17.8986C46.332 10.5142 52.0525 4.52792 59.1094 4.52792C62.1862 4.52792 65.0986 5.67389 67.3875 7.71363ZM82.3397 31.2692C75.2833 31.2692 69.5625 25.283 69.5625 17.8986C69.5625 10.5142 75.2833 4.52792 82.3397 4.52792C89.3961 4.52792 95.1169 10.5142 95.1169 17.8986C95.1169 25.283 89.3961 31.2692 82.3397 31.2692ZM82.3397 25.7319C86.4738 25.7319 89.8253 22.2248 89.8253 17.8986C89.8253 13.5724 86.4738 10.0652 82.3397 10.0652C78.2056 10.0652 74.8541 13.5724 74.8541 17.8986C74.8541 22.2248 78.2056 25.7319 82.3397 25.7319ZM126.222 25.7319C130.356 25.7319 133.707 22.2248 133.707 17.8986C133.707 13.5724 130.356 10.0652 126.222 10.0652C122.087 10.0652 118.736 13.5724 118.736 17.8986C118.736 22.2248 122.087 25.7319 126.222 25.7319Z" fill="#202020"/> <path fill-rule="evenodd" clip-rule="evenodd" d="M16.3448 0.0374793C15.6738 0.0459525 14.8642 0.155844 14.4544 0.228935C12.001 0.665898 9.63421 1.6485 7.57408 3.10743C4.43899 5.32738 2.02689 8.64275 0.846818 12.3796C-0.541512 16.7762 -0.208874 21.703 1.74256 25.8426C3.59644 29.7753 6.87422 32.9594 10.7856 34.6216C14.0756 36.0196 17.7579 36.3291 21.2047 35.5287C25.4006 34.5542 29.158 31.9258 31.6132 28.3215C33.4527 25.6211 34.5422 22.3904 34.7483 19.0917C34.7645 18.8078 34.6671 18.5295 34.4788 18.3222C34.2905 18.1151 34.028 17.9971 33.7532 17.9965L33.5702 17.996C32.354 17.9931 30.5053 17.9886 29.3887 17.9885C28.8683 17.9872 28.4344 18.4005 28.393 18.9372C28.3432 19.5509 28.2464 20.159 28.1015 20.756C27.4308 23.5218 25.7091 26.0011 23.3901 27.5601C21.0298 29.1467 18.0868 29.7367 15.3268 29.1982C12.5715 28.6605 10.0783 27.0005 8.44424 24.6754C7.0816 22.7367 6.33558 20.3415 6.33922 17.9492C6.34396 14.8399 7.62846 11.786 9.80346 9.65996C11.6146 7.8898 13.9993 6.79354 16.4911 6.57801C17.0083 6.53304 17.4062 6.08573 17.4066 5.5487L17.4069 5.23462C17.4078 4.01553 17.4091 2.21568 17.4085 1.06811C17.4088 0.782462 17.2945 0.509341 17.0928 0.314062C16.8912 0.118655 16.6218 0.0339811 16.3448 0.0374793ZM34.7267 5.83236C34.7267 2.65538 32.2337 0.0760198 29.163 0.0760198C26.0923 0.0760198 23.5992 2.65538 23.5992 5.83236C23.5992 9.00945 26.0923 11.5888 29.163 11.5888C32.2337 11.5888 34.7267 9.00945 34.7267 5.83236Z" fill="#FE3E6D"/> </g> <defs> <clipPath id="lpb-clip-cora"> <rect width="139" height="36" fill="white"/> </clipPath> </defs></svg>
+        <img class="lpb-logos__boca" src="https://raw.githubusercontent.com/rafa-bulgarelli/lp-black-scooto-assets/main/logo-boca-rosa.png" alt="Boca Rosa" width="165" height="78">
+        <p class="lpb-logos__texto">INDÚSTRIA DA BELEZA</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 08 como funciona -->
+  <section class="lpb-sec lpb-passos">
+    <div class="lpb-cont lpb-cont--medio">
+      <h2 class="lpb-h2">Três passos, sem mistério</h2>
+      <div class="lpb-passos__linha">
+        <div class="lpb-passo lpb-passo--um">
+          <span class="lpb-passo__numero">1</span>
+          <h3 class="lpb-passo__titulo">Você preenche o formulário</h3>
+          <p class="lpb-passo__texto">Leva menos de um minuto. Sem agenda travada, sem funil de qualificação disfarçado de conversa.</p>
+        </div>
+        <div class="lpb-passo lpb-passo--dois">
+          <span class="lpb-passo__numero">2</span>
+          <h3 class="lpb-passo__titulo">A gente analisa sua operação</h3>
+          <p class="lpb-passo__texto">Uma conversa de 30 minutos para entender seu volume, seus canais, seu pico e onde exatamente está o gargalo. Se não fizer sentido para você, a gente fala isso na própria conversa.</p>
+        </div>
+        <div class="lpb-passo lpb-passo--tres">
+          <span class="lpb-passo__numero">3</span>
+          <h3 class="lpb-passo__titulo">O time entra em campo</h3>
+          <p class="lpb-passo__texto">Aprovado o desenho, sua operação sobe em 24 horas, com gestão dedicada e relatório desde o primeiro dia.</p>
+        </div>
+        <span class="lpb-passos__seta lpb-passos__seta--um"><svg width="16" height="15.56" aria-hidden="true"><use href="#lpb-i-seta-direita"></use></svg></span>
+        <span class="lpb-passos__seta lpb-passos__seta--dois"><svg width="16" height="15.56" aria-hidden="true"><use href="#lpb-i-seta-direita"></use></svg></span>
+      </div>
+    </div>
+  </section>
+
+</div>
