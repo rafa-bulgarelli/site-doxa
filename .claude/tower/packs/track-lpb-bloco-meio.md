@@ -13,9 +13,11 @@ worktree, não repo principal. **Guarda extra:**
 ## A VISÃO DO DONO
 
 A LP "LP BLACK — Scooto" do Figma, publicada num widget HTML do Elementor, **pixel
-perfect em desktop (~1440px)**: tipografia Sora, cores, espaçamentos e imagens idênticos
-ao frame. Zero JavaScript. Os CTAs levam ao formulário da página. Este bloco é a faixa
-vertical do MEIO — onde o argumento da página se desenvolve.
+perfect em desktop (~1440px)**: Sora nos títulos, Roboto no corpo, cores, espaçamentos
+e imagens idênticos ao frame. Zero JavaScript. Os CTAs levam ao formulário completo da
+página. Este bloco é a faixa do MEIO — seções 02–08 do inventário (identificação,
+oferta, urgência, contratação, autoridade, prova social, como funciona), onde o
+argumento se desenvolve.
 
 ## CONTEXTO (não perca tempo redescobrindo)
 
@@ -27,11 +29,14 @@ vertical do MEIO — onde o argumento da página se desenvolve.
   `figma/secao-NN-*.png` das suas seções; textos/medidas literais em
   `figma/design-context.md`. Copie os TEXTOS literalmente — não parafraseie copy.
 - Decisões do GESTOR: bloco autocontido (um único arquivo HTML com `<style>` próprio e
-  `@import` da Sora com os pesos do contrato); todo seletor com prefixo `.lpb-`
+  `@import` cobrindo **Sora E Roboto** nos pesos do contrato — Sora só em títulos, o
+  corpo é Roboto, Inter cai para Roboto); todo seletor com prefixo `.lpb-`
   (o CSS vai viver dentro do tema da Scooto + Elementor — tag nua vaza e é vazada);
   imagens SEMPRE pela URL final `RAW_PREFIX` do contrato (o preview local resolve via
-  `servir.mjs`); CTAs `href="#lpb-form"`. A regra global `html{scroll-behavior:smooth}`
-  é EXCLUSIVA do bloco A — aqui é proibida (o checar-bloco reprova).
+  `servir.mjs`); CTAs `href="#lpb-form"` — a âncora do form COMPLETO (o form do hero
+  não é alvo de âncora). A regra global `html{scroll-behavior:smooth}` é EXCLUSIVA do
+  bloco A — aqui é proibida (o checar-bloco reprova). `<form>` em bloco HTML é
+  proibido (os dois forms da LP são widgets nativos, track D).
 - Mobile: não há frame mobile no Figma. Adaptação por `@media (max-width: 480px)` (ou o
   breakpoint que o contrato fixar) — sem fidelidade exigida, só dignidade: sem rolagem
   horizontal a 390px, texto legível, imagens contidas.
@@ -65,6 +70,7 @@ Preludes P0 + P1 mergeados em main (o STEP 0 confere).
 
 - `pnpm typecheck` = 0 erros
 - `node entregas/lp-black-scooto/verify/checar-bloco.mjs entregas/lp-black-scooto/blocos/bloco-b-meio.html; echo "exit=$?"` → `exit=0`
+- `grep -ci '<form' entregas/lp-black-scooto/blocos/bloco-b-meio.html` = 0
 - `node entregas/lp-black-scooto/verify/servir.mjs --porta 5312 &` + `sleep 1`, então:
   - `node .claude/tower/bin/mobile-shot.mjs "http://localhost:5312/?bloco=bloco-b-meio" 390 /tmp/lpb-b-390.png` → `scrollWidth` == `clientWidth` e `overflowing: []`
   - `node .claude/tower/bin/mobile-shot.mjs "http://localhost:5312/?bloco=bloco-b-meio" 1440 /tmp/lpb-b-1440.png` → print gerado (vai para o gate visual do assento)
