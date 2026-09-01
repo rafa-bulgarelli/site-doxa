@@ -23,13 +23,16 @@ do `../contrato.md`, escrito pelo prelude P1).
 
 Nomeados por seção + ordem do `download_assets`. Para mapear ícone→lugar, abra o
 arquivo (são minúsculos) e confira contra o screenshot `../figma/secao-NN-*.png`.
+**⚠ Os SVGs exportados do Figma vêm com o eixo Y espelhado** — antes de inline,
+aplicar `<g transform="translate(0 H) scale(1 -1)">` (H = altura do viewBox);
+descoberto pelas tracks C/D (o "in" do LinkedIn vira "!∪" sem isso).
 
 | Arquivo | Bytes | Palpite de conteúdo (conferir visualmente) |
 |---|---|---|
 | `hero-svg-01.svg` | 265 | ícone do badge "Avaliação gratuita" (raio) |
-| `hero-svg-02.svg` | 744 | ícone de input (pessoa — campo Nome) |
-| `hero-svg-03.svg` | 1604 | ícone de input (envelope — campo E-mail) |
-| `hero-svg-04.svg` | 1827 | ícone pill faixa inferior |
+| `hero-svg-02.svg` | 744 | ícone de input (envelope — campo E-mail) |
+| `hero-svg-03.svg` | 1604 | ícone relógio `#4013cc` (pill "Operação no ar em 24h") |
+| `hero-svg-04.svg` | 1827 | ícone de input (pessoa — campo Nome) |
 | `hero-svg-05.svg` | 1807 | ícone pill faixa inferior |
 | `hero-svg-06.svg` | 915 | ícone pill faixa inferior |
 | `hero-svg-07.svg` | 1830 | ícone pill faixa inferior |
