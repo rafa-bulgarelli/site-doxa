@@ -1,0 +1,207 @@
+<!--
+  LP Black Scooto — BLOCO C (pós-form): fim da seção 10 (CTA WhatsApp + selos) e
+  seção 11 (FOOTER). Widget HTML do Elementor, colado LOGO ABAIXO do widget Form
+  "Formulário LP Black" (contrato § 1). Zero JS.
+
+  Decisões do dono já aplicadas (contrato §§ 6 e 7): a linha do cadastro fiscal
+  placeholder saiu (o dono mandou remover; nenhum número foi chutado no lugar);
+  "Termos de Uso" saiu (a página não existe em scooto.co); ficam os 3 perfis reais
+  (Instagram, LinkedIn, Facebook). O logo 32px da coluna 1 não foi entregue pelo Figma
+  (IMG-751 veio vazio no dump, e não há binário em assets/) — a coluna abre direto na
+  razão social; quando o dono passar o arquivo, ele entra antes do <p> da marca.
+
+  A marca decorativa da seção 10 (formulario-marca-branca.png, 600×600, opacity .07)
+  vive na faixa vertical do CARD do formulário, que é widget de outra track; aqui ela
+  entra como background do bloco rosa, sangrando para fora à direita e CONTIDA por
+  overflow: hidden — sem isso vira rolagem horizontal no mobile.
+-->
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,600;0,700;1,400&family=Sora:wght@400;600;700&display=swap');
+
+/* box-sizing escopado: o tema do WordPress não é confiável nesse ponto. */
+.lpb-fecho, .lpb-fecho *, .lpb-rodape, .lpb-rodape * { box-sizing: border-box; }
+
+/* ---------- seção 10 — fecho rosa (abaixo do card do formulário) ---------- */
+.lpb-fecho {
+  position: relative;
+  overflow: hidden;
+  background: #f12d64;
+  padding: 28px 0 96px;
+  font-family: 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+}
+.lpb-fecho::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: -200px;
+  width: 600px;
+  height: 600px;
+  transform: translateY(-50%);
+  background: url('https://raw.githubusercontent.com/rafa-bulgarelli/lp-black-scooto-assets/main/formulario-marca-branca.png') no-repeat center / contain;
+  opacity: .07;
+  pointer-events: none;
+}
+.lpb-fecho__interno { position: relative; max-width: 768px; margin: 0 auto; padding: 0 24px; }
+.lpb-fecho__chamada {
+  margin: 0 0 16px;
+  font-size: 14px;
+  line-height: 20px;
+  color: rgba(255, 255, 255, .8);
+  text-align: center;
+}
+.lpb-fecho__zap {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 44px;
+  padding: 0 24px;
+  border-radius: 9999px;
+  background: #ffffff;
+  color: #f12d64;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 20px;
+  text-decoration: none;
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+.lpb-fecho__zap:hover {
+  color: #f12d64;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, .12);
+}
+.lpb-fecho__zap-linha { text-align: center; }
+.lpb-fecho__zap-icone { display: block; }
+.lpb-fecho__selos {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 8px 16px;
+  /* margin explicito: o <p> do tema traz margin-bottom e alonga a faixa rosa. */
+  margin: 49px 0 0;
+  padding-top: 33px;
+  border-top: 1px solid rgba(255, 255, 255, .2);
+  font-size: 12px;
+  line-height: 16px;
+  color: rgba(255, 255, 255, .7);
+}
+.lpb-fecho__ponto { color: rgba(255, 255, 255, .45); }
+
+/* ---------- seção 11 — footer ---------- */
+.lpb-rodape {
+  background: #ffffff;
+  border-top: 1px solid #dfdfd4;
+  padding: 49px 0 48px;
+  font-family: 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+}
+.lpb-rodape__interno { max-width: 1152px; margin: 0 auto; padding: 0 24px; }
+.lpb-rodape__colunas { display: flex; gap: 32px; }
+.lpb-rodape__coluna { flex: 1 1 0; min-width: 0; }
+.lpb-rodape__titulo {
+  margin: 0 0 8px;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 20px;
+  color: #111116;
+}
+.lpb-rodape__texto { margin: 0; font-size: 14px; line-height: 20px; color: #717386; }
+.lpb-rodape__link {
+  display: inline-block;
+  font-size: 14px;
+  line-height: 20px;
+  color: #717386;
+  text-decoration: none;
+  transition: color .2s ease;
+}
+.lpb-rodape__link:hover { color: #4a1be8; text-decoration: underline; }
+.lpb-rodape__base {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  margin-top: 37px;
+  padding-top: 25px;
+  border-top: 1px solid #dfdfd4;
+}
+.lpb-rodape__copy { margin: 0; font-size: 12px; line-height: 16px; color: #717386; }
+.lpb-rodape__sociais { display: flex; align-items: center; gap: 16px; }
+.lpb-rodape__social {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 9999px;
+  background: #4a1be8;
+  color: #ffffff;
+  transition: background-color .2s ease;
+}
+.lpb-rodape__social:hover { background: #3f14c9; }
+.lpb-rodape__icone { display: block; }
+
+/* ---------- mobile: sem frame no Figma, o critério é dignidade ---------- */
+@media (max-width: 900px) {
+  .lpb-fecho { padding: 24px 0 64px; }
+  .lpb-fecho::before { right: -110px; width: 320px; height: 320px; }
+  .lpb-fecho__interno { padding: 0 16px; }
+  .lpb-fecho__selos { margin-top: 32px; padding-top: 24px; }
+  .lpb-rodape { padding: 40px 0 40px; }
+  .lpb-rodape__interno { padding: 0 16px; }
+  .lpb-rodape__colunas { flex-direction: column; gap: 28px; }
+  .lpb-rodape__base { flex-direction: column; align-items: flex-start; gap: 20px; margin-top: 28px; }
+}
+@media (max-width: 480px) {
+  .lpb-fecho__zap { width: 100%; }
+  /* Empilhado: em 2 linhas o separador "." sobra no fim da primeira e suja o ritmo. */
+  .lpb-fecho__selos { flex-direction: column; gap: 6px; }
+  .lpb-fecho__ponto { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .lpb-fecho__zap, .lpb-rodape__link, .lpb-rodape__social { transition: none; }
+}
+</style>
+
+<section class="lpb-fecho">
+  <div class="lpb-fecho__interno">
+    <p class="lpb-fecho__chamada">Prefere falar direto?</p>
+    <div class="lpb-fecho__zap-linha">
+      <a class="lpb-fecho__zap" href="https://scooto.co/contato-whatsapp-2/" target="_blank" rel="noopener"><svg class="lpb-fecho__zap-icone" width="14" height="14" viewBox="0 0 11.6625 11.6667" fill="currentColor" aria-hidden="true"><g transform="translate(0 11.6667) scale(1 -1)"><path d="M3.06724 2.04167L3.48709 1.79667C4.21016 1.37667 4.99349 1.16667 5.83708 1.16667C6.68067 1.16667 7.464 1.38056 8.18707 1.80833C8.88682 2.22056 9.44274 2.77667 9.85481 3.47667C10.2824 4.2 10.4962 4.98556 10.4962 5.83333C10.4962 6.68111 10.2824 7.46667 9.85481 8.19C9.44274 8.89 8.88682 9.44611 8.18707 9.85833C7.464 10.2861 6.67872 10.5 5.83125 10.5C4.98378 10.5 4.1985 10.2861 3.47542 9.85833C2.77567 9.44611 2.21976 8.89 1.80769 8.19C1.38006 7.46667 1.16625 6.68306 1.16625 5.83917C1.16625 4.99528 1.37617 4.21167 1.79602 3.48833L2.04094 3.06833L1.66774 1.66833L3.06724 2.04167ZM0 0L0.79305 2.89333C0.536475 3.33667 0.340156 3.80528 0.204094 4.29917C0.0680312 4.79306 0 5.30444 0 5.83333C0 6.62667 0.151612 7.385 0.454837 8.10833C0.750288 8.80056 1.16819 9.41694 1.70856 9.9575C2.24892 10.4981 2.86509 10.9161 3.55706 11.2117C4.28014 11.515 5.0382 11.6667 5.83125 11.6667C6.6243 11.6667 7.38236 11.515 8.10544 11.2117C8.79741 10.9161 9.41358 10.4981 9.95394 9.9575C10.4943 9.41694 10.9122 8.80056 11.2077 8.10833C11.5109 7.385 11.6625 6.62667 11.6625 5.83333C11.6625 5.04 11.5109 4.28167 11.2077 3.55833C10.9122 2.86611 10.4943 2.24972 9.95394 1.70917C9.41358 1.16861 8.79741 0.750556 8.10544 0.455C7.38236 0.151667 6.6243 0 5.83125 0C5.30255 0 4.79134 0.0680556 4.29763 0.204167C3.80392 0.340278 3.33547 0.536667 2.8923 0.793333L0 0ZM3.732 8.575C3.80975 8.575 3.8875 8.575 3.96525 8.575L4.05855 8.56333C4.1052 8.55556 4.14991 8.53806 4.19267 8.51083C4.23543 8.48361 4.26459 8.45444 4.28014 8.42333C4.45896 8.02667 4.63001 7.63 4.79329 7.23333C4.83216 7.14 4.81272 7.035 4.73497 6.91833C4.6961 6.84833 4.64556 6.77444 4.58336 6.69667L4.37344 6.46333L4.35011 6.41667C4.33456 6.37778 4.33067 6.34278 4.33845 6.31167C4.34622 6.28056 4.36566 6.23778 4.39676 6.18333L4.43175 6.125C4.58725 5.86833 4.78551 5.62333 5.02654 5.39L5.23646 5.19167C5.51636 4.94278 5.82347 4.74833 6.1578 4.60833L6.30941 4.53833C6.34829 4.52278 6.38327 4.51111 6.41437 4.50333L6.46102 4.49167C6.52322 4.49167 6.58154 4.51889 6.63596 4.57333C6.93141 4.93889 7.08302 5.12167 7.0908 5.12167C7.14522 5.17611 7.21909 5.19944 7.31239 5.19167C7.35126 5.19167 7.38625 5.18389 7.41735 5.16833L8.57194 4.655C8.60304 4.63944 8.63025 4.61806 8.65357 4.59083C8.6769 4.56361 8.68856 4.53444 8.68856 4.50333V4.49167C8.68856 4.42167 8.68467 4.35167 8.6769 4.28167C8.65357 4.10278 8.61859 3.95889 8.57194 3.85C8.54084 3.78778 8.49807 3.72944 8.44365 3.675C8.38922 3.62056 8.32702 3.56611 8.25705 3.51167L8.18707 3.45333C8.1171 3.41444 8.03935 3.37167 7.95382 3.325C7.8061 3.24722 7.64671 3.20444 7.47566 3.19667H7.42901C7.30461 3.18889 7.21131 3.185 7.14911 3.185L6.8109 3.24333C5.9712 3.46111 5.2248 3.85778 4.5717 4.43333C4.50172 4.49556 4.39676 4.59667 4.25681 4.73667L4.1985 4.795C3.68535 5.30833 3.30438 5.84111 3.05557 6.39333C2.9234 6.68111 2.85731 6.95722 2.85731 7.22167C2.85731 7.58722 2.96616 7.91389 3.18386 8.20167L3.20719 8.225C3.25384 8.28722 3.2966 8.33778 3.33547 8.37667C3.40545 8.44667 3.46376 8.49333 3.51041 8.51667C3.57261 8.54778 3.64647 8.56722 3.732 8.575Z"/></g></svg>Falar pelo WhatsApp</a>
+    </div>
+    <p class="lpb-fecho__selos">
+      <span>Mais de 150 empresas</span>
+      <span class="lpb-fecho__ponto" aria-hidden="true">·</span>
+      <span>Operação no ar em 24h</span>
+      <span class="lpb-fecho__ponto" aria-hidden="true">·</span>
+      <span>100% remota e feminina</span>
+      <span class="lpb-fecho__ponto" aria-hidden="true">·</span>
+      <span>LGPD e processos auditáveis</span>
+    </p>
+  </div>
+</section>
+
+<footer class="lpb-rodape">
+  <div class="lpb-rodape__interno">
+    <div class="lpb-rodape__colunas">
+      <div class="lpb-rodape__coluna">
+        <p class="lpb-rodape__texto">Scooto Tecnologia Ltda.</p>
+      </div>
+      <div class="lpb-rodape__coluna">
+        <p class="lpb-rodape__titulo">Contato</p>
+        <p class="lpb-rodape__texto">Telefone: (11) 3181-8057</p>
+      </div>
+      <div class="lpb-rodape__coluna">
+        <p class="lpb-rodape__titulo">Links</p>
+        <a class="lpb-rodape__link" href="https://scooto.co/politica-de-privacidade/" target="_blank" rel="noopener">Política de Privacidade</a>
+      </div>
+    </div>
+    <div class="lpb-rodape__base">
+      <p class="lpb-rodape__copy">© 2026 Scooto. Todos os direitos reservados.</p>
+      <div class="lpb-rodape__sociais">
+        <a class="lpb-rodape__social" href="https://www.instagram.com/scooto.co" target="_blank" rel="noopener" aria-label="Instagram da Scooto"><svg class="lpb-rodape__icone" width="11.66" height="11.67" viewBox="0 0 11.6625 11.6667" fill="currentColor" aria-hidden="true"><g transform="translate(0 11.6667) scale(1 -1)"><path d="M5.83125 7.58333C5.51247 7.58333 5.21897 7.50556 4.95073 7.35C4.68249 7.19444 4.47062 6.9825 4.31512 6.71417C4.15962 6.44583 4.08187 6.15222 4.08187 5.83333C4.08187 5.51444 4.15962 5.22083 4.31512 4.9525C4.47062 4.68417 4.68249 4.47222 4.95073 4.31667C5.21897 4.16111 5.51247 4.08333 5.83125 4.08333C6.15002 4.08333 6.44353 4.16111 6.71177 4.31667C6.98001 4.47222 7.19187 4.68417 7.34737 4.9525C7.50287 5.22083 7.58062 5.51444 7.58062 5.83333C7.58062 6.15222 7.50287 6.44583 7.34737 6.71417C7.19187 6.9825 6.98001 7.19444 6.71177 7.35C6.44353 7.50556 6.15002 7.58333 5.83125 7.58333ZM5.83125 8.75C6.35995 8.75 6.84783 8.61972 7.29489 8.35917C7.74196 8.09861 8.09572 7.74472 8.35618 7.2975C8.61664 6.85028 8.74687 6.36222 8.74687 5.83333C8.74687 5.30444 8.61664 4.81639 8.35618 4.36917C8.09572 3.92194 7.74196 3.56806 7.29489 3.3075C6.84783 3.04694 6.35995 2.91667 5.83125 2.91667C5.30255 2.91667 4.81467 3.04694 4.36761 3.3075C3.92054 3.56806 3.56678 3.92194 3.30632 4.36917C3.04586 4.81639 2.91562 5.30444 2.91562 5.83333C2.91562 6.36222 3.04586 6.85028 3.30632 7.2975C3.56678 7.74472 3.92054 8.09861 4.36761 8.35917C4.81467 8.61972 5.30255 8.75 5.83125 8.75ZM9.62156 8.90167C9.62156 8.69944 9.54964 8.52639 9.40581 8.3825C9.26197 8.23861 9.09092 8.16667 8.89266 8.16667C8.69439 8.16667 8.52334 8.23861 8.37951 8.3825C8.23567 8.52639 8.16375 8.6975 8.16375 8.89583C8.16375 9.09417 8.23567 9.26528 8.37951 9.40917C8.52334 9.55306 8.69439 9.625 8.89266 9.625C9.09092 9.625 9.26197 9.55306 9.40581 9.40917C9.54964 9.26528 9.62156 9.09611 9.62156 8.90167ZM5.83125 10.5C5.11595 10.5 4.63001 10.4981 4.37344 10.4942C4.11686 10.4903 3.82141 10.4806 3.48709 10.465C3.06724 10.4494 2.71736 10.3872 2.43746 10.2783C2.19644 10.185 1.98457 10.0469 1.80186 9.86417C1.61914 9.68139 1.48114 9.46944 1.38784 9.22833C1.27899 8.94833 1.21679 8.59833 1.20124 8.17833C1.18569 7.85944 1.17597 7.57361 1.17208 7.32083C1.16819 7.06806 1.16625 6.57222 1.16625 5.83333C1.16625 5.11778 1.16819 4.63167 1.17208 4.375C1.17597 4.11833 1.18569 3.82278 1.20124 3.48833C1.21679 3.06833 1.27899 2.71833 1.38784 2.43833C1.48114 2.19722 1.61914 1.98528 1.80186 1.8025C1.98457 1.61972 2.19644 1.48556 2.43746 1.4C2.71736 1.28333 3.06724 1.21722 3.48709 1.20167C3.80586 1.18611 4.09159 1.17639 4.34428 1.1725C4.59697 1.16861 5.09263 1.16667 5.83125 1.16667C6.54655 1.16667 7.03249 1.16861 7.28906 1.1725C7.54564 1.17639 7.84109 1.18611 8.17541 1.20167C8.59526 1.21722 8.94514 1.27944 9.22504 1.38833C9.46606 1.48167 9.67793 1.61972 9.86064 1.8025C10.0434 1.98528 10.1775 2.19722 10.263 2.43833C10.3796 2.71833 10.4457 3.06833 10.4613 3.48833C10.4768 3.80722 10.4865 4.09306 10.4904 4.34583C10.4943 4.59861 10.4962 5.09444 10.4962 5.83333C10.4962 6.54889 10.4943 7.035 10.4904 7.29167C10.4865 7.54833 10.4768 7.84389 10.4613 8.17833C10.4457 8.59833 10.3835 8.94833 10.2747 9.22833C10.1814 9.46944 10.0434 9.68139 9.86064 9.86417C9.67793 10.0469 9.46606 10.185 9.22504 10.2783C8.94514 10.3872 8.59526 10.4494 8.17541 10.465C7.85664 10.4806 7.57091 10.4903 7.31822 10.4942C7.06553 10.4981 6.56987 10.5 5.83125 10.5ZM5.83125 11.6667C6.5932 11.6667 7.11412 11.6628 7.39402 11.655C7.62727 11.655 7.90717 11.6472 8.23372 11.6317C8.77797 11.6083 9.24836 11.5189 9.64489 11.3633C10.0414 11.2078 10.3874 10.9822 10.6828 10.6867C10.9783 10.3911 11.2038 10.045 11.3593 9.64833C11.5148 9.25167 11.6042 8.78111 11.6275 8.23667C11.6431 7.90222 11.6508 7.62222 11.6508 7.39667C11.6586 7.10111 11.6625 6.57611 11.6625 5.82167C11.6625 5.06722 11.6586 4.55 11.6508 4.27C11.6508 4.03667 11.6431 3.75667 11.6275 3.43C11.6042 2.88556 11.5148 2.415 11.3593 2.01833C11.2038 1.62167 10.9783 1.27556 10.6828 0.98C10.3874 0.684444 10.0414 0.458889 9.64489 0.303333C9.24836 0.147778 8.77797 0.0583333 8.23372 0.035C7.8994 0.0194444 7.6195 0.0116667 7.39402 0.0116667C7.09857 0.00388889 6.57376 0 5.81959 0C5.06541 0 4.54837 0.00388889 4.26847 0.0116667C4.03522 0.0116667 3.75532 0.0194444 3.42877 0.035C2.88452 0.0583333 2.41414 0.147778 2.01761 0.303333C1.62109 0.458889 1.2751 0.684444 0.97965 0.98C0.6842 1.27556 0.458725 1.62167 0.303225 2.01833C0.147725 2.415 0.0583125 2.88556 0.0349875 3.43C0.0194375 3.76444 0.0116625 4.04444 0.0116625 4.27C0.0038875 4.56556 0 5.09056 0 5.845C0 6.59944 0.0038875 7.11667 0.0116625 7.39667C0.0116625 7.63 0.0194375 7.91 0.0349875 8.23667C0.0583125 8.78111 0.147725 9.25167 0.303225 9.64833C0.458725 10.045 0.6842 10.3911 0.97965 10.6867C1.2751 10.9822 1.62109 11.2078 2.01761 11.3633C2.41414 11.5189 2.88452 11.6083 3.42877 11.6317C3.7631 11.6472 4.043 11.655 4.26847 11.655C4.56392 11.6628 5.08485 11.6667 5.83125 11.6667Z"/></g></svg></a>
+        <a class="lpb-rodape__social" href="https://www.linkedin.com/company/scooto/" target="_blank" rel="noopener" aria-label="LinkedIn da Scooto"><svg class="lpb-rodape__icone" width="10.22" height="10.2" viewBox="0 0 10.2163 10.2026" fill="currentColor" aria-hidden="true"><g transform="translate(0 10.2026) scale(1 -1)"><path d="M4.96822 6.67333C5.24035 6.96111 5.54357 7.17889 5.8779 7.32667C6.23555 7.49 6.61264 7.57167 7.00916 7.57167C7.58451 7.57944 8.11904 7.43944 8.61276 7.15167C9.10647 6.86389 9.49716 6.47306 9.78484 5.97917C10.0725 5.48528 10.2163 4.95056 10.2163 4.375V0H9.0501V4.375C9.0501 4.74056 8.9568 5.07889 8.7702 5.39C8.5836 5.70111 8.3348 5.95 8.0238 6.13667C7.7128 6.32333 7.37264 6.41667 7.00333 6.41667C6.63402 6.41667 6.29386 6.32333 5.98286 6.13667C5.67186 5.95 5.42501 5.70111 5.24229 5.39C5.05958 5.07889 4.96822 4.73667 4.96822 4.36333V0H3.80197V7.29167H4.96822V6.67333ZM0.874687 8.45833C0.633663 8.45833 0.427625 8.54194 0.256575 8.70917C0.085525 8.87639 0 9.0825 0 9.3275C0 9.5725 0.085525 9.77861 0.256575 9.94583C0.427625 10.1131 0.635606 10.1986 0.880519 10.2025C1.12543 10.2064 1.33147 10.1228 1.49863 9.95167C1.66579 9.78056 1.74937 9.5725 1.74937 9.3275C1.74937 9.0825 1.66579 8.87639 1.49863 8.70917C1.33147 8.54194 1.12349 8.45833 0.874687 8.45833ZM0.291562 7.29167H1.45781V0H0.291562V7.29167Z"/></g></svg></a>
+        <a class="lpb-rodape__social" href="https://www.facebook.com/scooto.co/" target="_blank" rel="noopener" aria-label="Facebook da Scooto"><svg class="lpb-rodape__icone" width="6.12" height="10.5" viewBox="0 0 6.12281 10.5" fill="currentColor" aria-hidden="true"><g transform="translate(0 10.5) scale(1 -1)"><path d="M3.49875 6.41667H6.12281L5.83125 5.25H3.49875V0H2.3325V5.25H0V6.41667H2.3325V7.51333C2.3325 8.00333 2.35582 8.38444 2.40247 8.65667C2.44912 8.88222 2.52687 9.1 2.63572 9.31C2.84565 9.69111 3.1411 9.98278 3.52207 10.185C3.72423 10.3017 3.94192 10.3794 4.17517 10.4183C4.4473 10.4728 4.82827 10.5 5.3181 10.5C5.62132 10.5 5.88567 10.4728 6.11115 10.4183V9.33333H5.3181C4.9449 9.33333 4.67472 9.32167 4.50756 9.29833C4.34039 9.275 4.19461 9.22833 4.07021 9.15833C3.89139 9.065 3.75532 8.93278 3.66202 8.76167C3.59982 8.63722 3.55512 8.49139 3.52791 8.32417C3.50069 8.15694 3.48709 7.88667 3.48709 7.51333V6.41667H3.49875Z"/></g></svg></a>
+      </div>
+    </div>
+  </div>
+</footer>
