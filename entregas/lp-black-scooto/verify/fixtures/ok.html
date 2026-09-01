@@ -1,0 +1,44 @@
+<!-- Fixture do gate: o MENOR bloco que passa em todas as regras do § 9 do contrato.
+     Serve de autoteste do checar-bloco.mjs e de esqueleto para as tracks A/B/C. -->
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,600;0,700;1,400&family=Sora:wght@400;600;700&display=swap');
+
+.lpb-exemplo {
+  background: #f2f2e8;
+  font-family: 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+  padding: 24px;
+}
+
+.lpb-exemplo__titulo,
+.lpb-exemplo__titulo span {
+  color: #030304;
+  font-family: 'Sora', 'Segoe UI', system-ui, sans-serif;
+  font-weight: 700;
+}
+
+.lpb-exemplo__cta {
+  background: linear-gradient(145deg, #4a1be8 0%, #f12d64 50%, #ff6000 100%);
+  border-radius: 12px;
+  color: #fff;
+  display: inline-block;
+  padding: 16px 24px;
+  text-decoration: none;
+}
+
+@media (max-width: 900px) {
+  .lpb-exemplo {
+    padding: 16px;
+  }
+}
+</style>
+
+<section class="lpb-exemplo">
+  <h2 class="lpb-exemplo__titulo">Bloco de exemplo <span>que passa no gate</span></h2>
+  <img
+    class="lpb-exemplo__foto"
+    src="https://raw.githubusercontent.com/rafa-bulgarelli/lp-black-scooto-assets/main/logo-xp.png"
+    alt="Logo da XP"
+    width="165"
+    height="36">
+  <a class="lpb-exemplo__cta" href="#lpb-form">Quero avaliar minha operação</a>
+</section>
