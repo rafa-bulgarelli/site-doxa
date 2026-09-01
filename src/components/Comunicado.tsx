@@ -50,7 +50,36 @@ export function Comunicado({ aoFechar }: { aoFechar: () => void }) {
     cartaoRef.current?.focus({ preventScroll: true });
 
     const aoTeclar = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') fechar();
+      if (e.key === 'Escape') {
+        fechar();
+        return;
+      }
+      // A prisão do Tab. `aria-modal` PROMETE que só o diálogo existe; sem
+      // isto o foco vazava para a página de trás do véu, com o scroll travado
+      // — um leitor de tela andando por controles invisíveis (finding do
+      // collector no gate do card 018). A lista de focáveis é consultada no
+      // teclar, não guardada: o cartão é estático, mas uma lista viva não
+      // apodrece se ele um dia deixar de ser.
+      if (e.key === 'Tab') {
+        const raiz = cartaoRef.current;
+        if (raiz == null) return;
+        const focaveis = raiz.querySelectorAll<HTMLElement>('a[href], button:not([disabled])');
+        if (focaveis.length === 0) return;
+        const primeiro = focaveis[0];
+        const ultimo = focaveis[focaveis.length - 1];
+        const ativo = document.activeElement;
+        if (e.shiftKey) {
+          // Do primeiro controle — ou do próprio cartão, onde o foco nasce —
+          // para trás: dá a volta para o último.
+          if (ativo === primeiro || ativo === raiz || !raiz.contains(ativo)) {
+            e.preventDefault();
+            ultimo.focus();
+          }
+        } else if (ativo === ultimo || !raiz.contains(ativo)) {
+          e.preventDefault();
+          primeiro.focus();
+        }
+      }
     };
     window.addEventListener('keydown', aoTeclar);
 

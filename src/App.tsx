@@ -241,7 +241,10 @@ export default function App() {
   const [comunicadoAberto, setComunicadoAberto] = useState(false);
   useEffect(() => {
     if (naCentral || noManual || noConversor || noPainel) return;
-    if (window.location.search.includes(PARAM_FORCA)) {
+    // `has`, não substring: `?utm_campaign=comunicado` num link de campanha
+    // forçaria o aviso para todo mundo, sem espera e por cima do "já vi"
+    // (finding do collector no gate do card 018).
+    if (new URLSearchParams(window.location.search).has(PARAM_FORCA)) {
       setComunicadoAberto(true);
       return;
     }

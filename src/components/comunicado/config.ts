@@ -3,8 +3,11 @@
  * pedidos de contato (ordem do dono, 2026-09-01). Tudo que é número ou texto
  * de negócio mora aqui; `Comunicado.tsx` só sabe desenhar.
  *
- * Em português só, como as seções: a tradução da página é um trabalho à parte,
- * com revisão do dono, e um aviso temporário não passa na frente dela.
+ * Em português só, por DECISÃO do dono no gate (2026-09-01) — não por padrão:
+ * as seções já falam pt|en via `useIdioma`, e um visitante em `en` vê este
+ * aviso em PT. Aceito pela urgência e pelo prazo curto de vida do aviso; se
+ * ele viver o bastante para merecer tradução, vira `PorIdioma` e a chave sobe
+ * para `v2`.
  */
 
 /**
