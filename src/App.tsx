@@ -243,7 +243,7 @@ export default function App() {
     if (naCentral || noManual || noConversor || noPainel) return;
     // `has`, não substring: `?utm_campaign=comunicado` num link de campanha
     // forçaria o aviso para todo mundo, sem espera e por cima do "já vi"
-    // (finding do collector no gate do card 018).
+    // (finding do collector no gate do card 019).
     if (new URLSearchParams(window.location.search).has(PARAM_FORCA)) {
       setComunicadoAberto(true);
       return;

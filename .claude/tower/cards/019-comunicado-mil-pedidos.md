@@ -1,4 +1,4 @@
-# CARD 018 — Comunicado na landing: mais de 1.000 pedidos de contato
+# CARD 019 — Comunicado na landing: mais de 1.000 pedidos de contato
 
 - **Tipo:** feature (aviso temporário na landing)
 - **Aberto em:** 2026-09-01

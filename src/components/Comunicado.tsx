@@ -57,7 +57,7 @@ export function Comunicado({ aoFechar }: { aoFechar: () => void }) {
       // A prisão do Tab. `aria-modal` PROMETE que só o diálogo existe; sem
       // isto o foco vazava para a página de trás do véu, com o scroll travado
       // — um leitor de tela andando por controles invisíveis (finding do
-      // collector no gate do card 018). A lista de focáveis é consultada no
+      // collector no gate do card 019). A lista de focáveis é consultada no
       // teclar, não guardada: o cartão é estático, mas uma lista viva não
       // apodrece se ele um dia deixar de ser.
       if (e.key === 'Tab') {
