@@ -9,9 +9,12 @@ branch **`track-lpb-qa`** (JÁ criada pelo `tower-track.sh` a partir da base).
 worktree, não repo principal. **Guarda extra** — esta track só nasce com TUDO mergeado:
 ```
 test -f entregas/lp-black-scooto/blocos/bloco-a-topo.html && \
+test -f entregas/lp-black-scooto/blocos/bloco-a-hero-form-topo.html && \
 test -f entregas/lp-black-scooto/blocos/bloco-b-meio.html && \
 test -f entregas/lp-black-scooto/blocos/bloco-c-final.html && \
-test -f entregas/lp-black-scooto/form/form-mock.html
+test -f entregas/lp-black-scooto/blocos/bloco-c-pos-form.html && \
+test -f entregas/lp-black-scooto/form/form-mock.html && \
+test -f entregas/lp-black-scooto/form/form-mock-hero.html
 ```
 Se faltar qualquer um → **PARE e reporte**. Divergiu em qualquer item → PARE e reporte.
 
@@ -25,10 +28,12 @@ sem precisar perguntar nada.
 
 ## CONTEXTO (não perca tempo redescobrindo)
 
-- Tudo já está em main: blocos em `entregas/lp-black-scooto/blocos/`, form em
-  `form/`, referência visual em `figma/`, contrato em `contrato.md`, harness em
-  `verify/servir.mjs` (porta fixa, monta a página completa em `GET /`, reescreve
-  `RAW_PREFIX` → `/assets/`) e `verify/checar-bloco.mjs`.
+- Tudo já está em main: 5 fragmentos de bloco em `entregas/lp-black-scooto/blocos/`
+  (hero em 2 peças, meio, final em 2 peças), os DOIS forms em `form/` (spec + CSS +
+  2 mocks), referência visual em `figma/` (11 seções + design-context.md), contrato
+  em `contrato.md`, harness em `verify/servir.mjs` (porta fixa; `GET /` monta a
+  página na ORDEM canônica com o scaffold do hero e os mocks NAS POSIÇÕES reais;
+  reescreve `RAW_PREFIX` → `/assets/`) e `verify/checar-bloco.mjs`.
 - Decisões do GESTOR:
   - **Diff de pixel sem dependência nova**: capture screenshots via Chrome headless +
     DevTools Protocol (copie a abordagem de `.claude/tower/bin/mobile-shot.mjs` —
@@ -70,11 +75,16 @@ sem precisar perguntar nada.
    imprime tabela e exit 1 em qualquer violação.
 3. `entregas/lp-black-scooto/MONTAGEM.md` — o guia único, na ordem de execução:
    pré-requisitos (Elementor Pro ativo, hook do Intercom já instalado — referência ao
-   contrato, sem token); criar a página; colar bloco A, B, C (cada um num widget HTML,
-   nessa ordem); inserir o widget Form onde o `contrato.md` § *Fatiamento* manda,
-   seguindo `form/configuracao-form.md`; conferência final (checklist do critério de
-   aceite do card 018: visual 1440, imagens raw, CTAs → form, submissão em
-   Submissions, ticket no Intercom, mobile ~390, import da Sora).
+   contrato, sem token); criar a página; **hero em colunas** conforme `contrato.md`
+   § *Montagem do hero* (coluna esquerda = widget HTML `bloco-a-topo`; coluna direita
+   com classe `lpb-hero-card` = widget HTML `bloco-a-hero-form-topo` + widget Form
+   "Formulário LP Black Hero"); widget HTML `bloco-b-meio`; widget HTML
+   `bloco-c-final`; widget Form "Formulário LP Black" (CSS ID `lpb-form`); widget
+   HTML `bloco-c-pos-form` — os dois forms montados seguindo
+   `form/configuracao-form.md`; conferência final (checklist do critério de aceite
+   do card 018: visual 1440, imagens raw, CTAs → `#lpb-form`, submissão dos DOIS
+   forms em Submissions com os nomes certos, tickets no Intercom, mobile ~390,
+   import de Sora + Roboto, footer sem CNPJ e com os links fechados do contrato).
 4. Rodar o VERIFY completo (inclui os prints que vão para o gate do assento), gravar
    os artefatos em `qa/`, commit + push.
 
@@ -99,6 +109,7 @@ Tracks A, B, C e D mergeadas em main (o STEP 0 confere). Roda DEPOIS da fila ser
   - depois `kill %1`
 - `node entregas/lp-black-scooto/verify/qa-assets.mjs --local; echo "exit=$?"` → `exit=0` (sem `--local` se o repo público já estiver no ar)
 - `grep -icE 'bearer|authorization' entregas/lp-black-scooto/MONTAGEM.md` = 0
+- `grep -c 'Formulário LP Black Hero' entregas/lp-black-scooto/MONTAGEM.md` ≥ 1 e `grep -c 'lpb-hero-card' entregas/lp-black-scooto/MONTAGEM.md` ≥ 1
 - `git diff --name-only origin/main...HEAD` ⊆ SCOPE
 
 ## COMMIT + PUSH
