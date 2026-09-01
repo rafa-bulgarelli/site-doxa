@@ -947,13 +947,16 @@ Friday gera.") — 4 itens (alturas 80/80/60/60):
 apenas o sub-título. (O badge do card 2 é explícito: "FRENTE 2, ATENDIMENTO E SUPORTE".)
 
 Card 2 (borda `#ffc8ac`, badge `#ff6000` + ícone, sub `#df5200` "Para segurar o que a
-venda gera.") — 5 itens (primeiro com 2 linhas h-40, demais 1 linha h-26):
+venda gera.") — **6 itens** (primeiro com 2 linhas h-40, demais 1 linha h-26; o item 6
+tinha caído do extrato e foi recuperado pelo screenshot `secao-05-contratacao.png` —
+correção de 2026-09-01, achado da track B):
 1. "Pico de venda vira pico de dúvida antes, e pico de troca, devolução e rastreio depois. É a mesma onda, atrasada em algumas semanas."
 2. "Atendimento humano nos seus canais, WhatsApp, e-mail, chat, redes"
 3. "Time que resolve, não que encaminha"
 4. "Escala de 5 a 50 posições conforme o volume real"
 5. "Cobertura estendida nos dias críticos"
-6. Caixa final (bg `#fff1eb`, borda `#ffe1d2`, `rounded-[8px] p-[13px]`, Roboto Italic 12/16 `#b74508`): "Uma observação honesta: a maioria das empresas contrata a frente de vendas primeiro e descobre a de atendimento em dezembro, no susto. Se você já viu esse filme, vale conversar sobre as duas agora."
+6. "Relatório diário de CSAT, NPS e volume"
+7. Caixa final (bg `#fff1eb`, borda `#ffe1d2`, `rounded-[8px] p-[13px]`, Roboto Italic 12/16 `#b74508`): "Uma observação honesta: a maioria das empresas contrata a frente de vendas primeiro e descobre a de atendimento em dezembro, no susto. Se você já viu esse filme, vale conversar sobre as duas agora."
 
 CTA final centrado: pill `bg-[#4a1be8] rounded-full h-[44px] px-[32px]`,
 `Roboto:SemiBold 14/20 white`: "Quero avaliar as duas frentes" — **é `<a>` (A-361)** →
