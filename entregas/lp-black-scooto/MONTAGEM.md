@@ -324,7 +324,7 @@ mente sobre espaçamento. Marque um a um — esta lista é o critério de aceite
       Privacidade" → `https://scooto.co/politica-de-privacidade/` (**não existe**
       página de Termos de Uso em scooto.co, por isso o link saiu); "Falar pelo
       WhatsApp" → `https://scooto.co/contato-whatsapp-2/`; e três ícones —
-      **Instagram, LinkedIn e Facebook**, nesta ordem. Clique nos seis links: nenhum
+      **Instagram, LinkedIn e Facebook**, nesta ordem. Clique nos cinco links: nenhum
       pode dar 404.
 - [ ] **9.12 Celular (~390px).** Abra no telefone ou emule 390px no DevTools:
       **nada rola para o lado**, os pares Cargo/Empresa e Site/WhatsApp empilham, e o
