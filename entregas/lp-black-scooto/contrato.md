@@ -73,7 +73,10 @@ Estrutura (números do dump da seção 01, `1:5`):
     2. **Container** do Elementor com a classe CSS **`lpb-hero-card`** (é o card do
        form: 584×408, `border-radius: 16px`, moldura de 2px em gradiente
        `linear-gradient(145deg,#4a1be8 0%,#f12d64 50%,#ff6000 100%)`, miolo branco,
-       `padding: 24px`), contendo **nesta ordem**:
+       `padding: 26px` NO CSS DO BLOCO — 2px de moldura + 24px de miolo; no painel
+       do Elementor o padding do container fica em **0**, senão a regra
+       `.elementor-element-…` vence a do bloco e o conteúdo desalinha), contendo
+       **nesta ordem**:
        - widget **HTML** → `blocos/bloco-a-hero-form-topo.html` (badge `#ffe1d2`/
          `#602103` "Avaliação gratuita" + `<p>` 20/28 `Sora:Bold` "Vamos entender sua
          operação");
@@ -92,10 +95,14 @@ Estrutura (números do dump da seção 01, `1:5`):
 2. **Moldura em gradiente sem elemento extra**: `background-image` duplo com
    `background-origin/clip` (`padding-box, border-box`) resolve a borda de 2px sem
    pseudo-elemento. O véu borrado atrás do card (`DIV-52`, blur 20px, `inset: -12px`,
-   `border-radius: 24px`) é um `::before` com `hero-glow-fonte-270.png` e
-   `filter: blur(20px)`; **URL de imagem em CSS também usa `RAW_PREFIX`** (o
-   `checar-bloco.mjs` só consegue cobrar isso em `<img>`/`<source>` — o resto é
-   disciplina).
+   `border-radius: 24px`) é um `::before` com o PRÓPRIO gradiente da marca
+   (`linear-gradient(145deg,#4a1be8,#f12d64,#ff6000)`) + `filter: blur(20px)` +
+   `opacity: .25` — NÃO a imagem `hero-glow-fonte-270.png`: ela é a foto da
+   scooteira, e borrada produz manchas roxas/tons de pele que NÃO existem no halo
+   do screenshot (precedência screenshot > dump > contrato; decisão da track A,
+   confirmada pelo collector em 2026-09-01). Se um dia entrar imagem em CSS,
+   **URL de imagem em CSS também usa `RAW_PREFIX`** (o `checar-bloco.mjs` só
+   cobra `<img>`/`<source>` — o resto é disciplina).
 3. **A faixa de 4 selos do fim do hero abre o `bloco-b-meio.html`.** Ela é full-bleed
    (1440px, `border-top: 1px #dfdfd4`), então não cabe dentro da coluna de 584px, e a
    track A não tem um terceiro arquivo. Colocá-la no topo do bloco B mantém cada
@@ -180,7 +187,7 @@ resposta, então o mesmo HTML roda nos dois lugares sem edição.
 | Asset | URL final | Seção / uso |
 |---|---|---|
 | `hero-foto-scooteira.png` | `RAW_PREFIX` + `hero-foto-scooteira.png` | 01 — foto, coluna direita (612×604) |
-| `hero-glow-fonte-270.png` | `RAW_PREFIX` + `hero-glow-fonte-270.png` | 01 — véu borrado atrás do card (CSS `::before`, blur 20px) |
+| `hero-glow-fonte-270.png` | `RAW_PREFIX` + `hero-glow-fonte-270.png` | NÃO USADA — o véu do card é gradiente CSS (ver § 2); fica no repo só como registro do Figma |
 | `autoridade-foto-time.jpg` | `RAW_PREFIX` + `autoridade-foto-time.jpg` | 06 — foto do time (472×320, `object-fit: cover`) |
 | `autoridade-foto-time-270.png` | `RAW_PREFIX` + `autoridade-foto-time-270.png` | reserva (uso incerto) — não usar sem necessidade |
 | `logo-xp.png` | `RAW_PREFIX` + `logo-xp.png` | 07 — faixa de logos (165×36) |
