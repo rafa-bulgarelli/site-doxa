@@ -1,0 +1,563 @@
+<!-- =====================================================================
+     form-mock-hero.html
+     LP Black Scooto (card 018) — MOCK DE QA. **NÃO VAI PARA O WORDPRESS.**
+
+     Para que serve: reproduzir, em HTML estático, o DOM que o widget de
+     Elementor Pro Form gera para "Formulário LP Black Hero", para conferir o
+     CSS no navegador antes de existir um WordPress para testar.
+
+     O CSS abaixo é CÓPIA do form.css — o canônico é o `.css`. Mudou lá,
+     copie de novo aqui (é o arquivo que o gate de estilo confere).
+
+     Uma diferença deliberada de DOM: onde o Elementor emite a tag FORM,
+     aqui vai <div class="elementor-form">. O gate dos blocos proíbe essa
+     tag no repositório (formulário é widget nativo do Elementor, nunca
+     markup nosso) e, para o CSS, div e FORM se comportam igual.
+
+     Como o Elementor monta os nomes que o CSS usa:
+       .elementor-field-group-<custom id>   -> um grupo por campo
+       #form-field-<custom id>              -> id do input
+       .elementor-col-100 / .elementor-col-50 -> largura do campo
+       .elementor-field-required            -> o asterisco do rótulo
+     ===================================================================== -->
+<style>
+/* LP Black Scooto (card 018) — CSS dos DOIS formulários Elementor Pro.
+ *
+ * O QUE ISTO ESTILIZA
+ *   .lpb-form-widget          -> "Formulário LP Black" (seção 10, o card branco)
+ *   .lpb-form-widget--hero    -> "Formulário LP Black Hero" (os 3 campos do card do hero)
+ *   As duas classes entram em Avançado > Classes CSS do widget de Form (ver
+ *   configuracao-form.md). O DOM por baixo é o que o Elementor Pro gera sozinho
+ *   (.elementor-form, .elementor-field-group, .elementor-field, .elementor-button,
+ *   .elementor-message) — nada aqui depende de HTML nosso.
+ *
+ * ONDE COLAR: Elementor > Configurações do site > CSS personalizado (uma vez, vale para
+ *   os dois forms). Alternativa sem Pro: Aparência > Personalizar > CSS adicional.
+ *   O @import tem que ser a PRIMEIRA linha do bloco onde este arquivo for colado — CSS
+ *   descarta @import que venha depois de qualquer regra.
+ *
+ * POR QUE TODO SELETOR É COMPOSTO (.lpb-form-widget .elementor-…): o CSS do Elementor
+ *   chega antes e com especificidade de 1 a 3 classes. Prefixar com a classe do widget
+ *   sobe a nossa para 2–4 classes, e isso bastou: NÃO há nenhum !important neste
+ *   arquivo. Se um dia precisar de um, comente ali qual regra do Elementor ele vence.
+ *
+ * NÃO É deste arquivo: o card do hero (.lpb-hero-card — moldura em gradiente, badge e
+ *   título) é da track A; aqui ficam só campos, botão, mensagens e a nota sob o botão.
+ */
+
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,600;0,700;1,400&family=Sora:wght@400;600;700&display=swap');
+
+/* ------------------------------------------------------------------ *
+ * 1. Tokens do bloco (§ 3 do contrato.md) e reset de caixa
+ * ------------------------------------------------------------------ */
+
+.lpb-form-widget {
+  --lpb-creme: #f2f2e8;
+  --lpb-borda: #dfdfd4;
+  --lpb-borda-card: #c6cfff;
+  --lpb-roxo: #4a1be8;
+  --lpb-roxo-escuro: #3d15c2;
+  --lpb-rosa: #f12d64;
+  --lpb-laranja: #ff6000;
+  --lpb-texto: #111116;
+  --lpb-rotulo: #22232b;
+  --lpb-placeholder: #9ca3af;
+  --lpb-nota: #8f91a2;
+  --lpb-corpo: 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+}
+
+.lpb-form-widget,
+.lpb-form-widget *,
+.lpb-form-widget *::before,
+.lpb-form-widget *::after {
+  box-sizing: border-box;
+}
+
+/* ------------------------------------------------------------------ *
+ * 2. Form completo — o WIDGET é o card branco da seção 10
+ *    (720 de largura, 33 de padding => form interno de 654, como no Figma)
+ * ------------------------------------------------------------------ */
+
+.lpb-form-widget {
+  width: 100%;
+  max-width: 720px;
+  margin-right: auto;
+  margin-left: auto;
+  padding: 33px;
+  background-color: #fff;
+  border: 1px solid var(--lpb-borda-card);
+  border-radius: 16px;
+  font-family: var(--lpb-corpo);
+  text-align: left;
+}
+
+.lpb-form-widget .elementor-form {
+  width: 100%;
+  margin: 0;
+}
+
+/* O Elementor monta as colunas com margin negativa no wrapper + padding nos grupos, e
+ * os valores vêm dos controles "Espaçamento entre colunas/linhas" do widget. Trocamos
+ * por flex+gap para o espaçamento ser SEMPRE o do Figma (16px), independente do que
+ * estiver configurado no painel. */
+.lpb-form-widget .elementor-form-fields-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin: 0;
+}
+
+.lpb-form-widget .elementor-form-fields-wrapper .elementor-field-group {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+/* Par de campos lado a lado: 654 - 16 de gap = 319 + 319, exatamente o Figma. */
+.lpb-form-widget .elementor-form-fields-wrapper .elementor-field-group.elementor-col-50 {
+  width: calc(50% - 8px);
+}
+
+/* ------------------------------------------------------------------ *
+ * 3. Rótulos
+ * ------------------------------------------------------------------ */
+
+.lpb-form-widget .elementor-field-group > .elementor-field-label {
+  display: block;
+  width: 100%;
+  margin: 0;
+  padding-bottom: 4px;
+  color: var(--lpb-rotulo);
+  font-family: var(--lpb-corpo);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 20px;
+}
+
+/* O asterisco de obrigatório é do Elementor (:after com content "*" em vermelho).
+ * Repetimos o content porque o mock de QA não carrega o CSS do Elementor; no
+ * WordPress a declaração é idêntica à dele e só a cor muda para o laranja da marca. */
+.lpb-form-widget .elementor-field-group.elementor-field-required > .elementor-field-label::after {
+  content: "*";
+  padding-inline-start: 0.25em;
+  color: var(--lpb-laranja);
+}
+
+/* ------------------------------------------------------------------ *
+ * 4. Campos
+ * ------------------------------------------------------------------ */
+
+.lpb-form-widget .elementor-field-group .elementor-field-textual {
+  width: 100%;
+  height: 46px;
+  min-height: 46px;
+  padding: 12px 17px;
+  background-color: var(--lpb-creme);
+  background-repeat: no-repeat;
+  border: 1px solid var(--lpb-borda);
+  border-radius: 8px;
+  box-shadow: none;
+  color: var(--lpb-texto);
+  font-family: var(--lpb-corpo);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+  /* iOS arredonda e sombreia input nativo por conta própria. */
+  -webkit-appearance: none;
+  appearance: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+/* O Firefox aplica opacity .54 no placeholder por padrão. */
+.lpb-form-widget .elementor-field-group .elementor-field-textual::placeholder {
+  color: var(--lpb-placeholder);
+  font-family: var(--lpb-corpo);
+  font-size: 14px;
+  opacity: 1;
+}
+
+.lpb-form-widget .elementor-field-group .elementor-field-textual:hover {
+  border-color: #cfcfc2;
+}
+
+/* O anel de 3px substitui o outline nativo — some o outline, mas o foco continua
+ * visível no teclado (e o modo de alto contraste tem a regra abaixo). */
+.lpb-form-widget .elementor-field-group .elementor-field-textual:focus {
+  border-color: var(--lpb-roxo);
+  box-shadow: 0 0 0 3px rgba(74, 27, 232, 0.16);
+  outline: none;
+}
+
+@media (forced-colors: active) {
+  .lpb-form-widget .elementor-field-group .elementor-field-textual:focus {
+    outline: 2px solid;
+    outline-offset: 1px;
+  }
+}
+
+/* Campo numérico do anti-spam: sem as setinhas de incremento. */
+.lpb-form-widget .elementor-field-group .elementor-field-textual[type="number"] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+.lpb-form-widget .elementor-field-group .elementor-field-textual[type="number"]::-webkit-outer-spin-button,
+.lpb-form-widget .elementor-field-group .elementor-field-textual[type="number"]::-webkit-inner-spin-button {
+  margin: 0;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+/* ------------------------------------------------------------------ *
+ * 5. Botão de envio
+ * ------------------------------------------------------------------ */
+
+.lpb-form-widget .elementor-field-group.e-form__buttons,
+.lpb-form-widget .elementor-form-fields-wrapper .elementor-field-type-submit {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.lpb-form-widget .elementor-field-type-submit .elementor-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 44px;
+  padding: 12px 24px;
+  background-color: var(--lpb-roxo);
+  background-image: none;
+  border: 0;
+  border-radius: 8px;
+  color: #fff;
+  font-family: var(--lpb-corpo);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 20px;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
+}
+
+.lpb-form-widget .elementor-field-type-submit .elementor-button:hover {
+  background-color: var(--lpb-roxo-escuro);
+}
+
+.lpb-form-widget .elementor-field-type-submit .elementor-button:active {
+  transform: translateY(1px);
+}
+
+.lpb-form-widget .elementor-field-type-submit .elementor-button:focus-visible {
+  outline: 3px solid rgba(74, 27, 232, 0.45);
+  outline-offset: 2px;
+}
+
+.lpb-form-widget .elementor-field-type-submit .elementor-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ------------------------------------------------------------------ *
+ * 6. Nota sob o botão
+ *
+ * É ::after do WIDGET, não um campo: o Elementor Pro sempre renderiza o botão como
+ * ÚLTIMO item do formulário, então não existe lugar para um texto depois dele dentro do
+ * widget (§ 2, nota 4 do contrato.md). Se o dono quiser esse texto como conteúdo real
+ * no DOM, a alternativa é um widget Editor de Texto logo abaixo, no mesmo container.
+ * ------------------------------------------------------------------ */
+
+.lpb-form-widget::after {
+  content: "Seus dados ficam com a gente. Sem spam, sem lista compartilhada. Quem responde é gente do time comercial, não bot.";
+  display: block;
+  margin-top: 8px;
+  color: var(--lpb-nota);
+  font-family: var(--lpb-corpo);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 16px;
+  text-align: center;
+}
+
+/* ------------------------------------------------------------------ *
+ * 7. Mensagens (o Elementor injeta depois do envio, via AJAX)
+ * ------------------------------------------------------------------ */
+
+.lpb-form-widget .elementor-message {
+  margin-top: 12px;
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-family: var(--lpb-corpo);
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.lpb-form-widget .elementor-message.elementor-message-success {
+  background-color: #e8f6ee;
+  border: 1px solid #b9e3cb;
+  color: #0f7a45;
+}
+
+.lpb-form-widget .elementor-message.elementor-message-danger {
+  background-color: #ffe9ef;
+  border: 1px solid #ffc2d2;
+  color: #b3123c;
+}
+
+/* Campo reprovado na validação: o Elementor marca o grupo com .elementor-error. */
+.lpb-form-widget .elementor-field-group.elementor-error .elementor-field-textual {
+  background-color: #fff5f8;
+  border-color: var(--lpb-rosa);
+}
+
+/* A mensagem por campo muda de classe entre versões do Elementor (.help-inline nas
+ * antigas, .elementor-message-danger nas novas) — as duas ficam cobertas. */
+.lpb-form-widget .elementor-field-group .help-inline,
+.lpb-form-widget .elementor-field-group .elementor-message-danger {
+  margin-top: 4px;
+  padding: 0;
+  background: none;
+  border: 0;
+  color: #b3123c;
+  font-size: 12px;
+  line-height: 16px;
+}
+
+/* ------------------------------------------------------------------ *
+ * 8. Variante do hero — mesmo motor, card e botão diferentes
+ * ------------------------------------------------------------------ */
+
+/* O card do hero é a moldura em gradiente da track A (.lpb-hero-card): aqui o widget
+ * não desenha card nenhum. */
+.lpb-form-widget.lpb-form-widget--hero {
+  max-width: none;
+  padding: 0;
+  background: none;
+  border: 0;
+  border-radius: 0;
+}
+
+.lpb-form-widget--hero .elementor-form-fields-wrapper {
+  gap: 12px;
+}
+
+/* Os campos do hero não mostram rótulo (o Figma usa só placeholder), mas o rótulo
+ * CONTINUA no DOM para leitor de tela — por isso sr-only, não display:none. */
+.lpb-form-widget--hero .elementor-field-group > .elementor-field-label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  border: 0;
+  white-space: nowrap;
+  clip-path: inset(50%);
+}
+
+/* Ícone dentro do input: o widget de Form não aceita ícone por campo, então ele entra
+ * como background-image (SVG do Figma embutido, sem requisição extra). O grupo ganha do
+ * Elementor a classe .elementor-field-group-<custom id> — é por ela que se acerta o
+ * campo certo. O <g transform="translate(0 H) scale(1 -1)"> dentro do SVG é o espelho
+ * VERTICAL que o Figma aplica no grupo (rotate 180 + scale-x -1): sem ele a pessoa sai
+ * de cabeça para baixo e o envelope vira um ícone de imagem. */
+.lpb-form-widget--hero .elementor-field-group-name .elementor-field-textual,
+.lpb-form-widget--hero .elementor-field-group-email .elementor-field-textual {
+  padding-left: 41px;
+  background-position: 12px center;
+}
+
+.lpb-form-widget--hero .elementor-field-group-name .elementor-field-textual {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10.66 14'%3E%3Cg transform='translate(0 14) scale(1 -1)'%3E%3Cpath fill='%238f91a2' d='M0 0C0 0.968889 0.244292 1.86667 0.732875 2.69333C1.20369 3.49333 1.83885 4.12889 2.63835 4.6C3.4645 5.08889 4.36172 5.33333 5.33 5.33333C6.29828 5.33333 7.1955 5.08889 8.02165 4.6C8.82115 4.12889 9.45631 3.49333 9.92713 2.69333C10.4157 1.86667 10.66 0.968889 10.66 0H9.3275C9.3275 0.72 9.14539 1.39111 8.78118 2.01333C8.42584 2.61778 7.94614 3.09778 7.34208 3.45333C6.72024 3.81778 6.04955 4 5.33 4C4.61045 4 3.93976 3.81778 3.31793 3.45333C2.71386 3.09778 2.23416 2.61778 1.87883 2.01333C1.51461 1.39111 1.3325 0.72 1.3325 0H0ZM5.33 6C4.60157 6 3.93088 6.18222 3.31793 6.54667C2.71386 6.90222 2.23416 7.38222 1.87883 7.98667C1.51461 8.6 1.3325 9.27111 1.3325 10C1.3325 10.7289 1.51461 11.4 1.87883 12.0133C2.23416 12.6178 2.71386 13.0978 3.31793 13.4533C3.93088 13.8178 4.60157 14 5.33 14C6.05843 14 6.72913 13.8178 7.34208 13.4533C7.94614 13.0978 8.42584 12.6178 8.78118 12.0133C9.14539 11.4 9.3275 10.7289 9.3275 10C9.3275 9.27111 9.14539 8.6 8.78118 7.98667C8.42584 7.38222 7.94614 6.90222 7.34208 6.54667C6.72913 6.18222 6.05843 6 5.33 6ZM5.33 7.33333C5.8097 7.33333 6.25387 7.45333 6.6625 7.69333C7.07113 7.93333 7.39538 8.25778 7.63523 8.66667C7.87508 9.07556 7.995 9.52 7.995 10C7.995 10.48 7.87508 10.9244 7.63523 11.3333C7.39538 11.7422 7.07113 12.0667 6.6625 12.3067C6.25387 12.5467 5.8097 12.6667 5.33 12.6667C4.8503 12.6667 4.40613 12.5467 3.9975 12.3067C3.58887 12.0667 3.26463 11.7422 3.02478 11.3333C2.78493 10.9244 2.665 10.48 2.665 10C2.665 9.52 2.78493 9.07556 3.02478 8.66667C3.26463 8.25778 3.58887 7.93333 3.9975 7.69333C4.40613 7.45333 4.8503 7.33333 5.33 7.33333Z'/%3E%3C/g%3E%3C/svg%3E");
+  background-size: 10.66px 14px;
+}
+
+.lpb-form-widget--hero .elementor-field-group-email .elementor-field-textual {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 13.325 12'%3E%3Cg transform='translate(0 12) scale(1 -1)'%3E%3Cpath fill='%238f91a2' d='M0.66625 12H12.6588C12.8453 12 13.003 11.9356 13.1318 11.8067C13.2606 11.6778 13.325 11.52 13.325 11.3333V0.666667C13.325 0.48 13.2606 0.322222 13.1318 0.193333C13.003 0.0644444 12.8453 0 12.6588 0H0.66625C0.4797 0 0.322021 0.0644444 0.193213 0.193333C0.0644042 0.322222 0 0.48 0 0.666667V11.3333C0 11.52 0.0644042 11.6778 0.193213 11.8067C0.322021 11.9356 0.4797 12 0.66625 12ZM11.9925 9.17333L6.7158 4.44L1.3325 9.18667V1.33333H11.9925V9.17333ZM1.67895 10.6667L6.70248 6.22667L11.6594 10.6667H1.67895Z'/%3E%3C/g%3E%3C/svg%3E");
+  background-size: 13.325px 12px;
+}
+
+/* Botão do hero: 57px, gradiente do Figma, seta à direita.
+ *
+ * O gradiente NÃO é o mesmo da moldura do card. No Figma o fundo do botão é uma imagem,
+ * e os pixels dela (figma/secao-01-hero.png, botão em x 130..661) descrevem um gradiente
+ * HORIZONTAL de quatro paradas que VOLTA ao roxo na borda direita — não os 145° de três
+ * paradas da moldura. Os números abaixo saíram de medição no PNG: as quebras estão em
+ * 33% (rosa) e 66,75% (laranja), por regressão nos canais B e G, e as cores dos nós são
+ * as da marca. Conferido pixel a pixel em duas linhas do botão (504 px cada, fora dos
+ * cantos arredondados): erro médio de 1,35 e máximo de 3 por canal.
+ *
+ * O seletor repete a classe do widget (.lpb-form-widget.lpb-form-widget--hero) para
+ * chegar a 4 classes: com uma só, ele EMPATA com a regra base do botão e passaria a
+ * depender da ordem do arquivo — que é frágil se alguém reordenar as seções. */
+.lpb-form-widget.lpb-form-widget--hero .elementor-field-type-submit .elementor-button {
+  min-height: 57px;
+  padding: 16px 24px;
+  background-color: var(--lpb-roxo);
+  background-image: linear-gradient(90deg, #4a1be8 0%, #f12d64 33%, #ff6000 66.75%, #4a1be8 100%);
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 24px;
+}
+
+.lpb-form-widget.lpb-form-widget--hero .elementor-field-type-submit .elementor-button:hover {
+  background-color: var(--lpb-roxo);
+  box-shadow: 0 8px 20px rgba(74, 27, 232, 0.24);
+  filter: brightness(1.06);
+}
+
+/* A seta é ::after do BOTÃO (e não do span do texto) porque o span interno muda de
+ * classe entre versões do Elementor; o botão, não. */
+.lpb-form-widget.lpb-form-widget--hero .elementor-field-type-submit .elementor-button::after {
+  content: "";
+  flex: 0 0 auto;
+  width: 17px;
+  height: 11px;
+  margin-left: 8px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10.67 10.3733'%3E%3Cg transform='translate(0 10.3733) scale(1 -1)'%3E%3Cpath fill='%23ffffff' d='M8.12254 5.85333L4.53475 9.42667L5.48171 10.3733L10.67 5.18667L5.48171 0L4.53475 0.946667L8.12254 4.52H0V5.85333H8.12254Z'/%3E%3C/g%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+}
+
+/* Nota do hero: texto próprio e alinhada à esquerda, como no Figma. */
+.lpb-form-widget.lpb-form-widget--hero::after {
+  content: "Seus dados ficam com a gente. Sem spam, sem lista comprada. Um humano responde. Não é bot, não é fila.";
+  margin-top: 16px;
+  text-align: left;
+}
+
+/* ------------------------------------------------------------------ *
+ * 9. Mobile (~390). Não há frame mobile no Figma: o critério é dignidade.
+ * ------------------------------------------------------------------ */
+
+@media (max-width: 600px) {
+  .lpb-form-widget {
+    padding: 20px;
+    border-radius: 12px;
+  }
+
+  /* Par lado a lado vira empilhado: 319px de campo não cabem em 390 de tela. */
+  .lpb-form-widget .elementor-form-fields-wrapper .elementor-field-group.elementor-col-50 {
+    width: 100%;
+  }
+
+  .lpb-form-widget.lpb-form-widget--hero {
+    padding: 0;
+  }
+
+  /* "Quero avaliar minha operação" quebra em duas linhas no celular — o botão cresce
+   * em vez de estourar a borda. */
+  .lpb-form-widget.lpb-form-widget--hero .elementor-field-type-submit .elementor-button {
+    height: auto;
+    padding: 14px 18px;
+    font-size: 15px;
+  }
+}
+
+/* ================================================================== *
+ * DAQUI PARA BAIXO É SÓ DO MOCK — nada disto vai para o WordPress.
+ * O palco e o card simulado existem para o print de QA ter o contexto
+ * do hero (fundo creme + moldura em gradiente). O card DE VERDADE é o
+ * .lpb-hero-card da track A: quando o preview injeta este mock dentro
+ * dele (/?bloco=hero), as duas regras abaixo se apagam sozinhas.
+ * ================================================================== */
+
+.lpb-mock-palco--hero {
+  padding: 48px 16px;
+  background-color: #f2f2e8;
+}
+
+.lpb-mock-cardsim {
+  /* border-box para os 584px serem a largura TOTAL do card, como no Figma: sem isto o
+     padding e a borda somam por fora e o botão de dentro sai 52px mais largo que o
+     desenho — o que estragaria a comparação do print com o screenshot. */
+  box-sizing: border-box;
+  max-width: 584px;
+  margin: 0 auto;
+  padding: 24px;
+  border: 2px solid transparent;
+  border-radius: 16px;
+  background-image: linear-gradient(#fff, #fff),
+    linear-gradient(145deg, #4a1be8 0%, #f12d64 50%, #ff6000 100%);
+  background-origin: padding-box, border-box;
+  background-clip: padding-box, border-box;
+}
+
+.lpb-hero-card .lpb-mock-palco--hero {
+  padding: 0;
+  background-color: transparent;
+}
+
+.lpb-hero-card .lpb-mock-cardsim {
+  max-width: none;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background-image: none;
+}
+</style>
+
+<div class="lpb-mock-palco lpb-mock-palco--hero">
+  <!-- .lpb-mock-cardsim imita o .lpb-hero-card da track A (moldura em gradiente de 2px).
+       O badge "Avaliação gratuita" e o título "Vamos entender sua operação" são do
+       bloco-a-hero-form-topo.html, da track A — por isso não aparecem aqui. -->
+  <div class="lpb-mock-cardsim">
+    <!-- Widget de Form "Formulário LP Black Hero". SEM CSS ID: a âncora #lpb-form é
+         exclusiva do form completo. Classes: lpb-form-widget lpb-form-widget--hero. -->
+    <div class="elementor-element elementor-element-lpbformhero elementor-button-align-stretch lpb-form-widget lpb-form-widget--hero elementor-widget elementor-widget-form"
+         data-element_type="widget" data-widget_type="form.default">
+      <div class="elementor-widget-container">
+        <!-- no WordPress esta div e a tag FORM: class="elementor-form" method="post" name="Formulário LP Black Hero" -->
+        <div class="elementor-form">
+          <input type="hidden" name="post_id" value="0">
+          <input type="hidden" name="form_id" value="lpbformhero">
+          <input type="hidden" name="referer_title" value="LP Black Scooto">
+
+          <div class="elementor-form-fields-wrapper elementor-labels-above">
+
+            <!-- Os rótulos ficam no DOM (leitor de tela) e somem da tela por sr-only:
+                 o Figma mostra só o placeholder. -->
+            <div class="elementor-field-type-text elementor-field-group elementor-column elementor-field-group-name elementor-col-100 elementor-field-required">
+              <label for="form-field-name" class="elementor-field-label">Nome</label>
+              <input size="1" type="text" name="form_fields[name]" id="form-field-name"
+                     class="elementor-field elementor-size-sm elementor-field-textual"
+                     placeholder="Nome" required="required" aria-required="true" autocomplete="name">
+            </div>
+
+            <div class="elementor-field-type-email elementor-field-group elementor-column elementor-field-group-email elementor-col-100 elementor-field-required">
+              <label for="form-field-email" class="elementor-field-label">E-mail corporativo</label>
+              <input size="1" type="email" name="form_fields[email]" id="form-field-email"
+                     class="elementor-field elementor-size-sm elementor-field-textual"
+                     placeholder="E-mail corporativo" required="required" aria-required="true" autocomplete="email">
+            </div>
+
+            <!-- Anti-spam. Custom ID "quiz" de propósito: fora dos 6 IDs reservados do
+                 hook. Obrigatório, mas o Elementor não confere o VALOR (ver spec). -->
+            <div class="elementor-field-type-number elementor-field-group elementor-column elementor-field-group-quiz elementor-col-100 elementor-field-required">
+              <label for="form-field-quiz" class="elementor-field-label">Quanto é 5 + 7?</label>
+              <input size="1" type="number" name="form_fields[quiz]" id="form-field-quiz"
+                     class="elementor-field elementor-size-sm elementor-field-textual"
+                     placeholder="Quanto é 5 + 7?" required="required" aria-required="true" inputmode="numeric">
+            </div>
+
+            <div class="elementor-field-group elementor-column elementor-field-type-submit elementor-col-100 e-form__buttons">
+              <button class="elementor-button elementor-size-sm" type="submit">
+                <span class="elementor-button-content-wrapper">
+                  <span class="elementor-button-text">Quero avaliar minha operação</span>
+                </span>
+              </button>
+            </div>
+
+          </div>
+        </div>
+        <!-- a nota "Seus dados ficam com a gente…" é .lpb-form-widget--hero::after -->
+      </div>
+    </div>
+  </div>
+</div>
