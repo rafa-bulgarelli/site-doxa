@@ -2,9 +2,9 @@
 
 - **Tipo:** feature (infra de medição) — desbloqueia a rodada 4 do card 011
 - **Aberto em:** 2026-08-19
-- **Status:** **PLANEJADO** (GESTOR, 2026-08-19) — setup do dono 100% completo; 3 packs
-  prontos (`prelude-gsc-acesso` → `track-gsc-baseline` ∥ `track-gsc-docs`). Próximo passo:
-  sessão principal spawna o prelude.
+- **Status:** **ENTREGUE e VALIDADO-LIVE em 2026-08-19** — PRs #70 (prelude), #72
+  (baseline), #73 (docs); evidência no fim do card. Próximo passo: `pnpm gsc:baseline`
+  em ~2026-09-16 (28 dias de coleta) → rodada 4 do card 011 se houver páginas no gatilho.
 
 ## O que o dono quer ver funcionando
 
