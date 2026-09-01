@@ -1,0 +1,42 @@
+<!-- Fixture do gate: viola de proposito as regras do § 9 do contrato.md.
+     Se algum dia este arquivo PASSAR, o checar-bloco.mjs e que esta quebrado. -->
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;700&display=swap');
+
+/* A excecao do html{} vale so para scroll-behavior:smooth e so no bloco-a-topo.html.
+   Aqui ela e violada nas duas pontas: declaracao extra (o font-size vazaria para o
+   tema inteiro do WordPress) e arquivo errado.
+   Este comentario tem varias linhas de proposito: o gate precisa reportar a linha
+   certa mesmo depois de remover comentarios. */
+html {
+  scroll-behavior: smooth;
+  font-size: 20px;
+}
+
+.card {
+  background: #fff;
+  padding: 24px;
+}
+
+.lpb-ruim__titulo {
+  color: #030304;
+}
+</style>
+
+<section class="lpb-ruim">
+  <h2 class="lpb-ruim__titulo">Bloco que o gate precisa recusar</h2>
+
+  <img class="card" src="https://exemplo.invalido/imagem-que-nao-e-do-repo.png" alt="">
+
+  <form action="/enviar" method="post">
+    <input type="text" name="nome">
+    <button type="submit" onclick="enviar()">Enviar</button>
+  </form>
+
+  <a href="https://exemplo.invalido/pagina-que-ninguem-autorizou/">Link fora da lista</a>
+  <a href="javascript:void(0)">Link com esquema proibido</a>
+
+  <script>
+    console.log("nem isso pode");
+  </script>
+</section>
