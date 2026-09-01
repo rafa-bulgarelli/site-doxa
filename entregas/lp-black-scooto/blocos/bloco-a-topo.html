@@ -1,0 +1,136 @@
+<!-- LP BLACK — Scooto · bloco A (track A, card 018)
+     Coluna ESQUERDA do hero, widget HTML do Elementor: H1, subtítulo, linha de prova
+     social e a régua de marcas. Números do dump da seção 01 (`figma/design-context.md`,
+     nós 1:9 a 1:43): coluna de 584px, H1 60/60 tracking -1.5px, sub 16/24, prova 14/20.
+     O card do formulário NÃO está aqui — ele é o container `.lpb-hero-card` logo abaixo
+     deste widget (ver `bloco-a-hero-form-topo.html` e o § 2 do contrato). -->
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,600;0,700;1,400&family=Sora:wght@400;600;700&display=swap');
+
+/* Única regra global permitida em toda a LP (§ 9.4 do contrato), e só neste arquivo:
+   é o que faz os CTAs descerem suave até #lpb-form sem uma linha de JavaScript. */
+html {
+  scroll-behavior: smooth;
+}
+
+/* O respiro de 72px no topo é o DIV-7 (48px) + o pb-24 do seu margin-wrap no Figma:
+   é ele que faz o H1 começar a 232px do topo da seção, como no screenshot. */
+.lpb-hero-topo {
+  box-sizing: border-box;
+  font-family: 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+  max-width: 584px;
+  padding: 72px 0 24px;
+  width: 100%;
+}
+
+.lpb-hero-topo__titulo {
+  color: #030304;
+  font-family: 'Sora', 'Segoe UI', system-ui, sans-serif;
+  font-size: 60px;
+  font-weight: 700;
+  letter-spacing: -1.5px;
+  line-height: 60px;
+  margin: 0 0 16px;
+}
+
+/* Bloco, e não inline: no Figma a pergunta roxa começa sempre em linha nova
+   (H1-9 tem 240px = 3 linhas pretas + 1 roxa). O `nowrap` é do desenho, não capricho:
+   a caixa do H1 no Figma tem 783px e a pergunta sangra ~20px para dentro do gap de
+   64px entre as colunas — sem ele, "conta?" cai para uma quinta linha e o card desce. */
+.lpb-hero-topo__pergunta {
+  color: #4a1be8;
+  display: block;
+  white-space: nowrap;
+}
+
+.lpb-hero-topo__sub {
+  color: #555766;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 24px;
+  margin: 0 0 16px;
+}
+
+.lpb-hero-topo__prova {
+  color: #555766;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+  margin: 0 0 12px;
+}
+
+.lpb-hero-topo__clientes {
+  color: #111116;
+  font-weight: 600;
+}
+
+.lpb-hero-topo__marcas {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  font-size: 14px;
+  font-weight: 600;
+  gap: 8px 24px;
+  line-height: 20px;
+  margin: 0;
+}
+
+.lpb-hero-topo__marca {
+  color: #8f91a2;
+  white-space: nowrap;
+}
+
+.lpb-hero-topo__separador {
+  color: #aeb0be;
+}
+
+/* Mobile: sem frame no Figma. O H1 de 60px não cabe em 390px — desce a escala e o
+   respiro do topo, que ali é do container do Elementor, não do texto. */
+@media (max-width: 900px) {
+  .lpb-hero-topo {
+    padding: 8px 0 24px;
+  }
+
+  .lpb-hero-topo__titulo {
+    font-size: 40px;
+    letter-spacing: -1px;
+    line-height: 44px;
+  }
+
+  /* Fora do desktop a pergunta quebra: 584px de linha não existem em 390px, e
+     `nowrap` ali viraria rolagem horizontal. */
+  .lpb-hero-topo__pergunta {
+    white-space: normal;
+  }
+}
+
+@media (max-width: 480px) {
+  .lpb-hero-topo__titulo {
+    font-size: 34px;
+    letter-spacing: -0.8px;
+    line-height: 38px;
+  }
+
+  .lpb-hero-topo__marcas {
+    gap: 6px 16px;
+  }
+}
+</style>
+
+<div class="lpb-hero-topo">
+  <h1 class="lpb-hero-topo__titulo">
+    Você vai gerar demanda na Black Friday.
+    <span class="lpb-hero-topo__pergunta">Quem vai dar conta?</span>
+  </h1>
+  <p class="lpb-hero-topo__sub">Time de pré-vendas e atendimento montado, treinado e rodando em 24 horas, sem contrato longo, no valor/hora de quem fica o ano inteiro.</p>
+  <p class="lpb-hero-topo__prova">Mais de 150 empresas escalam vendas e atendimento com a Scooto. Entre elas, <span class="lpb-hero-topo__clientes">XP, Cora e Boca Rosa</span>.</p>
+  <p class="lpb-hero-topo__marcas">
+    <span class="lpb-hero-topo__marca">XP</span>
+    <span class="lpb-hero-topo__separador" aria-hidden="true">·</span>
+    <span class="lpb-hero-topo__marca">Cora</span>
+    <span class="lpb-hero-topo__separador" aria-hidden="true">·</span>
+    <span class="lpb-hero-topo__marca">Boca Rosa</span>
+    <span class="lpb-hero-topo__separador" aria-hidden="true">·</span>
+    <span class="lpb-hero-topo__marca">Indústria da Beleza</span>
+  </p>
+</div>

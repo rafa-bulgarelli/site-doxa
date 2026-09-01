@@ -1,0 +1,128 @@
+<!-- LP BLACK — Scooto · bloco A · topo do card do hero (track A, card 018)
+     Vai num widget HTML DENTRO do container do Elementor que tem a classe CSS
+     `lpb-hero-card` (§ 2 do contrato); logo abaixo dele, no mesmo container, entra o
+     widget "Formulário LP Black Hero" (track D). Este arquivo entrega duas coisas:
+       1. o cabeçalho do card — badge "Avaliação gratuita" + título;
+       2. o CSS do PRÓPRIO card (`.lpb-hero-card`): fundo branco, moldura de 2px em
+          gradiente, raio 16px e o véu borrado atrás (DIV-52 do Figma).
+     Números do dump da seção 01 (nós 1:45 a 1:59). -->
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,600;0,700;1,400&family=Sora:wght@400;600;700&display=swap');
+
+/* O card é o CONTAINER do Elementor, não este fragmento: o fundo e a moldura moram no
+   ::after, e não no elemento, porque o véu (::before) precisa ficar ATRÁS da face
+   branca. `z-index: -1` não serviria: um pseudo negativo é pintado antes do fundo da
+   SEÇÃO do hero, some debaixo do creme e o véu vira invisível — falha silenciosa.
+   Com `isolation: isolate` a pilha fica presa aqui dentro: véu (0) < face (1) <
+   conteúdo (2). */
+.lpb-hero-card {
+  box-sizing: border-box;
+  isolation: isolate;
+  max-width: 584px;
+  padding: 26px;
+  position: relative;
+  width: 100%;
+}
+
+/* Véu borrado atrás do card: DIV-52, inset -12px, raio 24px, blur 20px.
+   O § 2 do contrato palpitava `hero-glow-fonte-270.png` (o INVENTARIO já marcava como
+   "provável"), mas o screenshot manda — e nele o halo é o GRADIENTE da marca vazando
+   do card: roxo fraco à esquerda, pêssego/rosa à direita e embaixo. Com a foto
+   borrada saem manchas roxas da arte da scooteira, que não existem no desenho; por
+   isso o véu é o mesmo gradiente da moldura, borrado. Sem imagem, uma requisição a
+   menos. (Precedência do contrato: screenshot > dump > contrato.) */
+.lpb-hero-card::before {
+  background-image: linear-gradient(145deg, #4a1be8 0%, #f12d64 50%, #ff6000 100%);
+  border-radius: 24px;
+  content: "";
+  filter: blur(20px);
+  inset: -12px;
+  opacity: 0.25;
+  pointer-events: none;
+  position: absolute;
+  z-index: 0;
+}
+
+/* Face do card: miolo branco + moldura de 2px em gradiente, sem elemento extra —
+   dois background-image com origin/clip diferentes (§ 2, nota 2 do contrato). */
+.lpb-hero-card::after {
+  background-image:
+    linear-gradient(#fff, #fff),
+    linear-gradient(145deg, #4a1be8 0%, #f12d64 50%, #ff6000 100%);
+  background-clip: padding-box, border-box;
+  background-origin: border-box;
+  border: 2px solid transparent;
+  border-radius: 16px;
+  content: "";
+  inset: 0;
+  pointer-events: none;
+  position: absolute;
+  z-index: 1;
+}
+
+/* O conteúdo do card (este fragmento e o widget de Form da track D) fica acima da
+   face branca; sem isto, o ::after cobriria os dois. */
+.lpb-hero-card > * {
+  position: relative;
+  z-index: 2;
+}
+
+.lpb-hero-card__cabecalho {
+  font-family: 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+  margin-bottom: 16px;
+}
+
+.lpb-hero-card__badge {
+  align-items: center;
+  background: #ffe1d2;
+  border-radius: 9999px;
+  box-sizing: border-box;
+  color: #602103;
+  display: inline-flex;
+  font-size: 12px;
+  font-weight: 700;
+  gap: 6px;
+  height: 24px;
+  line-height: 16px;
+  padding: 4px 12px;
+}
+
+/* A caixa do raio tem 12,5px no Figma e o glifo, 8px, fica CENTRADO nela
+   (nó 1:54, inset-[4.17%_18%] = 2,25px de folga de cada lado) — sem o
+   justify-content o SVG encosta na esquerda e o badge sai torto. */
+.lpb-hero-card__badge-icone {
+  align-items: center;
+  display: inline-flex;
+  flex: none;
+  justify-content: center;
+  width: 12.5px;
+}
+
+.lpb-hero-card__titulo {
+  color: #030304;
+  font-family: 'Sora', 'Segoe UI', system-ui, sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 28px;
+  margin: 8px 0 0;
+}
+
+@media (max-width: 900px) {
+  .lpb-hero-card {
+    padding: 18px;
+  }
+
+  .lpb-hero-card__titulo {
+    font-size: 18px;
+    line-height: 26px;
+  }
+}
+</style>
+
+<div class="lpb-hero-card__cabecalho">
+  <span class="lpb-hero-card__badge">
+    <span class="lpb-hero-card__badge-icone" aria-hidden="true"><svg width="8" height="11" viewBox="0 0 8 11" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4.5 6.5H8L3.5 0V4.5H0L4.5 11V6.5Z" fill="currentColor"/></svg></span>
+    Avaliação gratuita
+  </span>
+  <p class="lpb-hero-card__titulo">Vamos entender sua operação</p>
+</div>
