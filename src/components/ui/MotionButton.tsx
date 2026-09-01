@@ -22,8 +22,14 @@ interface MotionButtonProps {
    * ink, and the hover floods ink and turns the label back to paper. It exists
    * because the comparison section's winning card is cream, and a white disc on
    * cream is an invisible button.
+   *
+   * `ink` is the loud one on a light surface: the whole pill is ink, the disc
+   * is paper with an ink arrow, and the hover floods paper and flips the label
+   * to ink. It exists because the owner asked for a black button on the cream
+   * notice card (card 019) — on cream, `inverse` is quiet by design, and the
+   * one action the card exists for cannot be the quiet one.
    */
-  variant?: 'primary' | 'secondary' | 'inverse';
+  variant?: 'primary' | 'secondary' | 'inverse' | 'ink';
   /**
    * Stretches the pill to its container instead of to its label.
    *
@@ -58,12 +64,15 @@ export function MotionButton({
 }: MotionButtonProps) {
   const isPrimary = variant === 'primary';
   const isInverse = variant === 'inverse';
+  const isInk = variant === 'ink';
   const className = `group relative inline-flex h-14 items-center overflow-hidden rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 ${
+    isInk ? 'bg-[#0B0B0B]' : ''
+  } ${
     fullWidth
       ? `w-full justify-center px-8 ring-1 ring-inset ${isInverse ? 'ring-black/15' : 'ring-white/15'}`
       : 'pl-[4.25rem] pr-8'
   } ${
-    isInverse
+    isInverse || isInk
       ? 'focus-visible:ring-black focus-visible:ring-offset-[#F4F1E8]'
       : 'focus-visible:ring-white focus-visible:ring-offset-black'
   }`;
@@ -74,13 +83,13 @@ export function MotionButton({
         aria-hidden
         className={`absolute left-1 top-1 h-12 w-12 rounded-full transition-[width] duration-500 ease-out motion-reduce:transition-none ${
           busy ? '' : 'group-hover:w-[calc(100%-0.5rem)]'
-        } ${isInverse ? 'bg-[#0B0B0B]' : isPrimary ? 'bg-white' : 'bg-white/[0.14]'}`}
+        } ${isInverse ? 'bg-[#0B0B0B]' : isPrimary || isInk ? 'bg-white' : 'bg-white/[0.14]'}`}
       />
       <span
         aria-hidden
         className={`absolute left-7 top-1/2 -translate-x-1/2 -translate-y-1/2 transition-transform duration-500 motion-reduce:transition-none ${
           busy ? '' : 'group-hover:translate-x-0'
-        } ${isInverse ? 'text-[#F4F1E8]' : isPrimary ? 'text-black' : 'text-white'}`}
+        } ${isInverse ? 'text-[#F4F1E8]' : isPrimary || isInk ? 'text-black' : 'text-white'}`}
       >
         <ArrowRight className="h-5 w-5" strokeWidth={2} />
       </span>
@@ -88,7 +97,7 @@ export function MotionButton({
         className={`relative whitespace-nowrap text-sm font-medium tracking-tight transition-colors duration-500 motion-reduce:transition-none md:text-base ${
           isInverse
             ? `text-[#0B0B0B] ${busy ? '' : 'group-hover:text-[#F4F1E8]'}`
-            : `text-white ${isPrimary && !busy ? 'group-hover:text-black' : ''}`
+            : `text-white ${(isPrimary || isInk) && !busy ? 'group-hover:text-black' : ''}`
         }`}
       >
         {/* The spinner takes the label's place rather than sitting beside it:

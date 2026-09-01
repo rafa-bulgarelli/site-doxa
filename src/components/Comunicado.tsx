@@ -32,14 +32,33 @@ export function Comunicado({ aoFechar }: { aoFechar: () => void }) {
   const parado = useReducedMotion() === true;
   const cartaoRef = useRef<HTMLDivElement>(null);
 
-  const fechar = () => {
+  const marcar = () => {
     try {
       localStorage.setItem(CHAVE_COMUNICADO, new Date().toISOString());
     } catch {
       // Navegação privada com storage bloqueado: o aviso volta na próxima
       // visita, que é o comportamento certo quando não há onde lembrar.
     }
+  };
+
+  const fechar = () => {
+    marcar();
     aoFechar();
+  };
+
+  /**
+   * O caminho do botão preto: marca já, desmonta só no quadro seguinte.
+   *
+   * O scroll é destravado AQUI, sincronamente, e não no cleanup: o pulo da
+   * âncora é a ação default do clique e roda antes do próximo quadro — com o
+   * `overflow: hidden` ainda no body, o navegador tentaria rolar uma página
+   * que não rola, falharia em silêncio, e o destravamento do cleanup chegaria
+   * tarde demais para repetir o pulo.
+   */
+  const marcarEDeixarNavegar = () => {
+    marcar();
+    document.body.style.overflow = '';
+    requestAnimationFrame(() => aoFechar());
   };
 
   useEffect(() => {
@@ -145,28 +164,40 @@ export function Comunicado({ aoFechar }: { aoFechar: () => void }) {
           {COPY.tituloDepois}
         </h2>
 
-        <p className="mt-5 text-[0.95rem] leading-relaxed text-black/70">{COPY.corpo}</p>
+        <p className="mt-5 text-[1.05rem] leading-relaxed text-black/70 sm:text-lg">
+          {COPY.corpo}
+        </p>
 
-        <p className="mt-4 border-l-2 border-black/15 pl-4 text-[0.95rem] font-medium leading-relaxed">
+        {/* Em SERIF, como o título (pedido do dono): a linha que desarma a
+            ansiedade de quem já está na fila é promessa, não nota de rodapé. */}
+        <p className="mt-5 border-l-2 border-black/15 pl-4 font-serif text-[1.35rem] leading-snug tracking-[-0.01em] sm:text-[1.6rem]">
           {COPY.garantia}
         </p>
 
-        <div className="mt-8">
-          <MotionButton label={COPY.botao} onClick={fechar} variant="inverse" fullWidth />
-        </div>
-
-        <p className="mt-5 text-center text-sm text-black/60">
-          {COPY.conviteAntes}{' '}
-          {/* Âncora de verdade, não botão: quem clica está navegando para o
-              formulário, e o aviso sai da frente no mesmo gesto. */}
-          <a
-            href={HREF_FORMS}
+        {/* Os dois botões EM LINHA, um por leitor: quem já preencheu fecha no
+            transparente; quem não preencheu vai ao formulário pelo preto — o
+            único aceso, porque é a ação que o cartão existe para provocar. No
+            telefone os dois não cabem lado a lado sem apertar o rótulo, então
+            empilham — `col-reverse` mantém o preto POR CIMA, que é onde a ação
+            principal mora quando vira pilha. */}
+        <div className="mt-8 flex flex-col-reverse gap-3 sm:flex-row">
+          <button
+            type="button"
             onClick={fechar}
-            className="font-medium text-black underline decoration-black/30 underline-offset-4 transition-colors hover:decoration-black"
+            className="inline-flex h-14 items-center justify-center rounded-full px-8 text-sm font-medium tracking-tight text-black ring-1 ring-inset ring-black/20 transition-colors hover:bg-black/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 focus-visible:ring-offset-[#F4F1E8] md:text-base sm:flex-none"
           >
-            {COPY.conviteLink}
-          </a>
-        </p>
+            {COPY.botao}
+          </button>
+          {/* Âncora de verdade por baixo do estilo, não botão: quem clica está
+              navegando para o formulário. A marca de "já vi" é gravada no
+              clique, mas o diálogo só desmonta no quadro SEGUINTE
+              (`requestAnimationFrame`) — desmontar o `<a>` no meio do próprio
+              clique é apostar que o navegador completa a navegação de um
+              elemento que já saiu do documento. */}
+          <div className="sm:flex-1" onClick={marcarEDeixarNavegar}>
+            <MotionButton label={COPY.botaoFila} href={HREF_FORMS} variant="ink" fullWidth />
+          </div>
+        </div>
       </motion.div>
     </motion.div>
   );
