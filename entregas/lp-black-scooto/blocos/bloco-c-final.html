@@ -1,0 +1,218 @@
+<!--
+  LP Black Scooto — BLOCO C (final): seção 09 (FAQ) + TOPO da seção 10 (orçamento).
+  Widget HTML do Elementor. Zero JS: o acordeão usa o par details/summary nativo
+  do HTML (as tags aparecem só no markup, para o gate contar 10 itens).
+
+  MONTAGEM (contrato § 1): logo ABAIXO deste widget entra o widget Form
+  "Formulário LP Black" (CSS ID lpb-form) e, depois dele, bloco-c-pos-form.html.
+  O container/seção do Elementor que abriga os TRÊS widgets precisa ter fundo
+  #f12d64 — este bloco pinta o rosa da própria área, mas não alcança o widget de
+  formulário que vem depois dele (widget nenhum estiliza um irmão).
+-->
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,400;0,600;0,700;1,400&family=Sora:wght@400;600;700&display=swap');
+
+/* box-sizing escopado: o tema do WordPress não é confiável nesse ponto. */
+.lpb-faq, .lpb-faq *, .lpb-orcamento, .lpb-orcamento * { box-sizing: border-box; }
+
+/* ---------- seção 09 — FAQ ---------- */
+.lpb-faq {
+  background: #f2f2e8;
+  padding: 96px 0;
+  font-family: 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+}
+.lpb-faq__interno { max-width: 896px; margin: 0 auto; padding: 0 24px; }
+.lpb-faq__titulo {
+  margin: 0 0 48px;
+  font-family: 'Sora', 'Segoe UI', system-ui, sans-serif;
+  font-weight: 700;
+  font-size: 36px;
+  line-height: 40px;
+  color: #030304;
+  text-align: center;
+}
+.lpb-faq__lista { display: flex; flex-direction: column; gap: 12px; }
+.lpb-faq__item {
+  background: #ffffff;
+  border: 1px solid #dfdfd4;
+  border-radius: 12px;
+  overflow: hidden;
+}
+.lpb-faq__pergunta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 72px;
+  padding: 20px;
+  cursor: pointer;
+  list-style: none;
+}
+/* marcador nativo do acordeão: some no WebKit e no resto (list-style acima). */
+.lpb-faq__pergunta::-webkit-details-marker { display: none; }
+.lpb-faq__texto {
+  font-family: 'Sora', 'Segoe UI', system-ui, sans-serif;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 24px;
+  color: #111116;
+}
+.lpb-faq__disco {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 9999px;
+  background: #ecece1;
+  color: #4a1be8;
+  transition: background-color .2s ease, color .2s ease;
+}
+.lpb-faq__pergunta:hover .lpb-faq__disco { background: #e3e3d6; }
+.lpb-faq__chevron { display: block; transition: transform .2s ease; }
+.lpb-faq__item[open] .lpb-faq__disco { background: #4a1be8; color: #ffffff; }
+.lpb-faq__item[open] .lpb-faq__pergunta:hover .lpb-faq__disco { background: #3f14c9; }
+.lpb-faq__item[open] .lpb-faq__chevron { transform: rotate(180deg); }
+.lpb-faq__resposta {
+  margin: 0;
+  padding: 0 20px 20px;
+  font-size: 14px;
+  line-height: 22.75px;
+  color: #555766;
+}
+.lpb-faq__link { color: #4a1be8; text-decoration: underline; }
+.lpb-faq__link:hover { color: #3f14c9; }
+
+/* ---------- seção 10 — topo (a moldura rosa do formulário) ---------- */
+.lpb-orcamento {
+  background: #f12d64;
+  padding: 96px 0 40px;
+  font-family: 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+  overflow: hidden;
+}
+.lpb-orcamento__interno { max-width: 768px; margin: 0 auto; padding: 0 24px; }
+.lpb-orcamento__titulo {
+  margin: 0 0 16px;
+  font-family: 'Sora', 'Segoe UI', system-ui, sans-serif;
+  font-weight: 700;
+  font-size: 36px;
+  line-height: 40px;
+  color: #ffffff;
+  text-align: center;
+}
+.lpb-orcamento__sub {
+  margin: 0;
+  font-size: 16px;
+  line-height: 24px;
+  color: rgba(255, 255, 255, .8);
+  text-align: center;
+}
+
+/* ---------- mobile: sem frame no Figma, o critério é dignidade ---------- */
+@media (max-width: 900px) {
+  .lpb-faq { padding: 64px 0; }
+  .lpb-faq__interno { padding: 0 16px; }
+  .lpb-faq__titulo { margin-bottom: 32px; font-size: 28px; line-height: 34px; }
+  .lpb-faq__pergunta { min-height: 64px; padding: 16px; gap: 12px; }
+  .lpb-faq__resposta { padding: 0 16px 16px; }
+  .lpb-orcamento { padding: 64px 0 32px; }
+  .lpb-orcamento__interno { padding: 0 16px; }
+  .lpb-orcamento__titulo { font-size: 28px; line-height: 34px; }
+}
+@media (max-width: 480px) {
+  .lpb-faq__titulo { font-size: 26px; line-height: 32px; }
+  .lpb-faq__texto { font-size: 15px; line-height: 22px; }
+  .lpb-faq__disco { width: 28px; height: 28px; }
+  .lpb-orcamento__titulo { font-size: 26px; line-height: 32px; }
+  .lpb-orcamento__sub { font-size: 15px; line-height: 22px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .lpb-faq__disco, .lpb-faq__chevron { transition: none; }
+}
+</style>
+
+<section class="lpb-faq">
+  <div class="lpb-faq__interno">
+    <h2 class="lpb-faq__titulo">Perguntas que a gente sempre recebe</h2>
+    <div class="lpb-faq__lista">
+      <details open class="lpb-faq__item">
+        <summary class="lpb-faq__pergunta">
+          <span class="lpb-faq__texto">Ainda dá tempo de contratar em outubro? E em novembro?</span>
+          <span class="lpb-faq__disco"><svg class="lpb-faq__chevron" width="10.6" height="6.47" viewBox="0 0 10.5974 6.46667" fill="currentColor" aria-hidden="true"><path d="M5.29868 4.11667L9.41431 0L10.5974 1.16667L5.29868 6.46667L0 1.16667L1.18304 0L5.29868 4.11667Z"/></svg></span>
+        </summary>
+        <p class="lpb-faq__resposta">Dá. A operação sobe em 24 horas em qualquer mês. A diferença é o quanto o time conhece o seu negócio quando o volume chegar. Em agosto e setembro, ele chega calejado. Em novembro, ele aprende durante o pico. Os dois funcionam, só não funcionam igual.</p>
+      </details>
+      <details class="lpb-faq__item">
+        <summary class="lpb-faq__pergunta">
+          <span class="lpb-faq__texto">Como funciona a condição de Black Friday?</span>
+          <span class="lpb-faq__disco"><svg class="lpb-faq__chevron" width="10.6" height="6.47" viewBox="0 0 10.5974 6.46667" fill="currentColor" aria-hidden="true"><path d="M5.29868 4.11667L9.41431 0L10.5974 1.16667L5.29868 6.46667L0 1.16667L1.18304 0L5.29868 4.11667Z"/></svg></span>
+        </summary>
+        <p class="lpb-faq__resposta">Quem fecha para a Black Friday paga o mesmo valor/hora de quem assina contrato recorrente, sem assinar o contrato recorrente. A cobrança da Scooto é por valor/hora, com proposta montada a partir da sua operação, e o que muda aqui é que a temporada não custa o adicional que operação temporária costuma custar. Sem fidelidade longa, sem multa para reduzir o time depois do pico, e vale para pré-vendas, atendimento ou as duas frentes.</p>
+      </details>
+      <details class="lpb-faq__item">
+        <summary class="lpb-faq__pergunta">
+          <span class="lpb-faq__texto">Preciso contratar as duas frentes?</span>
+          <span class="lpb-faq__disco"><svg class="lpb-faq__chevron" width="10.6" height="6.47" viewBox="0 0 10.5974 6.46667" fill="currentColor" aria-hidden="true"><path d="M5.29868 4.11667L9.41431 0L10.5974 1.16667L5.29868 6.46667L0 1.16667L1.18304 0L5.29868 4.11667Z"/></svg></span>
+        </summary>
+        <p class="lpb-faq__resposta">Não. Você escolhe uma frente ou as duas, e dá para começar por uma e abrir a segunda depois. A observação honesta é a que está lá em cima: a maioria contrata vendas primeiro e descobre o atendimento em dezembro, quando chega troca, devolução e "cadê meu pedido". Se você já viu esse filme, vale desenhar as duas agora.</p>
+      </details>
+      <details class="lpb-faq__item">
+        <summary class="lpb-faq__pergunta">
+          <span class="lpb-faq__texto">Quanto tempo leva para ver resultado?</span>
+          <span class="lpb-faq__disco"><svg class="lpb-faq__chevron" width="10.6" height="6.47" viewBox="0 0 10.5974 6.46667" fill="currentColor" aria-hidden="true"><path d="M5.29868 4.11667L9.41431 0L10.5974 1.16667L5.29868 6.46667L0 1.16667L1.18304 0L5.29868 4.11667Z"/></svg></span>
+        </summary>
+        <p class="lpb-faq__resposta">A operação sobe em 24 horas e o primeiro contato sai no mesmo dia, então movimento você vê na primeira semana. O que leva mais tempo é a curva de contexto: catálogo, política de frete, exceções e as objeções que só aparecem depois do preço. Isso são algumas semanas, não algumas horas, e é exatamente por isso que agosto e novembro entregam resultados diferentes com a mesma operação.</p>
+      </details>
+      <details class="lpb-faq__item">
+        <summary class="lpb-faq__pergunta">
+          <span class="lpb-faq__texto">Meu produto é complexo. O time vai entender?</span>
+          <span class="lpb-faq__disco"><svg class="lpb-faq__chevron" width="10.6" height="6.47" viewBox="0 0 10.5974 6.46667" fill="currentColor" aria-hidden="true"><path d="M5.29868 4.11667L9.41431 0L10.5974 1.16667L5.29868 6.46667L0 1.16667L1.18304 0L5.29868 4.11667Z"/></svg></span>
+        </summary>
+        <p class="lpb-faq__resposta">Vai. As Scooteiras estudam seu produto, sua concorrência e suas objeções antes do primeiro contato, e o material é construído junto com o seu time, não copiado de script pronto. Cada operação tem uma gestora dedicada acompanhando indicadores e ajustando o discurso no caminho. Produto complexo não é exceção por aqui: a esteira vai de pré-vendas B2B a suporte de pós-venda.</p>
+      </details>
+      <details class="lpb-faq__item">
+        <summary class="lpb-faq__pergunta">
+          <span class="lpb-faq__texto">Como vocês se integram ao meu CRM e às minhas ferramentas?</span>
+          <span class="lpb-faq__disco"><svg class="lpb-faq__chevron" width="10.6" height="6.47" viewBox="0 0 10.5974 6.46667" fill="currentColor" aria-hidden="true"><path d="M5.29868 4.11667L9.41431 0L10.5974 1.16667L5.29868 6.46667L0 1.16667L1.18304 0L5.29868 4.11667Z"/></svg></span>
+        </summary>
+        <p class="lpb-faq__resposta">A gente entra nas ferramentas que você já usa. A operação roda direto no seu CRM e nos seus canais, sem pedir que você troque de stack e sem integração para o seu time desenvolver: o que precisa é acesso e uma conversa de configuração. Se ainda não existe CRM nem processo, a gente monta o setup do zero e indica ferramentas pelos nossos parceiros.</p>
+      </details>
+      <details class="lpb-faq__item">
+        <summary class="lpb-faq__pergunta">
+          <span class="lpb-faq__texto">E a segurança dos dados? Vocês cumprem LGPD?</span>
+          <span class="lpb-faq__disco"><svg class="lpb-faq__chevron" width="10.6" height="6.47" viewBox="0 0 10.5974 6.46667" fill="currentColor" aria-hidden="true"><path d="M5.29868 4.11667L9.41431 0L10.5974 1.16667L5.29868 6.46667L0 1.16667L1.18304 0L5.29868 4.11667Z"/></svg></span>
+        </summary>
+        <p class="lpb-faq__resposta">A Scooto trata dados pessoais como controladora, sob a LGPD, com aviso de privacidade público, encarregada de dados nomeada e canal aberto para pedido de acesso, correção ou exclusão. Fornecedores que tocam esses dados entram por contrato com cláusula de segurança e são auditados periodicamente, e os registros de acesso ficam sob sigilo pelo prazo que a lei manda. Está tudo escrito, e vale ler antes de assinar qualquer coisa: <a class="lpb-faq__link" href="https://scooto.co/politica-de-privacidade/" target="_blank" rel="noopener">Política de Privacidade</a>.</p>
+      </details>
+      <details class="lpb-faq__item">
+        <summary class="lpb-faq__pergunta">
+          <span class="lpb-faq__texto">Como é a precificação?</span>
+          <span class="lpb-faq__disco"><svg class="lpb-faq__chevron" width="10.6" height="6.47" viewBox="0 0 10.5974 6.46667" fill="currentColor" aria-hidden="true"><path d="M5.29868 4.11667L9.41431 0L10.5974 1.16667L5.29868 6.46667L0 1.16667L1.18304 0L5.29868 4.11667Z"/></svg></span>
+        </summary>
+        <p class="lpb-faq__resposta">Por valor/hora, com proposta montada em cima do seu cenário: quantas posições, quais canais, qual janela de atendimento e por quanto tempo. Não existe tabela fixa publicada nem pacote fechado, porque a conta muda muito entre 1 posição e 50. Na avaliação gratuita a gente levanta esses números com você e devolve a proposta; se não fizer sentido, a gente fala isso na própria conversa.</p>
+      </details>
+      <details class="lpb-faq__item">
+        <summary class="lpb-faq__pergunta">
+          <span class="lpb-faq__texto">E se não funcionar?</span>
+          <span class="lpb-faq__disco"><svg class="lpb-faq__chevron" width="10.6" height="6.47" viewBox="0 0 10.5974 6.46667" fill="currentColor" aria-hidden="true"><path d="M5.29868 4.11667L9.41431 0L10.5974 1.16667L5.29868 6.46667L0 1.16667L1.18304 0L5.29868 4.11667Z"/></svg></span>
+        </summary>
+        <p class="lpb-faq__resposta">Primeiro, você fica sabendo antes do fim do mês: se a abordagem não está funcionando, a gente avisa e muda no meio do caminho, em vez de reportar no fechamento o que já dava para ver na segunda semana. Segundo, não tem contrato longo prendendo ninguém — o time sobe e desce conforme o volume real, sem multa para reduzir depois do pico. E se na primeira conversa ficar claro que não é para você, a gente diz isso ali mesmo.</p>
+      </details>
+      <details class="lpb-faq__item">
+        <summary class="lpb-faq__pergunta">
+          <span class="lpb-faq__texto">Vocês atendem meu segmento?</span>
+          <span class="lpb-faq__disco"><svg class="lpb-faq__chevron" width="10.6" height="6.47" viewBox="0 0 10.5974 6.46667" fill="currentColor" aria-hidden="true"><path d="M5.29868 4.11667L9.41431 0L10.5974 1.16667L5.29868 6.46667L0 1.16667L1.18304 0L5.29868 4.11667Z"/></svg></span>
+        </summary>
+        <p class="lpb-faq__resposta">Provavelmente sim. São mais de 300 operações rodando e mais de 150 empresas atendidas, de fintech a beleza — XP, Cora, Boca Rosa e a indústria da beleza estão entre elas. No B2B a gente atua em pré-vendas e agendamento; no B2C, em varejo, educação, infoproduto e lançamento, com venda direta, recuperação de carrinho e suporte no pós-venda. Se o seu segmento tem alguma regra que muda o jogo, é exatamente o tipo de coisa que a avaliação gratuita existe para levantar.</p>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section class="lpb-orcamento">
+  <div class="lpb-orcamento__interno">
+    <h2 class="lpb-orcamento__titulo">Solicite o seu orçamento</h2>
+    <p class="lpb-orcamento__sub">Preencha abaixo. Um humano do time comercial entra em contato para conversar sobre o seu cenário, sem apresentação institucional de 40 slides.</p>
+  </div>
+</section>
