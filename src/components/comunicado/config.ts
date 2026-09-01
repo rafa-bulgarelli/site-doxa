@@ -11,22 +11,12 @@
  */
 
 /**
- * A marca de "já vi" no `localStorage`.
+ * `?comunicado` na URL força o aviso sem a espera.
  *
- * Versionada no nome de propósito: se o dono mudar a mensagem no futuro (dois
- * mil? aviso encerrado?), sobe-se o `v1` e todo mundo vê a nova UMA vez, sem
- * caçar estado velho. Mora aqui, e não no componente, porque o `App` precisa
- * dela ANTES de baixar o chunk — quem já dispensou o aviso não gasta um byte
- * com ele de novo.
- */
-export const CHAVE_COMUNICADO = 'doxa:comunicado-mil:v1';
-
-/**
- * `?comunicado` na URL força o aviso: sem espera, ignorando o `localStorage`.
- *
- * Existe para duas pessoas — o dono conferindo a copy no ar depois de já ter
- * fechado o aviso, e o screenshot da torre (`mobile-shot.mjs` fotografa 1,5 s
- * depois do load; a espera normal de 1,6 s perderia a foto por um décimo).
+ * Sobrou um uso desde que o dono mandou o aviso estourar em TODO load
+ * (2026-09-01, fim da marca de "já vi" no `localStorage`): o screenshot da
+ * torre (`mobile-shot.mjs` fotografa 1,5 s depois do load; a espera normal de
+ * 1,6 s perderia a foto por um décimo).
  */
 export const PARAM_FORCA = 'comunicado';
 

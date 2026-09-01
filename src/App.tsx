@@ -6,7 +6,7 @@ import { ROTA_BASE } from './manual/config';
 // arquivo — a única peça do site que sabe que as duas rotas existem.
 import { ROTA_BASE as ROTA_DO_CONVERSOR } from './conversor/config';
 import { ProvedorDeIdioma, useIdioma, type PorIdioma } from './idioma';
-import { CHAVE_COMUNICADO, ESPERA_MS, PARAM_FORCA } from './components/comunicado/config';
+import { ESPERA_MS, PARAM_FORCA } from './components/comunicado/config';
 import { usarNaTela } from './hooks/usarNaTela';
 import { Hero } from './components/Hero';
 import { Rolador } from './components/ui/Rolador';
@@ -39,10 +39,10 @@ const Faq = lazy(() => import('./components/Faq').then((m) => ({ default: m.Faq 
 const Rodape = lazy(() => import('./components/Rodape').then((m) => ({ default: m.Rodape })));
 
 /**
- * O comunicado dos mil pedidos, `lazy` por um motivo mais fino que o das
- * seções: o chunk só é PEDIDO quando o aviso for aparecer. Quem já o dispensou
- * — a maioria, depois da primeira visita — não baixa um byte dele, porque o
- * gate (`localStorage` + espera) roda no `App`, ANTES do import.
+ * O comunicado dos mil pedidos, `lazy` como as seções: ele entra segundos
+ * depois do primeiro desenho (`ESPERA_MS`), então não tem por que pesar no
+ * pacote que desenha o hero. O gate roda no `App`, antes do import — e é lá
+ * que mora a decisão do dono de estourar em TODO load.
  */
 const Comunicado = lazy(() =>
   import('./components/Comunicado').then((m) => ({ default: m.Comunicado })),
@@ -227,12 +227,12 @@ export default function App() {
    *
    *  - Só na landing. As outras rotas são ferramentas de trabalho; um aviso de
    *    demanda no meio da Central seria ruído para quem está atendendo a fila.
-   *  - Quem já fechou não vê de novo — a marca em `localStorage` decide AQUI,
-   *    antes de qualquer download. `try` porque navegação privada pode negar o
-   *    storage lendo, e a resposta certa para "não sei se já viu" é mostrar.
-   *  - `?comunicado` na URL fura tudo: sem espera, ignorando a marca. É a
-   *    porta do dono conferindo a copy e do screenshot da torre (que fotografa
-   *    1,5 s depois do load — a espera normal perderia a foto).
+   *  - TODO load mostra — decisão do dono (2026-09-01): fechou, recarregou,
+   *    estoura de novo. A marca de "já vi" que existia aqui foi removida por
+   *    ordem dele; se um dia voltar, ela morava neste gate, antes do download.
+   *  - `?comunicado` na URL fura a espera. É a porta do dono conferindo a
+   *    copy e do screenshot da torre (que fotografa 1,5 s depois do load — a
+   *    espera normal perderia a foto).
    *
    * A espera de `ESPERA_MS` não é enfeite: o hero é a promessa e chega
    * primeiro; o aviso é um recado e bate à porta depois que a primeira dobra
@@ -242,16 +242,10 @@ export default function App() {
   useEffect(() => {
     if (naCentral || noManual || noConversor || noPainel) return;
     // `has`, não substring: `?utm_campaign=comunicado` num link de campanha
-    // forçaria o aviso para todo mundo, sem espera e por cima do "já vi"
-    // (finding do collector no gate do card 019).
+    // pularia a espera sem ninguém pedir (finding do collector, card 019).
     if (new URLSearchParams(window.location.search).has(PARAM_FORCA)) {
       setComunicadoAberto(true);
       return;
-    }
-    try {
-      if (localStorage.getItem(CHAVE_COMUNICADO) != null) return;
-    } catch {
-      // Sem storage não há como saber se já viu — mostra, que é o custo menor.
     }
     const id = window.setTimeout(() => setComunicadoAberto(true), ESPERA_MS);
     return () => window.clearTimeout(id);
