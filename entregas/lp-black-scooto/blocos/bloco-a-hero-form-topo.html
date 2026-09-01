@@ -87,11 +87,14 @@
   padding: 4px 12px;
 }
 
-/* O raio ocupa 12,5px no Figma (glifo de 8px encostado à esquerda da caixa). */
+/* A caixa do raio tem 12,5px no Figma e o glifo, 8px, fica CENTRADO nela
+   (nó 1:54, inset-[4.17%_18%] = 2,25px de folga de cada lado) — sem o
+   justify-content o SVG encosta na esquerda e o badge sai torto. */
 .lpb-hero-card__badge-icone {
   align-items: center;
   display: inline-flex;
   flex: none;
+  justify-content: center;
   width: 12.5px;
 }
 
