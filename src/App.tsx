@@ -6,6 +6,7 @@ import { ROTA_BASE } from './manual/config';
 // arquivo — a única peça do site que sabe que as duas rotas existem.
 import { ROTA_BASE as ROTA_DO_CONVERSOR } from './conversor/config';
 import { ProvedorDeIdioma, useIdioma, type PorIdioma } from './idioma';
+import { CHAVE_COMUNICADO, ESPERA_MS, PARAM_FORCA } from './components/comunicado/config';
 import { usarNaTela } from './hooks/usarNaTela';
 import { Hero } from './components/Hero';
 import { Rolador } from './components/ui/Rolador';
@@ -36,6 +37,16 @@ const Comparacao = lazy(() =>
 );
 const Faq = lazy(() => import('./components/Faq').then((m) => ({ default: m.Faq })));
 const Rodape = lazy(() => import('./components/Rodape').then((m) => ({ default: m.Rodape })));
+
+/**
+ * O comunicado dos mil pedidos, `lazy` por um motivo mais fino que o das
+ * seções: o chunk só é PEDIDO quando o aviso for aparecer. Quem já o dispensou
+ * — a maioria, depois da primeira visita — não baixa um byte dele, porque o
+ * gate (`localStorage` + espera) roda no `App`, ANTES do import.
+ */
+const Comunicado = lazy(() =>
+  import('./components/Comunicado').then((m) => ({ default: m.Comunicado })),
+);
 
 /**
  * A Central de leads, na rota `/leads`.
@@ -207,6 +218,41 @@ export default function App() {
   const [noManual] = useState(ehManual);
   const [noConversor] = useState(ehConversor);
   const [noPainel] = useState(ehAdmin);
+
+  /**
+   * ─── O GATE DO COMUNICADO ────────────────────────────────────────────────
+   *
+   * `true` = o aviso dos mil pedidos entra na tela (e só aí o chunk dele é
+   * baixado). Três portas antes disso:
+   *
+   *  - Só na landing. As outras rotas são ferramentas de trabalho; um aviso de
+   *    demanda no meio da Central seria ruído para quem está atendendo a fila.
+   *  - Quem já fechou não vê de novo — a marca em `localStorage` decide AQUI,
+   *    antes de qualquer download. `try` porque navegação privada pode negar o
+   *    storage lendo, e a resposta certa para "não sei se já viu" é mostrar.
+   *  - `?comunicado` na URL fura tudo: sem espera, ignorando a marca. É a
+   *    porta do dono conferindo a copy e do screenshot da torre (que fotografa
+   *    1,5 s depois do load — a espera normal perderia a foto).
+   *
+   * A espera de `ESPERA_MS` não é enfeite: o hero é a promessa e chega
+   * primeiro; o aviso é um recado e bate à porta depois que a primeira dobra
+   * já se apresentou.
+   */
+  const [comunicadoAberto, setComunicadoAberto] = useState(false);
+  useEffect(() => {
+    if (naCentral || noManual || noConversor || noPainel) return;
+    if (window.location.search.includes(PARAM_FORCA)) {
+      setComunicadoAberto(true);
+      return;
+    }
+    try {
+      if (localStorage.getItem(CHAVE_COMUNICADO) != null) return;
+    } catch {
+      // Sem storage não há como saber se já viu — mostra, que é o custo menor.
+    }
+    const id = window.setTimeout(() => setComunicadoAberto(true), ESPERA_MS);
+    return () => window.clearTimeout(id);
+  }, [naCentral, noManual, noConversor, noPainel]);
 
   /**
    * Os pedaços de baixo, buscados assim que o navegador fica ocioso.
@@ -413,6 +459,15 @@ export default function App() {
           voltar ao topo. */}
       <MetaDoIdioma />
       <Cabecalho />
+
+      {/* O comunicado sobrevoa tudo, como o cabeçalho — e some da árvore ao
+          fechar, não só da tela: um diálogo dispensado que continua montado é
+          um ouvinte de Esc vivo numa página que já não tem diálogo. */}
+      {comunicadoAberto && (
+        <Suspense fallback={null}>
+          <Comunicado aoFechar={() => setComunicadoAberto(false)} />
+        </Suspense>
+      )}
 
       {/*
        * O `<main>` é OPACO e vem por cima, e é só isso que faz o rodapé se
