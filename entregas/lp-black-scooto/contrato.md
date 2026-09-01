@@ -140,7 +140,8 @@ Estrutura (números do dump da seção 01, `1:5`):
 | laranja | `#ff6000` / `#ff7a1a` / `#df5200` / `#b74508` | asterisco, frente 2, cards |
 | pills claros | `#e5e9ff` · `#ffe1d2` · `#ffdee2` · `#fff1eb` | discos de ícone, badges |
 | borda card form | `#c6cfff` (roxo) · `#ffc8ac` (laranja) | seções 05 e 10 |
-| gradiente CTA | `linear-gradient(145deg,#4a1be8 0%,#f12d64 50%,#ff6000 100%)` | moldura do card do hero, botão do hero |
+| gradiente da moldura | `linear-gradient(145deg,#4a1be8 0%,#f12d64 50%,#ff6000 100%)` | moldura do card do hero (SÓ ela) |
+| gradiente do botão do hero | `linear-gradient(90deg, #4a1be8 0%, #f12d64 33%, #ff6000 66.75%, #4a1be8 100%)` | botão "Quero avaliar minha operação" — MEDIDO do PNG pela track D (imgButton75 é imagem no Figma; 90°, 4 paradas, volta ao roxo; erro médio 1.35/255) |
 | sombra dura | `drop-shadow(8px 8px 0 <cor>)` | métricas (06) e passos (08) |
 
 ### Tipografia
@@ -256,7 +257,7 @@ IDs** dos campos:
   5 + 7?" — campo do Elementor com ID **fora dos 6 reservados**, use **`quiz`**
   (o hook ignora o que não conhece).
 - Botão: **"Quero avaliar minha operação"** com o gradiente da marca
-  (`linear-gradient(145deg,#4a1be8,#f12d64,#ff6000)`), `height:57px`,
+  (`linear-gradient(90deg, #4a1be8 0%, #f12d64 33%, #ff6000 66.75%, #4a1be8 100%)` — ERRATA 2026-09-01: o 145deg/3-stop do P0 estava errado, o fundo real é imagem com gradiente horizontal de 4 paradas, medido do PNG pela track D), `height:57px`,
   `border-radius:12px`, `Roboto:Bold 16/24` branco, seta à direita.
 - Nota sob o botão, via `.lpb-form-widget--hero::after` (12/16, `#8f91a2`):
   "Seus dados ficam com a gente. Sem spam, sem lista comprada. Um humano responde. Não
