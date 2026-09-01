@@ -38,6 +38,12 @@
 2. Cole o conteúdo **inteiro** de `form.css`.
    O `@import` das fontes tem que ficar na **primeira linha** do campo: CSS descarta
    `@import` que venha depois de qualquer regra, e aí os textos saem na fonte do tema.
+   **Cuidado**: o WordPress/Elementor pode juntar esse CSS a outras regras no mesmo
+   arquivo servido — se o `@import` cair depois delas, ele é descartado **em silêncio**,
+   sem erro no console, e o único sintoma é a fonte errada. Por isso a conferência final
+   tem um passo só para isso (item 2 lá embaixo). Se acontecer, a saída é carregar as
+   fontes fora do CSS: os blocos de HTML da LP já trazem o mesmo `@import`, e um deles
+   basta para a página inteira.
 3. **Atualizar**.
 
 Sem Elementor Pro na conta que edita CSS, a alternativa é **Aparência → Personalizar →
@@ -172,7 +178,11 @@ Formulário LP Black Hero
 ### 3.4 Botão
 
 **Texto do botão**: `Quero avaliar minha operação`.
-O gradiente e a seta à direita são do CSS. Alinhamento: **Justificado**.
+O gradiente e a seta à direita são do CSS — no Figma o fundo desse botão é uma imagem, e
+o `form.css` a reproduz com um gradiente horizontal de quatro paradas (roxo → rosa →
+laranja → roxo de novo na ponta direita). Não troque por cor sólida no painel do
+Elementor: o CSS vence, mas a pré-visualização do editor fica mentindo. Alinhamento:
+**Justificado**.
 
 ### 3.5 Ações após o envio e mensagens
 
@@ -221,16 +231,21 @@ mensagem de sucesso, mais curta porque o card é pequeno:
 1. **Visual**: compare com `../figma/secao-01-hero.png` (topo) e
    `../figma/secao-10-formulario-completo.png` (completo). Campos creme de 46px, borda
    clara, raio 8; botão roxo `#4a1be8` no completo e em gradiente no do topo.
-2. **Foco**: clique num campo — a borda fica roxa com um anel claro em volta. Se não
+2. **Fonte** (é o passo que pega o `@import` descartado): inspecione um rótulo do form
+   completo → *Computed* → `font-family` tem que começar em **Roboto**; no H2 "Solicite o
+   seu orçamento", em **Sora**. Se vier a fonte do tema, as fontes não carregaram — veja
+   o aviso do passo 1. Pelo console dá para conferir de uma vez:
+   `getComputedStyle(document.querySelector('.lpb-form-widget .elementor-field-label')).fontFamily`
+3. **Foco**: clique num campo — a borda fica roxa com um anel claro em volta. Se não
    ficar, o CSS não está carregando.
-3. **Envio de verdade, um form de cada vez**: preencha e envie. Tem que aparecer a
+4. **Envio de verdade, um form de cada vez**: preencha e envie. Tem que aparecer a
    mensagem de sucesso na tela, sem sair da página.
-4. **Envios**: `wp-admin → Elementor → Envios`. Devem estar lá duas entradas, uma por
+5. **Envios**: `wp-admin → Elementor → Envios`. Devem estar lá duas entradas, uma por
    **Formulário LP Black** e outra por **Formulário LP Black Hero**, com os campos
    preenchidos e os do topo em branco no que não existe.
-5. **Intercom**: contato criado e ticket aberto, com telefone no formato `+55…` (o hook
+6. **Intercom**: contato criado e ticket aberto, com telefone no formato `+55…` (o hook
    monta) — quem confere é quem tem acesso ao Intercom.
-6. **Celular**: no ~390px os pares Cargo/Empresa e Site/WhatsApp empilham, o card ganha
+7. **Celular**: no ~390px os pares Cargo/Empresa e Site/WhatsApp empilham, o card ganha
    padding menor e nada rola para o lado.
 
 ## Arquivos desta pasta

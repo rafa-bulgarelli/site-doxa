@@ -381,21 +381,31 @@
   background-size: 13.325px 12px;
 }
 
-/* Botão do hero: gradiente da marca, 57px, seta à direita. O background-image do
- * gradiente precisa vencer o "background-image: none" da regra base do botão — por isso
- * o seletor aqui é mais específico, não !important. */
-.lpb-form-widget--hero .elementor-field-type-submit .elementor-button {
+/* Botão do hero: 57px, gradiente do Figma, seta à direita.
+ *
+ * O gradiente NÃO é o mesmo da moldura do card. No Figma o fundo do botão é uma imagem,
+ * e os pixels dela (figma/secao-01-hero.png, botão em x 130..661) descrevem um gradiente
+ * HORIZONTAL de quatro paradas que VOLTA ao roxo na borda direita — não os 145° de três
+ * paradas da moldura. Os números abaixo saíram de medição no PNG: as quebras estão em
+ * 33% (rosa) e 66,75% (laranja), por regressão nos canais B e G, e as cores dos nós são
+ * as da marca. Conferido pixel a pixel em duas linhas do botão (504 px cada, fora dos
+ * cantos arredondados): erro médio de 1,35 e máximo de 3 por canal.
+ *
+ * O seletor repete a classe do widget (.lpb-form-widget.lpb-form-widget--hero) para
+ * chegar a 4 classes: com uma só, ele EMPATA com a regra base do botão e passaria a
+ * depender da ordem do arquivo — que é frágil se alguém reordenar as seções. */
+.lpb-form-widget.lpb-form-widget--hero .elementor-field-type-submit .elementor-button {
   min-height: 57px;
   padding: 16px 24px;
   background-color: var(--lpb-roxo);
-  background-image: linear-gradient(145deg, #4a1be8 0%, #f12d64 50%, #ff6000 100%);
+  background-image: linear-gradient(90deg, #4a1be8 0%, #f12d64 33%, #ff6000 66.75%, #4a1be8 100%);
   border-radius: 12px;
   font-size: 16px;
   font-weight: 700;
   line-height: 24px;
 }
 
-.lpb-form-widget--hero .elementor-field-type-submit .elementor-button:hover {
+.lpb-form-widget.lpb-form-widget--hero .elementor-field-type-submit .elementor-button:hover {
   background-color: var(--lpb-roxo);
   box-shadow: 0 8px 20px rgba(74, 27, 232, 0.24);
   filter: brightness(1.06);
@@ -403,7 +413,7 @@
 
 /* A seta é ::after do BOTÃO (e não do span do texto) porque o span interno muda de
  * classe entre versões do Elementor; o botão, não. */
-.lpb-form-widget--hero .elementor-field-type-submit .elementor-button::after {
+.lpb-form-widget.lpb-form-widget--hero .elementor-field-type-submit .elementor-button::after {
   content: "";
   flex: 0 0 auto;
   width: 17px;
@@ -443,7 +453,7 @@
 
   /* "Quero avaliar minha operação" quebra em duas linhas no celular — o botão cresce
    * em vez de estourar a borda. */
-  .lpb-form-widget--hero .elementor-field-type-submit .elementor-button {
+  .lpb-form-widget.lpb-form-widget--hero .elementor-field-type-submit .elementor-button {
     height: auto;
     padding: 14px 18px;
     font-size: 15px;
@@ -464,6 +474,10 @@
 }
 
 .lpb-mock-cardsim {
+  /* border-box para os 584px serem a largura TOTAL do card, como no Figma: sem isto o
+     padding e a borda somam por fora e o botão de dentro sai 52px mais largo que o
+     desenho — o que estragaria a comparação do print com o screenshot. */
+  box-sizing: border-box;
   max-width: 584px;
   margin: 0 auto;
   padding: 24px;
